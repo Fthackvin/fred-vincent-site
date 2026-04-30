@@ -144,8 +144,6 @@ p { margin: 0; }
     align-items: flex-start;
     gap: var(--s3);
   }
-  .nav { flex-wrap: nowrap; gap: 6px; }
-  .nav a, .nav .sep { font-size: 13px; }
 }
 .brand {
   font-family: var(--display);
@@ -176,13 +174,13 @@ p { margin: 0; }
 }
 .nav {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: baseline;
-  gap: var(--s3);
+  gap: clamp(4px, 1.2vw, 12px);
 }
 .nav a {
   font-family: var(--text);
-  font-size: 22px;
+  font-size: clamp(12px, 2.8vw, 22px);
   font-weight: 200;
   letter-spacing: var(--caps-tracking);
   text-transform: var(--caps-case);
@@ -193,7 +191,7 @@ p { margin: 0; }
   color: var(--ink-500);
   user-select: none;
   font-family: var(--text);
-  font-size: 22px;
+  font-size: clamp(12px, 2.8vw, 22px);
   font-weight: 200;
 }
 
@@ -209,7 +207,7 @@ p { margin: 0; }
   font-family: var(--display);
   font-weight: 400;
   color: var(--ink-900);
-  font-size: clamp(32px, 8vw, 80px);
+  font-size: clamp(44px, 9vw, 88px);
   line-height: 1.05;
   letter-spacing: -0.025em;
   margin: 0;
