@@ -3,6 +3,8 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no, email=no, address=no">
 <script>
   /* Always load at the top: disable browser scroll restoration and strip any
      hash before the browser jumps to it. Runs in <head> so it executes before
@@ -15,14 +17,24 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="48x48" href="favicons/favicon-48x48.png">
-<link rel="shortcut icon" href="favicons/favicon.ico">
+<link rel="icon" type="image/x-icon" href="favicons/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+<link rel="apple-touch-icon-precomposed" href="favicons/apple-touch-icon.png">
 <link rel="manifest" href="favicons/site.webmanifest">
 <meta name="theme-color" content="#FBFBF8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
+/* Local display typeface — Canela Regular at its actual weight (400). Body falls through to Cormorant Garamond. */
+@font-face {
+  font-family: "Canela";
+  src: url("Fonts/Canela.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --paper-50:  #FFFFFF;
   --paper-100: #FBFBF8;
@@ -33,8 +45,8 @@
   --ink-700:   #3A3731;
   --ink-900:   #1A1815;
 
-  --display: "Canela Deck", Canela, Didot, "Cormorant Garamond", Georgia, serif;
-  --text:    Caslon, "Cormorant Garamond", Georgia, serif;
+  --display: "Canela", "Cormorant Garamond", Georgia, serif;
+  --text:    "Cormorant Garamond", Georgia, serif;
   --mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --s1: 4px;  --s2: 8px;   --s3: 12px;  --s4: 16px;
@@ -86,13 +98,13 @@ p { margin: 0; }
   width: 100%;
   max-width: var(--container);
   margin: 0 auto;
-  padding: 0 var(--s5);
+  padding: 0 var(--s6);
 }
 @media (min-width: 640px) {
   .wrap { padding: 0 var(--s7); }
 }
 @media (min-width: 1024px) {
-  .wrap { padding: 0 var(--s7); }
+  .wrap { padding: 0 var(--s8); }
 }
 
 .narrow { max-width: var(--narrow); }
@@ -105,10 +117,10 @@ p { margin: 0; }
 }
 .site-header .row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--s4) var(--s6);
+  gap: var(--s4);
 }
 .brand {
   font-family: var(--display);
@@ -121,7 +133,7 @@ p { margin: 0; }
   line-height: 1;
 }
 .brand .studio {
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
+  font-family: var(--text);
   font-weight: 300;
   color: var(--ink-900);
   font-size: 26px;
@@ -144,7 +156,7 @@ p { margin: 0; }
   gap: var(--s3);
 }
 .nav a {
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
+  font-family: var(--text);
   font-size: 22px;
   font-weight: 200;
   letter-spacing: var(--caps-tracking);
@@ -155,7 +167,7 @@ p { margin: 0; }
 .nav .sep {
   color: var(--ink-500);
   user-select: none;
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
+  font-family: var(--text);
   font-size: 22px;
   font-weight: 200;
 }
@@ -169,15 +181,15 @@ p { margin: 0; }
   .hero { padding-top: var(--s7); padding-bottom: var(--s8); }
 }
 .hero h1 {
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
-  font-weight: 600;
+  font-family: var(--display);
+  font-weight: 400;
   color: var(--ink-900);
-  font-size: clamp(40px, 6vw, 72px);
+  font-size: clamp(44px, 6.5vw, 80px);
   line-height: 1.05;
   letter-spacing: -0.025em;
   margin: 0;
   max-width: 22ch;
-  text-wrap: pretty;
+  text-wrap: balance;
   font-synthesis: weight;
 }
 /* Hero CTA wave hand */
@@ -207,7 +219,7 @@ p { margin: 0; }
 
 /* (hero h1 uses .fade-up like the rest of the content) */
 .hero .lead {
-  margin-top: var(--s7);
+  margin-top: var(--s6);
   color: var(--ink-700);
   font-size: 22px;
   line-height: 1.45;
@@ -304,10 +316,8 @@ p { margin: 0; }
   flex-shrink: 0;
 }
 @media (max-width: 639px) {
-  .hero .hero-cta {
-    flex-direction: column;
-    align-items: stretch;
-  }
+  .hero .hero-cta .cta { min-width: 0; }
+  .hero .hero-cta .hero-how-link { flex-basis: 100%; }
 }
 
 /* Section rhythm */
@@ -334,12 +344,12 @@ section.block {
   display: block;
 }
 
-/* Signature eyebrow (text, Caslon, larger) */
+/* Signature eyebrow (text, larger) */
 .eyebrow-sig {
   display: block;
   margin: 0 0 var(--s5) 0;
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--text);
+  font-weight: 400;
   font-size: 32px;
   line-height: 1.1;
   color: var(--ink-900);
@@ -426,8 +436,8 @@ section.block {
   margin-bottom: var(--s4);
 }
 .card .title {
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--text);
+  font-weight: 400;
   font-size: clamp(28px, 3.4vw, 40px);
   line-height: 1.08;
   letter-spacing: -0.005em;
@@ -437,7 +447,7 @@ section.block {
   max-width: 14ch;
 }
 .card .desc {
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
+  font-family: var(--text);
   color: var(--ink-700);
   font-size: 19px;
   line-height: 1.55;
@@ -668,8 +678,8 @@ section.block {
   display: block;
 }
 .contact-card h2 {
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--text);
+  font-weight: 400;
   color: var(--paper-50);
   font-size: clamp(32px, 5.5vw, 56px);
   line-height: 1.05;
@@ -679,7 +689,7 @@ section.block {
   text-wrap: pretty;
 }
 .contact-card .sub {
-  font-family: "Caslon", "Cormorant Garamond", Georgia, serif;
+  font-family: var(--text);
   font-size: 18px;
   line-height: 1.55;
   color: var(--paper-200);
@@ -1235,7 +1245,7 @@ section#contact.block { padding-bottom: var(--s4); }
 
   <section class="hero">
     <div class="wrap">
-      <h1 class="hero-fade" style="font-family: Canela; font-weight: 500;">Creative direction for product teams that don't want to ship the safe version.</h1>
+      <h1 class="hero-fade" style="font-weight: 400;">Creative direction for product teams that don't want to ship the safe version.</h1>
       <p class="lead fade-up">I help founders and product teams find the version of the work that's worth committing to. Most teams ship the safe version of what they're building because it's easier to defend. The harder version, the one that actually stands out, needs someone in the room to make it inevitable. That's what I do.</p>
       <div class="hero-cta fade-up">
         <a class="cta cta-primary" data-mail-user="hello" data-mail-host="studiovincent.co" href="#" rel="nofollow"><span class="wave" aria-hidden="true">👋</span>Say hello</a>
@@ -1303,8 +1313,9 @@ section#contact.block { padding-bottom: var(--s4); }
   <section id="how-this-works" class="block">
     <div class="wrap">
       <div class="how-wrap fade-up">
-        <h2 class="how-heading">How this normally starts</h2>
-        <p class="how-lead">Most engagements begin with a short email about something specific you're working on. The most common shape is a Direction Review: two weeks, focused on a specific problem.</p>
+        <h2 class="how-heading">How we start</h2>
+        <p class="how-lead">Most engagements begin with a short email about something specific you're working on.</p>
+        <p class="how-lead">Most common is a Direction Review: two focused weeks looking at where the biggest opportunities are, whether that's saving cost or raising the bar.</p>
 
         <div class="how-actions">
           <div class="how-actions-row">
@@ -1322,7 +1333,7 @@ section#contact.block { padding-bottom: var(--s4); }
 
           <div class="how-steps-content" id="how-steps-panel">
               <ol class="how-steps">
-                <li><b>1. A 45-minute call.</b> I ask questions about the surface, the team, and what's actually being decided. You ask whatever you want about how I work. By the end we both know whether to keep going.</li>
+                <li><b>1. A 30-minute call.</b> We talk about what you're working on, who's involved, and what you're trying to figure out. You ask whatever you want about how I work. By the end we both know whether to keep going.</li>
                 <li><b>2. A short proposal, within a few days.</b> Scope, timeline, fee, deliverables. If anything doesn't feel right, we adjust before signing.</li>
                 <li><b>3. Work starts within one or two weeks.</b> For a Direction Review that means I'm in your product and talking to your team. For longer engagements we agree a rhythm, usually one or two days a week embedded.</li>
                 <li><b>4. We talk if anything changes.</b> Scope shifts, priorities move, a different shape of work would be more useful. I'd rather adjust openly than push through a bad fit.</li>
