@@ -40,19 +40,12 @@
 <meta name="theme-color" content="#FBFBF8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 /* Local display typeface — Canela Regular at its actual weight (400). Body uses Jost via Google Fonts. */
 @font-face {
   font-family: "Canela";
   src: url("Fonts/Canela.woff") format("woff");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "ABC Diatype";
-  src: url("Fonts/ABCDiatype-Light-Trial.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -69,7 +62,7 @@
   --ink-900:   #1A1815;
 
   --display: "Canela", Georgia, serif;
-  --text:    "ABC Diatype", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text:    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --s1: 4px;  --s2: 8px;   --s3: 12px;  --s4: 16px;
@@ -98,9 +91,9 @@ body {
   background: var(--paper-100);
   color: var(--ink-900);
   font-family: var(--text);
-  font-size: 18px;
+  font-size: 29.5px;
   line-height: 1.6;
-  font-weight: 400;
+  font-weight: 300;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -186,24 +179,26 @@ p { margin: 0; }
   gap: var(--s3);
 }
 .nav a {
-  font-family: var(--display);
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
   font-synthesis: none;
-  line-height: 22.4px;
-  letter-spacing: 2px;
-  text-transform: var(--caps-case);
+  line-height: 1.6;
+  letter-spacing: 0;
   color: var(--ink-900);
 }
 .nav .sep {
   color: var(--ink-900);
   user-select: none;
-  font-family: var(--display);
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
   font-synthesis: none;
-  line-height: 22.4px;
-  letter-spacing: 2px;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+@media (min-width: 768px) {
+  .nav a, .nav .sep { font-size: 22px; }
 }
 
 /* Hero */
@@ -1278,13 +1273,13 @@ section#contact.block { padding-bottom: var(--s4); }
   <div class="wrap row">
     <a href="#top" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="logo-vincent.png" alt="Vincent"></a>
     <nav class="nav" aria-label="Primary">
-      <a href="#work">Work</a>
+      <a href="#work">work</a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="#writing">Writing</a>
+      <a href="#writing">writing</a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="#about">About</a>
+      <a href="#about">about</a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="#contact">Contact</a>
+      <a href="#contact">contact</a>
     </nav>
   </div>
 </header>
