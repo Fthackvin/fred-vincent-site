@@ -352,7 +352,11 @@ p { margin: 0; }
   flex-shrink: 0;
 }
 @media (max-width: 639px) {
-  .hero .hero-cta .cta { min-width: 0; }
+  .hero .hero-cta .cta {
+    min-width: 0;
+    padding: 14px 16px;
+  }
+  .hero .hero-cta-row { gap: var(--s2); }
 }
 
 /* Section rhythm */
