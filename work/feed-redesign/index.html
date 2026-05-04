@@ -25,7 +25,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Jost:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 :root {
   --paper-50:  #FFFFFF;
@@ -37,7 +37,7 @@
   --ink-700:   #3A3731;
   --ink-900:   #1A1815;
   --display: "Canela", Georgia, serif;
-  --text:    "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text:    "ABC Diatype", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --container: 1120px;
   --narrow: 760px;
@@ -54,6 +54,13 @@
 @font-face {
   font-family: "Canela";
   src: url("/Fonts/Canela.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ABC Diatype";
+  src: url("/Fonts/ABCDiatype-Light-Trial.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -114,7 +121,7 @@ img { max-width: 100%; height: auto; display: block; }
   line-height: 1;
 }
 .brand .studio {
-  font-family: var(--text);
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 300;
   color: var(--ink-900);
   font-size: 26px;
@@ -170,18 +177,6 @@ img { max-width: 100%; height: auto; display: block; }
 .case-study { padding-top: var(--s8); padding-bottom: var(--s8); }
 @media (min-width: 1024px) { .case-study { padding-top: var(--s9); padding-bottom: var(--s9); } }
 .case-study .wrap { max-width: 920px; }
-.cs-back {
-  display: inline-block;
-  font-family: var(--display);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: var(--caps-tracking);
-  text-transform: var(--caps-case);
-  color: var(--ink-500);
-  margin-bottom: var(--s7);
-  transition: color 180ms var(--ease);
-}
-.cs-back:hover { color: var(--ink-900); text-decoration: none; }
 .cs-eyebrow { color: var(--ink-500); margin-bottom: var(--s4); }
 .cs-title {
   font-family: var(--display);
@@ -404,7 +399,6 @@ img { max-width: 100%; height: auto; display: block; }
 
 <main class="case-study">
   <article class="wrap">
-    <a class="cs-back" href="/#work">← Back to work</a>
     <span class="eyebrow cs-eyebrow">Case study</span>
     <h1 class="cs-title">Answering the wrong question</h1>
     <p class="cs-subtitle">How we went from a question with no answer, to a question with a clear one.</p>
