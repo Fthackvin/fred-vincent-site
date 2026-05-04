@@ -67,7 +67,7 @@ body {
   background: var(--paper-100);
   color: var(--ink-900);
   font-family: var(--text);
-  font-size: 29.5px;
+  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
   line-height: 1.6;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
@@ -85,11 +85,7 @@ img { max-width: 100%; height: auto; display: block; }
   padding: 0 24px;
 }
 @media (min-width: 640px) { .wrap { padding: 0 var(--s7); } }
-@media (max-width: 639px) {
-  body { font-size: 16px; }
-  .cs-body p { font-size: 15px; }
-  .cs-subtitle { font-size: 18px; }
-}
+/* Body sizes use clamp() above; mobile overrides removed */
 @media (min-width: 1024px) { .wrap { padding: 0 var(--s8); } }
 
 /* Header */
@@ -210,7 +206,7 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .cs-body {
   font-family: var(--text);
-  font-size: 18px;
+  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
   line-height: 1.6;
   color: var(--ink-700);
 }
