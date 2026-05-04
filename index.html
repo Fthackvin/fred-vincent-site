@@ -40,9 +40,9 @@
 <meta name="theme-color" content="#FBFBF8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Jost:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-/* Local display typeface — Canela Regular at its actual weight (400). Body falls through to Cormorant Garamond. */
+/* Local display typeface — Canela Regular at its actual weight (400). Body uses Jost via Google Fonts. */
 @font-face {
   font-family: "Canela";
   src: url("Fonts/Canela.woff") format("woff");
@@ -61,8 +61,8 @@
   --ink-700:   #3A3731;
   --ink-900:   #1A1815;
 
-  --display: "Canela", "Cormorant Garamond", Georgia, serif;
-  --text:    "Cormorant Garamond", Georgia, serif;
+  --display: "Canela", Georgia, serif;
+  --text:    "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --s1: 4px;  --s2: 8px;   --s3: 12px;  --s4: 16px;
@@ -367,9 +367,9 @@ section.block {
 
 /* Eyebrow */
 .eyebrow {
-  font-family: var(--display);
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 300;
   letter-spacing: var(--caps-tracking);
   text-transform: var(--caps-case);
   color: var(--ink-500);
@@ -381,8 +381,8 @@ section.block {
 .eyebrow-sig {
   display: block;
   margin: 0 0 var(--s5) 0;
-  font-family: var(--text);
-  font-weight: 400;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
   font-size: 32px;
   line-height: 1.1;
   color: var(--ink-900);
@@ -469,8 +469,8 @@ section.block {
   margin-bottom: var(--s4);
 }
 .card .title {
-  font-family: var(--text);
-  font-weight: 400;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
   font-size: clamp(28px, 3.4vw, 40px);
   line-height: 1.08;
   letter-spacing: -0.005em;
@@ -711,8 +711,8 @@ section.block {
   display: block;
 }
 .contact-card h2 {
-  font-family: var(--text);
-  font-weight: 400;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
   color: var(--paper-50);
   font-size: clamp(32px, 5.5vw, 56px);
   line-height: 1.05;
@@ -1060,10 +1060,10 @@ section#contact.block { padding-bottom: var(--s4); }
 .how-wrap { max-width: var(--narrow); }
 .how-eyebrow { color: var(--ink-500); margin-bottom: var(--s4); }
 .how-heading {
-  font-family: var(--display);
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 28px;
   line-height: 1.22;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--ink-900);
   margin: 0 0 var(--s5) 0;
   letter-spacing: -0.005em;
