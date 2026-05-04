@@ -165,8 +165,8 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 /* Case study layout */
-.case-study { padding-top: var(--s6); padding-bottom: var(--s9); }
-@media (min-width: 768px) { .case-study { padding-top: var(--s7); } }
+.case-study { padding-top: var(--s8); padding-bottom: var(--s8); }
+@media (min-width: 1024px) { .case-study { padding-top: var(--s9); padding-bottom: var(--s9); } }
 .case-study .wrap { max-width: 920px; }
 .cs-back {
   display: inline-block;
@@ -282,7 +282,9 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* Next case study link */
 .cs-next {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
   margin-top: var(--s9);
   padding: var(--s7) 0;
   border-top: 1px solid var(--paper-300);
@@ -290,15 +292,19 @@ img { max-width: 100%; height: auto; display: block; }
   color: inherit;
 }
 .cs-next:hover { text-decoration: none; }
-.cs-next-eyebrow {
+.cs-next-image {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  background: var(--paper-200);
+  object-fit: cover;
   display: block;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: var(--mono-tracking);
-  text-transform: uppercase;
-  color: var(--ink-500);
-  margin-bottom: var(--s4);
 }
+@media (min-width: 768px) {
+  .cs-next-image { width: 96px; height: 96px; }
+}
+.cs-next-text { flex: 1; min-width: 0; }
 .cs-next-title {
   display: block;
   font-family: var(--display);
@@ -320,6 +326,15 @@ img { max-width: 100%; height: auto; display: block; }
   font-size: 16px;
   color: var(--ink-700);
 }
+.cs-next-chev {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-700);
+  transition: transform 180ms var(--ease);
+}
+.cs-next:hover .cs-next-chev { transform: translateX(4px); }
 
 /* Footer */
 .site-footer {
@@ -398,9 +413,12 @@ img { max-width: 100%; height: auto; display: block; }
     </div>
 
     <a class="cs-next" href="/work/onboarding-redesign/">
-      <span class="cs-next-eyebrow">Next case study</span>
-      <span class="cs-next-title">All aboard</span>
-      <span class="cs-next-subtitle">Onboarding redesign at Kaizen</span>
+      <img class="cs-next-image" src="/work/onboarding-redesign/39853f81-bb55-4529-bbc9-439f8748efb4_1076x1082.webp" alt="" loading="lazy">
+      <span class="cs-next-text">
+        <span class="cs-next-title">All aboard</span>
+        <span class="cs-next-subtitle">Onboarding redesign at Kaizen</span>
+      </span>
+      <span class="cs-next-chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
     </a>
 
     <p class="cs-source">Originally published on <a href="https://studiovincent.substack.com/p/answering-the-wrong-question">Substack</a>.</p>
