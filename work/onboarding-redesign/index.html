@@ -305,6 +305,86 @@ img { max-width: 100%; height: auto; display: block; }
 .cs-source a { color: var(--ink-700); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .cs-source a:hover { color: var(--ink-900); }
 
+/* TLDR collapsible summary */
+.tldr {
+  margin: var(--s5) 0 var(--s6) 0;
+  padding: 0;
+}
+.tldr summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s3);
+  font-family: var(--text);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-900);
+  padding: 0;
+  transition: color 220ms var(--ease);
+}
+.tldr summary::-webkit-details-marker { display: none; }
+.tldr summary::marker { content: ""; }
+.tldr summary:hover { color: var(--ink-900); }
+.tldr summary:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+.tldr-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+  transition: transform 220ms var(--ease);
+}
+.tldr[open] .tldr-chev { transform: rotate(-90deg); }
+.tldr-content {
+  padding-top: var(--s5);
+  padding-bottom: var(--s3);
+  animation: tldrIn 300ms ease-out;
+}
+@keyframes tldrIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.tldr-section { margin-bottom: var(--s6); }
+.tldr-section:last-child { margin-bottom: 0; }
+.tldr-section-title {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin: 0 0 var(--s3) 0;
+}
+.tldr-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tldr-list li {
+  position: relative;
+  padding-left: var(--s5);
+  margin-bottom: var(--s2);
+  font-family: var(--text);
+  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
+  line-height: 1.55;
+  color: var(--ink-700);
+}
+.tldr-list li:last-child { margin-bottom: 0; }
+.tldr-list li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--ink-500);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tldr-chev { transition: none; }
+  .tldr-content { animation: none; }
+}
+
+
 /* Next case study link */
 .cs-next {
   display: flex;
@@ -431,6 +511,61 @@ img { max-width: 100%; height: auto; display: block; }
     <h1 class="cs-title">All aboard</h1>
     <p class="cs-subtitle">How we redesigned onboarding for Kaizen, and how the design itself made the team commit to building something operationally hard.</p>
     <p class="cs-meta">Kaizen · 2025 · Founding designer &amp; creative direction</p>
+
+    <details class="tldr">
+      <summary>
+        <span>TLDR</span>
+        <span class="tldr-chev" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+      </summary>
+      <div class="tldr-content">
+      <section class="tldr-section">
+        <span class="tldr-section-title">Context</span>
+        <ul class="tldr-list">
+          <li>Kaizen: marathon training app, co-founded with two others</li>
+          <li>Grew to 10,000 downloads with €0 marketing in year one</li>
+          <li>Trial-to-paid conversion below average for the category</li>
+          <li>Onboarding was the biggest lever to fix it</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">Problem</span>
+        <ul class="tldr-list">
+          <li>Onboarding was functional but generic</li>
+          <li>Had to do two jobs: get users through quickly AND demonstrate value of an unfamiliar concept</li>
+          <li>Team debate between fast onboarding and thorough onboarding led nowhere</li>
+          <li>Every option we'd considered still felt forgettable</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">The shift</span>
+        <ul class="tldr-list">
+          <li>Stepped back to find a different answer</li>
+          <li>Realised onboarding should feel like the start of a journey toward race day</li>
+          <li>Built it around the landscape illustration we already had, expanded into a sense of progression through terrain</li>
+          <li>Each step felt like part of a real journey, not a checklist</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">Outcome</span>
+        <ul class="tldr-list">
+          <li>Signature onboarding that set the tone for the whole product</li>
+          <li>Opened up later decisions (notifications, autonomy, retention)</li>
+          <li>Gave the team a creative direction to keep building against</li>
+          <li>Convinced the team to commit to a heavier build than they'd planned</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">My role</span>
+        <ul class="tldr-list">
+          <li>Founding designer, end-to-end</li>
+          <li>Research, customer support, synthesis</li>
+          <li>Creative direction</li>
+          <li>Interface design and prototyping</li>
+          <li>Articulation to the team</li>
+        </ul>
+      </section>
+      </div>
+    </details>
 
     <div class="cs-body">
 <p></p><h2>What we had already</h2><p>We built Kaizen from scratch, zero customers, no design, developers learning on the job. Within a year we'd hit 10,000 downloads with nothing spent on marketing.</p><p>Early on we figured out a simple way to grow. Kaizen could predict your marathon time more accurately than anything else on the market using data pulled from Strava. I spent 2-3 months, about an hour and a half a day, posting in Strava groups (links still worked back then). Highly motivated runners saw what Kaizen could do and downloaded it. €0 outlay, 10k+ downloads, €0 to 3k MRR.</p><figure class="cs-figure"><img src="8d7ff78b-e63b-4772-8bc3-5515617c6935_2732x506.webp" alt="" loading="lazy"><figcaption>Very earliest versions of the flow, no assets and only a hint of what was to come</figcaption></figure><p>Which, honestly, was a huge growth hack and felt exhilarating. 10k downloads for nothing is the kind of thing most apps would kill for - it's also where most consumer apps die, the first 5k.</p><p>So our onboarding was, to put it nicely, <em>functional</em>. What mattered most for converting a download to a trial was that the app actually worked - stable, fast, and reliably got someone from A to B.</p><figure class="cs-figure"><img src="1d68f93c-ca93-4efd-af81-1fde92b037c8_1354x640.webp" alt="" loading="lazy"></figure><figure class="cs-figure"><img src="f08a3843-87b8-4702-a801-35ae020f1e1c_2080x607.webp" alt="" loading="lazy"></figure><p>That was fine while we were growing through one channel to one kind of user. But trial-to-paid conversion was below average for a fitness app, and when we dug into the data the biggest lever was clear: we needed more trials to subscribe. Onboarding was leaving value on the table.</p><h2>The real problem</h2><p>Kaizen’s selling point was that it made marathon training simple and transparent in a way other apps didn’t. Most training apps give you a generic plan and hope for the best. If you miss sessions, tough luck, fit them in later, and oh by the way we have no idea how fit you actually are despite all this effort.</p><p>Kaizen worked completely differently. It used a core principle of endurance training: that pace and distance combine to create a measurable training load, and that load when measured against your current fitness <em>is</em> what predicts race performance. So instead of a static plan, you got a weekly target calibrated to where you actually were, adapted after every run, with a high chance of hitting your race goal.</p><p>The catch: this didn’t match the mental model most runners have of training. People expect <em>“here’s your plan, follow it.” </em>Kaizen was offering something better, but stranger. Which meant onboarding had to do two things at once: get someone through download to trial without losing them, <em>and</em> demonstrate enough of the underlying value to convince them to pay for something that didn’t look like what they expected.</p><h2>What I knew going in</h2><p>One thing worth mentioning: I’d been doing a lot of customer support myself. Walking people through their Strava connections, talking them through why their prediction seemed wrong, often answering the same questions over and over. Time-consuming, but it meant by the time we came to redesign onboarding I knew exactly what people got confused by, what they expected, what made them light up, and what made them quietly disappear. </p><p>I also talked to people who’d onboarded successfully but churned, and to early adopters at different stages of using the app i.e. early, mid, and post training block - to understand how their relationship with Kaizen actually unfolded over time. A lot of useful stuff came out of those conversations, but one finding mattered more than the rest: a huge proportion of our users were on Garmin or other wearables, not just Strava, and the lack of clean integration was a clear reason people dropped off in onboarding. They’d hit the Strava-only setup, realise their data lived elsewhere, and quietly leave.</p><p>That research helped shape what came next.</p><h2>What I did</h2><p>As founders we always had very different opinions about what to do next, and onboarding was no exception. The debate broadly fell between two extremes.</p><p>One camp: don’t waste anyone’s time, get them through as quickly as possible, save the high-value moments for the 1-week trial.</p><p>The other: take the time to explain the product properly, build a longer process that captured user context without losing the moments that mattered, their prediction data especially (incidentally many high performing onboarding flow’s are insanely long).</p><figure class="cs-figure"><img src="266511a0-56df-45d6-b6d0-78c8f6e20057_2694x478.webp" alt="" loading="lazy"><figcaption>Heuristic analysis of flow</figcaption></figure><figure class="cs-figure"><img src="7856d4c5-4291-4462-beae-9150f553331b_2660x778.webp" alt="" loading="lazy"></figure><p>We worked through it the way you’d expect. Iterating on lower-fidelity design, looking at high-performing onboarding from within our sector (meditation, strength training, other running apps) and well outside it (porn addiction recovery apps were surprisingly relevant). Short user interviews. Prototypes shared with current and new users. All synthesised of what we thought the UX should be.</p><p>I time-boxed the discussion so we didn’t get bogged down. But by the end of it, what was clear to me was that we were still proposing something that was essentially functional.</p><p>It didn’t connect - at all - to the aspiration a person has when they decide they want to run a race. There was no impactful, unique first impression. Nothing that would set Kaizen apart from every other option in a category full of decent-but-forgettable apps.</p><p>So I decided to step back and figure out how to do that. Because I think the answer would set the tone, not just for the rest of the experience, but for what onboarding UX we ended up choosing in the first place.</p><p>Our team worked remotely, but it happened that for one week we were going to be together in person - at exactly the moment I was asking myself how to make this <em>actually</em> outstanding. That helped. I had a week to come up with a response and produce the design that would convince the team in the room.</p><p>The questions I was asking were a mix of hard-edged and soft. <em>What if I’d never seen Kaizen before - what have I never really seen in an onboarding like this, and would it be achievable? I’ve been looking at this same design for months, how do I make it come alive, for me let alone a stranger? Can I evolve or elevate something from our existing design language? If I only did one thing here -would that shift conversion by 10%?</em></p><p>I’d like to say I sketched things out, played around in Figma. I did. But honestly, the answer came while I was on a run.</p><p>How did I know it was the answer? I felt exhilarated. A bit like when we hacked the first 5k of users, it was a puzzle that I suddenly felt I had a cheat code for, and once it was unlocked, the design itself was relatively easy to generate. (There were a few technical things to figure out about exporting the SVGs so they stayed small, but never mind that.)</p><p>Here’s what had been sitting with me for months. The thing people really care about when they talk to you is this: <em>is this thing, this non-intuitive, slightly weird app actually going to get me to the start line of a marathon ready to race, ready to hit the time I want?</em> Trust matters. (This is incidentally why people like prescriptive plans even when they’re worse, they feel like a promise.)</p><p>So why not lean into that? The idea that the user was on a journey, and the journey at least in part, started here in onboarding. As they progressed, they’d have a felt sense of that progress moving through a landscape. The landscape would change and adapt to different moments: seeing how fit they were, how much they’d need to run each week to stay on track, where they were heading.</p><p></p><h2>Why it was convincing</h2><p>My own sense of exhilaration was all well and good, but I still needed to convince the team. This was going to be a heavy lift. We could do something simpler, move on and get into the detail of improving trial-to-subscription, which was arguably a bigger lever to pull. So here’s what I tried to get across.</p><p>The energy I felt from this design was the same energy people needed to feel every time they used the app. A sense of momentum. That the training they were doing, and the way Kaizen was reflecting their progress back to them, made them feel, tangibly, that they were on the right track. That they had real potential, and that they were keeping their motivation, before, during, and after their race. Kaizen wasn’t only for people running races; it was also for people who wanted to improve their fitness more generally. Which meant this also tapped into a huge retention challenge that almost no app in the category handles well, Strava included. Incidentally, there was a lot of overlap with some big changes we had made to the dashboard — read it in <a href="/work/feed-redesign/">Answering the wrong question</a>.</p><p>The other thing: we should use something we already had. The landscape background in the dashboard. We’d expand it, build it out, so that even someone who wasn’t deeply into running would want to see what the next screen promised. The onboarding journey would unfold like a training block of its own, something  unknown a each step, with high points and quieter moments, but always building. That was the blueprint. Our promise to help the user succeed had to be felt after every click and every interaction. And it had to start in onboarding.</p><p>A few things were non-negotiable for me, and I made the case for each:</p><ul><li><p>Take into account where things stand in terms of competitor landscape, and kaizen’s current and future USP</p></li><li><p>Let the product talk for itself, FFS don’t over explain it</p></li><li><p>Add a wider set of API integrations - Garmin especially. We knew this was a big drop-off point.</p></li><li><p>Connect users much earlier to Kaizen’s secret sauce: the prediction but do a much better job to explain <em>why</em> they had to connect their data, since this was another major drop-off point.</p></li><li><p>Add robust SSO later on so account creation got out of the way and were placed strategically, so they fed into the user’s growing sense of progress.</p></li><li><p>Have the app actually <em>build something for the user</em> as a reward for completing onboarding, setting them up for the paywall friction.</p></li></ul><p>I walked them through the whole flow and summarised why we were going to do this. There were notes, of course, my screen copy wasn’t perfect and there were a few hang-ups about the exact story we were telling and how to implement it. But by the end, my co-founders and the team had come to the same conclusion I had: <em>of course we’re going to fucking do that.</em></p><figure class="cs-figure"><img src="47ef0253-f4af-477d-adf3-eae127686c53_6509x1001.webp" alt="" loading="lazy"><figcaption>Reworked hero landscape to help runners on their fitness journey</figcaption></figure><figure class="cs-figure"><img src="44a1dba5-0a9f-4153-b544-94744509c76d_1812x232.webp" alt="" loading="lazy"><figcaption>Split up to dynamically respond across screens</figcaption></figure><figure class="cs-figure"><img src="740ad6a7-67a8-4b09-a170-f36a1665014d_2292x704.webp" alt="" loading="lazy"></figure><figure class="cs-figure"><img src="b592ca52-972d-4bf9-8e09-eac0fbdaacd0_1502x984.webp" alt="" loading="lazy"></figure><figure class="cs-figure"><img src="e049b162-876d-4b54-a79f-65aeac8fe8a2_1522x978.webp" alt="" loading="lazy"></figure><p></p><h2>What this opened up</h2><p>The decision didn’t just evolve onboarding. It started to guide what came next e.g. clarify what could move <em>out</em> of onboarding and live elsewhere in the app. Notification permissions, for example, could happen after the user’s first run rather than upfront. The choice of <em>which</em> notifications to receive could come later still - fitting into a wider vision of where we take kaizen, because autonomy was a key part of the journey we wanted users on. The arc was about moving people from extrinsic triggers (the app pinging them) to intrinsic signals (their own motivation). Onboarding was the starting point.</p><p>The onboarding itself was still far from its best. We still needed to speak more directly to specific user contexts. We could unify the visuals so the result screens behaved more consistently and better across devices. The paywall needed real design work - previewing, day by day, what the user could expect to see and how it would help them. how could we trigger a bigger emotional arousal without asking the user to really have to think about their results.</p><p>But those were incremental improvements. They came later. What this work had done was set the direction and the standard for everything that followed.</p><p></p><p>This is the kind of work I love to do, coming into messy, product led problems where the obvious answer is fine but the right answer is somewhere else, and finding the version of it the team will commit to building. If you've got something like that on your hands, I'd love to hear about it.</p><p></p><figure class="cs-figure"><img src="39853f81-bb55-4529-bbc9-439f8748efb4_1076x1082.webp" alt="" loading="lazy"></figure><p></p><p></p><p></p>    </div>

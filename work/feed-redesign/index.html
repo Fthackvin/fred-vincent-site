@@ -305,6 +305,86 @@ img { max-width: 100%; height: auto; display: block; }
 .cs-source a { color: var(--ink-700); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .cs-source a:hover { color: var(--ink-900); }
 
+/* TLDR collapsible summary */
+.tldr {
+  margin: var(--s5) 0 var(--s6) 0;
+  padding: 0;
+}
+.tldr summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s3);
+  font-family: var(--text);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-900);
+  padding: 0;
+  transition: color 220ms var(--ease);
+}
+.tldr summary::-webkit-details-marker { display: none; }
+.tldr summary::marker { content: ""; }
+.tldr summary:hover { color: var(--ink-900); }
+.tldr summary:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+.tldr-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+  transition: transform 220ms var(--ease);
+}
+.tldr[open] .tldr-chev { transform: rotate(-90deg); }
+.tldr-content {
+  padding-top: var(--s5);
+  padding-bottom: var(--s3);
+  animation: tldrIn 300ms ease-out;
+}
+@keyframes tldrIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.tldr-section { margin-bottom: var(--s6); }
+.tldr-section:last-child { margin-bottom: 0; }
+.tldr-section-title {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin: 0 0 var(--s3) 0;
+}
+.tldr-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tldr-list li {
+  position: relative;
+  padding-left: var(--s5);
+  margin-bottom: var(--s2);
+  font-family: var(--text);
+  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
+  line-height: 1.55;
+  color: var(--ink-700);
+}
+.tldr-list li:last-child { margin-bottom: 0; }
+.tldr-list li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--ink-500);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tldr-chev { transition: none; }
+  .tldr-content { animation: none; }
+}
+
+
 /* Next case study link */
 .cs-next {
   display: flex;
@@ -431,6 +511,68 @@ img { max-width: 100%; height: auto; display: block; }
     <h1 class="cs-title">Answering the wrong question</h1>
     <p class="cs-subtitle">How we went from a question with no answer, to a question with a clear one.</p>
     <p class="cs-meta">Kaizen · 2025 · Founding designer &amp; creative direction</p>
+
+    <details class="tldr">
+      <summary>
+        <span>TLDR</span>
+        <span class="tldr-chev" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+      </summary>
+      <div class="tldr-content">
+      <section class="tldr-section">
+        <span class="tldr-section-title">Context</span>
+        <ul class="tldr-list">
+          <li>Kaizen used adaptive training, calibrated to each user's actual fitness</li>
+          <li>Users kept asking for a prescriptive plan instead</li>
+          <li>Giving them one would break what made Kaizen unique</li>
+          <li>Every direct answer made the product worse</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">Problem</span>
+        <ul class="tldr-list">
+          <li>The question we'd been asked ("how do we add plans without becoming prescriptive") was unsolvable</li>
+          <li>Needed to find what users were actually asking for, not what they were saying</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">The shift</span>
+        <ul class="tldr-list">
+          <li>Realised users weren't asking for a plan because they wanted a template</li>
+          <li>They were asking because marathon training is uncertain and a plan is a hedge against that</li>
+          <li>Real ask was orientation and trust across time</li>
+          <li>Reframed the design problem from "give them a plan" to "give them a navigable timeline"</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">The build</span>
+        <ul class="tldr-list">
+          <li>Flexible, navigable timeline (months, weeks, days, interconnected)</li>
+          <li>Designed against three constraints: minimal, smooth, concise</li>
+          <li>Static dashboard cards became dynamic activity, information, and recovery cards</li>
+          <li>Each week became a navigable unit users could move through</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">Outcome</span>
+        <ul class="tldr-list">
+          <li>10.9% lift in trial-to-paid conversion</li>
+          <li>Foundation for the training systems work that came after</li>
+          <li>Static dashboard became a surface for activity, information, and recovery cards</li>
+          <li>Schedule became the substrate everything else got built on</li>
+        </ul>
+      </section>
+      <section class="tldr-section">
+        <span class="tldr-section-title">My role</span>
+        <ul class="tldr-list">
+          <li>Founding designer, end-to-end</li>
+          <li>Reframed the design question itself</li>
+          <li>Research synthesis (usability tests, support, customer interviews)</li>
+          <li>Information architecture and interaction design</li>
+          <li>Articulation and team alignment</li>
+        </ul>
+      </section>
+      </div>
+    </details>
 
     <div class="cs-body">
 <h2>The problem we couldn’t solve</h2><p>Kaizen worked in a particular way. Instead of giving you a generic training plan and hoping for the best, it adapted to your actual fitness, measuring training load against your current ability, calibrating a weekly target you could realistically hit, adjusting after every run. The whole thing was built on the principle that prescriptive plans don’t work for most people, because most prescriptive plans are imitating elite training schedules and asking too much of bodies that aren’t ready to run them. (It’s one of the reasons people get injured, too much, too soon.)</p><p>But users kept asking (or hinting via complaints on Discord) for plans nonetheless. “Do X on Monday, Y on Tuesday.” And the approach was giving some obvious success to our competitors.</p><p>We couldn’t give them that without breaking what made Kaizen unique. So the question we kept asking ourselves, how do we address this without becoming prescriptive, was unsolvable as posed. Every answer made Kaizen worse, or made it the same as everyone else.</p><figure class="cs-figure"><img src="2800fbf1-3c20-4f92-9850-93002e1d204f_1526x732.webp" alt="" loading="lazy"></figure><h2>What I started to notice</h2><p>The breakthrough came in the background of user conversations we were having for other reasons. Usability tests, remote questionnaires, the stream of customer support I was doing day-to-day. In different ways people kept gesturing at this gap, but using different language to describe it and slowly something clicked.</p><p>People weren’t asking for a prescriptive plan because they wanted to follow a template. They were asking for one because running a marathon (or any long distance race) is genuinely uncertain. Eight, twelve, sixteen weeks of training. A single big performance at the end where you have to (or want to) deliver. The possibility of injury. Life events. Maybe you’re raising money. A lot can happen, and most of it is out of your control.</p><p>A plan, in that context, isn’t really a plan. It’s a hedge against uncertainty. Stick to the template, and I’ll make it. Even though that’s not actually true (the user hasn’t done anything yet, and the plan can’t truthfully promise outcomes), the feeling of certainty is what they’re buying.</p><p>So the design problem wasn’t “give them a plan.” The design problem was “give them a sense of orientation and trust across time.”</p><h2>Reframing the problem</h2><p>I was listening to a podcast around this time about typology, the Christian theological practice of reading Old Testament figures as pre-figurings of New Testament ones. Moses prefiguring Christ, that kind of thing. The whole frame is about twinning two things together so they explain each other. It’s a way of imposing meaning on history by reading one thing through another.</p><p>It struck me that Kaizen was doing something close to the opposite of this. We weren’t twinning the user’s training to a template. We were doing the inverse: taking each user’s specific situation, current fitness, target race, available time, recent runs and shaping a response that was bespoke to them. Context-sensitive adaptation. Anti-template thinking.</p><p>Which gave me the language for what the problem actually was, and what our solution actually was. It wasn’t a plan. It was the opposite of a plan. It was a journey, made specifically for you, that adapted as you moved through it.</p><p>Once I had made that shift, the question of what users were really asking for resolved. When they said they wanted a training plan, what really sat underneath that was a timeline. A schedule. Something they could look at, navigate, see what was coming, see what they’d done, and trust that someone (or something) was holding the shape of it for them as they progressed.</p><p>That was a different design problem. And it had a much clearer answer.</p><h2>Finding the form</h2><p>I went looking for how to interact with a schedule done well. Running and fitness apps were mostly terrible at this, fiddly and congested on mobile, over the top on desktop, unclear hierarchies, too much information and too little signal. Calendar apps were closer to the model I needed. I also looked at agentic-experience prototypes that were starting to appear, and at speculative work on Dribbble (mostly for inspiration on small interactions rather than anything practical).</p><p>I knew from past projects at Gastfreund GmbH (we built a Slack for hotels) that anything combining dates and content can get complex faster than it looks. So I leaned hard on three constraints from the start: minimal, smooth, concise.</p><figure class="cs-figure"><img src="0951d1a6-507d-4e3e-8ea6-7919b66c73c3_1508x1444.webp" alt="" loading="lazy"></figure><p>The form came together quickly. We kept the fundamental IA intact (actually we improved it, by defining a hierarchy of time units the app was feeding back within: top tray had months, the weekly target/doughnut was the week, the feed gave it in days). We also made each week a navigable unit, so a user could flip forward or back a week at a time across their whole training block and see how their week and doughnut/target evolved.</p><p>Now we had a foundation.</p><h2>What it opened up</h2><p>Once we had a flexible, navigable timeline, we could put almost anything on it.</p><p>A common complaint about Kaizen had been that the dashboard felt simplistic – that the static cards didn’t offer enough value, which contributed to churn. With the new feed, we suddenly had a whole surface of interactions that could appear at the right moments in a user’s training: activity cards that gave small updates when a run had impacted their prediction; information cards explaining how Kaizen worked at the moment a user might be confused; taper notifications; race-week prompts; congratulations and recovery cards (still basic but much more than nothing). Subtle visual streaks built into the doughnuts. The ability to skip forward and back through time to see what was coming or review past weeks – which mattered because it built trust that Kaizen had the shape of the whole training block, not just today.</p><p>It also let us tie the weekly target much more directly to the specific runs a user was planning. Which, when it shipped, contributed to an increase in our trial-to-paid conversion by a whopping 10.9%.</p><figure class="cs-figure"><img src="ccd2f86f-c7b3-431e-95aa-26c7e2796639_2010x926.webp" alt="" loading="lazy"></figure><figure class="cs-figure"><img src="10d88e5a-e0d4-4e6c-8a52-f7854496d660_1612x802.webp" alt="" loading="lazy"></figure><p></p><p>And it became the foundation for what came next – the training systems work, where users could not only get a target calibrated to their fitness, but also choose an approach to how they ran, and have the feed populate accordingly. None of that would have been possible on the old static dashboard. The schedule wasn’t just a feature. It was the substrate everything else got built on.</p><h2>Coda</h2><p>The hardest part of this process wasn’t really the design. It was noticing that the question we’d been trying to answer was the wrong one, and having the patience to find the real one underneath.</p><p>In this case, users weren’t asking for a plan. They were asking for a sense of orientation and trust across time. The word they were using (”plan”) was a stand-in, and the design we’d been pushed toward by it would have made the product worse. The work was in noticing that, and finding what was actually being asked.</p><p>This is a lot of what creative direction actually is. Less about taste, more about sitting with a problem long enough to see what’s actually being asked. And then having the conviction to design for that.</p>
