@@ -1331,7 +1331,7 @@ section#contact.block { padding-bottom: var(--s4); }
   to { opacity: 1; transform: none; }
 }
 
-/* Service tiers — white cards with case-study eyebrow + title typography */
+/* Service tiers — two-tone cards (dark header + white body) */
 .services {
   margin: var(--s7) 0;
   display: grid;
@@ -1347,14 +1347,31 @@ section#contact.block { padding-bottom: var(--s4); }
 .service {
   display: flex;
   flex-direction: column;
-  gap: var(--s4);
-  background: var(--paper-50);
-  border: 1px solid var(--paper-300);
   border-radius: 18px;
-  padding: var(--s6);
+  overflow: hidden;
+  background: var(--paper-50);
+}
+.service-header {
+  background: var(--ink-900);
+  color: var(--paper-50);
+  padding: var(--s5) var(--s6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
 }
 @media (min-width: 768px) {
-  .service { padding: var(--s7); }
+  .service-header { padding: var(--s6); }
+}
+.service-content {
+  background: var(--paper-50);
+  padding: var(--s6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  flex: 1;
+}
+@media (min-width: 768px) {
+  .service-content { padding: var(--s7); }
 }
 .service-meta {
   margin: 0;
@@ -1362,7 +1379,7 @@ section#contact.block { padding-bottom: var(--s4); }
   font-size: 12px;
   letter-spacing: var(--mono-tracking);
   text-transform: uppercase;
-  color: var(--ink-500);
+  color: var(--paper-200);
 }
 .service-title {
   font-family: var(--display);
@@ -1370,7 +1387,7 @@ section#contact.block { padding-bottom: var(--s4); }
   font-size: clamp(22px, 2.4vw + 0.4rem, 28px);
   line-height: 1.15;
   letter-spacing: -0.005em;
-  color: var(--ink-900);
+  color: var(--paper-50);
   margin: 0;
 }
 .service-body {
@@ -1526,40 +1543,52 @@ section#contact.block { padding-bottom: var(--s4); }
 
       <div class="services fade-up">
         <article class="service">
-          <p class="service-meta">Two to six weeks</p>
-          <h3 class="service-title">Quick Win Sprint</h3>
-          <p class="service-body">Two to six weeks reviewing what you've built and shipping concrete improvements faster than an agency would. You get three or more specific recommendations, how to measure them, and the bet that has the most upside. If helpful, I can also design and ship the interventions.</p>
-          <details class="service-fit">
-            <summary>
-              <span>Most useful when</span>
-              <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-            </summary>
-            <p class="service-fit-text">You have a specific product or surface you want to improve, with a metric or outcome in mind.</p>
-          </details>
+          <div class="service-header">
+            <p class="service-meta">Two to six weeks</p>
+            <h3 class="service-title">Quick Win Sprint</h3>
+          </div>
+          <div class="service-content">
+            <p class="service-body">Two to six weeks reviewing what you've built and shipping concrete improvements faster than an agency would. You get three or more specific recommendations, how to measure them, and the bet that has the most upside. If helpful, I can also design and ship the interventions.</p>
+            <details class="service-fit">
+              <summary>
+                <span>Most useful when</span>
+                <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+              </summary>
+              <p class="service-fit-text">You have a specific product or surface you want to improve, with a metric or outcome in mind.</p>
+            </details>
+          </div>
         </article>
         <article class="service">
-          <p class="service-meta">Three to four weeks</p>
-          <h3 class="service-title">Exploratory</h3>
-          <p class="service-body">Three to four weeks going deeper than a sprint allows for. We look at what your product is really trying to do, where the gaps are between intention and execution, and what direction has the strongest claim. The output is a written articulation with sketches and references.</p>
-          <details class="service-fit">
-            <summary>
-              <span>Most useful when</span>
-              <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-            </summary>
-            <p class="service-fit-text">You sense your product could be more than it currently is but the answer isn't obvious yet.</p>
-          </details>
+          <div class="service-header">
+            <p class="service-meta">Three to four weeks</p>
+            <h3 class="service-title">Exploratory</h3>
+          </div>
+          <div class="service-content">
+            <p class="service-body">Three to four weeks going deeper than a sprint allows for. We look at what your product is really trying to do, where the gaps are between intention and execution, and what direction has the strongest claim. The output is a written articulation with sketches and references.</p>
+            <details class="service-fit">
+              <summary>
+                <span>Most useful when</span>
+                <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+              </summary>
+              <p class="service-fit-text">You sense your product could be more than it currently is but the answer isn't obvious yet.</p>
+            </details>
+          </div>
         </article>
         <article class="service">
-          <p class="service-meta">Six to eight weeks</p>
-          <h3 class="service-title">Step change</h3>
-          <p class="service-body">Six to eight weeks finding a direction that changes the rules of the space your product is in, not just what's made inside it. Builds on the work above. The output is a developed creative direction, ready for your team to build against.</p>
-          <details class="service-fit">
-            <summary>
-              <span>Most useful when</span>
-              <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-            </summary>
-            <p class="service-fit-text">The obvious moves have been considered and none of them feel right.</p>
-          </details>
+          <div class="service-header">
+            <p class="service-meta">Six to eight weeks</p>
+            <h3 class="service-title">Step change</h3>
+          </div>
+          <div class="service-content">
+            <p class="service-body">Six to eight weeks finding a direction that changes the rules of the space your product is in, not just what's made inside it. Builds on the work above. The output is a developed creative direction, ready for your team to build against.</p>
+            <details class="service-fit">
+              <summary>
+                <span>Most useful when</span>
+                <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+              </summary>
+              <p class="service-fit-text">The obvious moves have been considered and none of them feel right.</p>
+            </details>
+          </div>
         </article>
       </div>
 
