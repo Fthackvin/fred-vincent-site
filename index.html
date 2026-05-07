@@ -1333,7 +1333,7 @@ section#contact.block { padding-bottom: var(--s4); }
 
 /* Service tiers — three editorial columns, no card chrome */
 .services {
-  margin: var(--s7) 0 var(--s7) 0;
+  margin: var(--s7) 0;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--s6);
@@ -1359,17 +1359,41 @@ section#contact.block { padding-bottom: var(--s4); }
   color: var(--ink-700);
   margin: 0;
 }
-.service-fit {
+.service-fit { margin: 0; }
+.service-fit summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--text);
+  font-size: clamp(14px, 1.2vw + 0.4rem, 16px);
+  font-style: italic;
+  color: var(--ink-500);
+  transition: color 220ms var(--ease);
+}
+.service-fit summary::-webkit-details-marker { display: none; }
+.service-fit summary::marker { content: ""; }
+.service-fit summary:hover { color: var(--ink-700); }
+.service-fit summary:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+.service-fit-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+  transition: transform 220ms var(--ease);
+}
+.service-fit[open] .service-fit-chev { transform: rotate(-90deg); }
+.service-fit-text {
+  margin: var(--s3) 0 0 0;
   font-family: var(--text);
   font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
   line-height: 1.55;
+  font-style: italic;
   color: var(--ink-700);
-  margin: 0;
 }
-.service-fit em { font-style: italic; }
 .service-meta {
-  margin: auto 0 0 0;
-  padding-top: var(--s4);
+  margin: 0;
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: var(--mono-tracking);
@@ -1392,7 +1416,7 @@ section#contact.block { padding-bottom: var(--s4); }
     gap: 0;
   }
   .service {
-    padding: 0 var(--s5);
+    padding: 0 var(--s7);
     border-left: 1px solid var(--paper-300);
   }
   .service:first-child {
@@ -1402,6 +1426,12 @@ section#contact.block { padding-bottom: var(--s4); }
   .service:last-child {
     padding-right: 0;
   }
+}
+@media (min-width: 1024px) {
+  .service { padding: 0 var(--s8); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .service-fit-chev { transition: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .how-faq-arrow,
@@ -1506,28 +1536,48 @@ section#contact.block { padding-bottom: var(--s4); }
       <div class="how-wrap fade-up">
         <h2 class="how-heading">How we start</h2>
         <p class="how-lead">Most engagements begin with a short email about something specific you're working on. There are three rough shapes the work can take, depending on what you need.</p>
+      </div>
 
-        <div class="services">
-          <article class="service">
-            <h3 class="service-title">Quick Win Sprint</h3>
-            <p class="service-body">Two to six weeks reviewing what you've built and shipping concrete improvements faster than an agency would. You get three or more specific recommendations, how to measure them, and the bet that has the most upside. If helpful, I can also design and ship the interventions.</p>
-            <p class="service-fit"><em>Most useful when: you have a specific product or surface you want to improve, with a metric or outcome in mind.</em></p>
-            <p class="service-meta">Two to six weeks · €8,000–€20,000</p>
-          </article>
-          <article class="service">
-            <h3 class="service-title">Exploratory</h3>
-            <p class="service-body">Three to four weeks going deeper than a sprint allows for. We look at what your product is really trying to do, where the gaps are between intention and execution, and what direction has the strongest claim. The output is a written articulation with sketches and references.</p>
-            <p class="service-fit"><em>Most useful when: you sense your product could be more than it currently is but the answer isn't obvious yet.</em></p>
-            <p class="service-meta">Three to four weeks · scoped per engagement</p>
-          </article>
-          <article class="service">
-            <h3 class="service-title">Step change</h3>
-            <p class="service-body">Six to eight weeks finding a direction that changes the rules of the space your product is in, not just what's made inside it. Builds on the work above. The output is a developed creative direction, ready for your team to build against.</p>
-            <p class="service-fit"><em>Most useful when: the obvious moves have been considered and none of them feel right.</em></p>
-            <p class="service-meta">Six to eight weeks · scoped per engagement</p>
-          </article>
-        </div>
+      <div class="services fade-up">
+        <article class="service">
+          <p class="service-meta">Two to six weeks</p>
+          <h3 class="service-title">Quick Win Sprint</h3>
+          <p class="service-body">Two to six weeks reviewing what you've built and shipping concrete improvements faster than an agency would. You get three or more specific recommendations, how to measure them, and the bet that has the most upside. If helpful, I can also design and ship the interventions.</p>
+          <details class="service-fit">
+            <summary>
+              <span>Most useful when</span>
+              <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <p class="service-fit-text">You have a specific product or surface you want to improve, with a metric or outcome in mind.</p>
+          </details>
+        </article>
+        <article class="service">
+          <p class="service-meta">Three to four weeks</p>
+          <h3 class="service-title">Exploratory</h3>
+          <p class="service-body">Three to four weeks going deeper than a sprint allows for. We look at what your product is really trying to do, where the gaps are between intention and execution, and what direction has the strongest claim. The output is a written articulation with sketches and references.</p>
+          <details class="service-fit">
+            <summary>
+              <span>Most useful when</span>
+              <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <p class="service-fit-text">You sense your product could be more than it currently is but the answer isn't obvious yet.</p>
+          </details>
+        </article>
+        <article class="service">
+          <p class="service-meta">Six to eight weeks</p>
+          <h3 class="service-title">Step change</h3>
+          <p class="service-body">Six to eight weeks finding a direction that changes the rules of the space your product is in, not just what's made inside it. Builds on the work above. The output is a developed creative direction, ready for your team to build against.</p>
+          <details class="service-fit">
+            <summary>
+              <span>Most useful when</span>
+              <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <p class="service-fit-text">The obvious moves have been considered and none of them feel right.</p>
+          </details>
+        </article>
+      </div>
 
+      <div class="how-wrap fade-up">
         <p class="how-body">If you're not sure which fits, or if you want to talk something through before any commitment, I offer a free 30-minute call. Just email and we'll set it up.</p>
 
         <div class="how-actions">
