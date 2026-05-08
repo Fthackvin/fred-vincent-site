@@ -11,6 +11,14 @@
      the document is rendered. */
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  /* Hide work-in-progress sections on the public site. They stay visible when
+     loading from localhost so they can keep being iterated locally. */
+  (function () {
+    var h = location.hostname;
+    if (h !== 'localhost' && h !== '127.0.0.1' && !/\.local$/.test(h)) {
+      document.documentElement.classList.add('is-public');
+    }
+  })();
 </script>
 <title>Fred Vincent, creative direction</title>
 <meta name="description" content="Creative direction for product teams that don't want to ship the safe version of what they're building.">
@@ -1331,6 +1339,12 @@ section#contact.block { padding-bottom: var(--s4); }
   to { opacity: 1; transform: none; }
 }
 
+/* Hide work-in-progress How we start section on the public site */
+.is-public #how-this-works,
+.is-public #how-this-works-divider,
+.is-public .nav a[href="#how-this-works"],
+.is-public .nav a[href="#how-this-works"] + .sep { display: none; }
+
 /* Service tiers — two-tone cards (dark header + white body) */
 .services {
   margin: var(--s7) 0;
@@ -1338,61 +1352,68 @@ section#contact.block { padding-bottom: var(--s4); }
   grid-template-columns: 1fr;
   gap: var(--s5);
 }
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .services {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--s5);
+  }
+}
+@media (min-width: 1280px) {
+  .services {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--s4);
   }
 }
 .service {
   display: flex;
   flex-direction: column;
-  border-radius: 18px;
+  border-radius: 14px;
   overflow: hidden;
   background: var(--paper-50);
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 8px 24px rgba(20, 18, 14, 0.04);
 }
 .service-header {
   background: var(--ink-900);
   color: var(--paper-50);
-  padding: var(--s5) var(--s6);
+  padding: var(--s7) var(--s7) var(--s5);
   display: flex;
   flex-direction: column;
   gap: var(--s3);
 }
-@media (min-width: 768px) {
-  .service-header { padding: var(--s6); }
+@media (min-width: 1024px) {
+  .service-header { padding: var(--s8) var(--s8) var(--s5); }
 }
 .service-content {
   background: var(--paper-50);
-  padding: var(--s6);
+  padding: var(--s5) var(--s7) var(--s7);
   display: flex;
   flex-direction: column;
   gap: var(--s4);
   flex: 1;
 }
-@media (min-width: 768px) {
-  .service-content { padding: var(--s7); }
+@media (min-width: 1024px) {
+  .service-content { padding: var(--s5) var(--s8) var(--s8); }
 }
 .service-meta {
   margin: 0;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: var(--mono-tracking);
   text-transform: uppercase;
   color: var(--paper-200);
 }
 .service-title {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(22px, 2.4vw + 0.4rem, 28px);
-  line-height: 1.15;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.08;
   letter-spacing: -0.005em;
   color: var(--paper-50);
   margin: 0;
 }
 .service-body {
   font-family: var(--text);
-  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
+  font-size: clamp(14px, 1.2vw + 0.4rem, 16px);
   line-height: 1.55;
   color: var(--ink-700);
   margin: 0;
@@ -1456,6 +1477,8 @@ section#contact.block { padding-bottom: var(--s4); }
       <a href="#writing">Writing</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="#about">About</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="#how-this-works">Services</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="#contact">Contact</a>
     </nav>
@@ -1532,7 +1555,7 @@ section#contact.block { padding-bottom: var(--s4); }
     </div>
   </section>
 
-  <hr class="hairline" aria-hidden="true">
+  <hr class="hairline" id="how-this-works-divider" aria-hidden="true">
 
   <section id="how-this-works" class="block">
     <div class="wrap">
@@ -1587,6 +1610,23 @@ section#contact.block { padding-bottom: var(--s4); }
                 <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
               </summary>
               <p class="service-fit-text">The obvious moves have been considered and none of them feel right.</p>
+            </details>
+          </div>
+        </article>
+        <article class="service">
+          <div class="service-header">
+            <p class="service-meta">Six months minimum</p>
+            <h3 class="service-title">Ongoing creative direction</h3>
+          </div>
+          <div class="service-content">
+            <p class="service-body">A monthly arrangement after one of the engagements above, where I stay attached to your team to make sure the direction we found gets built without losing its substance.</p>
+            <p class="service-body">Usually two days a month split between reviews of work in progress, a monthly call, and being available for the harder questions as they come up. I work this way with a small number of teams at a time so the attention is real.</p>
+            <details class="service-fit">
+              <summary>
+                <span>Most useful when</span>
+                <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+              </summary>
+              <p class="service-fit-text">You've commissioned an Exploratory or Step change engagement and want to keep me involved as you build, or you want senior creative judgment available without the cost of a full-time hire.</p>
             </details>
           </div>
         </article>
