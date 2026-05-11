@@ -69,10 +69,15 @@
     });
   }
   /* Hide work-in-progress sections on the public site. They stay visible when
-     loading from localhost so they can keep being iterated locally. */
+     loading from localhost so they can keep being iterated locally — and also
+     when the homepage is served via the /louie-is-a-light-weight-and-thats-okay
+     unlock path (the Vercel rewrite serves the same HTML, but the URL bar
+     keeps the special path so we can detect it here). */
   (function () {
     var h = location.hostname;
-    if (h !== 'localhost' && h !== '127.0.0.1' && !/\.local$/.test(h)) {
+    var isLocal = h === 'localhost' || h === '127.0.0.1' || /\.local$/.test(h);
+    var isUnlocked = location.pathname.indexOf('louie-is-a-light-weight-and-thats-okay') !== -1;
+    if (!isLocal && !isUnlocked) {
       document.documentElement.classList.add('is-public');
     }
   })();

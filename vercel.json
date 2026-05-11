@@ -3,6 +3,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".",
   "framework": null,
+  "rewrites": [
+    { "source": "/louie-is-a-light-weight-and-thats-okay", "destination": "/" },
+    { "source": "/louie-is-a-light-weight-and-thats-okay/", "destination": "/" }
+  ],
   "crons": [
     {
       "path": "/api/cron-rebuild",
