@@ -560,8 +560,8 @@ img { max-width: 100%; height: auto; display: block; }
   <div class="wrap row">
     <a href="/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
     <nav class="nav" aria-label="Primary">
-      <a href="/#how-this-works">Services</a>
-      <span class="sep" aria-hidden="true">·</span>
+      <a class="nav-services" href="/#how-this-works">Services</a>
+      <span class="sep nav-services-sep" aria-hidden="true">·</span>
       <a href="/#work">Work</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="/about">About</a>
@@ -661,18 +661,29 @@ img { max-width: 100%; height: auto; display: block; }
 </footer>
 
 <script>
-/* Back link: if the user came from another page on this site, use
-   browser history (so they land where they were on that page). If
-   the referrer was the About page, label it accordingly. Direct
-   visitors fall back to the homepage. */
+/* Back link + contextual nav.
+   - If the user came from another page on this site, the back link
+     uses browser history so they land where they were. The label
+     flips to "Back to about" when arriving from /about.
+   - The Services link in the nav is dropped if they arrived from
+     /about, so the nav matches the page they came from. */
 (function () {
+  var ref = document.referrer || '';
+  var sameOrigin = ref && ref.indexOf(location.origin) === 0;
+  var fromAbout = sameOrigin && ref.indexOf('/about') !== -1;
+
+  if (fromAbout) {
+    var services = document.querySelector('.nav-services');
+    var servicesSep = document.querySelector('.nav-services-sep');
+    if (services) services.style.display = 'none';
+    if (servicesSep) servicesSep.style.display = 'none';
+  }
+
   var back = document.querySelector('.cs-back');
   if (!back) return;
   var label = back.querySelector('.cs-back-label');
-  var ref = document.referrer || '';
-  var sameOrigin = ref && ref.indexOf(location.origin) === 0;
   if (sameOrigin) {
-    if (ref.indexOf('/about') !== -1 && label) label.textContent = 'Back to about';
+    if (fromAbout && label) label.textContent = 'Back to about';
     back.addEventListener('click', function (e) {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
       e.preventDefault();
