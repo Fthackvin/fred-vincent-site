@@ -19,6 +19,23 @@
       document.documentElement.classList.add('is-public');
     }
   })();
+  /* Dark intro mode: paint the page dark before render so the bouncing dot
+     plays against a black field, then reveal the full site as the dot
+     explodes. Skipped for prefers-reduced-motion. Click/tap or a 3s fallback
+     timer reveals immediately if the explosion never fires. */
+  (function () {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('is-intro');
+    function reveal() {
+      document.documentElement.classList.remove('is-intro');
+      document.removeEventListener('click', reveal, true);
+      document.removeEventListener('touchstart', reveal, true);
+    }
+    document.addEventListener('click', reveal, true);
+    document.addEventListener('touchstart', reveal, true);
+    /* Fallback: never leave the user trapped in dark mode if JS fails later. */
+    setTimeout(reveal, 3000);
+  })();
 </script>
 <title>Fred Vincent, creative direction</title>
 <meta name="description" content="Creative direction for product teams that don't want to ship the safe version of what they're building.">
@@ -128,7 +145,7 @@
 
 :root {
   --paper-50:  #FFFFFF;
-  --paper-100: #FBFBF8;
+  --paper-100: #F8FAFC;
   --paper-200: #F3F3EF;
   --paper-300: #E8E8E3;
   --ink-500:   #6E6A62;
@@ -173,6 +190,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+/* Moleskine-style dot grid background — sits behind all content. */
+body {
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.28'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 22px 22px;
+}
+@media (max-width: 640px) {
+  body {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.28'/%3E%3C/svg%3E");
+    background-size: 26px 26px;
+  }
+}
+@media print {
+  body { background-image: none !important; }
+}
+
+/* Section dividers hidden — the dot grid is the texture between sections. */
+.hairline { display: none; }
+
 ::selection { background: var(--paper-300); color: var(--ink-900); }
 
 a {
@@ -205,7 +242,9 @@ p { margin: 0; }
 /* Header */
 .site-header {
   padding-top: var(--s6);
-  padding-bottom: var(--s6);
+  padding-bottom: var(--s3);
+  background: var(--paper-100);
+  position: relative;
 }
 .site-header .row {
   display: flex;
@@ -279,11 +318,11 @@ p { margin: 0; }
 
 /* Hero */
 .hero {
-  padding-top: var(--s8);
+  padding-top: var(--s9);
   padding-bottom: var(--s9);
 }
 @media (max-width: 639px) {
-  .hero { padding-top: var(--s7); padding-bottom: var(--s8); }
+  .hero { padding-top: var(--s8); padding-bottom: var(--s8); }
 }
 .hero h1 {
   font-family: var(--display);
@@ -1464,19 +1503,25 @@ section#contact.block { padding-bottom: var(--s4); }
   .how-actions:has(.how-steps-toggle[open]) > .how-steps-content { animation: none; }
 }
 
-/* Hero-load dot — bounces, pulses, then bursts. One quiet moment of life. */
+/* Hero-load dot — bounces, pulses, then bursts. One quiet moment of life.
+   font-size matches the hero h1 so em-based margin-left can center the dot
+   on the optical center of the first character (the "C" of the headline). */
 .hero-dot-stage {
   position: relative;
   height: var(--s8);
   margin-top: calc(-1 * var(--s8));
+  margin-bottom: var(--s5);
+  margin-left: calc(0.28em - 9px);
   width: 80px;
-  overflow: hidden;
+  font-size: clamp(44px, 9vw, 88px);
   pointer-events: none;
 }
 @media (max-width: 639px) {
   .hero-dot-stage {
     height: var(--s7);
     margin-top: calc(-1 * var(--s7));
+    margin-bottom: var(--s4);
+    margin-left: calc(0.28em - 8px);
     width: 64px;
   }
 }
@@ -1487,25 +1532,25 @@ section#contact.block { padding-bottom: var(--s4); }
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 28px;
-  height: 28px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background-color: var(--ink-900);
+  background-color: #000000;
   transform-origin: center bottom;
   will-change: transform, opacity, background-color;
   opacity: 0;
 }
 @media (max-width: 639px) {
-  .hero-dot { width: 24px; height: 24px; }
+  .hero-dot { width: 16px; height: 16px; }
 }
 .hero-dot-particle {
   position: absolute;
-  left: 9px;
-  bottom: 9px;
+  left: 4px;
+  bottom: 4px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: var(--ink-900);
+  background-color: #000000;
   pointer-events: none;
   will-change: transform, opacity;
   opacity: 0;
@@ -1543,6 +1588,50 @@ section#contact.block { padding-bottom: var(--s4); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ink-canvas { display: none; }
+}
+
+/* ============================================================
+   Dark intro mode — html.is-intro is added by the inline head
+   script before render and removed at the moment the bouncing
+   dot explodes (or by click/timeout fallback). Everything below
+   transitions smoothly between dark and light states.
+   ============================================================ */
+html.is-intro,
+html.is-intro body {
+  background-color: #1a1a1a;
+}
+html.is-intro .site-header,
+html.is-intro .hero .lead,
+html.is-intro .hero .hero-cta,
+html.is-intro main > section:not(.hero),
+html.is-intro main > hr,
+html.is-intro .site-footer {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+html.is-intro .hero h1 {
+  opacity: 1 !important;
+  transform: none !important;
+  color: var(--paper-100);
+}
+html.is-intro .hero-dot {
+  background-color: var(--paper-100) !important;
+}
+
+/* Reveal transitions stay defined globally so removing .is-intro animates. */
+html, body {
+  transition: background-color 450ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.site-header,
+.hero .lead,
+.hero .hero-cta,
+main > section:not(.hero),
+main > hr,
+.site-footer {
+  transition: opacity 450ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hero h1 {
+  transition: color 450ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 </style>
@@ -2000,58 +2089,76 @@ section#contact.block { padding-bottom: var(--s4); }
     var dot = stage.querySelector('.hero-dot');
     if (!dot) return;
 
-    var INK = '#1A1815';
+    var INK = '#000000';
     var WARM = '#8B5A3C';
-    var COUNT = 12;
+    var COUNT = 22;
+
+    // Particles get varied sizes (2–14px, weighted toward smaller) so the
+    // burst reads like an ink blot rather than a uniform spray. The biggest
+    // particle stays smaller than the main dot (18px desktop / 16px mobile).
+    var dotSize = parseFloat(getComputedStyle(dot).width) || 18;
+    var dotCenter = dotSize / 2;
 
     var particles = [];
     for (var i = 0; i < COUNT; i++) {
       var p = document.createElement('span');
       p.className = 'hero-dot-particle';
+      var pSize = 2 + Math.pow(Math.random(), 1.9) * 12; // 2–14px, biased small
+      var off = dotCenter - pSize / 2;
+      p.style.width = pSize + 'px';
+      p.style.height = pSize + 'px';
+      p.style.left = off + 'px';
+      p.style.bottom = off + 'px';
       stage.appendChild(p);
       particles.push(p);
     }
 
-    gsap.set(dot, { y: -110, opacity: 1, scaleX: 1, scaleY: 1, backgroundColor: INK });
+    /* Note: backgroundColor is intentionally left to CSS so that html.is-intro
+       can paint the dot in paper-100 while the rest of the site is dark. */
+    gsap.set(dot, { y: -75, opacity: 1, scaleX: 1, scaleY: 1 });
 
-    var tl = gsap.timeline({ delay: 0.45 });
+    var tl = gsap.timeline();
 
-    // Phase 1: drop + diminishing bounces with squash & stretch on each impact (~1.25s).
-    tl.to(dot, { y: 0, duration: 0.36, ease: 'power2.in' })
-      .to(dot, { scaleX: 1.32, scaleY: 0.68, duration: 0.05, ease: 'power1.out' })
-      .to(dot, { scaleX: 1, scaleY: 1, duration: 0.07, ease: 'power1.in' })
-      .to(dot, { y: -32, duration: 0.17, ease: 'power2.out' })
-      .to(dot, { y: 0, duration: 0.17, ease: 'power2.in' })
-      .to(dot, { scaleX: 1.18, scaleY: 0.82, duration: 0.04, ease: 'power1.out' })
+    // Phase 1: drop + two bounces. Solid-ball feel with subtle squash.
+    tl.to(dot, { y: 0, duration: 0.30, ease: 'power2.in' })
+      .to(dot, { scaleX: 1.12, scaleY: 0.88, duration: 0.04, ease: 'power1.out' })
       .to(dot, { scaleX: 1, scaleY: 1, duration: 0.05, ease: 'power1.in' })
-      .to(dot, { y: -12, duration: 0.10, ease: 'power2.out' })
-      .to(dot, { y: 0, duration: 0.10, ease: 'power2.in' })
-      .to(dot, { scaleX: 1.08, scaleY: 0.92, duration: 0.03, ease: 'power1.out' })
-      .to(dot, { scaleX: 1, scaleY: 1, duration: 0.04, ease: 'power1.in' })
-      .to(dot, { y: -4, duration: 0.05, ease: 'power2.out' })
-      .to(dot, { y: 0, duration: 0.05, ease: 'power2.in' });
+      .to(dot, { y: -72, duration: 0.21, ease: 'power2.out' })
+      .to(dot, { y: 0, duration: 0.21, ease: 'power2.in' })
+      .to(dot, { scaleX: 1.10, scaleY: 0.90, duration: 0.04, ease: 'power1.out' })
+      .to(dot, { scaleX: 1, scaleY: 1, duration: 0.05, ease: 'power1.in' })
+      .to(dot, { y: -70, duration: 0.21, ease: 'power2.out' })
+      .to(dot, { y: 0, duration: 0.21, ease: 'power2.in' });
 
-    // Phase 2: the dot "decides" — warm pulse before it goes (~0.3s).
-    tl.to(dot, { backgroundColor: WARM, scale: 1.15, duration: 0.18, ease: 'sine.inOut' }, '+=0.06')
-      .to(dot, { backgroundColor: INK, scale: 1, duration: 0.12, ease: 'sine.in' });
-
-    // Phase 3: burst into particles flying outward (~0.8s).
+    // Phase 2: burst the instant the second bounce lands — no pause between
+    // landing and explosion. Particles fly outward and do a tiny vertical
+    // wobble as they fade — like they're landing without ever quite settling.
     tl.add(function () {
-      stage.style.overflow = 'visible';
       gsap.set(dot, { opacity: 0 });
+
+      /* Reveal the rest of the site at the exact moment the dot bursts. */
+      document.documentElement.classList.remove('is-intro');
+
+      // Particles expand outward with a big-bang feel: a brisk initial burst
+      // that decelerates strongly (power3.out), then a smooth, slow fade.
       particles.forEach(function (p, idx) {
-        var a = (idx / COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.55;
-        var dist = 70 + Math.random() * 70;
-        var dur = 0.55 + Math.random() * 0.25;
-        gsap.fromTo(p,
+        var a = (idx / COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.85;
+        var dist = 90 + Math.random() * 110; // 90–200px
+        var x1 = Math.cos(a) * dist;
+        var y1 = -Math.sin(a) * dist;
+        var burstDur = 0.70 + Math.random() * 0.25; // 0.70–0.95s
+        var fadeDur = 0.75 + Math.random() * 0.35;  // 0.75–1.10s, smoother
+        var ptl = gsap.timeline();
+        ptl.fromTo(p,
           { x: 0, y: 0, opacity: 1, scale: 1 },
-          { x: Math.cos(a) * dist, y: -Math.sin(a) * dist, opacity: 0, scale: 0.15, duration: dur, ease: 'power2.out' }
+          { x: x1, y: y1, scale: 0.5, duration: burstDur, ease: 'power3.out' }
         );
+        ptl.to(p, { opacity: 0, scale: 0.25, duration: fadeDur, ease: 'sine.inOut' });
       });
     });
 
-    // Hold the timeline open while particles run, then remove the stage entirely.
-    tl.to({}, { duration: 0.9 });
+    // Hold the timeline open while particles run (burst + slow fade), then remove the stage.
+    tl.to({}, { duration: 2.1 });
     tl.add(function () {
       if (stage.parentNode) stage.parentNode.removeChild(stage);
     });
