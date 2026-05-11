@@ -189,24 +189,74 @@ img { max-width: 100%; height: auto; display: block; }
 @media (max-width: 380px) {
   .nav a, .nav .sep { font-size: 18px; }
 }
+.nav .nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  margin-left: var(--s3);
+  border: 1px solid rgba(26, 24, 21, 0.22);
+  border-radius: 10px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  font-synthesis: none;
+  line-height: 1;
+  color: var(--ink-900);
+  text-decoration: none;
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.nav .nav-cta:hover {
+  background: var(--ink-900);
+  color: var(--paper-50);
+  text-decoration: none;
+}
+@media (max-width: 380px) {
+  .nav .nav-cta { font-size: 14px; padding: 5px 10px; }
+}
+.nav-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 220ms var(--ease);
+}
+.nav-cta-icon svg { display: block; transform: translateY(-1px); }
+.nav .nav-cta:hover .nav-cta-icon { transform: translate(3px, -2px); }
 
-/* Shared eyebrow */
+/* Soft entrance — same fade-up rhythm as the homepage content reveal. */
+.fade-up {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+.fade-up.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .fade-up { opacity: 1; transform: none; transition: none; }
+}
+
+/* Section titles (Roles / Case studies / A bit more) — Canela display,
+   not mono caps. Larger than body, smaller than the role titles below. */
 .eyebrow {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: var(--mono-tracking);
-  text-transform: var(--caps-case);
-  color: var(--ink-500);
-  margin: 0 0 var(--s4) 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(22px, 2.6vw, 28px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+  margin: 0 0 var(--s5) 0;
   display: block;
+  text-transform: none;
 }
 
-/* Intro */
-.about-intro { padding-top: var(--s8); padding-bottom: var(--s7); }
+/* Intro — content left-aligned within the default .wrap so it lines up
+   with the brand/nav above; photo floats to the right of the first
+   paragraphs. */
+.about-intro { padding-top: var(--s7); padding-bottom: var(--s7); }
 @media (min-width: 1024px) {
-  .about-intro { padding-top: var(--s10); padding-bottom: var(--s8); }
+  .about-intro { padding-top: var(--s9); padding-bottom: var(--s8); }
 }
-.about-intro .wrap { max-width: 760px; }
 .about-title {
   font-family: var(--display);
   font-weight: 400;
@@ -215,6 +265,7 @@ img { max-width: 100%; height: auto; display: block; }
   letter-spacing: -0.02em;
   color: var(--ink-900);
   margin: 0 0 var(--s4) 0;
+  max-width: 14ch;
 }
 .about-subtitle {
   font-family: var(--display);
@@ -229,7 +280,7 @@ img { max-width: 100%; height: auto; display: block; }
   font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
   line-height: 1.65;
   color: var(--ink-700);
-  max-width: 62ch;
+  max-width: 760px;
 }
 .about-body p { margin: 0; }
 .about-body p + p { margin-top: var(--s5); }
@@ -240,106 +291,334 @@ img { max-width: 100%; height: auto; display: block; }
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
 }
+.about-body a .arrow {
+  display: inline-block;
+  margin-left: 1px;
+  transition: transform 180ms var(--ease);
+}
+.about-body a:hover .arrow { transform: translateX(3px); }
+.intro-body {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s9);
+  max-width: none;
+}
+.intro-text {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 560px;
+}
+.intro-photo {
+  flex: 0 0 auto;
+  width: clamp(260px, 32%, 360px);
+  margin: 0;
+  align-self: stretch;
+  display: flex;
+}
+.intro-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: var(--r);
+  background: var(--paper-200);
+}
+@media (max-width: 768px) {
+  .intro-body { flex-direction: column; gap: var(--s5); align-items: flex-start; }
+  .intro-photo { width: 100%; max-width: 360px; align-self: auto; display: block; }
+  .intro-photo img { height: auto; }
+}
 
-/* Roles list */
-.about-roles { padding-top: var(--s7); padding-bottom: var(--s8); }
+/* Roles — single "ROLES" eyebrow above all entries, then a vertical
+   timeline with a dot at each role marker. Dates above title, company
+   name inline-linked within the title, description in smaller body. */
+.about-roles { padding-top: 0; padding-bottom: var(--s5); }
 @media (min-width: 1024px) {
-  .about-roles { padding-top: var(--s8); padding-bottom: var(--s9); }
+  .about-roles { padding-top: 0; padding-bottom: var(--s6); }
 }
-.about-roles .wrap { max-width: 760px; }
-.role { margin-bottom: var(--s8); }
-@media (min-width: 1024px) { .role { margin-bottom: var(--s9); } }
+.roles-list {
+  position: relative;
+  max-width: 760px;
+}
+.role {
+  position: relative;
+  padding-left: var(--s6);
+  margin-bottom: var(--s6);
+}
 .role:last-child { margin-bottom: 0; }
-.role-title {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(26px, 3.2vw, 34px);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  color: var(--ink-900);
-  margin: 0 0 var(--s3) 0;
+/* Line segment runs from below each role's dot down to the next role's
+   dot. The last role has no segment, so the timeline ends at the
+   final dot rather than continuing below. */
+.role::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 17px;
+  bottom: calc(-1 * var(--s6));
+  width: 1px;
+  background: var(--paper-300);
 }
-.role-company {
-  font-family: var(--display);
-  font-style: italic;
-  font-size: clamp(18px, 1.8vw, 22px);
-  line-height: 1.35;
-  color: var(--ink-700);
-  margin: 0 0 var(--s3) 0;
+.role:last-child::after { content: none; }
+.role::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 9px;
+  height: 9px;
+  background: var(--ink-900);
+  border-radius: 50%;
+  z-index: 1;
 }
-.role-company a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .role-dates {
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: var(--mono-tracking);
   text-transform: var(--caps-case);
   color: var(--ink-500);
-  margin: 0 0 var(--s4) 0;
+  margin: 0 0 var(--s2) 0;
+}
+.role-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+  margin: 0 0 var(--s3) 0;
+}
+.role-title a {
+  color: var(--ink-900);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
 }
 .role-body {
-  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
-  line-height: 1.65;
+  font-size: clamp(12px, 1.0vw + 0.35rem, 15px);
+  line-height: 1.6;
   color: var(--ink-700);
   max-width: 62ch;
   margin: 0;
 }
 
-/* A little more */
-.about-more { padding-top: var(--s7); padding-bottom: var(--s7); }
+/* Case studies — same card pattern as the homepage. */
+.about-cases { padding-top: var(--s4); padding-bottom: var(--s5); }
 @media (min-width: 1024px) {
-  .about-more { padding-top: var(--s8); padding-bottom: var(--s8); }
+  .about-cases { padding-top: var(--s6); padding-bottom: var(--s6); }
 }
-.about-more .wrap { max-width: 760px; }
-
-/* Photos */
-.about-photos { padding-top: var(--s7); padding-bottom: var(--s8); }
-@media (min-width: 1024px) {
-  .about-photos { padding-top: var(--s8); padding-bottom: var(--s9); }
-}
-.about-photos .wrap { max-width: 760px; }
-.photos-grid {
-  display: flex;
-  flex-wrap: wrap;
+.about-cases .cases-eyebrow { margin-bottom: var(--s6); }
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--s5);
 }
-.photos-grid figure {
-  margin: 0;
-  flex: 0 1 320px;
-  max-width: 380px;
+@media (min-width: 640px) {
+  .cards { grid-template-columns: 1fr 1fr; gap: var(--s5); }
 }
-.photos-grid img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: var(--r);
-  background: var(--paper-200);
+.card {
+  border: 1px solid rgba(20, 18, 14, 0.06);
+  border-radius: 14px;
+  padding: var(--s7);
+  background: var(--paper-50);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 8px 24px rgba(20, 18, 14, 0.04);
+  min-height: 340px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: box-shadow 280ms var(--ease), transform 280ms var(--ease), border-color 280ms var(--ease);
+}
+@media (min-width: 1024px) {
+  .card { padding: var(--s8); min-height: 400px; }
+}
+.card:hover {
+  border-color: rgba(26, 24, 21, 0.45);
+  box-shadow: 0 4px 10px rgba(20, 18, 14, 0.07), 0 22px 44px rgba(20, 18, 14, 0.08);
+  transform: translateY(-5px);
+  text-decoration: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card:hover { transform: none; box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 8px 24px rgba(20, 18, 14, 0.04); }
+}
+.card:hover .read .arrow { transform: translateX(4px); }
+.card:hover .read .read-text {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.card .meta {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  margin: 0 0 var(--s2) 0;
+}
+.card .title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+  margin: 0;
+  text-wrap: pretty;
+  max-width: 14ch;
+}
+.card .desc {
+  font-family: var(--text);
+  color: var(--ink-700);
+  font-size: clamp(14px, 1.2vw + 0.4rem, 16px);
+  line-height: 1.55;
+  max-width: 32ch;
+  margin: var(--s3) 0 0 0;
+  text-wrap: pretty;
+}
+.card .read {
+  margin-top: auto;
+  padding-top: var(--s5);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-900);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+}
+.card .read .arrow {
+  display: inline-block;
+  transition: transform 180ms var(--ease);
 }
 
-/* Footer */
-.site-footer { margin-top: var(--s4); }
+/* Recent work — auto-populated by scripts/build-rss.js. Mirrors the
+   homepage list visually (without the ink canvas). */
+.about-recent { padding-top: var(--s5); padding-bottom: var(--s8); }
+@media (min-width: 1024px) {
+  .about-recent { padding-top: var(--s7); padding-bottom: var(--s9); }
+}
+.about-recent .writing-heading { margin: 0 0 var(--s6) 0; }
+.rw-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s6) var(--s7);
+}
+@media (min-width: 768px) {
+  .rw-list { grid-template-columns: 1fr 1fr; gap: var(--s7) var(--s8); }
+}
+.rw-item { margin: 0; }
+.rw-link {
+  display: flex;
+  gap: var(--s4);
+  align-items: flex-start;
+  color: inherit;
+  text-decoration: none;
+}
+.rw-link:hover { text-decoration: none; }
+.rw-icon {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  color: var(--ink-900);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 639px) {
+  .rw-icon { flex: 0 0 24px; width: 24px; height: 24px; }
+}
+.rw-icon svg,
+.rw-icon img,
+.rw-icon .rw-scribble {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+.rw-content { flex: 1 1 0; min-width: 0; }
+.rw-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(20px, 1.6vw + 0.5rem, 24px);
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+  margin: 0 0 var(--s3) 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--paper-300);
+  transition: text-decoration-color 200ms var(--ease);
+}
+.rw-link:hover .rw-title { text-decoration-color: var(--ink-900); }
+.rw-arrow {
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--ink-700);
+  text-decoration: none;
+  transition: transform 220ms var(--ease), color 200ms var(--ease);
+}
+.rw-link:hover .rw-arrow { transform: translateX(4px); color: var(--ink-900); }
+.rw-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-500);
+  margin: 0 0 var(--s3) 0;
+  max-width: 52ch;
+}
+.rw-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin: 0;
+}
+.rw-meta .rw-sep { margin: 0 4px; }
+
+/* A little more */
+.about-more { padding-top: var(--s4); padding-bottom: var(--s7); }
+@media (min-width: 1024px) {
+  .about-more { padding-top: var(--s6); padding-bottom: var(--s8); }
+}
+
+/* Footer — same markup, typography, and rhythm as the homepage. */
+.site-footer {
+  margin-top: var(--s9);
+  border-top: 1px solid var(--paper-300);
+  padding: var(--s5) 0 var(--s6);
+}
 .site-footer .row {
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--s4);
-  padding-top: var(--s7);
-  padding-bottom: var(--s7);
-  border-top: 1px solid var(--paper-300);
+  gap: var(--s5);
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  color: var(--ink-500);
 }
 .site-footer .links {
   display: inline-flex;
-  flex-wrap: wrap;
-  gap: var(--s5);
   align-items: baseline;
+  gap: var(--s4);
+  flex-wrap: wrap;
 }
 .site-footer .links a {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 18px;
-  color: var(--ink-500);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  color: var(--ink-700);
   display: inline-flex;
-  gap: 6px;
   align-items: baseline;
+  gap: 6px;
 }
 .site-footer .links a:hover { color: var(--ink-900); text-decoration: none; }
 .site-footer .links a:hover .lt {
@@ -353,7 +632,7 @@ img { max-width: 100%; height: auto; display: block; }
 .site-footer .links a.cv-download .dl-icon {
   display: inline-flex;
   align-items: center;
-  margin-left: 4px;
+  justify-content: center;
   transition: transform 180ms var(--ease);
 }
 .site-footer .links a.cv-download:hover .dl-icon { transform: translateY(2px); }
@@ -366,13 +645,12 @@ img { max-width: 100%; height: auto; display: block; }
   <div class="wrap row">
     <a href="/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
     <nav class="nav" aria-label="Primary">
-      <a href="/#work">Work</a>
+      <a href="/#how-this-works">Services</a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="/#writing">Writing</a>
+      <a href="#work">Work</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="/about">About</a>
-      <span class="sep" aria-hidden="true">·</span>
-      <a href="/#contact">Contact</a>
+      <a class="nav-cta" href="/#send-problem">Send a problem</a>
     </nav>
   </div>
 </header>
@@ -381,70 +659,123 @@ img { max-width: 100%; height: auto; display: block; }
 
   <section class="about-intro">
     <div class="wrap">
-      <span class="eyebrow">About</span>
-      <h1 class="about-title">Fred Vincent</h1>
-      <p class="about-subtitle">Designer, founder, painter. Trained in fine arts.</p>
-      <div class="about-body">
-        <p>I'm a designer and maker. Trained in fine arts, I founded my first startup in 2012 and have been designing products ever since. Studio Vincent is my consultancy, where I help founders and product teams find the version of the work that's worth committing to.</p>
-        <p>I co-founded Kaizen, a marathon training app, leading design from zero to one. Before that I led product design at Gastfreund in Berlin, where we built a "Slack for hotels" from scratch. I've worked across consumer and B2B, with two-person teams and forty-person ones.</p>
-        <p>Outside the product work, I paint, make artworks and prints, and try out new media. It's the same activity in a different medium. Both are about finding the version of the thing that's worth making.</p>
-        <p>Here's what I've been working on over the years.</p>
+      <h1 class="about-title fade-up">Fred Vincent</h1>
+      <p class="about-subtitle fade-up">Designer, founder, maker.</p>
+      <div class="intro-body fade-up">
+        <div class="about-body intro-text">
+          <p>I'm a designer and maker. Trained in fine arts, I founded my first startup in 2012 and have been designing products ever since. Studio Vincent is my consultancy, where I help founders and product teams find the version of the work that's worth committing to.</p>
+          <p>I co-founded Kaizen, a marathon training app, leading design from zero to one. Before that I led product design at Gastfreund in Berlin, where we built a "Slack for hotels" from scratch. I've worked across consumer and B2B, with two-person teams and forty-person ones.</p>
+          <p>Outside the product work, I paint, make artworks and prints, and try out new media. It's the same activity in a different medium. Both are about finding the version of the thing that's worth making.</p>
+          <p>Here's what I've been working on over the years.</p>
+        </div>
+        <figure class="intro-photo">
+          <img src="/about-fred.jpg" alt="Fred Vincent in his studio" loading="lazy">
+        </figure>
       </div>
     </div>
   </section>
 
   <section class="about-roles" aria-labelledby="roles-eyebrow">
     <div class="wrap">
-      <span class="eyebrow" id="roles-eyebrow">Roles</span>
+      <span class="eyebrow fade-up" id="roles-eyebrow">Roles</span>
 
-      <article class="role">
-        <h2 class="role-title">Co-founder &amp; Founding Designer</h2>
-        <p class="role-company"><a href="https://kaizenrun.com" target="_blank" rel="noopener noreferrer">Kaizen</a></p>
-        <p class="role-dates">Jan 2022 — April 2026</p>
-        <p class="role-body">Marathon training app, grew from 0 to 30,000+ downloads with €0 marketing. I owned brand, product UX, design system, and creative direction across the full experience, from zero to one and through the company's first paying customers.</p>
-      </article>
+      <div class="roles-list">
+        <article class="role fade-up">
+          <p class="role-dates">Jan 2022 — April 2026</p>
+          <h2 class="role-title">Co-founder &amp; Founding Designer at <a href="https://runkaizen.com" target="_blank" rel="noopener noreferrer">Kaizen</a></h2>
+          <p class="role-body">Marathon training app, grew from 0 to 30,000+ downloads with €0 marketing. I owned brand, product UX, design system, and creative direction across the full experience, from zero to one and through the company's first paying customers.</p>
+        </article>
 
-      <article class="role">
-        <h2 class="role-title">Product Design Lead</h2>
-        <p class="role-company"><a href="https://www.gastfreund.net" target="_blank" rel="noopener noreferrer">Gastfreund GmbH</a></p>
-        <p class="role-dates">May 2017 — Jan 2022</p>
-        <p class="role-body">Led product design across a seven-product B2B suite for the hotel industry. Took the platform from a single product to a multi-product suite serving thousands of hotels, working with a forty-person engineering and product team.</p>
-      </article>
+        <article class="role fade-up">
+          <p class="role-dates">Apr 2019 — Jan 2022</p>
+          <h2 class="role-title">Product Design Lead at <a href="https://www.gastfreund.net" target="_blank" rel="noopener noreferrer">Gastfreund GmbH</a></h2>
+          <p class="role-body">Led product design across a seven-product B2B suite for the hotel industry. Took the platform from a single product to a multi-product suite serving thousands of hotels, working with a forty-person engineering and product team.</p>
+        </article>
 
-      <article class="role">
-        <h2 class="role-title">Product Designer &amp; Strategist</h2>
-        <p class="role-company"><a href="https://www.appsforgood.org" target="_blank" rel="noopener noreferrer">Apps for Good</a></p>
-        <p class="role-dates">Apr 2018 — Mar 2019</p>
-        <p class="role-body">Improved the data collection and engagement design across the learning platform used by tens of thousands of students across schools in the UK.</p>
-      </article>
+        <article class="role fade-up">
+          <p class="role-dates">Apr 2018 — Mar 2019</p>
+          <h2 class="role-title">Product Designer &amp; Strategist at <a href="https://www.appsforgood.org" target="_blank" rel="noopener noreferrer">Apps for Good</a></h2>
+          <p class="role-body">Improved the data collection and engagement design across the learning platform used by tens of thousands of students across schools in the UK.</p>
+        </article>
 
-      <article class="role">
-        <h2 class="role-title">Product Designer</h2>
-        <p class="role-company"><a href="https://infarm.com" target="_blank" rel="noopener noreferrer">Infarm</a></p>
-        <p class="role-dates">Jan 2018 — May 2018</p>
-        <p class="role-body">Designed the mobile-first internal unit-analysis software used by Infarm staff to monitor produce health across the company's vertical farming installations.</p>
-      </article>
+        <article class="role fade-up">
+          <p class="role-dates">Jan 2018 — May 2018</p>
+          <h2 class="role-title">Product Designer at <a href="https://de.wikipedia.org/wiki/Infarm" target="_blank" rel="noopener noreferrer">Infarm</a></h2>
+          <p class="role-body">Designed the mobile-first internal unit-analysis software used by Infarm staff to monitor produce health across the company's vertical farming installations.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-cases" aria-labelledby="cases-eyebrow">
+    <div class="wrap">
+      <span class="eyebrow fade-up cases-eyebrow" id="cases-eyebrow">Case studies</span>
+      <div class="cards">
+        <a class="card fade-up" href="/work/onboarding-redesign/">
+          <span class="meta">01</span>
+          <h3 class="title">Onboarding redesign at Kaizen</h3>
+          <p class="desc">How we got the team to commit to a harder version of onboarding, and what it opened up.</p>
+          <span class="read"><span class="read-text">Read</span><span class="arrow" aria-hidden="true">→</span></span>
+        </a>
+        <a class="card fade-up" href="/work/feed-redesign/">
+          <span class="meta">02</span>
+          <h3 class="title">Answering the wrong question</h3>
+          <p class="desc">The Kaizen feed redesign, and what happens when the question you've been asked to answer turns out to be the wrong one.</p>
+          <span class="read"><span class="read-text">Read</span><span class="arrow" aria-hidden="true">→</span></span>
+        </a>
+      </div>
     </div>
   </section>
 
   <section class="about-more" aria-labelledby="more-eyebrow">
     <div class="wrap">
-      <span class="eyebrow" id="more-eyebrow">A Little More</span>
-      <div class="about-body">
-        <p>I grew up in [PLACEHOLDER: brief origin/upbringing context, add whatever you'd like here]. I studied fine arts at Bournemouth Arts University, where I learned to make many bad things before the good thing arrives, and to sit with uncertainty longer than feels comfortable. Both have turned out to be useful in product work.</p>
-        <p>I live in Berlin with my wife and our two small kids. I read a lot. I paint when I can. I run when I can — usually slowly, often during work calls. I'm always reading something. Currently: [PLACEHOLDER: optional current book/reading].</p>
-        <p>If you want to get in touch, the easiest way is to email me at <a href="mailto:hello@studiovincent.co">hello@studiovincent.co</a>. I respond to most things within a couple of days.</p>
+      <span class="eyebrow fade-up" id="more-eyebrow">A bit more</span>
+      <div class="about-body fade-up">
+        <p>I grew up in Devon, in the southwest of England — football most weekends, never quite learned to surf, and many a long ramble on Dartmoor. I studied fine arts at Bournemouth Arts University, where I learned to make many bad things before the good one arrives, and to sit with uncertainty longer than feels comfortable. Both have turned out to be useful in product work — <a href="/#work">more on that <span class="arrow" aria-hidden="true">→</span></a></p>
+        <p>I live in Berlin with my wife and our two small kids. I read a lot, paint and draw when I can, and <a href="https://studiovincent.substack.com" target="_blank" rel="noopener noreferrer">write on Substack <span class="arrow" aria-hidden="true">→</span></a> whenever there's time. I run to stay sane. Currently reading: Doctor Sleep by Stephen King.</p>
+        <p>The easiest way to get in touch is email — <a href="mailto:hello@studiovincent.co">hello@studiovincent.co</a>. I reply to most things within a couple of days. You can also find me on <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener noreferrer">LinkedIn <span class="arrow" aria-hidden="true">→</span></a>.</p>
       </div>
     </div>
   </section>
 
-  <section class="about-photos" aria-labelledby="studio-eyebrow">
+  <section id="work" class="about-recent" aria-labelledby="about-work-heading">
     <div class="wrap">
-      <span class="eyebrow" id="studio-eyebrow">Studio</span>
-      <div class="photos-grid">
-        <figure>
-          <img src="/about-fred.jpg" alt="Fred Vincent in his studio" loading="lazy">
-        </figure>
+      <h2 class="eyebrow fade-up" id="about-work-heading">Recent work</h2>
+      <div class="recent-writing">
+        <ul class="rw-list">
+          <!-- RSS:writing:start -->
+      <li class="rw-item fade-up rw-anim-drop">
+        <a class="rw-link" href="https://studiovincent.substack.com/p/the-vision-that-gets-built" target="_blank" rel="noopener noreferrer">
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%203.svg" alt="" loading="lazy"></span>
+          <div class="rw-content">
+            <h3 class="rw-title">The vision that gets built <span class="rw-arrow" aria-hidden="true">→</span></h3>
+            <p class="rw-desc">What missing in most product teams that means the safe version always wins.</p>
+            <p class="rw-meta">APR 2026</p>
+          </div>
+        </a>
+      </li>
+      <li class="rw-item fade-up rw-anim-cascade">
+        <a class="rw-link" href="/work/feed-redesign/">
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%204.svg" alt="" loading="lazy"></span>
+          <div class="rw-content">
+            <h3 class="rw-title">Answering the wrong question  <span class="rw-arrow" aria-hidden="true">→</span></h3>
+            <p class="rw-desc">How we went from a question with no answer, to a question with a clear one.</p>
+            <p class="rw-meta">APR 2026</p>
+          </div>
+        </a>
+      </li>
+      <li class="rw-item fade-up rw-anim-pulse">
+        <a class="rw-link" href="/work/onboarding-redesign/">
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%205.svg" alt="" loading="lazy"></span>
+          <div class="rw-content">
+            <h3 class="rw-title">All aboard  <span class="rw-arrow" aria-hidden="true">→</span></h3>
+            <p class="rw-desc">This is a story about how we redesigned onboarding for Kaizen and how the design itself made the team commit to buildin…</p>
+            <p class="rw-meta">APR 2026</p>
+          </div>
+        </a>
+      </li>
+      <!-- RSS:writing:end -->
+        </ul>
       </div>
     </div>
   </section>
@@ -461,6 +792,41 @@ img { max-width: 100%; height: auto; display: block; }
     </span>
   </div>
 </footer>
+
+<script>
+/* Soft entrance animations — IntersectionObserver, matches the homepage
+   reveal rhythm. Above-the-fold elements reveal on load with a small
+   stagger; below-the-fold elements reveal as they scroll into view. */
+(function () {
+  var els = document.querySelectorAll('.fade-up');
+  if (!els.length) return;
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || !('IntersectionObserver' in window)) {
+    els.forEach(function (el) { el.classList.add('is-in'); });
+    return;
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+  els.forEach(function (el) {
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      var idx = Array.prototype.indexOf.call(els, el);
+      setTimeout(function () { el.classList.add('is-in'); }, 80 * Math.min(idx, 4));
+    } else {
+      io.observe(el);
+    }
+  });
+})();
+</script>
 
 </body>
 </html>

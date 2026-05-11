@@ -9,8 +9,65 @@
   /* Always load at the top: disable browser scroll restoration and strip any
      hash before the browser jumps to it. Runs in <head> so it executes before
      the document is rendered. */
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  // Was a deep-link hash present on entry? Used below to skip the
+  // dark intro so links like /about → /#send-problem land directly.
+  var __hadDeepLink = !!location.hash;
+  // Detect a back/forward navigation so we can skip the intro on
+  // return visits. (scrollRestoration must stay 'auto' globally — set
+  // before any navigation — for the browser to actually save scroll
+  // position on exit and restore it on back. Switching it at restore
+  // time is too late.)
+  var __isHistoryNav = (function () {
+    try {
+      var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (nav && nav.type) return nav.type === 'back_forward';
+    } catch (e) {}
+    try {
+      return performance.navigation && performance.navigation.type === 2;
+    } catch (e) {}
+    return false;
+  })();
+  // Section-return: if the user is coming back from a case study,
+  // they set sessionStorage.returnSection on click. Read the flag in
+  // head, switch scrollRestoration to 'manual' so the browser doesn't
+  // restore a stale scroll first, then snap to the target on
+  // DOMContentLoaded with no animation.
+  var __returnSection = null;
+  try { __returnSection = sessionStorage.getItem('returnSection'); } catch (e) {}
+  if (__returnSection) {
+    try { sessionStorage.removeItem('returnSection'); } catch (e) {}
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    document.addEventListener('DOMContentLoaded', function () {
+      var el = document.getElementById(__returnSection);
+      if (el) window.scrollTo({ top: el.offsetTop, left: 0, behavior: 'auto' });
+    });
+  } else if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'auto';
+  }
+  // When the user clicks any /work/<slug>/ link on this page, mark
+  // #work as the section to return to.
+  document.addEventListener('click', function (e) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
+    var a = e.target && e.target.closest && e.target.closest('a[href^="/work/"]');
+    if (!a) return;
+    try { sessionStorage.setItem('returnSection', 'work'); } catch (err) {}
+  }, true);
+  if (location.hash) {
+    // Preserve the requested anchor so that deep links from other
+    // pages (e.g. /about → /#work) still scroll to the right section.
+    // We strip it from the URL bar so the browser doesn't auto-jump
+    // before the dark intro reveal, then scroll manually on load.
+    var __deepLink = location.hash;
+    history.replaceState(null, '', location.pathname + location.search);
+    document.addEventListener('DOMContentLoaded', function () {
+      try {
+        var el = document.querySelector(__deepLink);
+        if (el) setTimeout(function () {
+          el.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }, 50);
+      } catch (e) { /* invalid selector — ignore */ }
+    });
+  }
   /* Hide work-in-progress sections on the public site. They stay visible when
      loading from localhost so they can keep being iterated locally. */
   (function () {
@@ -21,13 +78,22 @@
   })();
   /* Dark intro mode: paint the page dark before render so the bouncing dot
      plays against a black field, then reveal the full site as the dot
-     explodes. Skipped for prefers-reduced-motion. Click/tap or a 3s fallback
-     timer reveals immediately if the explosion never fires. */
+     explodes. Skipped for prefers-reduced-motion and for any session that
+     has already seen the intro (return visits within the same tab session
+     should load like a normal page). Click/tap or a 3s fallback timer
+     reveals immediately if the explosion never fires. */
   (function () {
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Deep-link arrivals (e.g. /#send-problem from /about) skip the intro.
+    if (__hadDeepLink) return;
+    // Back/forward navigations skip the intro too — the user is returning,
+    // not arriving fresh, and the browser will restore their scroll.
+    if (__isHistoryNav) return;
+    try { if (sessionStorage.getItem('hasSeenIntro')) return; } catch (e) {}
     document.documentElement.classList.add('is-intro');
     function reveal() {
       document.documentElement.classList.remove('is-intro');
+      try { sessionStorage.setItem('hasSeenIntro', '1'); } catch (e) {}
       document.removeEventListener('click', reveal, true);
       document.removeEventListener('touchstart', reveal, true);
     }
@@ -316,6 +382,42 @@ p { margin: 0; }
   .nav a, .nav .sep { font-size: 18px; }
 }
 
+/* CTA-style nav button (scaled to fit alongside the regular nav links).
+   Sits to the right of the standard nav with its own margin so the
+   middot separators don't apply. */
+.nav .nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  margin-left: var(--s3);
+  border: 1px solid rgba(26, 24, 21, 0.22);
+  border-radius: 10px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  font-synthesis: none;
+  line-height: 1;
+  color: var(--ink-900);
+  text-decoration: none;
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.nav .nav-cta:hover {
+  background: var(--ink-900);
+  color: var(--paper-50);
+  text-decoration: none;
+}
+@media (max-width: 380px) {
+  .nav .nav-cta { font-size: 14px; padding: 5px 10px; }
+}
+.nav-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 220ms var(--ease);
+}
+.nav-cta-icon svg { display: block; transform: translateY(-1px); }
+.nav .nav-cta:hover .nav-cta-icon { transform: translate(3px, -2px); }
+
 /* Hero */
 .hero {
   padding-top: var(--s9);
@@ -475,13 +577,13 @@ p { margin: 0; }
 
 /* Section rhythm */
 section.block {
-  padding-top: var(--s8);
-  padding-bottom: var(--s8);
+  padding-top: var(--s6);
+  padding-bottom: var(--s6);
 }
 @media (min-width: 1024px) {
   section.block {
-    padding-top: var(--s9);
-    padding-bottom: var(--s9);
+    padding-top: var(--s7);
+    padding-bottom: var(--s7);
   }
 }
 
@@ -740,13 +842,27 @@ section.block {
 }
 .rw-link:hover { text-decoration: none; }
 .rw-icon {
-  flex: 0 0 22px;
-  width: 22px;
-  height: 22px;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
   color: var(--ink-900);
-  margin-top: 6px;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
 }
-.rw-icon svg { width: 100%; height: 100%; display: block; }
+@media (max-width: 639px) {
+  .rw-icon { flex: 0 0 24px; width: 24px; height: 24px; }
+}
+.rw-icon svg,
+.rw-icon img,
+.rw-icon .rw-scribble {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  /* The SVG itself bakes white→transparent via an internal feColorMatrix
+     filter, so no blend-mode is needed on the page side. */
+}
 .rw-content { flex: 1 1 0; min-width: 0; }
 .rw-title {
   font-family: var(--display);
@@ -788,44 +904,8 @@ section.block {
 }
 .rw-meta .rw-sep { margin: 0 4px; }
 
-/* Six icon micro-animations — each item gets one based on its index in
-   the list, so the dot-cluster icon does a different small flourish
-   when each entry first scrolls into view (.is-in from .fade-up). */
-@keyframes rwIconDrop {
-  0%   { transform: translateY(-10px) scale(0.7); opacity: 0; }
-  60%  { transform: translateY(2px) scale(1.04); opacity: 1; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-@keyframes rwIconCascade {
-  0%   { transform: translateX(-14px); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
-}
-@keyframes rwIconPulse {
-  0%   { transform: scale(0); opacity: 0; }
-  60%  { transform: scale(1.18); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-@keyframes rwIconSpin {
-  0%   { transform: rotate(-90deg) scale(0.7); opacity: 0; }
-  100% { transform: rotate(0) scale(1); opacity: 1; }
-}
-@keyframes rwIconBlur {
-  0%   { filter: blur(6px); opacity: 0; }
-  100% { filter: blur(0); opacity: 1; }
-}
-@keyframes rwIconRise {
-  0%   { transform: translateY(14px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-.rw-item.rw-anim-drop.is-in    .rw-icon { animation: rwIconDrop    750ms cubic-bezier(0.34, 1.45, 0.5, 1) 200ms both; }
-.rw-item.rw-anim-cascade.is-in .rw-icon { animation: rwIconCascade 700ms cubic-bezier(0.22, 0.61, 0.36, 1) 200ms both; }
-.rw-item.rw-anim-pulse.is-in   .rw-icon { animation: rwIconPulse   800ms cubic-bezier(0.34, 1.55, 0.5, 1) 200ms both; }
-.rw-item.rw-anim-spin.is-in    .rw-icon { animation: rwIconSpin    900ms cubic-bezier(0.22, 0.61, 0.36, 1) 200ms both; }
-.rw-item.rw-anim-blur.is-in    .rw-icon { animation: rwIconBlur    750ms ease-out 200ms both; }
-.rw-item.rw-anim-rise.is-in    .rw-icon { animation: rwIconRise    700ms cubic-bezier(0.22, 0.61, 0.36, 1) 200ms both; }
-@media (prefers-reduced-motion: reduce) {
-  .rw-item .rw-icon { animation: none !important; }
-}
+/* Icons just ride the parent .fade-up's opacity transition — same
+   timing as the title fades in, no warping. */
 
 /* About */
 .about-grid {
@@ -1293,19 +1373,20 @@ section#contact.block { padding-bottom: var(--s4); }
 /* How this works */
 .how-wrap { max-width: var(--narrow); }
 .how-eyebrow { color: var(--ink-500); margin-bottom: var(--s4); }
+/* Heading + lead match the Recent work block's typography. */
 .how-heading {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 28px;
-  line-height: 1.22;
-  font-weight: 500;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(32px, 4.5vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
   color: var(--ink-900);
   margin: 0 0 var(--s5) 0;
-  letter-spacing: -0.005em;
 }
 .how-lead {
-  font-family: var(--display);
-  font-size: 22px;
-  line-height: 1.45;
+  font-family: var(--text);
+  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
+  line-height: 1.65;
   color: var(--ink-700);
   margin: 0 0 var(--s6) 0;
   max-width: 62ch;
@@ -1511,41 +1592,38 @@ section#contact.block { padding-bottom: var(--s4); }
     gap: var(--s5);
   }
 }
-@media (min-width: 1280px) {
-  .services {
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--s4);
-  }
-}
+/* Stays at 2 columns at all sizes ≥640px so the services cards match the
+   case-study card dimensions on the about page. */
+/* Service tiers — same single-tone card pattern as the case studies. */
 .service {
   display: flex;
   flex-direction: column;
+  gap: var(--s4);
+  border: 1px solid rgba(20, 18, 14, 0.06);
   border-radius: 14px;
-  overflow: hidden;
   background: var(--paper-50);
+  padding: var(--s7);
   box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 8px 24px rgba(20, 18, 14, 0.04);
-}
-.service-header {
-  background: var(--ink-900);
-  color: var(--paper-50);
-  padding: var(--s7) var(--s7) var(--s5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s3);
+  min-height: 340px;
 }
 @media (min-width: 1024px) {
-  .service-header { padding: var(--s8) var(--s8) var(--s5); }
+  .service { padding: var(--s8); min-height: 400px; }
+}
+.service-header {
+  background: transparent;
+  color: var(--ink-900);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
 }
 .service-content {
-  background: var(--paper-50);
-  padding: var(--s5) var(--s7) var(--s7);
+  background: transparent;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: var(--s4);
   flex: 1;
-}
-@media (min-width: 1024px) {
-  .service-content { padding: var(--s5) var(--s8) var(--s8); }
 }
 .service-meta {
   margin: 0;
@@ -1553,15 +1631,15 @@ section#contact.block { padding-bottom: var(--s4); }
   font-size: 11px;
   letter-spacing: var(--mono-tracking);
   text-transform: uppercase;
-  color: var(--paper-200);
+  color: var(--ink-500);
 }
 .service-title {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 500;
-  font-size: clamp(28px, 3.4vw, 40px);
-  line-height: 1.08;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.1;
   letter-spacing: -0.005em;
-  color: var(--paper-50);
+  color: var(--ink-900);
   margin: 0;
 }
 .service-body {
@@ -1581,9 +1659,10 @@ section#contact.block { padding-bottom: var(--s4); }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--text);
-  font-size: clamp(14px, 1.2vw + 0.4rem, 16px);
-  font-style: italic;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
   color: var(--ink-500);
   transition: color 220ms var(--ease);
 }
@@ -1602,7 +1681,7 @@ section#contact.block { padding-bottom: var(--s4); }
 .service-fit-text {
   margin: var(--s3) 0 0 0;
   font-family: var(--text);
-  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
+  font-size: clamp(14px, 1.2vw + 0.4rem, 16px);
   line-height: 1.55;
   font-style: italic;
   color: var(--ink-700);
@@ -1670,36 +1749,20 @@ section#contact.block { padding-bottom: var(--s4); }
   opacity: 0;
 }
 
-/* Ink moment — slow ink-in-water dispersion of black dots, drawn on canvas.
-   Standalone section between the hero and the work grid. */
-.ink-moment {
-  padding: var(--s9) 0 var(--s8);
-  text-align: center;
-}
-@media (max-width: 639px) {
-  .ink-moment { padding: var(--s7) 0; }
-}
-.ink-moment .ink-eyebrow {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: var(--mono-tracking);
-  text-transform: var(--caps-case);
-  color: var(--ink-500);
-  margin: 0 0 var(--s6) 0;
-  display: block;
-}
-.ink-canvas-frame {
-  width: 100%;
-  max-width: 580px;
-  margin: 0 auto;
-  aspect-ratio: 4 / 3;
-  position: relative;
+/* Ink dispersion — inline canvas sitting directly to the right of the
+   "Writing" eyebrow, no gap. */
+.writing-head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
 }
 .ink-canvas {
   display: block;
-  width: 100%;
-  height: 100%;
+  flex: 1;
+  height: 60px;
+  max-width: 480px;
 }
+#writing .writing-statement { margin-top: var(--s2); }
 @media (prefers-reduced-motion: reduce) {
   .ink-canvas { display: none; }
 }
@@ -1709,23 +1772,37 @@ section#contact.block { padding-bottom: var(--s4); }
    script before render and removed at the moment the bouncing
    dot explodes (or by click/timeout fallback). Everything below
    transitions smoothly between dark and light states.
+
+   The h1's own .hero-fade animation is left alone — the headline
+   fades into cream during the dark phase exactly as it always has,
+   then color-shifts to ink-900 on reveal. The site-header's bg is
+   forced to match the body during the intro so there is no cream
+   banner ghosting in mid-transition.
    ============================================================ */
 html.is-intro,
 html.is-intro body {
   background-color: #1a1a1a;
 }
-html.is-intro .site-header,
+html.is-intro .site-header {
+  background-color: #1a1a1a;
+}
+/* Site header just fades — no translate. The brand and nav links keep
+   their fixed positions so the page doesn't appear to shift around the
+   header during reveal. */
+html.is-intro .site-header {
+  opacity: 0 !important;
+  pointer-events: none;
+}
 html.is-intro .hero .lead,
 html.is-intro .hero .hero-cta,
 html.is-intro main > section:not(.hero),
 html.is-intro main > hr,
 html.is-intro .site-footer {
   opacity: 0 !important;
+  transform: translateY(14px);
   pointer-events: none;
 }
 html.is-intro .hero h1 {
-  opacity: 1 !important;
-  transform: none !important;
   color: var(--paper-100);
 }
 html.is-intro .hero-dot {
@@ -1734,18 +1811,39 @@ html.is-intro .hero-dot {
 
 /* Reveal transitions stay defined globally so removing .is-intro animates. */
 html, body {
-  transition: background-color 450ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-.site-header,
+.site-header {
+  transition: background-color 500ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 550ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 550ms cubic-bezier(0.4, 0, 0.2, 1);
+}
 .hero .lead,
 .hero .hero-cta,
 main > section:not(.hero),
 main > hr,
 .site-footer {
-  transition: opacity 450ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* Keep .hero-fade's opacity/transform transitions intact (this rule has
+   higher specificity than .hero-fade, so all three properties must be
+   listed here for the page-load fade-up to play during the dark phase). */
 .hero h1 {
-  transition: color 450ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 600ms var(--ease),
+              transform 600ms var(--ease),
+              color 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Reveal micro-animation: at the moment the page reveals, the now-black
+   headline briefly dips in brightness and returns. No translate or scale —
+   just an opacity beat so the black version has its own moment of life. */
+@keyframes heroRevealDip {
+  0%   { opacity: 1; }
+  40%  { opacity: 0.45; }
+  100% { opacity: 1; }
+}
+.hero h1.is-revealing {
+  animation: heroRevealDip 620ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Send me a problem — three-step form. One question per step, gentle
@@ -1791,40 +1889,67 @@ main > hr,
   .spm-step { transition: none; }
 }
 
-.spm-question {
+/* Section headings — "Send me a problem" and "Recent work" share the
+   same display treatment so they read as parallel anchors on the page. */
+.spm-heading,
+.writing-heading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(26px, 3.4vw, 34px);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-size: clamp(32px, 4.5vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
   color: var(--ink-900);
+  margin: var(--s4) 0 0 0;
+  display: block;
+}
+.writing-heading { margin: 0; }
+.spm-question {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(18px, 1.8vw, 22px);
+  line-height: 1.35;
+  letter-spacing: 0;
+  color: var(--ink-700);
   margin: 0;
   display: block;
 }
 
-/* Inputs: no box, just a hairline underneath. Generous vertical padding. */
+/* Inputs read like the case-study cards on the homepage: a soft glassy
+   panel when idle (translucent + backdrop blur), opaque paper-50 white
+   when focused. Generous internal padding. */
 .spm-input {
   font-family: var(--text);
   font-weight: 300;
   font-size: clamp(16px, 1.4vw + 0.5rem, 19px);
   line-height: 1.6;
   color: var(--ink-900);
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--paper-300);
-  padding: var(--s4) 0;
+  background: rgba(255, 255, 255, 0.45);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--paper-300);
+  border-radius: var(--r);
+  padding: var(--s4) var(--s5);
   width: 100%;
   outline: none;
-  transition: border-color 200ms var(--ease);
+  transition: background 200ms var(--ease), border-color 200ms var(--ease), box-shadow 200ms var(--ease);
   resize: none;
   -webkit-appearance: none;
   appearance: none;
-  border-radius: 0;
 }
-.spm-input:focus { border-bottom-color: var(--ink-900); }
-.spm-input::placeholder { color: var(--ink-500); opacity: 0.55; }
-.spm-input--problem { min-height: 7em; }
-.spm-input--version { min-height: 5em; }
+.spm-input:focus {
+  background: var(--paper-50);
+  border-color: var(--ink-700);
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 6px 18px rgba(20, 18, 14, 0.04);
+}
+.spm-input::placeholder {
+  color: var(--ink-500);
+  opacity: 0.55;
+  transition: opacity 380ms ease;
+}
+.spm-input.is-placeholder-fading::placeholder { opacity: 0; }
+.spm-input--problem { min-height: 5.5em; }
+.spm-input--version { min-height: 4em; }
 
 .spm-subfield {
   margin-top: var(--s4);
@@ -1851,19 +1976,20 @@ main > hr,
 
 .spm-fineprint {
   font-family: var(--text);
-  font-size: 12px;
-  line-height: 1.55;
+  font-size: 10px;
+  line-height: 1.5;
   color: var(--ink-500);
-  margin: var(--s5) 0 0 0;
+  margin: var(--s4) 0 0 0;
   max-width: 62ch;
+  opacity: 0.85;
 }
 
-/* Progress dots — small, restrained, no copy. */
+/* Progress dots — small, restrained, no copy. Sit beneath the action row. */
 .spm-progress {
   display: flex;
   gap: 10px;
   align-items: center;
-  margin: var(--s7) 0 var(--s5) 0;
+  margin: var(--s6) 0 0 0;
 }
 .spm-step-status {
   position: absolute;
@@ -1887,13 +2013,15 @@ main > hr,
 }
 .spm-dot.is-on { background: var(--ink-900); opacity: 1; }
 
-/* Actions: back link on the left, primary CTA on the right. */
+/* Actions: primary CTA on the left, back link to its right. Sits
+   directly under the form step. */
 .spm-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--s5);
   flex-wrap: wrap;
+  margin-top: var(--s4);
 }
 .spm-back {
   appearance: none;
@@ -1913,6 +2041,9 @@ main > hr,
 .spm-cta {
   appearance: none;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--text);
   font-weight: 500;
   font-size: 14px;
@@ -1923,9 +2054,48 @@ main > hr,
   border-radius: 10px;
   padding: 14px 28px;
   transition: background 180ms var(--ease), transform 180ms var(--ease), opacity 180ms var(--ease);
-  margin-left: auto;
 }
 .spm-cta:hover { background: var(--ink-700); border-color: var(--ink-700); transform: translateY(-1px); }
+.spm-cta-chev {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 220ms var(--ease);
+}
+.spm-cta:hover .spm-cta-chev { transform: translateX(4px); }
+/* Retry state: when a submission fails, the CTA flips to outline
+   (ink-900 border, transparent fill) and its label becomes "Try again".
+   No separate error text — the button is the message. */
+.spm-cta.is-retry {
+  background: transparent;
+  color: var(--ink-900);
+  border-color: var(--ink-900);
+}
+.spm-cta.is-retry:hover {
+  background: var(--ink-900);
+  color: var(--paper-50);
+  border-color: var(--ink-900);
+}
+.spm-cta.is-retry .spm-cta-chev { display: none; }
+/* Sent state: after a successful submission the CTA flips to a quiet
+   outline + confirmation copy. No hover, no chevron. */
+.spm-cta.is-sent {
+  background: transparent;
+  color: var(--ink-700);
+  border-color: var(--paper-300);
+  cursor: default;
+  transform: none;
+}
+.spm-cta.is-sent:hover {
+  background: transparent;
+  color: var(--ink-700);
+  border-color: var(--paper-300);
+  transform: none;
+}
+.spm-cta.is-sent .spm-cta-chev { display: none; }
+/* The HTML `hidden` attribute needs an explicit override because the
+   element-level `display: inline-flex` above wins by specificity. */
+.spm-cta[hidden],
+.spm-back[hidden] { display: none; }
 .spm-cta:focus-visible { outline: 2px solid var(--ink-700); outline-offset: 2px; }
 .spm-cta[disabled] { opacity: 0.6; cursor: progress; transform: none; }
 
@@ -1955,15 +2125,12 @@ main > hr,
   <div class="wrap row">
     <a href="#top" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="logo-vincent.png" alt="Vincent"></a>
     <nav class="nav" aria-label="Primary">
-      <a href="#work">Work</a>
-      <span class="sep" aria-hidden="true">·</span>
-      <a href="#writing">Writing</a>
-      <span class="sep" aria-hidden="true">·</span>
-      <a href="/about">About</a>
-      <span class="sep" aria-hidden="true">·</span>
       <a href="#how-this-works">Services</a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="#contact">Contact</a>
+      <a href="#work">Work</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="/about">About</a>
+      <a class="nav-cta" href="#send-problem">Send a problem</a>
     </nav>
   </div>
 </header>
@@ -1980,47 +2147,16 @@ main > hr,
           <a class="cta cta-primary" data-mail-user="hello" data-mail-host="studiovincent.co" href="#" rel="nofollow"><span class="wave" aria-hidden="true">👋</span>Say hello</a>
           <a class="cta cta-secondary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer"><span class="label">Book a meeting</span><span class="chev-track" aria-hidden="true"><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
         </div>
-        <a class="hero-how-link" href="#how-this-works"><span class="lt">How it works</span><span class="hero-how-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
       </div>
     </div>
   </section>
-
-  <section class="ink-moment" aria-labelledby="ink-moment-label">
-    <div class="wrap">
-      <span class="ink-eyebrow" id="ink-moment-label">A moment of attention</span>
-      <div class="ink-canvas-frame">
-        <canvas class="ink-canvas" aria-hidden="true"></canvas>
-      </div>
-    </div>
-  </section>
-
-  <hr class="hairline" aria-hidden="true">
 
   <section id="work" class="block">
     <div class="wrap">
-      <span class="eyebrow-sig fade-up">Work</span>
-      <div class="cards">
-        <a class="card fade-up" href="/work/onboarding-redesign/">
-          <span class="meta">01</span>
-          <h3 class="subhead title">Onboarding redesign at Kaizen</h3>
-          <p class="desc">How we got the team to commit to a harder version of onboarding, and what it opened up.</p>
-          <span class="read"><span class="read-text">Read</span><span class="arrow" aria-hidden="true">→</span></span>
-        </a>
-        <a class="card fade-up" href="/work/feed-redesign/">
-          <span class="meta">02</span>
-          <h3 class="subhead title">Answering the wrong question</h3>
-          <p class="desc">The Kaizen feed redesign, and what happens when the question you've been asked to answer turns out to be the wrong one.</p>
-          <span class="read"><span class="read-text">Read</span><span class="arrow" aria-hidden="true">→</span></span>
-        </a>
+      <div class="writing-head fade-up">
+        <h2 class="writing-heading">Recent work</h2>
+        <canvas class="ink-canvas" aria-hidden="true"></canvas>
       </div>
-    </div>
-  </section>
-
-  <hr class="hairline" aria-hidden="true">
-
-  <section id="writing" class="block">
-    <div class="wrap">
-      <span class="eyebrow-sig fade-up">Recent writing</span>
       <p class="writing-statement fade-up">Essays on creative direction, product, making, and why most things you use end up forgettable and how to do it differently.</p>
 
       <div class="recent-writing">
@@ -2028,7 +2164,7 @@ main > hr,
           <!-- RSS:writing:start -->
       <li class="rw-item fade-up rw-anim-drop">
         <a class="rw-link" href="https://studiovincent.substack.com/p/the-vision-that-gets-built" target="_blank" rel="noopener noreferrer">
-          <span class="rw-icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="4" cy="4" r="1"/><circle cx="12" cy="4" r="1"/><circle cx="20" cy="4" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="12" cy="12" r="2.4"/><circle cx="20" cy="12" r="1"/><circle cx="4" cy="20" r="1"/><circle cx="12" cy="20" r="1"/><circle cx="20" cy="20" r="1"/></svg></span>
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%203.svg" alt="" loading="lazy"></span>
           <div class="rw-content">
             <h3 class="rw-title">The vision that gets built <span class="rw-arrow" aria-hidden="true">→</span></h3>
             <p class="rw-desc">What missing in most product teams that means the safe version always wins.</p>
@@ -2037,8 +2173,8 @@ main > hr,
         </a>
       </li>
       <li class="rw-item fade-up rw-anim-cascade">
-        <a class="rw-link" href="https://studiovincent.substack.com/p/answering-the-wrong-question" target="_blank" rel="noopener noreferrer">
-          <span class="rw-icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="4" cy="4" r="1"/><circle cx="12" cy="4" r="1"/><circle cx="20" cy="4" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="12" cy="12" r="2.4"/><circle cx="20" cy="12" r="1"/><circle cx="4" cy="20" r="1"/><circle cx="12" cy="20" r="1"/><circle cx="20" cy="20" r="1"/></svg></span>
+        <a class="rw-link" href="/work/feed-redesign/">
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%204.svg" alt="" loading="lazy"></span>
           <div class="rw-content">
             <h3 class="rw-title">Answering the wrong question  <span class="rw-arrow" aria-hidden="true">→</span></h3>
             <p class="rw-desc">How we went from a question with no answer, to a question with a clear one.</p>
@@ -2047,8 +2183,8 @@ main > hr,
         </a>
       </li>
       <li class="rw-item fade-up rw-anim-pulse">
-        <a class="rw-link" href="https://studiovincent.substack.com/p/all-aboard" target="_blank" rel="noopener noreferrer">
-          <span class="rw-icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="4" cy="4" r="1"/><circle cx="12" cy="4" r="1"/><circle cx="20" cy="4" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="12" cy="12" r="2.4"/><circle cx="20" cy="12" r="1"/><circle cx="4" cy="20" r="1"/><circle cx="12" cy="20" r="1"/><circle cx="20" cy="20" r="1"/></svg></span>
+        <a class="rw-link" href="/work/onboarding-redesign/">
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%205.svg" alt="" loading="lazy"></span>
           <div class="rw-content">
             <h3 class="rw-title">All aboard  <span class="rw-arrow" aria-hidden="true">→</span></h3>
             <p class="rw-desc">This is a story about how we redesigned onboarding for Kaizen and how the design itself made the team commit to buildin…</p>
@@ -2064,9 +2200,9 @@ main > hr,
 
   <hr class="hairline" aria-hidden="true">
 
-  <section id="send-problem" class="block spm" aria-labelledby="spm-eyebrow">
+  <section id="send-problem" class="block spm" aria-labelledby="spm-heading">
     <div class="wrap">
-      <span class="eyebrow-sig fade-up" id="spm-eyebrow">Send me a problem</span>
+      <h2 class="spm-heading fade-up" id="spm-heading">Send me a problem</h2>
       <p class="spm-intro fade-up">I respond to a few creative challenges each week with a small drawing, a piece of writing, or some combination. No fee. Just a considered response to whatever you're working on. Tell me the problem and I'll send something back.</p>
 
       <div class="spm-form-wrap fade-up">
@@ -2097,17 +2233,16 @@ main > hr,
             </div>
           </div>
 
-          <div class="spm-progress" aria-hidden="false">
-            <span class="spm-step-status" aria-live="polite">Step 1 of 3</span>
-            <span class="spm-dot is-on" aria-hidden="true"></span>
-            <span class="spm-dot" aria-hidden="true"></span>
-            <span class="spm-dot" aria-hidden="true"></span>
-          </div>
-
           <div class="spm-actions">
+            <button type="button" class="spm-cta spm-next">
+              <span class="spm-next-label">Next thought</span>
+              <span class="spm-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </button>
+            <button type="submit" class="spm-cta spm-submit" hidden>
+              <span class="spm-submit-label">Send it</span>
+              <span class="spm-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </button>
             <button type="button" class="spm-back" hidden>Back</button>
-            <button type="button" class="spm-cta spm-next">Next thought</button>
-            <button type="submit" class="spm-cta spm-submit" hidden><span class="spm-submit-label">Send it</span></button>
           </div>
 
           <p class="spm-error" hidden role="alert" aria-live="assertive"></p>
@@ -2126,7 +2261,7 @@ main > hr,
     <div class="wrap">
       <div class="how-wrap fade-up">
         <h2 class="how-heading">How we start</h2>
-        <p class="how-lead">Most engagements begin with a short email about something specific you're working on. There are three rough shapes the work can take, depending on what you need.</p>
+        <p class="how-lead">There are three rough shapes the work can take, depending on what you need.</p>
       </div>
 
       <div class="services fade-up">
@@ -2198,6 +2333,10 @@ main > hr,
       </div>
 
       <div class="how-wrap fade-up">
+        <!-- Commented out: free-call paragraph + "Say hello" CTA + "How this works" toggle.
+             The steps panel below stays in markup but is hidden by CSS while the
+             toggle is absent. -->
+        <!--
         <p class="how-body">If you're not sure which fits, or if you want to talk something through before any commitment, I offer a free 30-minute call. Just email and we'll set it up.</p>
 
         <div class="how-actions">
@@ -2213,7 +2352,9 @@ main > hr,
               </summary>
             </details>
           </div>
+        -->
 
+        <div class="how-actions">
           <div class="how-steps-content" id="how-steps-panel">
               <ol class="how-steps">
                 <li><b>1. A 30-minute call.</b> We talk about what you're working on, who's involved, and what you're trying to figure out. You ask whatever you want about how I work. By the end we both know whether to keep going.</li>
@@ -2473,6 +2614,17 @@ main > hr,
     var dot = stage.querySelector('.hero-dot');
     if (!dot) return;
 
+    /* If the user has already seen the intro in this tab session (e.g. they
+       clicked through to /about and came back), skip the bouncing-dot
+       animation entirely. Clear the stage's children but keep the element
+       so its margin-bottom continues to define the gap above the headline. */
+    try {
+      if (sessionStorage.getItem('hasSeenIntro')) {
+        while (stage.firstChild) stage.removeChild(stage.firstChild);
+        return;
+      }
+    } catch (e) {}
+
     var INK = '#000000';
     var WARM = '#8B5A3C';
     var COUNT = 22;
@@ -2503,7 +2655,8 @@ main > hr,
 
     var tl = gsap.timeline();
 
-    // Phase 1: drop + two bounces. Solid-ball feel with subtle squash.
+    // Phase 1: drop + three bounces at the same cadence. The third bounce
+    // gives people enough time to read the headline before the burst.
     tl.to(dot, { y: 0, duration: 0.30, ease: 'power2.in' })
       .to(dot, { scaleX: 1.12, scaleY: 0.88, duration: 0.04, ease: 'power1.out' })
       .to(dot, { scaleX: 1, scaleY: 1, duration: 0.05, ease: 'power1.in' })
@@ -2512,6 +2665,10 @@ main > hr,
       .to(dot, { scaleX: 1.10, scaleY: 0.90, duration: 0.04, ease: 'power1.out' })
       .to(dot, { scaleX: 1, scaleY: 1, duration: 0.05, ease: 'power1.in' })
       .to(dot, { y: -70, duration: 0.21, ease: 'power2.out' })
+      .to(dot, { y: 0, duration: 0.21, ease: 'power2.in' })
+      .to(dot, { scaleX: 1.09, scaleY: 0.91, duration: 0.04, ease: 'power1.out' })
+      .to(dot, { scaleX: 1, scaleY: 1, duration: 0.05, ease: 'power1.in' })
+      .to(dot, { y: -68, duration: 0.21, ease: 'power2.out' })
       .to(dot, { y: 0, duration: 0.21, ease: 'power2.in' });
 
     // Phase 2: burst the instant the second bounce lands — no pause between
@@ -2520,8 +2677,17 @@ main > hr,
     tl.add(function () {
       gsap.set(dot, { opacity: 0 });
 
-      /* Reveal the rest of the site at the exact moment the dot bursts. */
+      /* Reveal the rest of the site at the exact moment the dot bursts.
+         Record that the intro has played in this tab session. */
       document.documentElement.classList.remove('is-intro');
+      try { sessionStorage.setItem('hasSeenIntro', '1'); } catch (e) {}
+      /* Give the now-black headline its own moment of animation (opacity dip)
+         so it doesn't just sit there while the rest of the page rises in. */
+      var heroH1 = document.querySelector('.hero h1');
+      if (heroH1) {
+        heroH1.classList.add('is-revealing');
+        setTimeout(function () { heroH1.classList.remove('is-revealing'); }, 700);
+      }
 
       // Particles expand outward with a big-bang feel: a brisk initial burst
       // that decelerates strongly (power3.out), then a smooth, slow fade.
@@ -2544,7 +2710,10 @@ main > hr,
     // Hold the timeline open while particles run (burst + slow fade), then remove the stage.
     tl.to({}, { duration: 2.1 });
     tl.add(function () {
-      if (stage.parentNode) stage.parentNode.removeChild(stage);
+      // Keep the stage element in the DOM so its layout footprint (the
+      // margin-bottom gap above the headline) remains — removing it would
+      // shift the whole page up after the animation. Just clear its children.
+      while (stage.firstChild) stage.removeChild(stage.firstChild);
     });
   }
 
@@ -2588,45 +2757,49 @@ main > hr,
     function rand(min, max) { return min + Math.random() * (max - min); }
 
     function buildDots() {
-      var cx = width / 2;
+      /* Canvas starts immediately after the "Writing" eyebrow (no gap), so
+         the anchor sits a few px in from the left edge of the canvas at
+         vertical centre. */
+      var cx = 6;
       var cy = height / 2;
       var arr = [];
 
-      // Anchor dot — large, stationary, never fades.
+      // Anchor dot — small, sits to the right of "Writing", never moves.
       arr.push({
         sx: cx, sy: cy, tx: cx, ty: cy,
-        size: rand(34, 40),
+        size: 8,
         curve: 0,
         targetOpacity: 1,
         delay: 0,
         anchor: true
       });
 
-      var count = 35 + Math.floor(Math.random() * 16); // 35–50
-      var maxRadius = Math.min(width, height) * 0.44;
+      var count = 38 + Math.floor(Math.random() * 18); // 38–56
+      var maxRadius = (width - cx) * 0.95; // splay across the page to the right
 
       for (var i = 0; i < count; i++) {
-        // Start: tight cluster near center, slightly off-axis.
+        // Start: tight cluster around the anchor.
         var startAngle = Math.random() * Math.PI * 2;
-        var startR = Math.pow(Math.random(), 1.2) * 28;
+        var startR = Math.pow(Math.random(), 1.2) * 10;
         var sx = cx + Math.cos(startAngle) * startR;
         var sy = cy + Math.sin(startAngle) * startR;
 
-        // End: outward, asymmetric angle drift, biased non-uniform radius.
-        var outAngle = startAngle + (Math.random() - 0.5) * 1.7;
-        var outR = 48 + Math.pow(Math.random(), 1.5) * maxRadius;
+        // End: full 360° splay, with vertical squash so the cloud reads
+        // wider than tall and stays roughly within the canvas height.
+        var outAngle = Math.random() * Math.PI * 2;
+        var outR = 30 + Math.pow(Math.random(), 1.4) * maxRadius;
         var tx = cx + Math.cos(outAngle) * outR;
-        var ty = cy + Math.sin(outAngle) * outR;
+        var ty = cy + Math.sin(outAngle) * outR * 0.45;
 
-        // Size: heavy bias toward small (power-law).
+        // Sizes — power-law bias toward small.
         var sizeR = Math.random();
-        var size = 2 + Math.pow(sizeR, 2.3) * 22;
+        var size = 1.5 + Math.pow(sizeR, 2.3) * 10;
 
         arr.push({
           sx: sx, sy: sy, tx: tx, ty: ty,
           size: size,
-          curve: (Math.random() - 0.5) * 0.35,
-          targetOpacity: rand(0.6, 0.7),
+          curve: (Math.random() - 0.5) * 0.30,
+          targetOpacity: 0,
           delay: Math.random() * 250,
           anchor: false
         });
@@ -2666,9 +2839,9 @@ main > hr,
         var y = d.sy + dy * t + perpY * bow;
 
         var opacity = 1;
-        if (!d.anchor && t > 0.6) {
-          var fadeT = (t - 0.6) / 0.4;
-          opacity = 1 - (1 - d.targetOpacity) * fadeT;
+        if (!d.anchor) {
+          // Fade tracks the motion — as a dot moves out it fades away.
+          opacity = 1 - (1 - d.targetOpacity) * Math.pow(t, 0.85);
         }
         ctx.globalAlpha = opacity;
         ctx.beginPath();
@@ -2762,12 +2935,13 @@ main > hr,
       if (i < n) d.classList.add('is-on');
       else d.classList.remove('is-on');
     });
-    statusEl.textContent = 'Step ' + n + ' of ' + TOTAL;
+    if (statusEl) statusEl.textContent = 'Step ' + n + ' of ' + TOTAL;
 
     backBtn.hidden = (n === 1);
     if (n < TOTAL) {
       nextBtn.hidden = false;
-      nextBtn.textContent = NEXT_LABELS[n] || 'Next';
+      var nlabel = nextBtn.querySelector('.spm-next-label');
+      if (nlabel) nlabel.textContent = NEXT_LABELS[n] || 'Next';
       submitBtn.hidden = true;
     } else {
       nextBtn.hidden = true;
@@ -2839,22 +3013,57 @@ main > hr,
     var data = {};
     new FormData(form).forEach(function (v, k) { data[k] = v; });
 
+    var fallbackMsg = 'Something went wrong. Email me directly at hello@studiovincent.co.';
+    var errorMessage = fallbackMsg;
+
     try {
       var res = await fetch(form.action, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error('status ' + res.status);
-      form.hidden = true;
-      successWrap.hidden = false;
-      if (successWrap.scrollIntoView) {
-        successWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (!res.ok) {
+        var body = await res.json().catch(function () { return {}; });
+        var bodyStr = JSON.stringify(body || {}).toLowerCase();
+        var emailIssue =
+          res.status === 422 ||
+          bodyStr.indexOf('email') !== -1 ||
+          bodyStr.indexOf('invalid') !== -1;
+        if (emailIssue) {
+          errorMessage = 'That email didn’t go through. Please double-check it and try again.';
+        }
+        throw new Error('submit-failed');
       }
+      // On success the CTA itself becomes the confirmation: outline
+      // style, quiet copy, disabled. Form stays visible so the user
+      // can see what they sent.
+      submitBtn.classList.remove('is-retry');
+      submitBtn.classList.add('is-sent');
+      submitBtn.disabled = true;
+      submitLabel.textContent = "Message sent. I’ll get back to you.";
     } catch (err) {
       submitBtn.disabled = false;
-      submitLabel.textContent = originalSubmitLabel;
-      showError('Something went wrong. Email me directly at hello@studiovincent.co.');
+      // Replace the CTA with an outline "Try again" — the button itself
+      // becomes the error indicator instead of a separate message.
+      submitBtn.classList.add('is-retry');
+      submitLabel.textContent = 'Try again';
+      // Keep .spm-error empty/hidden — the visual on the button conveys it.
+      clearError();
+      // If the issue looked email-related, focus the email field.
+      if (errorMessage !== fallbackMsg) {
+        var emailField = form.querySelector('[name="email"]');
+        if (emailField) {
+          setTimeout(function () { emailField.focus({ preventScroll: false }); emailField.select(); }, 80);
+        }
+      }
+      // When the user edits any field, return the CTA to its normal state.
+      var inputs = form.querySelectorAll('input, textarea');
+      function resetRetry() {
+        submitBtn.classList.remove('is-retry');
+        submitLabel.textContent = originalSubmitLabel;
+        inputs.forEach(function (i) { i.removeEventListener('input', resetRetry); });
+      }
+      inputs.forEach(function (i) { i.addEventListener('input', resetRetry); });
     }
   });
 
@@ -2887,28 +3096,28 @@ main > hr,
         problemField.placeholder = text.slice(0, charIdx);
         if (charIdx >= text.length) {
           phase = 'holding';
-          timer = setTimeout(tick, 2000);
+          timer = setTimeout(tick, 1700);
         } else {
-          timer = setTimeout(tick, 42);
+          timer = setTimeout(tick, 26);
         }
       } else if (phase === 'holding') {
-        phase = 'deleting';
-        timer = setTimeout(tick, 25);
+        phase = 'fading';
+        problemField.classList.add('is-placeholder-fading');
+        timer = setTimeout(tick, 400);
       } else {
-        charIdx--;
-        problemField.placeholder = text.slice(0, charIdx);
-        if (charIdx <= 0) {
-          phase = 'typing';
-          exampleIdx = (exampleIdx + 1) % EXAMPLES.length;
-          timer = setTimeout(tick, 280);
-        } else {
-          timer = setTimeout(tick, 25);
-        }
+        // fading complete — clear text, drop the fade class, type the next example
+        problemField.placeholder = '';
+        problemField.classList.remove('is-placeholder-fading');
+        phase = 'typing';
+        exampleIdx = (exampleIdx + 1) % EXAMPLES.length;
+        charIdx = 0;
+        timer = setTimeout(tick, 260);
       }
     }
     function stop() {
       stopped = true;
       if (timer) { clearTimeout(timer); timer = null; }
+      problemField.classList.remove('is-placeholder-fading');
       problemField.placeholder = '';
     }
     function resume() {

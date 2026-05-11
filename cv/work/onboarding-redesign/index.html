@@ -31,7 +31,7 @@
 <style>
 :root {
   --paper-50:  #FFFFFF;
-  --paper-100: #FBFBF8;
+  --paper-100: #F8FAFC;
   --paper-200: #F3F3EF;
   --paper-300: #E8E8E3;
   --ink-500:   #6E6A62;
@@ -75,6 +75,24 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Moleskine-style dot grid background — sits behind all content. */
+body {
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.28'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 22px 22px;
+}
+@media (max-width: 640px) {
+  body {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.28'/%3E%3C/svg%3E");
+    background-size: 26px 26px;
+  }
+}
+@media print {
+  body { background-image: none !important; }
+  .mark, .hand-drawn-mark { display: none !important; }
+}
+
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 p { margin: 0; }
@@ -91,7 +109,7 @@ img { max-width: 100%; height: auto; display: block; }
 @media (min-width: 1024px) { .wrap { padding: 0 var(--s8); } }
 
 /* Header */
-.site-header { padding-top: var(--s6); padding-bottom: var(--s6); }
+.site-header { padding-top: var(--s6); padding-bottom: var(--s3); background: var(--paper-100); position: relative; }
 .site-header .row {
   display: flex;
   flex-wrap: nowrap;

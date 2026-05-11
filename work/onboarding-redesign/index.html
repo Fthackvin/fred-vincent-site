@@ -58,7 +58,7 @@
 <style>
 :root {
   --paper-50:  #FFFFFF;
-  --paper-100: #FBFBF8;
+  --paper-100: #F8FAFC;
   --paper-200: #F3F3EF;
   --paper-300: #E8E8E3;
   --ink-500:   #6E6A62;
@@ -102,6 +102,24 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Moleskine-style dot grid background — sits behind all content. */
+body {
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.28'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 22px 22px;
+}
+@media (max-width: 640px) {
+  body {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.28'/%3E%3C/svg%3E");
+    background-size: 26px 26px;
+  }
+}
+@media print {
+  body { background-image: none !important; }
+  .mark, .hand-drawn-mark { display: none !important; }
+}
+
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 p { margin: 0; }
@@ -118,7 +136,7 @@ img { max-width: 100%; height: auto; display: block; }
 @media (min-width: 1024px) { .wrap { padding: 0 var(--s8); } }
 
 /* Header */
-.site-header { padding-top: var(--s6); padding-bottom: var(--s6); }
+.site-header { padding-top: var(--s6); padding-bottom: var(--s3); background: var(--paper-100); position: relative; }
 .site-header .row {
   display: flex;
   flex-wrap: nowrap;
@@ -188,6 +206,38 @@ img { max-width: 100%; height: auto; display: block; }
 @media (max-width: 380px) {
   .nav a, .nav .sep { font-size: 18px; }
 }
+.nav .nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  margin-left: var(--s3);
+  border: 1px solid rgba(26, 24, 21, 0.22);
+  border-radius: 10px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  font-synthesis: none;
+  line-height: 1;
+  color: var(--ink-900);
+  text-decoration: none;
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.nav .nav-cta:hover {
+  background: var(--ink-900);
+  color: var(--paper-50);
+  text-decoration: none;
+}
+@media (max-width: 380px) {
+  .nav .nav-cta { font-size: 14px; padding: 5px 10px; }
+}
+.nav-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 220ms var(--ease);
+}
+.nav-cta-icon svg { display: block; transform: translateY(-1px); }
+.nav .nav-cta:hover .nav-cta-icon { transform: translate(3px, -2px); }
 
 /* Eyebrow */
 .eyebrow {
@@ -205,6 +255,22 @@ img { max-width: 100%; height: auto; display: block; }
 .case-study { padding-top: var(--s8); padding-bottom: var(--s8); }
 @media (min-width: 1024px) { .case-study { padding-top: var(--s9); padding-bottom: var(--s9); } }
 .case-study .wrap { max-width: 920px; }
+.cs-back {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--s6);
+  transition: color 180ms var(--ease);
+}
+.cs-back:hover { color: var(--ink-900); text-decoration: none; }
+.cs-back .arrow { transition: transform 180ms var(--ease); display: inline-block; }
+.cs-back:hover .arrow { transform: translateX(-3px); }
 .cs-eyebrow { color: var(--ink-500); margin-bottom: var(--s4); }
 .cs-title {
   font-family: var(--display);
@@ -494,19 +560,19 @@ img { max-width: 100%; height: auto; display: block; }
   <div class="wrap row">
     <a href="/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
     <nav class="nav" aria-label="Primary">
+      <a href="/#how-this-works">Services</a>
+      <span class="sep" aria-hidden="true">·</span>
       <a href="/#work">Work</a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="/#writing">Writing</a>
-      <span class="sep" aria-hidden="true">·</span>
       <a href="/about">About</a>
-      <span class="sep" aria-hidden="true">·</span>
-      <a href="/#contact">Contact</a>
+      <a class="nav-cta" href="/#send-problem">Send a problem</a>
     </nav>
   </div>
 </header>
 
 <main class="case-study">
   <article class="wrap">
+    <a class="cs-back" href="/"><span class="arrow" aria-hidden="true">←</span><span class="cs-back-label">Back</span></a>
     <span class="eyebrow cs-eyebrow">Case study</span>
     <h1 class="cs-title">All aboard</h1>
     <p class="cs-subtitle">How we redesigned onboarding for Kaizen, and how the design itself made the team commit to building something operationally hard.</p>
@@ -593,6 +659,28 @@ img { max-width: 100%; height: auto; display: block; }
     </span>
   </div>
 </footer>
+
+<script>
+/* Back link: if the user came from another page on this site, use
+   browser history (so they land where they were on that page). If
+   the referrer was the About page, label it accordingly. Direct
+   visitors fall back to the homepage. */
+(function () {
+  var back = document.querySelector('.cs-back');
+  if (!back) return;
+  var label = back.querySelector('.cs-back-label');
+  var ref = document.referrer || '';
+  var sameOrigin = ref && ref.indexOf(location.origin) === 0;
+  if (sameOrigin) {
+    if (ref.indexOf('/about') !== -1 && label) label.textContent = 'Back to about';
+    back.addEventListener('click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
+      e.preventDefault();
+      history.back();
+    });
+  }
+})();
+</script>
 
 </body>
 </html>

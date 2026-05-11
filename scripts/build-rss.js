@@ -34,7 +34,10 @@ import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const HTML_PATH = resolve(ROOT, 'index.html');
+const HTML_PATHS = [
+  resolve(ROOT, 'index.html'),
+  resolve(ROOT, 'about', 'index.html'),
+];
 
 const FEED_URL = 'https://studiovincent.substack.com/feed';
 const MAX_ITEMS = 6;
@@ -81,12 +84,6 @@ function escapeHtml(s) {
     .replace(/'/g, '&#39;');
 }
 
-const DOT_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
-  + '<circle cx="4" cy="4" r="1"/><circle cx="12" cy="4" r="1"/><circle cx="20" cy="4" r="1"/>'
-  + '<circle cx="4" cy="12" r="1"/><circle cx="12" cy="12" r="2.4"/><circle cx="20" cy="12" r="1"/>'
-  + '<circle cx="4" cy="20" r="1"/><circle cx="12" cy="20" r="1"/><circle cx="20" cy="20" r="1"/>'
-  + '</svg>';
-
 /* Six icon-animation variants. Cycled by item index so each piece in the
    list gets its own micro-flourish when it scrolls into view. The CSS
    keyframes live in index.html under the .rw-item.rw-anim-* selectors. */
@@ -99,8 +96,48 @@ const ANIM_VARIANTS = [
   'rw-anim-rise',
 ];
 
+/* Hand-scribbled icons from /drawing/. Each piece in the RSS list gets a
+   unique drawing — we walk through this array in order and don't repeat
+   any until all eight have been used (the feed only ever returns up to
+   MAX_ITEMS, so no item ever shares an icon with another). */
+const DRAWINGS = [
+  '/drawing/Scan%2066%203.svg',
+  '/drawing/Scan%2066%204.svg',
+  '/drawing/Scan%2066%205.svg',
+  '/drawing/Scan%2066%206.svg',
+  '/drawing/Scan%2066%207.svg',
+  '/drawing/Scan%2066%208.svg',
+  '/drawing/Scan%2066%209.svg',
+  '/drawing/Scan%2066%2010.svg',
+];
+
+function iconImg(idx) {
+  const src = DRAWINGS[idx % DRAWINGS.length];
+  return `<img class="rw-scribble" src="${src}" alt="" loading="lazy">`;
+}
+
+/* Specific Substack posts are also published as case-study pages on
+   this site. When they appear in the feed we link to the local page
+   instead of Substack so readers land on the full version. */
+const LOCAL_OVERRIDES = {
+  'all-aboard': '/work/onboarding-redesign/',
+  'answering-the-wrong-question': '/work/feed-redesign/',
+};
+
+function resolveLink(originalLink) {
+  if (!originalLink) return { href: '', local: false };
+  // The Substack URL is .../p/<slug>; grab the slug.
+  const m = originalLink.match(/\/p\/([^/?#]+)/);
+  const slug = m ? m[1] : '';
+  const local = LOCAL_OVERRIDES[slug];
+  if (local) return { href: local, local: true };
+  return { href: originalLink, local: false };
+}
+
 function renderItem(item, idx) {
   const anim = ANIM_VARIANTS[idx % ANIM_VARIANTS.length];
+  const { href, local } = resolveLink(item.link);
+  const linkAttrs = local ? '' : ' target="_blank" rel="noopener noreferrer"';
   const description = item.description
     ? `\n            <p class="rw-desc">${escapeHtml(item.description)}</p>`
     : '';
@@ -109,8 +146,8 @@ function renderItem(item, idx) {
     : escapeHtml(item.date);
 
   return `      <li class="rw-item fade-up ${anim}">
-        <a class="rw-link" href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">
-          <span class="rw-icon">${DOT_SVG}</span>
+        <a class="rw-link" href="${escapeHtml(href)}"${linkAttrs}>
+          <span class="rw-icon">${iconImg(idx)}</span>
           <div class="rw-content">
             <h3 class="rw-title">${escapeHtml(item.title)} <span class="rw-arrow" aria-hidden="true">→</span></h3>${description}
             <p class="rw-meta">${meta}</p>
@@ -122,7 +159,7 @@ function renderItem(item, idx) {
 function renderFallback() {
   return `      <li class="rw-item rw-fallback fade-up rw-anim-drop">
         <a class="rw-link" href="https://studiovincent.substack.com" target="_blank" rel="noopener noreferrer">
-          <span class="rw-icon">${DOT_SVG}</span>
+          <span class="rw-icon">${iconImg(0)}</span>
           <div class="rw-content">
             <h3 class="rw-title">Read all writing on Substack <span class="rw-arrow" aria-hidden="true">→</span></h3>
             <p class="rw-meta">SUBSTACK</p>
@@ -151,39 +188,41 @@ async function main() {
     return;
   }
 
-  let html;
-  try {
-    html = await readFile(HTML_PATH, 'utf8');
-  } catch (err) {
-    console.error(`[build-rss] could not read index.html: ${err.message}`);
-    return;
-  }
+  for (const path of HTML_PATHS) {
+    let html;
+    try {
+      html = await readFile(path, 'utf8');
+    } catch (err) {
+      console.error(`[build-rss] could not read ${path}: ${err.message}`);
+      continue;
+    }
 
-  const startIdx = html.indexOf(MARKER_START);
-  const endIdx = html.indexOf(MARKER_END);
-  if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) {
-    console.error('[build-rss] RSS markers not found; skipping injection.');
-    return;
-  }
+    const startIdx = html.indexOf(MARKER_START);
+    const endIdx = html.indexOf(MARKER_END);
+    if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) {
+      console.warn(`[build-rss] markers not found in ${path}; skipping.`);
+      continue;
+    }
 
-  const before = html.slice(0, startIdx + MARKER_START.length);
-  const after = html.slice(endIdx);
+    const before = html.slice(0, startIdx + MARKER_START.length);
+    const after = html.slice(endIdx);
 
-  let rendered;
-  if (items && items.length > 0) {
-    rendered = items.map(renderItem).join('\n');
-  } else {
-    console.warn('[build-rss] no items parsed; rendering fallback.');
-    rendered = renderFallback();
-  }
+    let rendered;
+    if (items && items.length > 0) {
+      rendered = items.map(renderItem).join('\n');
+    } else {
+      console.warn('[build-rss] no items parsed; rendering fallback.');
+      rendered = renderFallback();
+    }
 
-  const next = `${before}\n${rendered}\n      ${after}`;
+    const next = `${before}\n${rendered}\n      ${after}`;
 
-  if (next !== html) {
-    await writeFile(HTML_PATH, next, 'utf8');
-    console.log('[build-rss] index.html updated.');
-  } else {
-    console.log('[build-rss] no changes needed.');
+    if (next !== html) {
+      await writeFile(path, next, 'utf8');
+      console.log(`[build-rss] ${path} updated.`);
+    } else {
+      console.log(`[build-rss] ${path} no changes needed.`);
+    }
   }
 }
 
