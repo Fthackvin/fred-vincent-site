@@ -87,30 +87,47 @@ const DOT_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
   + '<circle cx="4" cy="20" r="1"/><circle cx="12" cy="20" r="1"/><circle cx="20" cy="20" r="1"/>'
   + '</svg>';
 
-function renderItem(item) {
+/* Six icon-animation variants. Cycled by item index so each piece in the
+   list gets its own micro-flourish when it scrolls into view. The CSS
+   keyframes live in index.html under the .rw-item.rw-anim-* selectors. */
+const ANIM_VARIANTS = [
+  'rw-anim-drop',
+  'rw-anim-cascade',
+  'rw-anim-pulse',
+  'rw-anim-spin',
+  'rw-anim-blur',
+  'rw-anim-rise',
+];
+
+function renderItem(item, idx) {
+  const anim = ANIM_VARIANTS[idx % ANIM_VARIANTS.length];
   const description = item.description
-    ? `\n          <p class="rw-desc">${escapeHtml(item.description)}</p>`
+    ? `\n            <p class="rw-desc">${escapeHtml(item.description)}</p>`
     : '';
   const meta = item.category
     ? `${escapeHtml(item.category)} <span class="rw-sep" aria-hidden="true">·</span> ${escapeHtml(item.date)}`
     : escapeHtml(item.date);
 
-  return `      <li class="rw-item fade-up">
-        <span class="rw-icon">${DOT_SVG}</span>
-        <div class="rw-content">
-          <h3 class="rw-title"><a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title)}</a></h3>${description}
-          <p class="rw-meta">${meta}</p>
-        </div>
+  return `      <li class="rw-item fade-up ${anim}">
+        <a class="rw-link" href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">
+          <span class="rw-icon">${DOT_SVG}</span>
+          <div class="rw-content">
+            <h3 class="rw-title">${escapeHtml(item.title)} <span class="rw-arrow" aria-hidden="true">→</span></h3>${description}
+            <p class="rw-meta">${meta}</p>
+          </div>
+        </a>
       </li>`;
 }
 
 function renderFallback() {
-  return `      <li class="rw-item rw-fallback fade-up">
-        <span class="rw-icon">${DOT_SVG}</span>
-        <div class="rw-content">
-          <h3 class="rw-title"><a href="https://studiovincent.substack.com" target="_blank" rel="noopener noreferrer">Read all writing on Substack</a></h3>
-          <p class="rw-meta">SUBSTACK</p>
-        </div>
+  return `      <li class="rw-item rw-fallback fade-up rw-anim-drop">
+        <a class="rw-link" href="https://studiovincent.substack.com" target="_blank" rel="noopener noreferrer">
+          <span class="rw-icon">${DOT_SVG}</span>
+          <div class="rw-content">
+            <h3 class="rw-title">Read all writing on Substack <span class="rw-arrow" aria-hidden="true">→</span></h3>
+            <p class="rw-meta">SUBSTACK</p>
+          </div>
+        </a>
       </li>`;
 }
 
