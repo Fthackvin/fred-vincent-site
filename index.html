@@ -1464,7 +1464,55 @@ section#contact.block { padding-bottom: var(--s4); }
   .how-actions:has(.how-steps-toggle[open]) > .how-steps-content { animation: none; }
 }
 
+/* Hero-load dot — bounces, pulses, then bursts. One quiet moment of life. */
+.hero-dot-stage {
+  position: relative;
+  height: var(--s8);
+  margin-top: calc(-1 * var(--s8));
+  width: 80px;
+  overflow: hidden;
+  pointer-events: none;
+}
+@media (max-width: 639px) {
+  .hero-dot-stage {
+    height: var(--s7);
+    margin-top: calc(-1 * var(--s7));
+    width: 64px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-dot-stage { display: none; }
+}
+.hero-dot {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--ink-900);
+  transform-origin: center bottom;
+  will-change: transform, opacity, background-color;
+  opacity: 0;
+}
+@media (max-width: 639px) {
+  .hero-dot { width: 24px; height: 24px; }
+}
+.hero-dot-particle {
+  position: absolute;
+  left: 9px;
+  bottom: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--ink-900);
+  pointer-events: none;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
 </style>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 </head>
 <body>
 
@@ -1489,6 +1537,7 @@ section#contact.block { padding-bottom: var(--s4); }
 
   <section class="hero">
     <div class="wrap">
+      <div class="hero-dot-stage" aria-hidden="true"><span class="hero-dot"></span></div>
       <h1 class="hero-fade" style="font-weight: 400;">Creative direction that builds memorable products.</h1>
       <p class="lead fade-up">I help founders and product teams find the version of the work that's worth committing to. Most teams ship the safe version of what they're building because it's easier to defend. The harder version, the one that actually stands out, needs someone in the room to make it inevitable. That's what I do.</p>
       <div class="hero-cta fade-up">
@@ -1894,6 +1943,82 @@ section#contact.block { padding-bottom: var(--s4); }
       if (d) d.open = true;
     });
   });
+})();
+</script>
+
+<script>
+(function () {
+  function init() {
+    if (!window.gsap) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var stage = document.querySelector('.hero-dot-stage');
+    if (!stage) return;
+    var dot = stage.querySelector('.hero-dot');
+    if (!dot) return;
+
+    var INK = '#1A1815';
+    var WARM = '#8B5A3C';
+    var COUNT = 12;
+
+    var particles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var p = document.createElement('span');
+      p.className = 'hero-dot-particle';
+      stage.appendChild(p);
+      particles.push(p);
+    }
+
+    gsap.set(dot, { y: -110, opacity: 1, scaleX: 1, scaleY: 1, backgroundColor: INK });
+
+    var tl = gsap.timeline({ delay: 0.45 });
+
+    // Phase 1: drop + diminishing bounces with squash & stretch on each impact (~1.25s).
+    tl.to(dot, { y: 0, duration: 0.36, ease: 'power2.in' })
+      .to(dot, { scaleX: 1.32, scaleY: 0.68, duration: 0.05, ease: 'power1.out' })
+      .to(dot, { scaleX: 1, scaleY: 1, duration: 0.07, ease: 'power1.in' })
+      .to(dot, { y: -32, duration: 0.17, ease: 'power2.out' })
+      .to(dot, { y: 0, duration: 0.17, ease: 'power2.in' })
+      .to(dot, { scaleX: 1.18, scaleY: 0.82, duration: 0.04, ease: 'power1.out' })
+      .to(dot, { scaleX: 1, scaleY: 1, duration: 0.05, ease: 'power1.in' })
+      .to(dot, { y: -12, duration: 0.10, ease: 'power2.out' })
+      .to(dot, { y: 0, duration: 0.10, ease: 'power2.in' })
+      .to(dot, { scaleX: 1.08, scaleY: 0.92, duration: 0.03, ease: 'power1.out' })
+      .to(dot, { scaleX: 1, scaleY: 1, duration: 0.04, ease: 'power1.in' })
+      .to(dot, { y: -4, duration: 0.05, ease: 'power2.out' })
+      .to(dot, { y: 0, duration: 0.05, ease: 'power2.in' });
+
+    // Phase 2: the dot "decides" — warm pulse before it goes (~0.3s).
+    tl.to(dot, { backgroundColor: WARM, scale: 1.15, duration: 0.18, ease: 'sine.inOut' }, '+=0.06')
+      .to(dot, { backgroundColor: INK, scale: 1, duration: 0.12, ease: 'sine.in' });
+
+    // Phase 3: burst into particles flying outward (~0.8s).
+    tl.add(function () {
+      stage.style.overflow = 'visible';
+      gsap.set(dot, { opacity: 0 });
+      particles.forEach(function (p, idx) {
+        var a = (idx / COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.55;
+        var dist = 70 + Math.random() * 70;
+        var dur = 0.55 + Math.random() * 0.25;
+        gsap.fromTo(p,
+          { x: 0, y: 0, opacity: 1, scale: 1 },
+          { x: Math.cos(a) * dist, y: -Math.sin(a) * dist, opacity: 0, scale: 0.15, duration: dur, ease: 'power2.out' }
+        );
+      });
+    });
+
+    // Hold the timeline open while particles run, then remove the stage entirely.
+    tl.to({}, { duration: 0.9 });
+    tl.add(function () {
+      if (stage.parentNode) stage.parentNode.removeChild(stage);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>
 
