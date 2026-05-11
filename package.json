@@ -1,0 +1,16 @@
+{
+  "name": "fred-vincent-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "studiovincent.co — static site with a build-time RSS fetch for the Substack writing list.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-rss.js"
+  },
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
