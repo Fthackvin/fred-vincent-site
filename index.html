@@ -17,29 +17,49 @@
   // before any navigation — for the browser to actually save scroll
   // position on exit and restore it on back. Switching it at restore
   // time is too late.)
-  var __isHistoryNav = (function () {
+  var __navType = (function () {
     try {
       var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-      if (nav && nav.type) return nav.type === 'back_forward';
+      if (nav && nav.type) return nav.type;
     } catch (e) {}
     try {
-      return performance.navigation && performance.navigation.type === 2;
+      if (performance.navigation) {
+        if (performance.navigation.type === 1) return 'reload';
+        if (performance.navigation.type === 2) return 'back_forward';
+      }
     } catch (e) {}
-    return false;
+    return 'navigate';
   })();
+  var __isHistoryNav = __navType === 'back_forward';
+  var __isReload = __navType === 'reload';
   // Section-return: if the user is coming back from a case study,
   // they set sessionStorage.returnSection on click. Read the flag in
   // head, switch scrollRestoration to 'manual' so the browser doesn't
   // restore a stale scroll first, then snap to the target on
   // DOMContentLoaded with no animation.
+  //
+  // A page refresh, however, should always land at the very top — even
+  // if the user is currently scrolled to #work after a case-study return.
+  // We force scroll to 0 on reload and ignore any returnSection flag.
   var __returnSection = null;
   try { __returnSection = sessionStorage.getItem('returnSection'); } catch (e) {}
-  if (__returnSection) {
+  if (__isReload) {
+    try { sessionStorage.removeItem('returnSection'); } catch (e) {}
+    __returnSection = null;
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    document.addEventListener('DOMContentLoaded', function () {
+      window.scrollTo(0, 0);
+      // Restore 'auto' afterwards so the browser still saves scroll on exit
+      // — needed for back-button restoration from later pages.
+      if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
+    });
+  } else if (__returnSection) {
     try { sessionStorage.removeItem('returnSection'); } catch (e) {}
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     document.addEventListener('DOMContentLoaded', function () {
       var el = document.getElementById(__returnSection);
       if (el) window.scrollTo({ top: el.offsetTop, left: 0, behavior: 'auto' });
+      if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
     });
   } else if ('scrollRestoration' in history) {
     history.scrollRestoration = 'auto';
@@ -96,11 +116,24 @@
     if (__isHistoryNav) return;
     try { if (sessionStorage.getItem('hasSeenIntro')) return; } catch (e) {}
     document.documentElement.classList.add('is-intro');
+    /* Block keyboard-driven scroll while the intro is on screen. CSS handles
+       wheel/touch/scrollbar; this catches Space, Arrows, PageUp/Down, Home/End
+       so the page can't shift before the dot bursts. Detached on reveal. */
+    var SCROLL_KEYS = { ' ':1, 'Spacebar':1, 'ArrowUp':1, 'ArrowDown':1, 'ArrowLeft':1, 'ArrowRight':1, 'PageUp':1, 'PageDown':1, 'Home':1, 'End':1 };
+    function blockScrollKey(e) {
+      var t = e.target;
+      var tag = t && t.tagName;
+      // Don't swallow keys inside form fields.
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+      if (SCROLL_KEYS[e.key]) e.preventDefault();
+    }
+    window.addEventListener('keydown', blockScrollKey, { passive: false });
     function reveal() {
       document.documentElement.classList.remove('is-intro');
       try { sessionStorage.setItem('hasSeenIntro', '1'); } catch (e) {}
       document.removeEventListener('click', reveal, true);
       document.removeEventListener('touchstart', reveal, true);
+      window.removeEventListener('keydown', blockScrollKey);
     }
     document.addEventListener('click', reveal, true);
     document.addEventListener('touchstart', reveal, true);
@@ -264,13 +297,13 @@ body {
 
 /* Moleskine-style dot grid background — sits behind all content. */
 body {
-  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.28'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.38'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 22px 22px;
 }
 @media (max-width: 640px) {
   body {
-    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.28'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.38'/%3E%3C/svg%3E");
     background-size: 26px 26px;
   }
 }
@@ -1754,23 +1787,10 @@ section#contact.block { padding-bottom: var(--s4); }
   opacity: 0;
 }
 
-/* Ink dispersion — inline canvas sitting directly to the right of the
-   "Writing" eyebrow, no gap. */
 .writing-head {
-  display: flex;
-  align-items: center;
   margin-bottom: 0;
 }
-.ink-canvas {
-  display: block;
-  flex: 1;
-  height: 60px;
-  max-width: 480px;
-}
 #writing .writing-statement { margin-top: var(--s2); }
-@media (prefers-reduced-motion: reduce) {
-  .ink-canvas { display: none; }
-}
 
 /* ============================================================
    Dark intro mode — html.is-intro is added by the inline head
@@ -1787,6 +1807,18 @@ section#contact.block { padding-bottom: var(--s4); }
 html.is-intro,
 html.is-intro body {
   background-color: #1a1a1a;
+}
+/* Lock scrolling for the duration of the intro so the bouncing-dot moment
+   plays uninterrupted. Released the instant .is-intro is removed (burst,
+   click/tap, or 3s fallback). touch-action: none covers iOS Safari, where
+   overflow: hidden alone doesn't block touchmove. */
+html.is-intro,
+html.is-intro body {
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+html.is-intro body {
+  touch-action: none;
 }
 html.is-intro .site-header {
   background-color: #1a1a1a;
@@ -2140,7 +2172,7 @@ main > hr,
   </div>
 </header>
 
-<main id="top">
+<main>
 
   <section class="hero">
     <div class="wrap">
@@ -2160,7 +2192,6 @@ main > hr,
     <div class="wrap">
       <div class="writing-head fade-up">
         <h2 class="writing-heading">Recent work</h2>
-        <canvas class="ink-canvas" aria-hidden="true"></canvas>
       </div>
       <p class="writing-statement fade-up">Essays on creative direction, product, making, and why most things you use end up forgettable and how to do it differently.</p>
 
@@ -2168,8 +2199,18 @@ main > hr,
         <ul class="rw-list">
           <!-- RSS:writing:start -->
       <li class="rw-item fade-up rw-anim-drop">
-        <a class="rw-link" href="https://studiovincent.substack.com/p/the-vision-that-gets-built" target="_blank" rel="noopener noreferrer">
+        <a class="rw-link" href="https://studiovincent.substack.com/p/the-aura-design-never-had" target="_blank" rel="noopener noreferrer">
           <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%203.svg" alt="" loading="lazy"></span>
+          <div class="rw-content">
+            <h3 class="rw-title">The aura design never had <span class="rw-arrow" aria-hidden="true">→</span></h3>
+            <p class="rw-desc">Reading Walter Benjamin in the age of generative design</p>
+            <p class="rw-meta">MAY 2026</p>
+          </div>
+        </a>
+      </li>
+      <li class="rw-item fade-up rw-anim-cascade">
+        <a class="rw-link" href="https://studiovincent.substack.com/p/the-vision-that-gets-built" target="_blank" rel="noopener noreferrer">
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%204.svg" alt="" loading="lazy"></span>
           <div class="rw-content">
             <h3 class="rw-title">The vision that gets built <span class="rw-arrow" aria-hidden="true">→</span></h3>
             <p class="rw-desc">What missing in most product teams that means the safe version always wins.</p>
@@ -2177,9 +2218,9 @@ main > hr,
           </div>
         </a>
       </li>
-      <li class="rw-item fade-up rw-anim-cascade">
+      <li class="rw-item fade-up rw-anim-pulse">
         <a class="rw-link" href="/work/feed-redesign/">
-          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%204.svg" alt="" loading="lazy"></span>
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%205.svg" alt="" loading="lazy"></span>
           <div class="rw-content">
             <h3 class="rw-title">Answering the wrong question  <span class="rw-arrow" aria-hidden="true">→</span></h3>
             <p class="rw-desc">How we went from a question with no answer, to a question with a clear one.</p>
@@ -2187,9 +2228,9 @@ main > hr,
           </div>
         </a>
       </li>
-      <li class="rw-item fade-up rw-anim-pulse">
+      <li class="rw-item fade-up rw-anim-spin">
         <a class="rw-link" href="/work/onboarding-redesign/">
-          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%205.svg" alt="" loading="lazy"></span>
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%206.svg" alt="" loading="lazy"></span>
           <div class="rw-content">
             <h3 class="rw-title">All aboard  <span class="rw-arrow" aria-hidden="true">→</span></h3>
             <p class="rw-desc">This is a story about how we redesigned onboarding for Kaizen and how the design itself made the team commit to buildin…</p>
@@ -2719,169 +2760,6 @@ main > hr,
       // margin-bottom gap above the headline) remains — removing it would
       // shift the whole page up after the animation. Just clear its children.
       while (stage.firstChild) stage.removeChild(stage.firstChild);
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-</script>
-
-<script>
-/* Ink-moment dispersion — canvas animation. Triggered once when the section
-   enters the viewport. 35–50 hard-edged black dots disperse outward from a
-   stationary anchor with a heavy front-loaded ease, slight perpendicular
-   drift, and a subtle fade in the last leg (never to zero). */
-(function () {
-  function init() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var canvas = document.querySelector('.ink-canvas');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    var INK = '#1A1815';
-    var DURATION = 5200; // ms — slow, contemplative
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    var width = 0, height = 0, dots = [], started = false, startTime = null;
-
-    function sizeCanvas() {
-      var rect = canvas.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(dpr, dpr);
-    }
-
-    function rand(min, max) { return min + Math.random() * (max - min); }
-
-    function buildDots() {
-      /* Canvas starts immediately after the "Writing" eyebrow (no gap), so
-         the anchor sits a few px in from the left edge of the canvas at
-         vertical centre. */
-      var cx = 6;
-      var cy = height / 2;
-      var arr = [];
-
-      // Anchor dot — small, sits to the right of "Writing", never moves.
-      arr.push({
-        sx: cx, sy: cy, tx: cx, ty: cy,
-        size: 8,
-        curve: 0,
-        targetOpacity: 1,
-        delay: 0,
-        anchor: true
-      });
-
-      var count = 38 + Math.floor(Math.random() * 18); // 38–56
-      var maxRadius = (width - cx) * 0.95; // splay across the page to the right
-
-      for (var i = 0; i < count; i++) {
-        // Start: tight cluster around the anchor.
-        var startAngle = Math.random() * Math.PI * 2;
-        var startR = Math.pow(Math.random(), 1.2) * 10;
-        var sx = cx + Math.cos(startAngle) * startR;
-        var sy = cy + Math.sin(startAngle) * startR;
-
-        // End: full 360° splay, with vertical squash so the cloud reads
-        // wider than tall and stays roughly within the canvas height.
-        var outAngle = Math.random() * Math.PI * 2;
-        var outR = 30 + Math.pow(Math.random(), 1.4) * maxRadius;
-        var tx = cx + Math.cos(outAngle) * outR;
-        var ty = cy + Math.sin(outAngle) * outR * 0.45;
-
-        // Sizes — power-law bias toward small.
-        var sizeR = Math.random();
-        var size = 1.5 + Math.pow(sizeR, 2.3) * 10;
-
-        arr.push({
-          sx: sx, sy: sy, tx: tx, ty: ty,
-          size: size,
-          curve: (Math.random() - 0.5) * 0.30,
-          targetOpacity: 0,
-          delay: Math.random() * 250,
-          anchor: false
-        });
-      }
-
-      return arr;
-    }
-
-    // Approximation of cubic-bezier(0.16, 1, 0.3, 1) — strong initial movement,
-    // long slow tail. Quartic ease-out gets close enough for this purpose.
-    function ease(t) {
-      if (t <= 0) return 0;
-      if (t >= 1) return 1;
-      return 1 - Math.pow(1 - t, 4);
-    }
-
-    function frame(time) {
-      if (startTime == null) startTime = time;
-      var elapsed = time - startTime;
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = INK;
-
-      var done = true;
-      for (var i = 0; i < dots.length; i++) {
-        var d = dots[i];
-        var localT = (elapsed - d.delay) / DURATION;
-        if (localT < 1) done = false;
-        var t = ease(Math.max(0, Math.min(1, localT)));
-
-        var dx = d.tx - d.sx;
-        var dy = d.ty - d.sy;
-        // Perpendicular drift peaks mid-flight for an organic curve.
-        var perpX = -dy * d.curve;
-        var perpY = dx * d.curve;
-        var bow = Math.sin(t * Math.PI);
-        var x = d.sx + dx * t + perpX * bow;
-        var y = d.sy + dy * t + perpY * bow;
-
-        var opacity = 1;
-        if (!d.anchor) {
-          // Fade tracks the motion — as a dot moves out it fades away.
-          opacity = 1 - (1 - d.targetOpacity) * Math.pow(t, 0.85);
-        }
-        ctx.globalAlpha = opacity;
-        ctx.beginPath();
-        ctx.arc(x, y, d.size / 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.globalAlpha = 1;
-
-      if (!done) requestAnimationFrame(frame);
-    }
-
-    function start() {
-      if (started) return;
-      started = true;
-      sizeCanvas();
-      dots = buildDots();
-      startTime = null;
-      requestAnimationFrame(frame);
-    }
-
-    var observer = new IntersectionObserver(function (entries) {
-      for (var i = 0; i < entries.length; i++) {
-        if (entries[i].isIntersecting) {
-          start();
-          observer.disconnect();
-          break;
-        }
-      }
-    }, { threshold: 0.3 });
-    observer.observe(canvas);
-
-    // Pre-size for sharpness before the trigger fires.
-    sizeCanvas();
-    window.addEventListener('resize', function () {
-      if (!started) sizeCanvas();
     });
   }
 
