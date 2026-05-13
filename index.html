@@ -1921,47 +1921,60 @@ main > hr,
 }
 .writing-heading { margin: 0; }
 
-/* Tablist — mono caps, hairline underline beneath the row. Active tab
-   gets a 1px underline drawn just below the row baseline. Wraps to a
-   second line on narrow screens. */
+/* Tablist — Apple-style segmented control. Tabs sit in a pill-shaped
+   tray with a translucent background; the active tab is a white pill
+   that slides between positions, faintly raised. */
 .sw-tabs {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: var(--s5) var(--s6);
-  margin: var(--s7) 0 var(--s6) 0;
-  border-bottom: 1px solid var(--paper-300);
+  align-items: stretch;
+  padding: 0;
+  gap: 0;
+  background: transparent;
+  margin: var(--s5) 0 var(--s6) 0;
+  max-width: 100%;
 }
 .sw-tab {
   appearance: none;
   background: transparent;
-  border: 0;
-  padding: 0 0 var(--s3) 0;
-  margin: 0;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: var(--mono-tracking);
-  text-transform: uppercase;
+  border: 1px solid rgba(26, 24, 21, 0.22);
+  margin-right: -1px;
+  padding: 11px 18px;
+  font-family: var(--text);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--ink-500);
   cursor: pointer;
+  border-radius: 0;
+  transition: background 200ms var(--ease), color 200ms var(--ease), border-color 200ms var(--ease);
+  white-space: nowrap;
+  line-height: 1.3;
   position: relative;
-  transition: color 180ms var(--ease);
-  text-align: left;
-  line-height: 1.4;
 }
-.sw-tab:hover { color: var(--ink-700); }
-.sw-tab.is-active { color: var(--ink-900); }
-.sw-tab.is-active::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 1px;
-  background: var(--ink-900);
+.sw-tab:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.sw-tab:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  margin-right: 0;
+}
+.sw-tab:hover { color: var(--ink-900); }
+.sw-tab.is-active {
+  background: var(--paper-50);
+  color: var(--ink-900);
+  border-color: var(--ink-900);
+  z-index: 1;
 }
 .sw-tab:focus-visible {
   outline: 2px solid var(--ink-700);
-  outline-offset: 4px;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sw-tab { transition: none; }
 }
 
 .sw-panels { max-width: 720px; }
@@ -1975,14 +1988,64 @@ main > hr,
   .sw-panel { transition: none; }
 }
 
-.sw-desc {
-  font-family: var(--text);
-  font-weight: 300;
-  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
-  line-height: 1.65;
-  color: var(--ink-700);
-  margin: 0 0 var(--s6) 0;
-  max-width: 62ch;
+/* Stage — within each form, only one step is visible at a time.
+   Inactive steps stack absolutely behind so the section height tracks
+   the active step. Gentle fade + 10px lift between steps, matching
+   the original step-form feel. */
+.sw-stage { position: relative; }
+.sw-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 280ms ease-out, transform 280ms ease-out;
+}
+.sw-step.is-active {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sw-step { transition: none; }
+}
+
+.sw-back {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+  transition: color 180ms var(--ease);
+}
+.sw-back:hover { color: var(--ink-900); text-decoration: none; }
+.sw-back:focus-visible { outline: 2px solid var(--ink-700); outline-offset: 4px; }
+.sw-back[hidden] { display: none; }
+.sw-cta[hidden] { display: none; }
+
+.sw-step-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .sw-form {
@@ -1997,7 +2060,6 @@ main > hr,
 }
 .sw-question {
   font-family: var(--display);
-  font-style: italic;
   font-weight: 400;
   font-size: clamp(18px, 1.8vw, 22px);
   line-height: 1.35;
@@ -2017,7 +2079,7 @@ main > hr,
 .sw-input {
   font-family: var(--text);
   font-weight: 300;
-  font-size: clamp(16px, 1.4vw + 0.5rem, 19px);
+  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
   line-height: 1.6;
   color: var(--ink-900);
   background: rgba(255, 255, 255, 0.45);
@@ -2059,7 +2121,7 @@ main > hr,
   line-height: 1.5;
   color: var(--ink-500);
   margin: 0;
-  max-width: 62ch;
+  width: 100%;
   opacity: 0.85;
 }
 
@@ -2075,7 +2137,7 @@ main > hr,
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-family: var(--text);
   font-weight: 500;
   font-size: 14px;
@@ -2084,7 +2146,7 @@ main > hr,
   background: var(--ink-900);
   border: 1px solid var(--ink-900);
   border-radius: 10px;
-  padding: 14px 28px;
+  padding: 14px 48px;
   transition: background 180ms var(--ease), transform 180ms var(--ease), opacity 180ms var(--ease);
 }
 .sw-cta:hover { background: var(--ink-700); border-color: var(--ink-700); transform: translateY(-1px); }
@@ -2146,7 +2208,7 @@ main > hr,
       <a href="#work">Work</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="/about">About</a>
-      <a class="nav-cta" href="#send-problem">Send work</a>
+      <a class="nav-cta" href="#send-problem">Send stuff</a>
     </nav>
   </div>
 </header>
@@ -2227,15 +2289,14 @@ main > hr,
 
   <section id="send-problem" class="block sw" aria-labelledby="sw-heading">
     <div class="wrap">
-      <h2 class="sw-heading fade-up" id="sw-heading">Send me your work</h2>
+      <h2 class="sw-heading fade-up" id="sw-heading">Send me your stuff</h2>
       <p class="sw-intro fade-up">I respond to a few submissions each month with a considered note, a sketch, or both. The ones I reply to are the ones where I have something genuinely useful to say. Pick the closest fit below.</p>
-      <p class="sw-scarcity fade-up">I take a few of these each month — the ones that resonate.</p>
 
       <div class="sw-tabs fade-up" role="tablist" aria-label="Choose what to send">
         <button type="button" class="sw-tab is-active" role="tab" id="sw-tab-audit"
                 aria-selected="true" aria-controls="sw-panel-audit" data-option="audit" tabindex="0">Audit my product</button>
         <button type="button" class="sw-tab" role="tab" id="sw-tab-brand-product"
-                aria-selected="false" aria-controls="sw-panel-brand-product" data-option="brand-product" tabindex="-1">Where my brand and product disagree</button>
+                aria-selected="false" aria-controls="sw-panel-brand-product" data-option="brand-product" tabindex="-1">Brand vs product</button>
         <button type="button" class="sw-tab" role="tab" id="sw-tab-category"
                 aria-selected="false" aria-controls="sw-panel-category" data-option="category" tabindex="-1">Reframe my category</button>
       </div>
@@ -2243,125 +2304,164 @@ main > hr,
       <div class="sw-panels fade-up">
 
         <div role="tabpanel" id="sw-panel-audit" aria-labelledby="sw-tab-audit"
-             class="sw-panel is-active" data-option="audit" data-next-step="Quick Win Sprint">
-          <p class="sw-desc">Send me a link to your product or a few screenshots. I'll spend real time with it and respond with three observations about what's working, three about what isn't, and the single bet I'd make if I were you.</p>
-          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate>
+             class="sw-panel is-active" data-option="audit">
+          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate data-total-steps="3">
             <input type="hidden" name="option" value="audit">
             <input type="hidden" name="next_step" value="Quick Win Sprint">
-            <div class="sw-field">
-              <label for="sw-audit-product" class="sw-question">What's the product?</label>
-              <input id="sw-audit-product" type="text" name="product" class="sw-input" required>
-            </div>
-            <div class="sw-field">
-              <label for="sw-audit-access" class="sw-question">How do I access it? <span class="sw-optional">(Optional)</span></label>
-              <textarea id="sw-audit-access" name="access" class="sw-input sw-input--area" rows="3"></textarea>
-            </div>
-            <div class="sw-field">
-              <label for="sw-audit-context" class="sw-question">What are you currently trying to figure out about it?</label>
-              <textarea id="sw-audit-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300"></textarea>
-            </div>
-            <div class="sw-field">
-              <label for="sw-audit-email" class="sw-question">Where should I send the response?</label>
-              <input id="sw-audit-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
-            </div>
-            <div class="sw-field">
-              <label for="sw-audit-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
-              <input id="sw-audit-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
+            <div class="sw-stage">
+              <div class="sw-step is-active" data-step="1" role="group" aria-labelledby="sw-audit-q1">
+                <div class="sw-field">
+                  <label for="sw-audit-product" id="sw-audit-q1" class="sw-question">What's the product?</label>
+                  <input id="sw-audit-product" type="text" name="product" class="sw-input" required placeholder="A link, or a few words about it">
+                </div>
+                <div class="sw-field">
+                  <label for="sw-audit-access" class="sw-question">How do I access it? <span class="sw-optional">(Optional)</span></label>
+                  <input id="sw-audit-access" type="text" name="access" class="sw-input" placeholder="URL, login, or how to find it">
+                </div>
+              </div>
+              <div class="sw-step" data-step="2" role="group" aria-labelledby="sw-audit-q2" inert>
+                <div class="sw-field">
+                  <label for="sw-audit-context" id="sw-audit-q2" class="sw-question">What are you currently trying to figure out about it?</label>
+                  <textarea id="sw-audit-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300" required placeholder="Tell me what you're stuck on. I'll send back what I think is working, what isn't, and what I'd do if it were mine."></textarea>
+                </div>
+              </div>
+              <div class="sw-step" data-step="3" role="group" aria-labelledby="sw-audit-q3" inert>
+                <div class="sw-field">
+                  <label for="sw-audit-email" id="sw-audit-q3" class="sw-question">Where should I send the response?</label>
+                  <input id="sw-audit-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
+                </div>
+                <div class="sw-field">
+                  <label for="sw-audit-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
+                  <input id="sw-audit-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
+                </div>
+                <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
+              </div>
             </div>
             <input type="text" name="_gotcha" class="sw-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
             <div class="sw-actions">
-              <button type="submit" class="sw-cta">
+              <button type="button" class="sw-cta sw-next">
+                <span class="sw-cta-label">Next</span>
+                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+              </button>
+              <button type="submit" class="sw-cta sw-submit" hidden>
                 <span class="sw-cta-label">Send</span>
                 <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
               </button>
+              <button type="button" class="sw-back" hidden>Back</button>
+              <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
             </div>
-            <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
+            <p class="sw-step-status" aria-live="polite"></p>
           </form>
           <div class="sw-success" hidden role="status" aria-live="polite">
-            <p>Got it. I sit with these as long as they need. If something useful comes up, you'll hear from me. The ones I respond to usually move into a Quick Win Sprint, which is the same work at depth.</p>
+            <p>Got it. I sit with these as long as they need. If something useful comes to mind, I'll write back. When this turns into proper work together, it's usually a Quick Win Sprint — the same thing, just at depth.</p>
           </div>
         </div>
 
         <div role="tabpanel" id="sw-panel-brand-product" aria-labelledby="sw-tab-brand-product"
-             class="sw-panel" data-option="brand-product" data-next-step="Exploratory engagement" hidden>
-          <p class="sw-desc">Send me your brand materials (website, deck, brand book) and access to your product. I'll respond with three specific places the brand says one thing and the product feels like another, and what the alignment work would look like.</p>
-          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate>
+             class="sw-panel" data-option="brand-product" hidden>
+          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate data-total-steps="3">
             <input type="hidden" name="option" value="brand-product">
             <input type="hidden" name="next_step" value="Exploratory engagement">
-            <div class="sw-field">
-              <label for="sw-brand-brand" class="sw-question">Where can I see your brand?</label>
-              <input id="sw-brand-brand" type="text" name="brand" class="sw-input" required>
-            </div>
-            <div class="sw-field">
-              <label for="sw-brand-access" class="sw-question">Where can I see your product?</label>
-              <textarea id="sw-brand-access" name="access" class="sw-input sw-input--area" rows="3" required></textarea>
-            </div>
-            <div class="sw-field">
-              <label for="sw-brand-context" class="sw-question">What feels disconnected to you?</label>
-              <textarea id="sw-brand-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300"></textarea>
-            </div>
-            <div class="sw-field">
-              <label for="sw-brand-email" class="sw-question">Where should I send the response?</label>
-              <input id="sw-brand-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
-            </div>
-            <div class="sw-field">
-              <label for="sw-brand-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
-              <input id="sw-brand-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
+            <div class="sw-stage">
+              <div class="sw-step is-active" data-step="1" role="group" aria-labelledby="sw-brand-q1">
+                <div class="sw-field">
+                  <label for="sw-brand-brand" id="sw-brand-q1" class="sw-question">Where can I see your brand?</label>
+                  <input id="sw-brand-brand" type="text" name="brand" class="sw-input" required placeholder="Website, deck, or brand book — wherever the brand lives">
+                </div>
+                <div class="sw-field">
+                  <label for="sw-brand-access" class="sw-question">Where can I see your product?</label>
+                  <input id="sw-brand-access" type="text" name="access" class="sw-input" required placeholder="Product URL or login">
+                </div>
+              </div>
+              <div class="sw-step" data-step="2" role="group" aria-labelledby="sw-brand-q2" inert>
+                <div class="sw-field">
+                  <label for="sw-brand-context" id="sw-brand-q2" class="sw-question">What feels disconnected to you?</label>
+                  <textarea id="sw-brand-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300" required placeholder="Tell me what feels off. I'll send back the specific spots where the brand and the product don't match up, and what fixing that could look like."></textarea>
+                </div>
+              </div>
+              <div class="sw-step" data-step="3" role="group" aria-labelledby="sw-brand-q3" inert>
+                <div class="sw-field">
+                  <label for="sw-brand-email" id="sw-brand-q3" class="sw-question">Where should I send the response?</label>
+                  <input id="sw-brand-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
+                </div>
+                <div class="sw-field">
+                  <label for="sw-brand-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
+                  <input id="sw-brand-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
+                </div>
+                <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
+              </div>
             </div>
             <input type="text" name="_gotcha" class="sw-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
             <div class="sw-actions">
-              <button type="submit" class="sw-cta">
+              <button type="button" class="sw-cta sw-next">
+                <span class="sw-cta-label">Next</span>
+                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+              </button>
+              <button type="submit" class="sw-cta sw-submit" hidden>
                 <span class="sw-cta-label">Send</span>
                 <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
               </button>
+              <button type="button" class="sw-back" hidden>Back</button>
+              <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
             </div>
-            <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
+            <p class="sw-step-status" aria-live="polite"></p>
           </form>
           <div class="sw-success" hidden role="status" aria-live="polite">
-            <p>Got it. I sit with these as long as they need. If something useful comes up, you'll hear from me. The ones I respond to usually move into an Exploratory engagement, where we work out what the alignment looks like in detail.</p>
+            <p>Got it. I sit with these as long as they need. If something useful comes to mind, I'll write back. When this turns into proper work together, it's usually an Exploratory engagement — where we work out what alignment actually looks like.</p>
           </div>
         </div>
 
         <div role="tabpanel" id="sw-panel-category" aria-labelledby="sw-tab-category"
-             class="sw-panel" data-option="category" data-next-step="Step change engagement" hidden>
-          <p class="sw-desc">Tell me what category you're in and where you sit in it. I'll respond with the obvious move everyone is making, the unobvious move nobody is making, and three or four cross-domain references for what an unconventional version could look like.</p>
-          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate>
+             class="sw-panel" data-option="category" hidden>
+          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate data-total-steps="3">
             <input type="hidden" name="option" value="category">
             <input type="hidden" name="next_step" value="Step change engagement">
-            <div class="sw-field">
-              <label for="sw-cat-category" class="sw-question">What's your category?</label>
-              <input id="sw-cat-category" type="text" name="category" class="sw-input" required placeholder="e.g. AI music generation, B2B hotel software">
-            </div>
-            <div class="sw-field">
-              <label for="sw-cat-context" class="sw-question">What's your current positioning within it?</label>
-              <textarea id="sw-cat-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300"></textarea>
-            </div>
-            <div class="sw-field">
-              <label for="sw-cat-access" class="sw-question">Where can I see your product? <span class="sw-optional">(Optional)</span></label>
-              <input id="sw-cat-access" type="text" name="access" class="sw-input">
-            </div>
-            <div class="sw-field">
-              <label for="sw-cat-email" class="sw-question">Where should I send the response?</label>
-              <input id="sw-cat-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
-            </div>
-            <div class="sw-field">
-              <label for="sw-cat-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
-              <input id="sw-cat-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
+            <div class="sw-stage">
+              <div class="sw-step is-active" data-step="1" role="group" aria-labelledby="sw-cat-q1">
+                <div class="sw-field">
+                  <label for="sw-cat-category" id="sw-cat-q1" class="sw-question">What's your category?</label>
+                  <input id="sw-cat-category" type="text" name="category" class="sw-input" required placeholder="e.g. AI music generation, B2B hotel software">
+                </div>
+                <div class="sw-field">
+                  <label for="sw-cat-access" class="sw-question">Where can I see your product? <span class="sw-optional">(Optional)</span></label>
+                  <input id="sw-cat-access" type="text" name="access" class="sw-input" placeholder="Product link">
+                </div>
+              </div>
+              <div class="sw-step" data-step="2" role="group" aria-labelledby="sw-cat-q2" inert>
+                <div class="sw-field">
+                  <label for="sw-cat-context" id="sw-cat-q2" class="sw-question">What's your current positioning within it?</label>
+                  <textarea id="sw-cat-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300" required placeholder="Tell me where you sit. I'll send back what everyone in the space is doing, what no one is doing, and a few references from outside it."></textarea>
+                </div>
+              </div>
+              <div class="sw-step" data-step="3" role="group" aria-labelledby="sw-cat-q3" inert>
+                <div class="sw-field">
+                  <label for="sw-cat-email" id="sw-cat-q3" class="sw-question">Where should I send the response?</label>
+                  <input id="sw-cat-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
+                </div>
+                <div class="sw-field">
+                  <label for="sw-cat-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
+                  <input id="sw-cat-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
+                </div>
+                <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
+              </div>
             </div>
             <input type="text" name="_gotcha" class="sw-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
             <div class="sw-actions">
-              <button type="submit" class="sw-cta">
+              <button type="button" class="sw-cta sw-next">
+                <span class="sw-cta-label">Next</span>
+                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+              </button>
+              <button type="submit" class="sw-cta sw-submit" hidden>
                 <span class="sw-cta-label">Send</span>
                 <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
               </button>
+              <button type="button" class="sw-back" hidden>Back</button>
+              <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
             </div>
-            <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
+            <p class="sw-step-status" aria-live="polite"></p>
           </form>
           <div class="sw-success" hidden role="status" aria-live="polite">
-            <p>Got it. I sit with these as long as they need. If something useful comes up, you'll hear from me. The ones I respond to usually move into a Step change engagement, where we develop the unconventional direction into something the team can build.</p>
+            <p>Got it. I sit with these as long as they need. If something useful comes to mind, I'll write back. When this turns into proper work together, it's usually a Step Change engagement — where we take the different direction and shape it into something the team can build.</p>
           </div>
         </div>
 
@@ -2840,11 +2940,11 @@ main > hr,
 </script>
 
 <script>
-/* Send me your work — three-option tablist + per-option form.
-   Tabs swap the visible panel with a brief fade. Each form posts JSON
-   to /api/submit-problem (Vercel function), which proxies to Formspree
-   via a server-side env var. Email and name are mirrored across forms
-   so a visitor only types them once. */
+/* Send me your work — three-option tablist with a step-form per option.
+   Tabs swap the visible panel with a brief fade. Each form posts JSON to
+   /api/submit-problem (Vercel function), which proxies to Formspree via
+   a server-side env var. Email and name are mirrored across forms so a
+   visitor exploring multiple options only types them once. */
 (function () {
   var section = document.getElementById('send-problem');
   if (!section) return;
@@ -2856,12 +2956,7 @@ main > hr,
   var FADE_MS = 150;
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function focusFirstField(panel) {
-    var first = panel.querySelector('input:not([type=hidden]):not(.sw-honeypot), textarea');
-    if (first) setTimeout(function () { first.focus({ preventScroll: true }); }, 60);
-  }
-
-  function activate(option, opts) {
+  function activateTab(option, opts) {
     opts = opts || {};
     var nextTab = tabs.filter(function (t) { return t.dataset.option === option; })[0];
     var nextPanel = panels.filter(function (p) { return p.dataset.option === option; })[0];
@@ -2875,10 +2970,7 @@ main > hr,
     });
 
     var current = panels.filter(function (p) { return !p.hidden; })[0];
-    if (current === nextPanel) {
-      if (opts.focusField) focusFirstField(nextPanel);
-      return;
-    }
+    if (current === nextPanel) return;
 
     function reveal() {
       panels.forEach(function (p) {
@@ -2889,7 +2981,6 @@ main > hr,
         nextPanel.classList.add('is-fading');
         requestAnimationFrame(function () { nextPanel.classList.remove('is-fading'); });
       }
-      if (opts.focusField) focusFirstField(nextPanel);
     }
 
     if (current && !reduceMotion) {
@@ -2901,7 +2992,7 @@ main > hr,
   }
 
   tabs.forEach(function (tab) {
-    tab.addEventListener('click', function () { activate(tab.dataset.option, { focusField: true }); });
+    tab.addEventListener('click', function () { activateTab(tab.dataset.option); });
   });
 
   // Arrow / Home / End keyboard navigation for the tablist (WAI-ARIA).
@@ -2916,12 +3007,11 @@ main > hr,
     if (next >= 0) {
       e.preventDefault();
       tabs[next].focus();
-      activate(tabs[next].dataset.option, { focusField: false });
+      activateTab(tabs[next].dataset.option);
     }
   });
 
-  // Email and name are convenience-mirrored across forms so a visitor
-  // exploring multiple options only types them once.
+  // Email + name mirrored across forms so a visitor only types them once.
   function mirror(selector) {
     var fields = Array.prototype.slice.call(section.querySelectorAll(selector));
     fields.forEach(function (f) {
@@ -2933,27 +3023,68 @@ main > hr,
   mirror('input.sw-email');
   mirror('input.sw-name');
 
-  // Per-form submission handler.
-  var forms = Array.prototype.slice.call(section.querySelectorAll('.sw-form'));
-  forms.forEach(function (form) {
-    var cta = form.querySelector('.sw-cta');
-    var ctaLabel = cta.querySelector('.sw-cta-label');
-    var originalLabel = ctaLabel.textContent;
+  // Step navigation + submission, per form.
+  Array.prototype.slice.call(section.querySelectorAll('.sw-form')).forEach(initForm);
+
+  function initForm(form) {
+    var steps = Array.prototype.slice.call(form.querySelectorAll('.sw-step'));
+    var total = parseInt(form.dataset.totalSteps, 10) || steps.length;
+    var nextBtn = form.querySelector('.sw-next');
+    var backBtn = form.querySelector('.sw-back');
+    var submitBtn = form.querySelector('.sw-submit');
+    var submitLabel = submitBtn && submitBtn.querySelector('.sw-cta-label');
+    var originalSubmitLabel = submitLabel ? submitLabel.textContent : 'Send';
+    var statusEl = form.querySelector('.sw-step-status');
     var errorEl = form.querySelector('.sw-error');
     var panel = form.closest('.sw-panel');
-    var successEl = panel.querySelector('.sw-success');
+    var successEl = panel && panel.querySelector('.sw-success');
+    var current = 1;
 
     function showError(msg) { errorEl.textContent = msg; errorEl.hidden = false; }
-    function clearError()    { errorEl.textContent = '';  errorEl.hidden = true; }
+    function clearError() { errorEl.textContent = ''; errorEl.hidden = true; }
 
-    function validate() {
-      var required = form.querySelectorAll('[required]');
+    function setStep(n, opts) {
+      opts = opts || {};
+      current = n;
+      steps.forEach(function (s) {
+        var num = parseInt(s.dataset.step, 10);
+        var on = num === n;
+        s.classList.toggle('is-active', on);
+        if (on) {
+          s.removeAttribute('inert');
+          s.removeAttribute('aria-hidden');
+        } else {
+          s.setAttribute('inert', '');
+          s.setAttribute('aria-hidden', 'true');
+        }
+      });
+      if (statusEl) statusEl.textContent = 'Step ' + n + ' of ' + total;
+
+      if (backBtn) backBtn.hidden = (n === 1);
+      if (n < total) {
+        if (nextBtn) nextBtn.hidden = false;
+        if (submitBtn) submitBtn.hidden = true;
+      } else {
+        if (nextBtn) nextBtn.hidden = true;
+        if (submitBtn) submitBtn.hidden = false;
+      }
+      clearError();
+
+      if (opts.focusField !== false) {
+        var first = steps[n - 1].querySelector('input:not([type=hidden]):not(.sw-honeypot), textarea');
+        if (first) setTimeout(function () { first.focus({ preventScroll: true }); }, 100);
+      }
+    }
+
+    function validateStep(n) {
+      var s = steps[n - 1];
+      var required = s.querySelectorAll('[required]');
       for (var i = 0; i < required.length; i++) {
         var el = required[i];
         var ok = (el.value || '').trim().length > 0;
         if (ok && el.type === 'email') ok = el.checkValidity();
         if (!ok) {
-          el.focus({ preventScroll: false });
+          el.focus();
           if (el.type === 'email') showError('Please enter a valid email so I can send the response back.');
           else showError('This field is required.');
           return false;
@@ -2962,12 +3093,35 @@ main > hr,
       return true;
     }
 
+    function goNext() {
+      if (!validateStep(current)) return;
+      if (current < total) setStep(current + 1);
+    }
+    function goBack() {
+      if (current > 1) setStep(current - 1);
+    }
+
+    if (nextBtn) nextBtn.addEventListener('click', goNext);
+    if (backBtn) backBtn.addEventListener('click', goBack);
+
+    // Plain Enter advances on text inputs; Shift+Enter newlines in textareas.
+    form.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' || e.shiftKey) return;
+      var t = e.target;
+      if (!t.matches('input[type="text"], input[type="email"]')) return;
+      if (current < total) {
+        e.preventDefault();
+        goNext();
+      }
+    });
+
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
-      if (!validate()) return;
+      if (!validateStep(current)) return;
+      if (!submitBtn) return;
       clearError();
-      cta.disabled = true;
-      ctaLabel.textContent = 'Sending…';
+      submitBtn.disabled = true;
+      submitLabel.textContent = 'Sending…';
 
       var data = {};
       new FormData(form).forEach(function (v, k) { data[k] = v; });
@@ -2979,25 +3133,26 @@ main > hr,
           body: JSON.stringify(data),
         });
         if (!res.ok) throw new Error('submit-failed');
-        // Success — hide the form, reveal the option-specific success block.
         form.hidden = true;
         if (successEl) successEl.hidden = false;
         clearError();
       } catch (err) {
-        cta.disabled = false;
-        cta.classList.add('is-retry');
-        ctaLabel.textContent = 'Try again';
+        submitBtn.disabled = false;
+        submitBtn.classList.add('is-retry');
+        submitLabel.textContent = 'Try again';
         clearError();
         var fields = form.querySelectorAll('input, textarea');
         function reset() {
-          cta.classList.remove('is-retry');
-          ctaLabel.textContent = originalLabel;
+          submitBtn.classList.remove('is-retry');
+          submitLabel.textContent = originalSubmitLabel;
           fields.forEach(function (f) { f.removeEventListener('input', reset); });
         }
         fields.forEach(function (f) { f.addEventListener('input', reset); });
       }
     });
-  });
+
+    setStep(1, { focusField: false });
+  }
 })();
 </script>
 
