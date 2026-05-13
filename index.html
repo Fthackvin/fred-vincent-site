@@ -2953,7 +2953,14 @@ main > hr,
   /* Typewriter placeholder cycling — first step only. Pauses for
      prefers-reduced-motion and stops as soon as the user engages
      with the field. Resumes from the next example if they blur an
-     empty field. */
+     empty field.
+
+     Temporarily hidden: flip SHOW_TYPED_PLACEHOLDER back to true to
+     re-enable. The textarea keeps an empty placeholder in the meantime. */
+  var SHOW_TYPED_PLACEHOLDER = false;
+  problemField.placeholder = '';
+  if (!SHOW_TYPED_PLACEHOLDER) return;
+
   var EXAMPLES = [
     "Our onboarding isn't converting trials to paid and we don't know why. We need a sharper read on what to change.",
     "Our brand promise and our product don't quite match. We need to figure out what we actually are now.",
