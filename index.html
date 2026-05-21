@@ -2009,6 +2009,32 @@ html.is-intro .site-footer {
 html.is-intro .hero h1 {
   color: var(--paper-100);
 }
+/* Public site keeps the original hero copy; the unlock URL (and localhost)
+   show the new two-phase headline + tagline. */
+.hero-public-text { display: none; }
+.hero-unlocked-text { display: inline; }
+.lead-public-text { display: none; }
+.lead-unlocked-text { display: inline; }
+html.is-public .hero-public-text { display: inline; }
+html.is-public .hero-unlocked-text { display: none; }
+html.is-public .lead-public-text { display: inline; }
+html.is-public .lead-unlocked-text { display: none; }
+/* Two-phase headline (unlock variant): dark intro shows the load line;
+   reveal shows the H1 a fraction of a second after the dot bursts. */
+.hero-intro-text { display: none; }
+.hero-revealed-text { display: inline; }
+html.is-intro .hero-intro-text { display: inline; }
+html.is-intro .hero-revealed-text { display: none; }
+html:not(.is-intro) .hero-revealed-text {
+  animation: heroRevealedIn 320ms cubic-bezier(0.22, 0.61, 0.36, 1) 150ms backwards;
+}
+@keyframes heroRevealedIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not(.is-intro) .hero-revealed-text { animation: none; }
+}
 html.is-intro .hero-dot {
   background-color: var(--paper-100) !important;
 }
@@ -2385,8 +2411,8 @@ main > hr,
   <section class="hero">
     <div class="wrap">
       <div class="hero-dot-stage" aria-hidden="true"><span class="hero-dot"></span></div>
-      <h1 class="hero-fade" style="font-weight: 400;">Creative direction that builds memorable products.</h1>
-      <p class="lead fade-up">I help founders and product teams find the version of the work that's worth committing to. Most teams ship the safe version of what they're building because it's easier to defend. The harder version, the one that actually stands out, needs someone in the room to make it inevitable. That's what I do.</p>
+      <h1 class="hero-fade" style="font-weight: 400;"><span class="hero-public-text">Creative direction that builds memorable products.</span><span class="hero-unlocked-text"><span class="hero-intro-text">AI raised the floor</span><span class="hero-revealed-text">Building epic products still takes people.</span></span></h1>
+      <p class="lead fade-up"><span class="lead-public-text">I help founders and product teams find the version of the work that's worth committing to. Most teams ship the safe version of what they're building because it's easier to defend. The harder version, the one that actually stands out, needs someone in the room to make it inevitable. That's what I do.</span><span class="lead-unlocked-text">I help teams find the direction others can't see, then the conviction to build it.</span></p>
       <div class="hero-cta fade-up">
         <div class="hero-cta-row">
           <a class="cta cta-primary" data-mail-user="hello" data-mail-host="studiovincent.co" href="#" rel="nofollow"><span class="wave" aria-hidden="true">👋</span>Say hello</a>
