@@ -1727,6 +1727,178 @@ section#contact.block { padding-bottom: var(--s4); }
 @media (prefers-reduced-motion: reduce) {
   .service-fit-chev { transition: none; }
 }
+
+/* Engagement tiers — minimal cards (hairline border, no shadow) with a
+   collapsible "The process" panel pinned to the bottom of each card. */
+.tiers {
+  margin: var(--s7) 0 var(--s5);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s5);
+  align-items: stretch;
+}
+@media (min-width: 640px) {
+  .tiers { grid-template-columns: repeat(2, 1fr); }
+}
+.tier {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  border: 1px solid rgba(20, 18, 14, 0.10);
+  border-radius: 14px;
+  background: var(--paper-50);
+  padding: var(--s7);
+}
+@media (min-width: 1024px) {
+  .tier { padding: var(--s8); }
+}
+.tier-meta {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+.tier-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+  margin: 0;
+}
+.tier-body {
+  font-family: var(--text);
+  font-weight: 300;
+  font-size: clamp(15px, 1.3vw + 0.4rem, 17px);
+  line-height: 1.6;
+  color: var(--ink-700);
+  margin: 0;
+}
+.tier-fit {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: clamp(12px, 0.8vw + 0.3rem, 13px);
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: var(--ink-700);
+  margin: 0;
+}
+.tier-fit-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin-right: 4px;
+}
+.tier-process {
+  margin: 0;
+  border-top: 1px solid rgba(20, 18, 14, 0.08);
+  padding-top: var(--s4);
+}
+.tier-process > summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+  transition: color 220ms var(--ease);
+}
+.tier-process > summary::-webkit-details-marker { display: none; }
+.tier-process > summary::marker { content: ""; }
+.tier-process > summary:hover { color: var(--ink-900); }
+.tier-process > summary:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+.tier-process-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+  transition: transform 220ms var(--ease);
+}
+.tier-process[open] .tier-process-chev { transform: rotate(-90deg); }
+.tier-steps {
+  list-style: none;
+  padding: 0;
+  margin: var(--s4) 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  counter-reset: step;
+  animation: howFaqIn 280ms var(--ease);
+}
+.tier-steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 2em;
+  font-family: var(--text);
+  font-weight: 300;
+  font-size: clamp(14px, 1.2vw + 0.4rem, 16px);
+  line-height: 1.55;
+  color: var(--ink-700);
+}
+.tier-steps li::before {
+  content: counter(step) ".";
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  color: var(--ink-500);
+}
+.tier-steps li b {
+  font-weight: 500;
+  color: var(--ink-900);
+}
+
+/* Outlined "Learn more" CTA at the bottom of each expanded "The process".
+   Left-aligned with the numeral column, shrinks to content. */
+.tier-process-cta {
+  margin-top: var(--s5);
+}
+.tier-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid rgba(20, 18, 14, 0.20);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-900);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 200ms var(--ease), color 200ms var(--ease), border-color 200ms var(--ease);
+}
+.tier-cta-btn:hover,
+.tier-cta-btn:focus-visible { background: var(--ink-900); color: var(--paper-50); border-color: var(--ink-900); }
+.tier-cta-btn:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
+.tier-cta-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 200ms var(--ease);
+}
+.tier-cta-btn:hover .tier-cta-chev,
+.tier-cta-btn:focus-visible .tier-cta-chev { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tier-process-chev { transition: none; }
+  .tier-steps { animation: none; }
+  .tier-cta-btn,
+  .tier-cta-chev { transition: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .how-faq-arrow,
   .how-chev { transition: none; }
@@ -2235,74 +2407,93 @@ main > hr,
     <div class="wrap">
       <div class="how-wrap fade-up">
         <h2 class="how-heading">How we start</h2>
-        <p class="how-lead">There are three rough shapes the work can take, depending on what you need.</p>
       </div>
 
-      <div class="services fade-up">
-        <article class="service">
-          <div class="service-header">
-            <p class="service-meta">Two to six weeks</p>
-            <h3 class="service-title">Quick Win Sprint</h3>
-          </div>
-          <div class="service-content">
-            <p class="service-body">Two to six weeks reviewing what you've built and shipping concrete improvements faster than an agency would. You get three or more specific recommendations, how to measure them, and the bet that has the most upside. If helpful, I can also design and ship the interventions.</p>
-            <details class="service-fit">
-              <summary>
-                <span>Most useful when</span>
-                <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </summary>
-              <p class="service-fit-text">You have a specific product or surface you want to improve, with a metric or outcome in mind.</p>
-            </details>
-          </div>
+      <div class="tiers fade-up">
+        <article class="tier">
+          <p class="tier-meta">2–6 weeks</p>
+          <h3 class="tier-title">Quick Win</h3>
+          <p class="tier-body">A sharp review of what you've built, ending in three or more concrete recommendations and the one bet with the most upside. And I can design and ship the fix too, not just hand you a list.</p>
+          <p class="tier-fit"><span class="tier-fit-label">Good for</span> You've shipped, it works, but you sense it could be sharper, and you want concrete moves fast.</p>
+          <details class="tier-process">
+            <summary>
+              <span>The process</span>
+              <span class="tier-process-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ol class="tier-steps">
+              <li><b>Use it for real.</b> I use the product as a real user would, while checking your flows, backlog, analytics, existing designs, and the competitors you're measured against.</li>
+              <li><b>Find the real gaps.</b> Where it's over- and under-delivering on what it's trying to do.</li>
+              <li><b>Hand you the bet.</b> Three or more concrete recommendations, ranked, plus the one I'd put real money on. And I can design and ship it, not just name it.</li>
+            </ol>
+            <div class="tier-process-cta">
+              <a class="tier-cta-btn" data-mail-user="hello" data-mail-host="studiovincent.co" data-mail-subject="Engagements" data-mail-body="Hi Fred,&#10;&#10;I'd like to learn more about working together.&#10;&#10;" href="#" rel="nofollow"><span>Learn more</span><span class="tier-cta-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
+            </div>
+          </details>
         </article>
-        <article class="service">
-          <div class="service-header">
-            <p class="service-meta">Three to four weeks</p>
-            <h3 class="service-title">Exploratory</h3>
-          </div>
-          <div class="service-content">
-            <p class="service-body">Three to four weeks going deeper than a sprint allows for. We look at what your product is really trying to do, where the gaps are between intention and execution, and what direction has the strongest claim. The output is a written articulation with sketches and references.</p>
-            <details class="service-fit">
-              <summary>
-                <span>Most useful when</span>
-                <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </summary>
-              <p class="service-fit-text">You sense your product could be more than it currently is but the answer isn't obvious yet.</p>
-            </details>
-          </div>
+
+        <article class="tier">
+          <p class="tier-meta">4+ weeks</p>
+          <h3 class="tier-title">Deep Dive</h3>
+          <p class="tier-body">A deeper look than a sprint allows, at what your product is really trying to be, and where intention and execution have drifted apart. You leave with a solid new direction and a clear target to build toward, written up with sketches and references. If you want the designs to go with it, I can do that too.</p>
+          <p class="tier-fit"><span class="tier-fit-label">Good for</span> The product works, but you're no longer sure it's the right one, and you want a direction you can trust.</p>
+          <details class="tier-process">
+            <summary>
+              <span>The process</span>
+              <span class="tier-process-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ol class="tier-steps">
+              <li><b>Name the gap.</b> What the product is really trying to be, tested against what it actually does.</li>
+              <li><b>Work past the obvious.</b> The right direction usually only shows up after the easy answer's been rejected a few times, so I don't stop at the first thing that fits.</li>
+              <li><b>Bring in the outside.</b> A clear new direction and a target to build toward, written up with sketches and references pulled from well beyond your category.</li>
+              <li><b>Design it, if you want.</b> Optional designs to go with the direction.</li>
+            </ol>
+            <div class="tier-process-cta">
+              <a class="tier-cta-btn" data-mail-user="hello" data-mail-host="studiovincent.co" data-mail-subject="Engagements" data-mail-body="Hi Fred,&#10;&#10;I'd like to learn more about working together.&#10;&#10;" href="#" rel="nofollow"><span>Learn more</span><span class="tier-cta-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
+            </div>
+          </details>
         </article>
-        <article class="service">
-          <div class="service-header">
-            <p class="service-meta">Six to eight weeks</p>
-            <h3 class="service-title">Step change</h3>
-          </div>
-          <div class="service-content">
-            <p class="service-body">Six to eight weeks finding a direction that changes the rules of the space your product is in, not just what's made inside it. Builds on the work above. The output is a developed creative direction, ready for your team to build against.</p>
-            <details class="service-fit">
-              <summary>
-                <span>Most useful when</span>
-                <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </summary>
-              <p class="service-fit-text">The obvious moves have been considered and none of them feel right.</p>
-            </details>
-          </div>
+
+        <article class="tier">
+          <p class="tier-meta">6–8 weeks</p>
+          <h3 class="tier-title">Step Change</h3>
+          <p class="tier-body">Builds on the Deep Dive to find a direction that changes the rules of your category, not just the product itself. You leave with a fully developed creative direction your team can commit toward and build.</p>
+          <p class="tier-fit"><span class="tier-fit-label">Good for</span> There's real white space, and you want to change the game, not just play it better.</p>
+          <details class="tier-process">
+            <summary>
+              <span>The process</span>
+              <span class="tier-process-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ol class="tier-steps">
+              <li><b>Move up a level.</b> Building on the Deep Dive, I go after the rules of your category, not just the product itself.</li>
+              <li><b>Invent, don't recombine.</b> Where there's white space in your market, there are no references to reach for, so I work from the blank page and make something that's never existed.</li>
+              <li><b>Compose the feel.</b> A product's atmosphere is the sum of many small decisions made consistently; I treat it as something to compose, not decorate.</li>
+              <li><b>Hand over the direction.</b> A fully developed creative direction your team can commit toward and build.</li>
+            </ol>
+            <div class="tier-process-cta">
+              <a class="tier-cta-btn" data-mail-user="hello" data-mail-host="studiovincent.co" data-mail-subject="Engagements" data-mail-body="Hi Fred,&#10;&#10;I'd like to learn more about working together.&#10;&#10;" href="#" rel="nofollow"><span>Learn more</span><span class="tier-cta-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
+            </div>
+          </details>
         </article>
-        <article class="service">
-          <div class="service-header">
-            <p class="service-meta">Six months minimum</p>
-            <h3 class="service-title">Ongoing creative direction</h3>
-          </div>
-          <div class="service-content">
-            <p class="service-body">A monthly arrangement after one of the engagements above, where I stay attached to your team to make sure the direction we found gets built without losing its substance.</p>
-            <p class="service-body">Usually two days a month split between reviews of work in progress, a monthly call, and being available for the harder questions as they come up. I work this way with a small number of teams at a time so the attention is real.</p>
-            <details class="service-fit">
-              <summary>
-                <span>Most useful when</span>
-                <span class="service-fit-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </summary>
-              <p class="service-fit-text">You've commissioned an Exploratory or Step change engagement and want to keep me involved as you build, or you want senior creative judgment available without the cost of a full-time hire.</p>
-            </details>
-          </div>
+
+        <article class="tier">
+          <p class="tier-meta">3 months minimum</p>
+          <h3 class="tier-title">Embed Direction</h3>
+          <p class="tier-body">After one of the engagements above, I stay close to your team so the direction we found survives the build instead of quietly eroding. A few teams at a time, so the attention is real.</p>
+          <p class="tier-fit"><span class="tier-fit-label">Good for</span> You've got the direction and need it to survive contact with the roadmap.</p>
+          <details class="tier-process">
+            <summary>
+              <span>The process</span>
+              <span class="tier-process-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ol class="tier-steps">
+              <li><b>Stay attached.</b> A monthly arrangement after one of the above, so the direction actually gets built without losing its substance.</li>
+              <li><b>Two days a month.</b> Reviews of work in progress, a monthly call, and being on hand for the harder questions.</li>
+              <li><b>A few teams only.</b> Kept deliberately small, so the attention is real.</li>
+            </ol>
+            <div class="tier-process-cta">
+              <a class="tier-cta-btn" data-mail-user="hello" data-mail-host="studiovincent.co" data-mail-subject="Engagements" data-mail-body="Hi Fred,&#10;&#10;I'd like to learn more about working together.&#10;&#10;" href="#" rel="nofollow"><span>Learn more</span><span class="tier-cta-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
+            </div>
+          </details>
         </article>
       </div>
 
