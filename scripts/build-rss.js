@@ -40,7 +40,10 @@ const HTML_PATHS = [
 ];
 
 const FEED_URL = 'https://studiovincent.substack.com/feed';
-const MAX_ITEMS = 6;
+/* Writing section shows latest Substack posts only; up to 3, never more.
+   Posts that also exist as on-site case studies are filtered out so they
+   appear only in the Recent case studies row above. */
+const MAX_ITEMS = 3;
 const DESC_LIMIT = 120;
 const MARKER_START = '<!-- RSS:writing:start -->';
 const MARKER_END = '<!-- RSS:writing:end -->';
@@ -174,13 +177,20 @@ async function main() {
   try {
     console.log(`[build-rss] fetching ${FEED_URL}`);
     const feed = await parser.parseURL(FEED_URL);
-    items = (feed.items || []).slice(0, MAX_ITEMS).map((it) => ({
-      title: it.title || '',
-      link: it.link || '',
-      date: formatMonth(it.pubDate || it.isoDate || ''),
-      description: truncate(stripHtml(it.contentSnippet || it.content || it.description || ''), DESC_LIMIT),
-      category: (it.categories && it.categories[0]) || null,
-    }));
+    items = (feed.items || [])
+      .filter((it) => {
+        const m = (it.link || '').match(/\/p\/([^/?#]+)/);
+        const slug = m ? m[1] : '';
+        return !LOCAL_OVERRIDES[slug];
+      })
+      .slice(0, MAX_ITEMS)
+      .map((it) => ({
+        title: it.title || '',
+        link: it.link || '',
+        date: formatMonth(it.pubDate || it.isoDate || ''),
+        description: truncate(stripHtml(it.contentSnippet || it.content || it.description || ''), DESC_LIMIT),
+        category: (it.categories && it.categories[0]) || null,
+      }));
     console.log(`[build-rss] parsed ${items.length} items`);
   } catch (err) {
     console.error(`[build-rss] fetch failed: ${err.message}`);

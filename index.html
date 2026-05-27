@@ -257,6 +257,8 @@
   --ink-700:   #3A3731;
   --ink-900:   #1A1815;
 
+  --accent: #B8533B;
+
   --display: "Canela", Georgia, serif;
   --text:    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -429,8 +431,9 @@ p { margin: 0; }
   gap: 8px;
   padding: 10px 20px;
   margin-left: var(--s3);
-  border: 1px solid rgba(26, 24, 21, 0.22);
+  border: 1px solid var(--paper-50);
   border-radius: 10px;
+  background: var(--paper-50);
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 20px;
   font-weight: 500;
@@ -438,12 +441,15 @@ p { margin: 0; }
   line-height: 1;
   color: var(--ink-900);
   text-decoration: none;
-  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.06), 0 4px 14px rgba(20, 18, 14, 0.05);
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease), box-shadow 180ms var(--ease);
 }
 .nav .nav-cta:hover {
-  background: var(--ink-900);
-  color: var(--paper-50);
+  background: var(--paper-200);
+  border-color: var(--paper-200);
+  color: var(--ink-900);
   text-decoration: none;
+  box-shadow: 0 2px 4px rgba(20, 18, 14, 0.08), 0 6px 18px rgba(20, 18, 14, 0.07);
 }
 @media (max-width: 380px) {
   .nav .nav-cta { font-size: 14px; padding: 5px 10px; }
@@ -620,8 +626,8 @@ section.block {
 }
 @media (min-width: 1024px) {
   section.block {
-    padding-top: var(--s7);
-    padding-bottom: var(--s7);
+    padding-top: var(--s8);
+    padding-bottom: var(--s8);
   }
 }
 
@@ -1045,6 +1051,12 @@ section.block {
   grid-template-columns: 1fr;
   gap: var(--s6);
   align-items: end;
+}
+@media (max-width: 640px) {
+  .contact-card {
+    padding: var(--s6) var(--s5) var(--s5) var(--s5);
+    border-radius: 12px;
+  }
 }
 @media (min-width: 1024px) {
   .contact-card {
@@ -1772,23 +1784,6 @@ section#contact.block { padding-bottom: var(--s4); }
   color: var(--ink-700);
   margin: 0;
 }
-.tier-fit {
-  font-family: var(--mono);
-  font-weight: 400;
-  font-size: clamp(12px, 0.8vw + 0.3rem, 13px);
-  line-height: 1.55;
-  letter-spacing: 0.01em;
-  color: var(--ink-700);
-  margin: 0;
-}
-.tier-fit-label {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: var(--mono-tracking);
-  text-transform: uppercase;
-  color: var(--ink-500);
-  margin-right: 4px;
-}
 .tier-process {
   margin: 0;
   border-top: 1px solid rgba(20, 18, 14, 0.08);
@@ -1819,6 +1814,64 @@ section#contact.block { padding-bottom: var(--s4); }
   transition: transform 220ms var(--ease);
 }
 .tier-process[open] .tier-process-chev { transform: rotate(-90deg); }
+.tier-get {
+  margin: 0;
+  border-top: 1px solid rgba(20, 18, 14, 0.08);
+  padding-top: var(--s4);
+}
+.tier-get > summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-500);
+  transition: color 220ms var(--ease);
+}
+.tier-get > summary::-webkit-details-marker { display: none; }
+.tier-get > summary::marker { content: ""; }
+.tier-get > summary:hover { color: var(--ink-900); }
+.tier-get > summary:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+.tier-get-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+  transition: transform 220ms var(--ease);
+}
+.tier-get[open] .tier-get-chev { transform: rotate(-90deg); }
+.tier-deliverables {
+  list-style: none;
+  padding: 0;
+  margin: var(--s4) 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  animation: howFaqIn 280ms var(--ease);
+}
+.tier-deliverables li {
+  position: relative;
+  padding-left: 1.1em;
+  font-family: var(--text);
+  font-weight: 300;
+  font-size: clamp(14px, 1.2vw + 0.4rem, 16px);
+  line-height: 1.55;
+  color: var(--ink-700);
+}
+.tier-deliverables li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  top: -0.05em;
+  font-family: var(--mono);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--ink-500);
+}
 .tier-steps {
   list-style: none;
   padding: 0;
@@ -1889,10 +1942,380 @@ section#contact.block { padding-bottom: var(--s4); }
 .tier-cta-btn:focus-visible .tier-cta-chev { transform: translateX(3px); }
 
 @media (prefers-reduced-motion: reduce) {
-  .tier-process-chev { transition: none; }
-  .tier-steps { animation: none; }
+  .tier-process-chev,
+  .tier-get-chev { transition: none; }
+  .tier-steps,
+  .tier-deliverables { animation: none; }
   .tier-cta-btn,
   .tier-cta-chev { transition: none; }
+}
+
+/* Case-study tiles — shared component originally defined on /about,
+   inlined here so the homepage row matches without depending on /about. */
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s5);
+}
+@media (min-width: 640px) {
+  .cards { grid-template-columns: 1fr 1fr; gap: var(--s5); }
+}
+.card {
+  border: 1px solid rgba(20, 18, 14, 0.06);
+  border-radius: 14px;
+  padding: var(--s7);
+  background: var(--paper-50);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 8px 24px rgba(20, 18, 14, 0.04);
+  min-height: 340px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: box-shadow 280ms var(--ease), transform 280ms var(--ease), border-color 280ms var(--ease);
+}
+@media (min-width: 1024px) {
+  .card { padding: var(--s8); min-height: 400px; }
+}
+.card:hover {
+  border-color: rgba(26, 24, 21, 0.45);
+  box-shadow: 0 4px 10px rgba(20, 18, 14, 0.07), 0 22px 44px rgba(20, 18, 14, 0.08);
+  transform: translateY(-5px);
+  text-decoration: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card:hover { transform: none; box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 8px 24px rgba(20, 18, 14, 0.04); }
+}
+.card:hover .read .arrow { transform: translateX(4px); }
+.card:hover .read .read-text {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.card .meta {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  margin: 0 0 var(--s2) 0;
+}
+.card .title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+  margin: 0;
+  text-wrap: pretty;
+  max-width: 14ch;
+}
+.card .desc {
+  font-family: var(--text);
+  color: var(--ink-700);
+  font-size: clamp(14px, 1.2vw + 0.4rem, 16px);
+  line-height: 1.55;
+  max-width: 32ch;
+  margin: var(--s3) 0 0 0;
+  text-wrap: pretty;
+}
+.card .read {
+  margin-top: auto;
+  padding-top: var(--s5);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-900);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+}
+.card .read .arrow {
+  display: inline-block;
+  transition: transform 180ms var(--ease);
+}
+
+/* Recent case studies — homepage row reuses the .card / .meta / .title /
+   .desc / .read styles above. The track slides horizontally between
+   a featured view and an older view. */
+.case-studies-eyebrow { margin-bottom: var(--s6); display: block; }
+.case-row { position: relative; }
+.case-track { display: block; }
+.case-view {
+  display: block;
+  animation: caseViewIn 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.case-view[aria-hidden="true"] { display: none; }
+@keyframes caseViewIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-view { animation: none; }
+}
+.case-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-bottom: var(--s6);
+  flex-wrap: wrap;
+}
+.case-head .how-heading,
+.case-head .cases-eyebrow { margin: 0; }
+[data-view="featured"] > .wrap > .case-head .case-nav-back,
+#case-studies[data-view="featured"] .case-nav-back,
+.about-cases[data-view="featured"] .case-nav-back { display: none; }
+[data-view="older"] > .wrap > .case-head .case-nav-older,
+#case-studies[data-view="older"] .case-nav-older,
+.about-cases[data-view="older"] .case-nav-older { display: none; }
+
+/* Writing — section copy and bullet list, subscribe CTA. */
+.writing-recent-eyebrow {
+  display: block;
+  margin: 0 0 var(--s4) 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(17px, 1.3vw + 0.4rem, 20px);
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+}
+.writing-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s6);
+  margin: 0 0 var(--s7) 0;
+}
+@media (min-width: 900px) {
+  .writing-cols {
+    grid-template-columns: minmax(0, 38rem) minmax(0, 22rem);
+    gap: var(--s8);
+    align-items: stretch;
+  }
+}
+.writing-body {
+  max-width: 42rem;
+}
+.writing-lead {
+  font-family: var(--text);
+  font-weight: 300;
+  font-size: clamp(15px, 1.4vw + 0.5rem, 17px);
+  line-height: 1.6;
+  color: var(--ink-700);
+  margin: 0 0 var(--s4) 0;
+}
+.writing-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--s5) 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.writing-list li {
+  position: relative;
+  padding-left: 1.1em;
+  font-family: var(--text);
+  font-weight: 300;
+  font-size: clamp(13px, 0.7vw + 0.55rem, 15px);
+  line-height: 1.5;
+  color: var(--ink-700);
+}
+.writing-list li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  top: -0.1em;
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink-500);
+}
+.writing-list li b {
+  font-weight: 500;
+  color: var(--ink-900);
+}
+.writing-subscribe {
+  background: var(--ink-900);
+  color: var(--paper-100);
+  border-radius: 14px;
+  padding: var(--s6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.writing-subscribe-banner {
+  display: block;
+  width: calc(100% + var(--s6) * 2);
+  height: auto;
+  margin: calc(-1 * var(--s6)) calc(-1 * var(--s6)) var(--s4);
+  border-radius: 14px 14px 0 0;
+  object-fit: cover;
+}
+@media (min-width: 1024px) {
+  .writing-subscribe { padding: var(--s7); }
+  .writing-subscribe-banner {
+    width: calc(100% + var(--s7) * 2);
+    margin: calc(-1 * var(--s7)) calc(-1 * var(--s7)) var(--s5);
+  }
+}
+.writing-subscribe-lead {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(22px, 1.8vw + 0.5rem, 30px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--paper-50);
+  margin: 0;
+  max-width: 18ch;
+}
+.writing-subscribe-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 10px;
+  border: 1px solid var(--paper-50);
+  background: var(--paper-50);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--ink-900);
+  text-decoration: none;
+  white-space: nowrap;
+  align-self: flex-start;
+  margin-top: auto;
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease), transform 180ms var(--ease);
+}
+.writing-subscribe-btn::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  width: 0;
+  height: 1.5px;
+  background: var(--ink-900);
+  border-radius: 1px;
+  opacity: 0;
+  transform-origin: left center;
+  transition: width 450ms ease-in-out, opacity 450ms ease-in-out;
+  pointer-events: none;
+}
+.writing-subscribe-btn:hover::after,
+.writing-subscribe-btn:focus-visible::after {
+  width: 22px;
+  opacity: 0.85;
+}
+@media (prefers-reduced-motion: reduce) {
+  .writing-subscribe-btn::after,
+  .writing-subscribe-btn:hover::after,
+  .writing-subscribe-btn:focus-visible::after { transition: none; }
+}
+.writing-subscribe-btn:hover {
+  background: var(--paper-200);
+  border-color: var(--paper-200);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.writing-subscribe-btn .feather {
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  transform-origin: 50% 80%;
+  transition: transform 450ms ease-in-out;
+}
+.writing-subscribe-btn:hover .feather,
+.writing-subscribe-btn:focus-visible .feather {
+  transform: translate(12px, -2px) rotate(15deg);
+  animation: featherWobble 0.8s ease-in-out 450ms infinite alternate;
+}
+@keyframes featherWobble {
+  from { transform: translate(12px, -2px) rotate(12deg); }
+  to   { transform: translate(12px, -2px) rotate(18deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .writing-subscribe-btn:hover { transform: none; }
+  .writing-subscribe-btn:hover .feather,
+  .writing-subscribe-btn:focus-visible .feather { transform: none; animation: none; }
+}
+.case-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid rgba(20, 18, 14, 0.18);
+  border-radius: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: var(--mono-tracking);
+  text-transform: uppercase;
+  color: var(--ink-700);
+  cursor: pointer;
+  transition: color 200ms var(--ease), border-color 200ms var(--ease), background 200ms var(--ease);
+}
+.case-nav:hover,
+.case-nav:focus-visible { color: var(--paper-50); background: var(--ink-900); border-color: var(--ink-900); }
+.case-nav:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
+.case-nav-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 200ms var(--ease);
+}
+.case-nav-older:hover .case-nav-chev,
+.case-nav-older:focus-visible .case-nav-chev { transform: translateX(3px); }
+.case-nav-back:hover .case-nav-chev--left,
+.case-nav-back:focus-visible .case-nav-chev--left { transform: translateX(-3px); }
+@media (prefers-reduced-motion: reduce) {
+  .case-track { transition: none; }
+  .case-nav-chev { transition: none; }
+}
+
+/* "Sound familiar?" — five-item grid; editorial captions in the accent
+   colour, body copy in the standard --ink-700 text style. */
+.sf-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s7);
+  margin-top: var(--s6);
+}
+@media (min-width: 720px) {
+  .sf-grid { grid-template-columns: repeat(2, 1fr); column-gap: var(--s6); }
+}
+@media (min-width: 1024px) {
+  .sf-grid { grid-template-columns: repeat(3, 1fr); column-gap: var(--s7); }
+}
+.sf-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  max-width: 38ch;
+}
+.sf-caption {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(17px, 1.3vw + 0.4rem, 20px);
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+}
+.sf-body {
+  margin: 0;
+  font-family: var(--text);
+  font-weight: 300;
+  font-size: clamp(15px, 1.4vw + 0.5rem, 17px);
+  line-height: 1.6;
+  color: var(--ink-700);
 }
 @media (prefers-reduced-motion: reduce) {
   .how-faq-arrow,
@@ -2396,12 +2819,13 @@ main > hr,
   <div class="wrap row">
     <a href="#top" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="logo-vincent.png" alt="Vincent"></a>
     <nav class="nav" aria-label="Primary">
-      <a href="#how-this-works">Services</a>
+      <a href="#how-this-works">Work with Fred</a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="#work">Work</a>
+      <a href="#case-studies">Studies</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="#work">Writing</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="/about">About</a>
-      <a class="nav-cta" href="#send-problem">Send stuff</a>
     </nav>
   </div>
 </header>
@@ -2415,8 +2839,7 @@ main > hr,
       <p class="lead fade-up"><span class="lead-public-text">I help founders and product teams find the version of the work that's worth committing to. Most teams ship the safe version of what they're building because it's easier to defend. The harder version, the one that actually stands out, needs someone in the room to make it inevitable. That's what I do.</span><span class="lead-unlocked-text">I help teams find the direction others can't see, then the conviction to build it.</span></p>
       <div class="hero-cta fade-up">
         <div class="hero-cta-row">
-          <a class="cta cta-primary" data-mail-user="hello" data-mail-host="studiovincent.co" href="#" rel="nofollow"><span class="wave" aria-hidden="true">👋</span>Say hello</a>
-          <a class="cta cta-secondary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer"><span class="label">Book a meeting</span><span class="chev-track" aria-hidden="true"><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
+          <a class="cta cta-primary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer"><span class="wave" aria-hidden="true">👋</span><span class="label">Book an intro call</span><span class="chev-track" aria-hidden="true"><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
         </div>
       </div>
     </div>
@@ -2427,7 +2850,7 @@ main > hr,
   <section id="how-this-works" class="block">
     <div class="wrap">
       <div class="how-wrap fade-up">
-        <h2 class="how-heading">How we start</h2>
+        <h2 class="how-heading">Here's how I can help</h2>
       </div>
 
       <div class="tiers fade-up">
@@ -2435,7 +2858,17 @@ main > hr,
           <p class="tier-meta">2–6 weeks</p>
           <h3 class="tier-title">Quick Win</h3>
           <p class="tier-body">A sharp review of what you've built, ending in three or more concrete recommendations and the one bet with the most upside. And I can design and ship the fix too, not just hand you a list.</p>
-          <p class="tier-fit"><span class="tier-fit-label">Good for</span> You've shipped, it works, but you sense it could be sharper, and you want concrete moves fast.</p>
+          <details class="tier-get">
+            <summary>
+              <span>What you get</span>
+              <span class="tier-get-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ul class="tier-deliverables">
+              <li>A measurable win on the metric you're targeting, set up to track and build on</li>
+              <li>Recommendations ranked by upside, with the one bet to make first</li>
+              <li>The key fix designed and shipped, if useful</li>
+            </ul>
+          </details>
           <details class="tier-process">
             <summary>
               <span>The process</span>
@@ -2456,7 +2889,18 @@ main > hr,
           <p class="tier-meta">4+ weeks</p>
           <h3 class="tier-title">Deep Dive</h3>
           <p class="tier-body">A deeper look than a sprint allows, at what your product is really trying to be, and where intention and execution have drifted apart. You leave with a solid new direction and a clear target to build toward, written up with sketches and references. If you want the designs to go with it, I can do that too.</p>
-          <p class="tier-fit"><span class="tier-fit-label">Good for</span> The product works, but you're no longer sure it's the right one, and you want a direction you can trust.</p>
+          <details class="tier-get">
+            <summary>
+              <span>What you get</span>
+              <span class="tier-get-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ul class="tier-deliverables">
+              <li>A direction tied to the business outcome it's meant to move, with a way to test it</li>
+              <li>A written articulation the team can build from</li>
+              <li>Sketches and a cross-domain reference set</li>
+              <li>Your team brought in along the way, so they own the direction and build it together</li>
+            </ul>
+          </details>
           <details class="tier-process">
             <summary>
               <span>The process</span>
@@ -2478,7 +2922,18 @@ main > hr,
           <p class="tier-meta">6–8 weeks</p>
           <h3 class="tier-title">Step Change</h3>
           <p class="tier-body">Builds on the Deep Dive to find a direction that changes the rules of your category, not just the product itself. You leave with a fully developed creative direction your team can commit toward and build.</p>
-          <p class="tier-fit"><span class="tier-fit-label">Good for</span> There's real white space, and you want to change the game, not just play it better.</p>
+          <details class="tier-get">
+            <summary>
+              <span>What you get</span>
+              <span class="tier-get-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ul class="tier-deliverables">
+              <li>A strategic bet with the business case made, not just a new look</li>
+              <li>A fully developed creative direction to build against</li>
+              <li>A distinctive visual language that's recognisably yours</li>
+              <li>A team aligned behind the bet, pulling the same way</li>
+            </ul>
+          </details>
           <details class="tier-process">
             <summary>
               <span>The process</span>
@@ -2500,7 +2955,17 @@ main > hr,
           <p class="tier-meta">3 months minimum</p>
           <h3 class="tier-title">Embed Direction</h3>
           <p class="tier-body">After one of the engagements above, I stay close to your team so the direction we found survives the build instead of quietly eroding. A few teams at a time, so the attention is real.</p>
-          <p class="tier-fit"><span class="tier-fit-label">Good for</span> You've got the direction and need it to survive contact with the roadmap.</p>
+          <details class="tier-get">
+            <summary>
+              <span>What you get</span>
+              <span class="tier-get-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ul class="tier-deliverables">
+              <li>Every call weighed against the trade-offs, so the work stays tied to outcomes</li>
+              <li>The direction kept intact through the build</li>
+              <li>Senior judgment on call when the team's stuck</li>
+            </ul>
+          </details>
           <details class="tier-process">
             <summary>
               <span>The process</span>
@@ -2580,13 +3045,111 @@ main > hr,
     </div>
   </section>
 
+  <hr class="hairline" id="sound-familiar-divider" aria-hidden="true">
+
+  <section id="sound-familiar" class="block">
+    <div class="wrap">
+      <div class="how-wrap fade-up">
+        <h2 class="how-heading">Sound familiar?</h2>
+        <p class="how-lead">If a few of these ring true, this is the work for you.</p>
+      </div>
+      <div class="sf-grid fade-up">
+        <article class="sf-item">
+          <p class="sf-caption">Everything to define</p>
+          <p class="sf-body">You're early, the page is blank, and there's a lot to figure out. You can make it fast with AI, but you're not sure yet whether it's the right thing to build.</p>
+        </article>
+        <article class="sf-item">
+          <p class="sf-caption">Competent but forgettable</p>
+          <p class="sf-body">You can ship a clean, competent product now. So can everyone else. You want something people actually remember.</p>
+        </article>
+        <article class="sf-item">
+          <p class="sf-caption">Stuck on the obvious</p>
+          <p class="sf-body">Every direction you land on is the safe one. The references all point the same way, and the epic version stays just out of reach.</p>
+        </article>
+        <article class="sf-item">
+          <p class="sf-caption">All AI, no craft</p>
+          <p class="sf-body">You've built fast with AI, but no one has the trained eye or the critical judgment to tell good from nearly good, or to make it feel genuinely yours.</p>
+        </article>
+        <article class="sf-item">
+          <p class="sf-caption">A team pulling different ways</p>
+          <p class="sf-body">Your team can't agree on a direction, or keeps hedging on the bold version because the safe one is easier to defend.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="case-studies" class="block" data-view="featured">
+    <div class="wrap">
+      <div class="case-head fade-up">
+        <h2 class="how-heading">Recent case studies</h2>
+        <button class="case-nav case-nav-older" type="button" aria-label="Show older case studies">
+          <span class="case-nav-label">Older</span>
+          <span class="case-nav-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+        </button>
+        <button class="case-nav case-nav-back" type="button" aria-label="Show featured case studies">
+          <span class="case-nav-chev case-nav-chev--left" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"></polyline></svg></span>
+          <span class="case-nav-label">Featured</span>
+        </button>
+      </div>
+      <div class="case-row">
+        <div class="case-track" data-view="featured">
+          <div class="case-view case-view-featured" data-view-name="featured">
+            <div class="cards">
+              <a class="card" href="/work/onboarding-redesign/">
+                <span class="meta">01</span>
+                <h3 class="title">Onboarding redesign at Kaizen</h3>
+                <p class="desc">How we got the team to commit to a harder version of onboarding, and what it opened up.</p>
+                <span class="read"><span class="read-text">Read</span><span class="arrow" aria-hidden="true">→</span></span>
+              </a>
+              <a class="card" href="/work/feed-redesign/">
+                <span class="meta">02</span>
+                <h3 class="title">Answering the wrong question</h3>
+                <p class="desc">The Kaizen feed redesign, and what happens when the question you've been asked to answer turns out to be the wrong one.</p>
+                <span class="read"><span class="read-text">Read</span><span class="arrow" aria-hidden="true">→</span></span>
+              </a>
+            </div>
+          </div>
+          <div class="case-view case-view-older" data-view-name="older" aria-hidden="true">
+            <div class="cards">
+              <a class="card" href="/work/gastfreund-shift-change/">
+                <span class="meta">03</span>
+                <h3 class="title">Shift change · Gastfreund</h3>
+                <p class="desc">How we worked out who Gastfreund's hotel product was really for, and rebuilt it around the one moment the front desk actually cared about.</p>
+                <span class="read"><span class="read-text">Read</span><span class="arrow" aria-hidden="true">→</span></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="work" class="block">
     <div class="wrap">
       <div class="writing-head fade-up">
-        <h2 class="writing-heading">Recent work</h2>
+        <h2 class="how-heading">Make what others can't.</h2>
       </div>
-      <p class="writing-statement fade-up">Essays on creative direction, product, making, and why most things you use end up forgettable and how to do it differently.</p>
+      <div class="writing-cols fade-up">
+        <div class="writing-body">
+          <p class="writing-lead">Most products read as competent and forgettable. The ones people remember were made by someone with the eye to see past the obvious, and the hand to do something about it.</p>
+          <p class="writing-lead">Hand and Eye is the newsletter where I write about how to find it.</p>
+          <ul class="writing-list">
+            <li><b>Hard, playful interaction and motion experiments.</b> Finding what defaults can't.</li>
+            <li><b>Old-school techniques and ways of seeing.</b> Carrying what creative education taught you into product work.</li>
+            <li><b>How-to guides for creative leaps.</b> Short practices for getting into flow, and for letting your hands find what your head can't.</li>
+          </ul>
+        </div>
+        <aside class="writing-subscribe">
+          <img class="writing-subscribe-banner" src="/Group%2010.jpg" alt="Engraving of a camera obscura projecting an image of the world outside." loading="lazy">
+          <p class="writing-subscribe-lead">Get Hand and Eye in your inbox.</p>
+          <a class="writing-subscribe-btn" href="https://studiovincent.substack.com/subscribe" target="_blank" rel="noopener noreferrer">
+            <span class="label">Subscribe</span>
+            <span class="feather" aria-hidden="true">🪶</span>
+          </a>
+        </aside>
+      </div>
 
+      <span class="writing-recent-eyebrow fade-up">Recent posts</span>
       <div class="recent-writing">
         <ul class="rw-list">
           <!-- RSS:writing:start -->
@@ -2610,26 +3173,6 @@ main > hr,
           </div>
         </a>
       </li>
-      <li class="rw-item fade-up rw-anim-pulse">
-        <a class="rw-link" href="/work/feed-redesign/">
-          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%205.svg" alt="" loading="lazy"></span>
-          <div class="rw-content">
-            <h3 class="rw-title">Answering the wrong question  <span class="rw-arrow" aria-hidden="true">→</span></h3>
-            <p class="rw-desc">How we went from a question with no answer, to a question with a clear one.</p>
-            <p class="rw-meta">APR 2026</p>
-          </div>
-        </a>
-      </li>
-      <li class="rw-item fade-up rw-anim-spin">
-        <a class="rw-link" href="/work/onboarding-redesign/">
-          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%206.svg" alt="" loading="lazy"></span>
-          <div class="rw-content">
-            <h3 class="rw-title">All aboard  <span class="rw-arrow" aria-hidden="true">→</span></h3>
-            <p class="rw-desc">This is a story about how we redesigned onboarding for Kaizen and how the design itself made the team commit to buildin…</p>
-            <p class="rw-meta">APR 2026</p>
-          </div>
-        </a>
-      </li>
       <!-- RSS:writing:end -->
         </ul>
       </div>
@@ -2638,189 +3181,6 @@ main > hr,
 
   <hr class="hairline" aria-hidden="true">
 
-  <section id="send-problem" class="block sw" aria-labelledby="sw-heading">
-    <div class="wrap">
-      <h2 class="sw-heading fade-up" id="sw-heading">Send me your stuff</h2>
-      <p class="sw-intro fade-up">I respond to a few submissions each month with a considered note, a sketch, or both. The ones I reply to are the ones where I have something genuinely useful to say. Pick the closest fit below.</p>
-
-      <div class="sw-tabs fade-up" role="tablist" aria-label="Choose what to send">
-        <button type="button" class="sw-tab is-active" role="tab" id="sw-tab-audit"
-                aria-selected="true" aria-controls="sw-panel-audit" data-option="audit" tabindex="0">Audit my product</button>
-        <button type="button" class="sw-tab" role="tab" id="sw-tab-brand-product"
-                aria-selected="false" aria-controls="sw-panel-brand-product" data-option="brand-product" tabindex="-1">Brand vs product</button>
-        <button type="button" class="sw-tab" role="tab" id="sw-tab-category"
-                aria-selected="false" aria-controls="sw-panel-category" data-option="category" tabindex="-1">Reframe my category</button>
-      </div>
-
-      <div class="sw-panels fade-up">
-
-        <div role="tabpanel" id="sw-panel-audit" aria-labelledby="sw-tab-audit"
-             class="sw-panel is-active" data-option="audit">
-          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate data-total-steps="3">
-            <input type="hidden" name="option" value="audit">
-            <input type="hidden" name="next_step" value="Quick Win Sprint">
-            <div class="sw-stage">
-              <div class="sw-step is-active" data-step="1" role="group" aria-labelledby="sw-audit-q1">
-                <div class="sw-field">
-                  <label for="sw-audit-product" id="sw-audit-q1" class="sw-question">What's the product?</label>
-                  <input id="sw-audit-product" type="text" name="product" class="sw-input" required placeholder="A link, or a few words about it">
-                </div>
-                <div class="sw-field">
-                  <label for="sw-audit-access" class="sw-question">How do I access it? <span class="sw-optional">(Optional)</span></label>
-                  <input id="sw-audit-access" type="text" name="access" class="sw-input" placeholder="URL, login, or how to find it">
-                </div>
-              </div>
-              <div class="sw-step" data-step="2" role="group" aria-labelledby="sw-audit-q2" inert>
-                <div class="sw-field">
-                  <label for="sw-audit-context" id="sw-audit-q2" class="sw-question">What are you currently trying to figure out about it?</label>
-                  <textarea id="sw-audit-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300" required placeholder="Tell me what you're stuck on. I'll send back what I think is working, what isn't, and what I'd do if it were mine."></textarea>
-                </div>
-              </div>
-              <div class="sw-step" data-step="3" role="group" aria-labelledby="sw-audit-q3" inert>
-                <div class="sw-field">
-                  <label for="sw-audit-email" id="sw-audit-q3" class="sw-question">Where should I send the response?</label>
-                  <input id="sw-audit-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
-                </div>
-                <div class="sw-field">
-                  <label for="sw-audit-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
-                  <input id="sw-audit-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
-                </div>
-                <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
-              </div>
-            </div>
-            <input type="text" name="_gotcha" class="sw-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <div class="sw-actions">
-              <button type="button" class="sw-cta sw-next">
-                <span class="sw-cta-label">Next</span>
-                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </button>
-              <button type="submit" class="sw-cta sw-submit" hidden>
-                <span class="sw-cta-label">Send</span>
-                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </button>
-              <button type="button" class="sw-back" hidden>Back</button>
-              <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
-            </div>
-            <p class="sw-step-status" aria-live="polite"></p>
-          </form>
-          <div class="sw-success" hidden role="status" aria-live="polite">
-            <p>Got it. I sit with these as long as they need. If something useful comes to mind, I'll write back. When this turns into proper work together, it's usually a Quick Win Sprint — the same thing, just at depth.</p>
-          </div>
-        </div>
-
-        <div role="tabpanel" id="sw-panel-brand-product" aria-labelledby="sw-tab-brand-product"
-             class="sw-panel" data-option="brand-product" hidden>
-          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate data-total-steps="3">
-            <input type="hidden" name="option" value="brand-product">
-            <input type="hidden" name="next_step" value="Exploratory engagement">
-            <div class="sw-stage">
-              <div class="sw-step is-active" data-step="1" role="group" aria-labelledby="sw-brand-q1">
-                <div class="sw-field">
-                  <label for="sw-brand-brand" id="sw-brand-q1" class="sw-question">Where can I see your brand?</label>
-                  <input id="sw-brand-brand" type="text" name="brand" class="sw-input" required placeholder="Website, deck, or brand book — wherever the brand lives">
-                </div>
-                <div class="sw-field">
-                  <label for="sw-brand-access" class="sw-question">Where can I see your product?</label>
-                  <input id="sw-brand-access" type="text" name="access" class="sw-input" required placeholder="Product URL or login">
-                </div>
-              </div>
-              <div class="sw-step" data-step="2" role="group" aria-labelledby="sw-brand-q2" inert>
-                <div class="sw-field">
-                  <label for="sw-brand-context" id="sw-brand-q2" class="sw-question">What feels disconnected to you?</label>
-                  <textarea id="sw-brand-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300" required placeholder="Tell me what feels off. I'll send back the specific spots where the brand and the product don't match up, and what fixing that could look like."></textarea>
-                </div>
-              </div>
-              <div class="sw-step" data-step="3" role="group" aria-labelledby="sw-brand-q3" inert>
-                <div class="sw-field">
-                  <label for="sw-brand-email" id="sw-brand-q3" class="sw-question">Where should I send the response?</label>
-                  <input id="sw-brand-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
-                </div>
-                <div class="sw-field">
-                  <label for="sw-brand-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
-                  <input id="sw-brand-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
-                </div>
-                <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
-              </div>
-            </div>
-            <input type="text" name="_gotcha" class="sw-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <div class="sw-actions">
-              <button type="button" class="sw-cta sw-next">
-                <span class="sw-cta-label">Next</span>
-                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </button>
-              <button type="submit" class="sw-cta sw-submit" hidden>
-                <span class="sw-cta-label">Send</span>
-                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </button>
-              <button type="button" class="sw-back" hidden>Back</button>
-              <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
-            </div>
-            <p class="sw-step-status" aria-live="polite"></p>
-          </form>
-          <div class="sw-success" hidden role="status" aria-live="polite">
-            <p>Got it. I sit with these as long as they need. If something useful comes to mind, I'll write back. When this turns into proper work together, it's usually an Exploratory engagement — where we work out what alignment actually looks like.</p>
-          </div>
-        </div>
-
-        <div role="tabpanel" id="sw-panel-category" aria-labelledby="sw-tab-category"
-             class="sw-panel" data-option="category" hidden>
-          <form class="sw-form" action="/api/submit-problem" method="POST" novalidate data-total-steps="3">
-            <input type="hidden" name="option" value="category">
-            <input type="hidden" name="next_step" value="Step change engagement">
-            <div class="sw-stage">
-              <div class="sw-step is-active" data-step="1" role="group" aria-labelledby="sw-cat-q1">
-                <div class="sw-field">
-                  <label for="sw-cat-category" id="sw-cat-q1" class="sw-question">What's your category?</label>
-                  <input id="sw-cat-category" type="text" name="category" class="sw-input" required placeholder="e.g. AI music generation, B2B hotel software">
-                </div>
-                <div class="sw-field">
-                  <label for="sw-cat-access" class="sw-question">Where can I see your product? <span class="sw-optional">(Optional)</span></label>
-                  <input id="sw-cat-access" type="text" name="access" class="sw-input" placeholder="Product link">
-                </div>
-              </div>
-              <div class="sw-step" data-step="2" role="group" aria-labelledby="sw-cat-q2" inert>
-                <div class="sw-field">
-                  <label for="sw-cat-context" id="sw-cat-q2" class="sw-question">What's your current positioning within it?</label>
-                  <textarea id="sw-cat-context" name="context" class="sw-input sw-input--area" rows="4" maxlength="300" required placeholder="Tell me where you sit. I'll send back what everyone in the space is doing, what no one is doing, and a few references from outside it."></textarea>
-                </div>
-              </div>
-              <div class="sw-step" data-step="3" role="group" aria-labelledby="sw-cat-q3" inert>
-                <div class="sw-field">
-                  <label for="sw-cat-email" id="sw-cat-q3" class="sw-question">Where should I send the response?</label>
-                  <input id="sw-cat-email" type="email" name="email" class="sw-input sw-email" autocomplete="email" required>
-                </div>
-                <div class="sw-field">
-                  <label for="sw-cat-name" class="sw-question">What should I call you? <span class="sw-optional">(Optional)</span></label>
-                  <input id="sw-cat-name" type="text" name="name" class="sw-input sw-name" autocomplete="name">
-                </div>
-                <p class="sw-fineprint">By submitting you give Studio Vincent permission to use your submission and the response as part of an ongoing practice. Identifying details will be anonymized in any public use.</p>
-              </div>
-            </div>
-            <input type="text" name="_gotcha" class="sw-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <div class="sw-actions">
-              <button type="button" class="sw-cta sw-next">
-                <span class="sw-cta-label">Next</span>
-                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </button>
-              <button type="submit" class="sw-cta sw-submit" hidden>
-                <span class="sw-cta-label">Send</span>
-                <span class="sw-cta-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
-              </button>
-              <button type="button" class="sw-back" hidden>Back</button>
-              <p class="sw-error" hidden role="alert" aria-live="assertive"></p>
-            </div>
-            <p class="sw-step-status" aria-live="polite"></p>
-          </form>
-          <div class="sw-success" hidden role="status" aria-live="polite">
-            <p>Got it. I sit with these as long as they need. If something useful comes to mind, I'll write back. When this turns into proper work together, it's usually a Step Change engagement — where we take the different direction and shape it into something the team can build.</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
 
   <hr class="hairline" aria-hidden="true">
 
@@ -2828,10 +3188,10 @@ main > hr,
     <div class="wrap">
       <div class="contact-card fade-up">
         <div>
-          <h2>Available for hire; <span style="white-space: nowrap;">contact me for availability.</span></h2>
+          <h2>Available for hire; contact me for availability.</h2>
           <p class="sub">Open to founders and product teams who want help finding the version of the work that's worth committing to.</p>
           <div class="ctas">
-            <a class="cta cta-secondary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer"><span class="label">Book a meeting</span><span class="chev-track" aria-hidden="true"><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
+            <a class="cta cta-secondary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer"><span class="label">Book an intro call</span><span class="chev-track" aria-hidden="true"><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
           </div>
         </div>
       </div>
@@ -3367,6 +3727,52 @@ main > hr,
 
     setStep(1, { focusField: false });
   }
+})();
+</script>
+
+<script>
+/* Recent case studies — slide between featured and older views.
+   Chevron buttons + horizontal touch swipe. No URL change. */
+(function () {
+  var section = document.getElementById('case-studies');
+  if (!section) return;
+  var track = section.querySelector('.case-track');
+  if (!track) return;
+  var featuredView = section.querySelector('.case-view-featured');
+  var olderView = section.querySelector('.case-view-older');
+  var olderBtn = section.querySelector('.case-nav-older');
+  var backBtn = section.querySelector('.case-nav-back');
+
+  function setView(view) {
+    var next = view === 'older' ? 'older' : 'featured';
+    track.setAttribute('data-view', next);
+    section.setAttribute('data-view', next);
+    if (featuredView) featuredView.setAttribute('aria-hidden', next === 'older' ? 'true' : 'false');
+    if (olderView) olderView.setAttribute('aria-hidden', next === 'older' ? 'false' : 'true');
+  }
+
+  if (olderBtn) olderBtn.addEventListener('click', function () { setView('older'); });
+  if (backBtn) backBtn.addEventListener('click', function () { setView('featured'); });
+
+  /* Touch swipe: ≥50px horizontal delta, dominant over vertical. */
+  var startX = null;
+  var startY = null;
+  track.addEventListener('touchstart', function (e) {
+    if (e.touches.length !== 1) { startX = null; return; }
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    if (startX === null) return;
+    var t = e.changedTouches[0];
+    var dx = t.clientX - startX;
+    var dy = t.clientY - startY;
+    startX = null;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    var current = track.getAttribute('data-view') || 'featured';
+    if (dx < 0 && current === 'featured') setView('older');
+    else if (dx > 0 && current === 'older') setView('featured');
+  }, { passive: true });
 })();
 </script>
 

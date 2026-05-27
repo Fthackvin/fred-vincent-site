@@ -223,8 +223,9 @@ img { max-width: 100%; height: auto; display: block; }
   gap: 8px;
   padding: 10px 20px;
   margin-left: var(--s3);
-  border: 1px solid rgba(26, 24, 21, 0.22);
+  border: 1px solid var(--paper-50);
   border-radius: 10px;
+  background: var(--paper-50);
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 20px;
   font-weight: 500;
@@ -232,12 +233,15 @@ img { max-width: 100%; height: auto; display: block; }
   line-height: 1;
   color: var(--ink-900);
   text-decoration: none;
-  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.06), 0 4px 14px rgba(20, 18, 14, 0.05);
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease), box-shadow 180ms var(--ease);
 }
 .nav .nav-cta:hover {
-  background: var(--ink-900);
-  color: var(--paper-50);
+  background: var(--paper-200);
+  border-color: var(--paper-200);
+  color: var(--ink-900);
   text-decoration: none;
+  box-shadow: 0 2px 4px rgba(20, 18, 14, 0.08), 0 6px 18px rgba(20, 18, 14, 0.07);
 }
 @media (max-width: 380px) {
   .nav .nav-cta { font-size: 14px; padding: 5px 10px; }
@@ -571,12 +575,13 @@ img { max-width: 100%; height: auto; display: block; }
   <div class="wrap row">
     <a href="/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
     <nav class="nav" aria-label="Primary">
-      <a class="nav-services" href="/#how-this-works">Services</a>
-      <span class="sep nav-services-sep" aria-hidden="true">·</span>
-      <a href="/#work">Work</a>
+      <a href="/#how-this-works">Work with Fred</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="/#case-studies">Studies</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="/#work">Writing</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="/about">About</a>
-      <a class="nav-cta" href="/#send-problem">Send a problem</a>
     </nav>
   </div>
 </header>
