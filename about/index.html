@@ -1111,7 +1111,7 @@ img { max-width: 100%; height: auto; display: block; }
               <a class="card has-thumb" href="/work/onboarding-redesign/">
                 <div class="phone-mockup phone-mockup-card">
                   <div class="phone-mockup-clip">
-                  <video class="card-thumb" preload="none" muted loop playsinline poster="/videos/allaboard.webp" aria-hidden="true">
+                  <video class="card-thumb" preload="metadata" muted loop playsinline poster="/videos/allaboard.webp" aria-hidden="true">
                     <source src="/videos/allaboard.webm" type="video/webm">
                     <source src="/videos/allaboard.mp4" type="video/mp4">
                   </video>
@@ -1126,7 +1126,7 @@ img { max-width: 100%; height: auto; display: block; }
               <a class="card has-thumb" href="/work/feed-redesign/">
                 <div class="phone-mockup phone-mockup-card">
                   <div class="phone-mockup-clip">
-                  <video class="card-thumb" preload="none" muted loop playsinline poster="/videos/feedscroll.webp" aria-hidden="true">
+                  <video class="card-thumb" preload="metadata" muted loop playsinline poster="/videos/feedscroll.webp" aria-hidden="true">
                     <source src="/videos/feedscroll.webm" type="video/webm">
                     <source src="/videos/feedscroll.mp4" type="video/mp4">
                   </video>
@@ -1305,8 +1305,16 @@ img { max-width: 100%; height: auto; display: block; }
 (function () {
   var prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduce) return;
+  var RATE = 1.35;
   var isTouch = window.matchMedia && window.matchMedia('(hover: none)').matches;
   var cards = document.querySelectorAll('.card.has-thumb');
+
+  function setRate(v) { try { v.playbackRate = RATE; } catch (e) {} }
+  Array.prototype.forEach.call(cards, function (card) {
+    var v = card.querySelector('.card-thumb');
+    if (!v) return;
+    v.addEventListener('loadedmetadata', function () { setRate(v); });
+  });
 
   if (isTouch && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
@@ -1315,10 +1323,10 @@ img { max-width: 100%; height: auto; display: block; }
         var video = card.querySelector('.card-thumb');
         if (!video) return;
         if (entry.isIntersecting) {
-          if (!video.dataset.loaded) { video.load(); video.dataset.loaded = '1'; }
-          var p = video.play();
-          if (p && typeof p.then === 'function') { p.then(function () { card.classList.add('is-playing'); }).catch(function () {}); }
-          else { card.classList.add('is-playing'); }
+          video.load();
+          setTimeout(function () {
+            video.play().then(function () { setRate(video); card.classList.add('is-playing'); }).catch(function () {});
+          }, 100);
         } else {
           video.pause();
           card.classList.remove('is-playing');
@@ -1332,12 +1340,9 @@ img { max-width: 100%; height: auto; display: block; }
   Array.prototype.forEach.call(cards, function (card) {
     var video = card.querySelector('.card-thumb');
     if (!video) return;
-    var loaded = false;
     card.addEventListener('mouseenter', function () {
-      if (!loaded) { video.load(); loaded = true; }
-      var p = video.play();
-      if (p && typeof p.then === 'function') { p.then(function () { card.classList.add('is-playing'); }).catch(function () {}); }
-      else { card.classList.add('is-playing'); }
+      video.load();
+      video.play().then(function () { setRate(video); card.classList.add('is-playing'); }).catch(function () {});
     });
     card.addEventListener('mouseleave', function () {
       video.pause();
