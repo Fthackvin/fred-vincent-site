@@ -827,7 +827,7 @@ img { max-width: 100%; height: auto; display: block; }
   var prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduce) return;
   if (!('IntersectionObserver' in window)) return;
-  var RATE = 1.35;
+  var RATE = 1.5;
   function setRate(v) { try { v.playbackRate = RATE; } catch (e) {} }
 
   function observe(video, threshold) {
