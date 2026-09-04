@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no, email=no, address=no">
+<script>
+  /* Case studies always open at the top — the cover is the entry point. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  /* The modal stage is set here, in the head, so the very first paint is
+     already the inset panel. Applying it from a script at the end of the body
+     meant the browser painted the full-bleed layout first and the page
+     visibly snapped into the modal a frame later.
+
+     Desktop only. On a phone an inset panel wastes the little width there is,
+     and locking the scroll to stage an expansion fights the way the device
+     already works — so the case study is simply a page there. */
+  if (window.matchMedia && window.matchMedia('(min-width: 900px)').matches) {
+    document.documentElement.classList.add('cs-modal');
+  }
+</script>
+<title>Tag Tuition · Studio Vincent</title>
+<meta name="description" content="Turning TAG's classroom curriculum into a series of illustrated workbooks children could explore on their own.">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+<link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+<link rel="manifest" href="/favicons/site.webmanifest">
+<meta name="theme-color" content="#1F1F1F">
+<link rel="canonical" href="https://studiovincent.co/work/tag-tuition/">
+<meta name="author" content="Fred Vincent">
+<meta name="robots" content="index, follow, max-image-preview:large">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Studio Vincent">
+<meta property="og:url" content="https://studiovincent.co/work/tag-tuition/">
+<meta property="og:title" content="Tag Tuition">
+<meta property="og:description" content="Turning TAG's classroom curriculum into a series of illustrated workbooks children could explore on their own.">
+<meta property="og:image" content="https://studiovincent.co/work/tag-tuition/metamorphosis-cover.webp">
+<meta property="og:image:alt" content="The TAG Tuition Metamorphosis workbook cover.">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tag Tuition">
+<meta name="twitter:description" content="Turning TAG's classroom curriculum into a series of illustrated workbooks children could explore on their own.">
+<meta name="twitter:image" content="https://studiovincent.co/work/tag-tuition/metamorphosis-cover.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- The faces the first screen is set in, fetched at parse time so they
+     are present for the first paint. Without this `font-display: swap`
+     renders every line in a fallback and visibly re-renders it. -->
+<link rel="preload" as="font" type="font/otf" crossorigin href="/Fonts/TestS%C3%B6hne-Leicht.otf">
+<link rel="preload" as="font" type="font/otf" crossorigin href="/Fonts/TestS%C3%B6hne-Buch.otf">
+<link rel="preload" as="font" type="font/woff" crossorigin href="/Fonts/Canela.woff">
+<!-- Non-blocking. As a plain stylesheet this held up the first paint on a
+     third-party connection, so the page showed nothing at all and then
+     appeared complete — the "blank then it refreshes" arrival. Loaded as
+     print media it is fetched without blocking, then promoted on load. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400&display=swap"></noscript>
+
+<style>
+/* ==========================================================================
+   TEMPLATE ONE — reusable case-study template
+   --------------------------------------------------------------------------
+   Everything prefixed .cs- is generic template chrome and is intended to be
+   copied verbatim into the next Template One case study. Anything prefixed
+   .tt- is Tag Tuition-specific and should be dropped/replaced when reusing.
+
+   Per-case-study content lives in the markup below plus the CS_CONFIG object
+   in the script at the end of the file.
+   ========================================================================== */
+
+/* --- Fonts ---------------------------------------------------------------
+   Canela already ships with the site. Test Söhne files were in /Fonts but had
+   no @font-face anywhere, so every "TestSohne-Leicht" rule on the site has
+   been silently falling back to Inter. Declared here (scoped to this page) so
+   Template One gets the real face without changing existing pages. */
+@font-face {
+  font-family: "Canela";
+  src: url("/Fonts/Canela.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face { font-family: "Test Söhne"; src: url("/Fonts/TestS%C3%B6hne-LeichtKursiv.otf") format("opentype"); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: "Test Söhne"; src: url("/Fonts/TestS%C3%B6hne-BuchKursiv.otf") format("opentype"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Test Söhne"; src: url("/Fonts/TestS%C3%B6hne-Kr%C3%A4ftig.otf") format("opentype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Test Söhne"; src: url("/Fonts/TestS%C3%B6hne-Halbfett.otf") format("opentype"); font-weight: 600; font-style: normal; font-display: swap; }
+
+@font-face {
+  font-family: "Test Söhne";
+  src: url("/Fonts/TestS%C3%B6hne-Leicht.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Test Söhne";
+  src: url("/Fonts/TestS%C3%B6hne-Buch.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper-50: #FFFFFF;
+  --paper-200: #F3F3EF;
+  --ink-900: #1A1815;
+  --ink-700: #3A3731;
+
+  --display: "Canela", Georgia, serif;
+  --body: "Test Söhne", "Inter", system-ui, -apple-system, sans-serif;
+  --brand: "Cormorant Garamond", Georgia, serif;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Template One layout. Paper draws on a 1440 artboard with a ~1173px
+     content span and a 1.27 : 1 media-to-text column ratio. */
+  --cs-container: 1180px;
+  --cs-pad: clamp(24px, 5vw, 72px);
+  --cs-gap: clamp(40px, 6vw, 112px);
+  --cs-nav-h: 72px;
+
+  /* The persistent case-study logo, in its small resting size. */
+  --cs-logo-w: 117px;
+  --cs-logo-h: 83px;
+  --cs-logo-top: 46px;
+  /* Layout size of the animated cover logo (it scales down from here). */
+  --cs-logo-big: 730px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable both-edges;
+  background: var(--paper-50);
+}
+
+body {
+  margin: 0;
+  background: var(--paper-50);
+  color: var(--ink-900);
+  font-family: var(--body);
+  font-weight: 300;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+p { margin: 0; }
+h1, h2, h3 { margin: 0; font-weight: 400; }
+
+.cs-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* --- Navigation ----------------------------------------------------------
+   The case-study state of the site header: black bar, white type, slightly
+   smaller than the homepage's (26px brand / 22px nav → 20px / 18px). The
+   homepage animates into this state before navigating here, so the two must
+   agree on colour and size. */
+.cs-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  background: #1F1F1F;
+  transition: background-color 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Symmetric, so the type is centred in the black bar. The site header's
+     own padding is asymmetric (32/12), which is invisible on the light page
+     but reads as low once the bar is a solid rectangle — so the header
+     matches this while it's black (see html.is-cs-opening). */
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+/* Solid. The frosted treatment earns its keep on Template Two, where dark and
+   pale compositions run under the bar and the tint changes as you move. This
+   page is light nearly all the way down, so translucency only ever produced a
+   washed grey — and a graduated edge over flat white had nothing to grade. */
+html.cs-scrolled .cs-nav { background: #1F1F1F; }
+
+/* Mirrors the site's own .wrap (1120px, and its padding steps) rather than
+   the case-study content container — so when the homepage's header contracts
+   into this bar on the way in, the brand and links don't shift sideways. */
+.cs-nav-inner {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  /* The homepage header aligns brand and links on their baseline, not their
+     centres — matching it keeps the type from stepping vertically when the
+     two bars swap over. */
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+@media (min-width: 640px) { .cs-nav-inner { padding: 0 48px; } }
+@media (min-width: 1024px) { .cs-nav-inner { padding: 0; } }
+/* Deliberately the homepage's own nav metrics (26px brand / 22px links /
+   24px gap / 40px signature) with the same contraction transform the
+   homepage applies on its way here. Matching by construction rather than by
+   hand-tuned numbers means the bar cannot shift or resize on the handover. */
+.cs-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1;
+  text-decoration: none;
+}
+.cs-brand .studio {
+  font-family: var(--brand);
+  font-weight: 300;
+  font-size: 23px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+}
+.cs-brand .vincent {
+  height: 35px;
+  width: auto;
+  transform: translateY(-5px);
+  margin-bottom: -5px;
+  /* Same trick the homepage's dark mode uses — no separate white asset. */
+  filter: invert(1);
+}
+.cs-nav-links {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 12px;
+}
+@media (min-width: 640px) { .cs-nav-links { gap: 24px; } }
+.cs-nav-links a {
+  font-family: var(--brand);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.6;
+  color: #FFFFFF;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0.92;
+  transition: opacity 200ms var(--ease);
+}
+.cs-nav-links a:hover,
+.cs-nav-links a:focus-visible { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+
+/* --- Close control -------------------------------------------------------
+   Fades/eases in once the cover has settled (see .cs-entered on <html>). */
+.cs-close {
+  position: fixed;
+  top: calc(var(--cs-nav-h) + 24px);
+  right: clamp(16px, 3.2vw, 46px);
+  z-index: 55;
+  width: 52px;
+  height: 54px;
+  padding: 0;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* White, as it was. Template Two's dark chrome works because that page runs
+     dark compositions; here the page is light nearly all the way down and a
+     dark mark disappeared into it. Frosted rather than flat, so it still
+     takes a little of what is behind it. */
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(18px) saturate(1.7);
+  backdrop-filter: blur(18px) saturate(1.7);
+  box-shadow: 0 6px 22px rgba(20, 18, 14, 0.14);
+  color: #484848;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 170ms var(--ease), transform 170ms var(--ease), background-color 200ms var(--ease);
+}
+html.cs-entered .cs-close { transition: opacity 520ms var(--ease) 260ms, transform 520ms var(--ease) 260ms, background-color 200ms var(--ease); }
+.cs-close:hover { background: #FFFFFF; color: var(--ink-900); }
+.cs-close svg { display: block; width: 21px; height: 21px; }
+html.cs-entered .cs-close { opacity: 1; transform: none; }
+
+.cs-close:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 6px; border-radius: 10px; }
+
+
+/* --- Persistent case-study logo -----------------------------------------
+   One element for the whole page. It is laid out at its SMALL resting size
+   (top-left of the content column) and scaled UP for the cover, so the state
+   the user spends most of their time in needs no transform and stays crisp.
+   Position is a pure function of scrollY — it can never get stuck mid-state,
+   however fast or erratically the user scrolls. */
+/* A rail that mirrors .cs-section's own box (page padding, then a centred
+   max-width track) so the logo lands exactly on the media column's left
+   edge rather than being nudged in by an extra page-padding's worth. */
+.cs-logo-rail {
+  position: fixed;
+  z-index: 40;
+  top: calc(var(--cs-nav-h) + var(--cs-logo-top));
+  left: 0;
+  right: 0;
+  padding: 0 var(--cs-pad);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.cs-logo-rail-inner {
+  width: 100%;
+  max-width: var(--cs-container);
+}
+/* Laid out at full cover size and scaled DOWN to dock. Doing it the other
+   way round (small box, scaled up) makes Safari rasterise the composited
+   layer at the small size and blow the bitmap up — visibly pixellated.
+   Scaling down is always crisp. */
+.cs-logo {
+  width: var(--cs-logo-big);
+  height: calc(var(--cs-logo-big) * 516 / 730);
+  transform-origin: top left;
+  /* Docked size by default, so it is never briefly huge before JS runs. */
+  transform: scale(calc(var(--cs-logo-w) / var(--cs-logo-big)));
+  will-change: transform, opacity;
+}
+.cs-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+/* --- Generic section -----------------------------------------------------
+   Media on the left, copy on the right. Every Template One content section
+   uses this; only the contents of .cs-media change per section. */
+.cs-section {
+  min-height: 100svh;
+  display: flex;
+  align-items: stretch;
+  padding: calc(var(--cs-nav-h) + var(--cs-logo-top)) var(--cs-pad) clamp(48px, 7vh, 90px);
+}
+/* Logo row, then artwork + copy taking the slack, then the scroll cue at the
+   foot — the same vertical rhythm Paper draws, and it means the logo can
+   never sit on top of the artwork. */
+.cs-section-inner {
+  width: 100%;
+  max-width: var(--cs-container);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.27fr) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: var(--cs-gap);
+  row-gap: 0;
+  align-items: center;
+}
+/* Each section carries its own logo, in flow. It scrolls with the section
+   rather than hovering over it — no overlay, nothing sticky. */
+.cs-section-logo {
+  grid-column: 1 / -1;
+  align-self: start;
+  width: var(--cs-logo-w);
+  height: var(--cs-logo-h);
+  margin-bottom: clamp(28px, 4.5vh, 58px);
+}
+.cs-section-logo img { width: 100%; height: 100%; object-fit: contain; }
+.cs-section-inner > .cs-media,
+.cs-section-inner > .cs-body { align-self: center; }
+.cs-body { max-width: 494px; }
+.cs-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(30px, 3.1vw, 40px);
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: #000;
+}
+/* The opening section's title is set smaller than the later ones (28 vs 40). */
+.cs-section--opening .cs-title { font-size: clamp(24px, 2.2vw, 28px); line-height: 1.43; }
+.cs-body p {
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: clamp(17px, 1.45vw, 20px);
+  line-height: 1.5;
+  color: #000;
+}
+.cs-body p + p { margin-top: 1.35em; }
+.cs-title + p, .cs-title + .cs-lede { margin-top: 1.1em; }
+
+/* --- Media ---------------------------------------------------------------
+   Two-page spreads and staggered cover pairs. Ratios come straight from the
+   Paper artboards so nothing needs re-cropping. */
+.cs-media { position: relative; }
+.cs-spread {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 2.4%, 35px);
+  align-items: start;
+}
+.cs-spread img {
+  width: 100%;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.06), 0 12px 28px rgba(20, 18, 14, 0.07);
+}
+/* Opening pair: covers sit staggered rather than square to each other. */
+.cs-spread--stagger { align-items: start; }
+.cs-spread--stagger img:last-child { margin-top: 9.2%; width: 89%; }
+
+/* --- Cover ---------------------------------------------------------------
+   Deliberately empty of copy: the logo (a fixed element) is the whole screen. */
+.cs-cover {
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 var(--cs-pad) clamp(48px, 9vh, 96px);
+}
+
+/* --- Arrival: modal, then full screen ------------------------------------
+   The case study does not land full-bleed. It arrives as an inset, rounded
+   panel — a modal over a plain ground — with the navigation still in its
+   light state. The first deliberate move onward (the scroll cue, or simply
+   starting to scroll) expands that panel to the full screen and turns the
+   navigation black on the same action.
+
+   The expansion animates the panel's own insets rather than transforming it,
+   which is what makes it read as a box genuinely growing: the corners stay
+   true and nothing is scaled. 500ms on the standard ease is taken straight
+   from the reference. */
+:root {
+  --cs-modal-side: clamp(12px, 2.2vw, 34px);
+  --cs-modal-radius: 18px;
+  --cs-expand: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The ground the modal sits on. Only visible during the modal stage. */
+html.cs-modal { background: #E9E7E2; }
+html.cs-modal, html.cs-modal body { height: 100%; overflow: hidden; }
+
+html.cs-modal .cs-stage {
+  position: fixed;
+  left: var(--cs-modal-side);
+  right: var(--cs-modal-side);
+  top: calc(var(--cs-nav-h) + var(--cs-modal-side));
+  bottom: var(--cs-modal-side);
+  overflow: hidden;
+  border-radius: var(--cs-modal-radius);
+  background: var(--paper-50);
+  box-shadow: 0 24px 70px rgba(20, 18, 14, 0.18);
+  transition: left var(--cs-expand), right var(--cs-expand),
+              top var(--cs-expand), bottom var(--cs-expand),
+              border-radius var(--cs-expand), box-shadow var(--cs-expand);
+}
+/* Expanded. Same element, insets driven to the screen edges. */
+html.cs-modal.cs-full .cs-stage {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 0;
+  box-shadow: 0 24px 70px rgba(20, 18, 14, 0);
+}
+
+/* The cover fills the panel, not the window, while it is a modal. The whole
+   chain needs a resolved height or `100%` has nothing to resolve against and
+   the cover collapses to its content — which drops the scroll cue to the top
+   of the panel instead of holding it at the bottom. */
+html.cs-modal .cs-stage > main { height: 100%; }
+html.cs-modal .cs-cover { min-height: 0; height: 100%; }
+
+/* Navigation stays light over the modal and turns black as it expands.
+   Same bar, same metrics — only the treatment changes. */
+html.cs-modal .cs-nav { background: transparent; }
+html.cs-modal .cs-nav .studio,
+html.cs-modal .cs-nav-links a { color: var(--ink-900); }
+html.cs-modal .cs-brand .vincent { filter: invert(0); }
+.cs-nav { transition: background-color 420ms cubic-bezier(0.4, 0, 0.2, 1); }
+.cs-nav .studio, .cs-nav-links a { transition: color 420ms cubic-bezier(0.4, 0, 0.2, 1); }
+/* The signature is black artwork, so `invert` is the lever: 0 leaves it black
+   for the light bar, 1 makes it white for the dark one. Written as two ends of
+   the same function rather than `brightness(0)` and `none`, which are not
+   interpolable — the filter had to snap, and snapping meant it was briefly
+   black against a bar still fading from black. Matched to the type's own
+   duration so the whole bar changes as one thing. */
+.cs-brand .vincent { transition: filter 420ms cubic-bezier(0.4, 0, 0.2, 1); }
+html.cs-modal.cs-full .cs-nav { background: #1F1F1F; }
+html.cs-modal.cs-full .cs-nav .studio,
+html.cs-modal.cs-full .cs-nav-links a { color: #FFFFFF; }
+html.cs-modal.cs-full .cs-brand .vincent { filter: invert(1); }
+
+/* The × belongs to the full-screen state; over the modal the panel edge is
+   the affordance and the nav is still the way out. */
+html.cs-modal .cs-close { opacity: 0; pointer-events: none; }
+
+/* The video is present from the start, but as its compact tab on the right
+   rather than the full player — the opening screen belongs to the mark. The
+   player itself expands into place on the same action that expands the page,
+   so the reader sees it arrive rather than finding it already sitting there. */
+/* Needs to outrank `html.cs-entered .cs-video`, which sets opacity: 1 at the
+   same specificity and later in the file — so the player would surface over
+   the modal the moment the entrance finished. */
+html.cs-modal .cs-video,
+html.cs-modal.cs-entered .cs-video { opacity: 0; pointer-events: none; }
+/* Hugs the panel, not the window. Left at right:0 it overhung the modal's
+   edge and read as belonging to the page behind it. */
+html.cs-modal .cs-video-restore {
+  display: inline-flex;
+  right: var(--cs-modal-side);
+  /* On the cue's line: the cover holds the cue clamp(48px, 9vh, 96px) off the
+     panel's bottom edge, and the panel itself sits --cs-modal-side off the
+     window's. The 4px takes out the difference in the two controls' heights so
+     their centres agree rather than their bottoms. */
+  bottom: calc(var(--cs-modal-side) + clamp(48px, 9vh, 96px) - 4px);
+}
+
+/* Going straight to the video: a cross-fade, not a journey. The cover and its
+   illustration go out, the page is moved while nothing is visible, and the
+   opening section comes in. Scrolling there instead meant watching the
+   illustration drag itself all the way into its dock first, which is a long
+   thing to sit through when all that was asked for was the video. */
+html.cs-xfade .cs-cover,
+html.cs-xfade .cs-logo {
+  opacity: 0;
+  transition: opacity 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cs-section.is-arriving { animation: cs-arrive 360ms cubic-bezier(0.33, 1, 0.68, 1) both; }
+@keyframes cs-arrive { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  html.cs-xfade .cs-cover, html.cs-xfade .cs-logo { transition: none; }
+  .cs-section.is-arriving { animation: none; }
+}
+
+/* The cover cue is spent once the reader has moved on. applyCues() writes the
+   cue's opacity inline from scroll position, and the expansion leaves the page
+   at the top — so without this the cue reappears the instant it has finished
+   fading. Overriding an inline style is what !important is for. */
+html.cs-expanded .cs-cover .cs-cue {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.cs-modal .cs-stage { transition: none; }
+  .cs-nav, .cs-nav .studio, .cs-nav-links a, .cs-brand .vincent { transition: none; }
+}
+
+/* --- Scroll cue ----------------------------------------------------------
+   Chevron + label, plus an optional per-section icon (tick on the opening
+   section, leaf on Learning by doing). */
+.cs-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 17px;
+  background: none;
+  border: 0;
+  padding: 6px 4px;
+  margin: 0;
+  cursor: pointer;
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #000;
+  text-decoration: none;
+}
+.cs-cue .chev { color: #484848; display: block; flex-shrink: 0; transition: transform 300ms var(--ease); }
+.cs-cue:hover .chev { transform: translateY(3px); }
+.cs-cue:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; border-radius: 6px; }
+/* Paper draws the tick at 30px and the leaf at 59px; both are set a little
+   larger here so they actually read next to the label. */
+.cs-cue-icon { width: 40px; height: 40px; flex-shrink: 0; }
+.cs-cue-icon--leaf { width: 58px; height: 56px; margin: -8px 0; }
+.cs-section .cs-cue { margin-top: clamp(40px, 7vh, 72px); }
+.cs-cue-row { grid-column: 1 / -1; align-self: end; display: flex; justify-content: center; }
+
+/* The leaf gets a small, slow roll — enough to draw the eye to the CTA
+   without becoming a distraction. Tag Tuition-specific. */
+@keyframes tt-leaf-roll {
+  0%, 62%, 100% { transform: rotate(0deg); }
+  72% { transform: rotate(-9deg); }
+  86% { transform: rotate(6deg); }
+}
+.cs-cue-icon--leaf { animation: tt-leaf-roll 6.5s var(--ease-soft) infinite; transform-origin: 62% 72%; }
+
+/* --- Learning by doing (interactive list) --------------------------------
+   Generic enough to reuse, but only sections that opt in with .cs-list get it. */
+.cs-list { margin-top: clamp(28px, 3.4vh, 40px); display: flex; flex-direction: column; gap: 18px; }
+.cs-list-item {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: none;
+  padding: 2px 0 2px 20px;
+  margin: 0;
+  cursor: pointer;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: clamp(17px, 1.45vw, 20px);
+  line-height: 1.35;
+  color: #333333;
+  transition: color 260ms var(--ease), font-weight 260ms var(--ease);
+}
+.cs-list-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 15px;
+  border-radius: 0.5px;
+  background: #000;
+  transform: translateY(-50%) scaleY(0);
+  transform-origin: center;
+  transition: transform 300ms var(--ease), opacity 260ms var(--ease);
+  opacity: 0;
+}
+.cs-list-item[aria-current="true"] { color: #000; font-weight: 400; }
+.cs-list-item[aria-current="true"]::before { transform: translateY(-50%) scaleY(1); opacity: 1; }
+.cs-list-item:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; border-radius: 4px; }
+
+/* Stacked media panels that cross-fade as the list selection changes. */
+.cs-media--swap { display: grid; }
+.cs-media--swap > .cs-swap-panel {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(8px) scale(0.995);
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+  pointer-events: none;
+}
+.cs-media--swap > .cs-swap-panel.is-active { opacity: 1; transform: none; pointer-events: auto; }
+
+/* --- Closing section (books grid + next project + CTAs) ------------------ */
+.cs-section--closing .cs-section-inner { align-items: center; }
+.cs-grid-6 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: clamp(8px, 2.3%, 14px);
+  row-gap: clamp(12px, 3.2%, 19px);
+}
+.cs-grid-6 img {
+  width: 100%;
+  aspect-ratio: 188 / 263;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.06), 0 10px 24px rgba(20, 18, 14, 0.07);
+}
+
+/* Next project preview — thumbnail, title, description, chevron. */
+.cs-next {
+  margin-top: clamp(36px, 5vh, 56px);
+  display: grid;
+  grid-template-columns: 81px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 23px;
+  text-decoration: none;
+  color: inherit;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 620ms var(--ease), transform 620ms var(--ease);
+}
+.cs-section--closing.is-in .cs-next { opacity: 1; transform: none; transition-delay: 420ms; }
+.cs-next-thumb {
+  width: 81px; height: 81px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.43);
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.cs-next-thumb svg { width: 58%; height: auto; display: block; }
+/* Paper sets the next-project label at 15px/18px Test Söhne Light, its
+   thumbnail 81px square with a 23px gap. The description isn't in Paper —
+   it carries the same copy the homepage card uses, one step down. */
+.cs-next-title {
+  display: block;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 18px;
+  color: #000;
+}
+.cs-next-desc {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-700);
+  max-width: 34ch;
+}
+.cs-next-chev { color: #484848; transform: rotate(-90deg); transition: transform 260ms var(--ease); }
+.cs-next:hover .cs-next-chev { transform: rotate(-90deg) translateY(-4px); }
+.cs-next:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 8px; border-radius: 8px; }
+.cs-next[data-placeholder="true"] .cs-next-title::after {
+  content: " — placeholder";
+  color: #9A968E;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+/* Final CTAs. Matches the homepage's Book an intro call button, in black. */
+.cs-outro { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 28px; margin-top: clamp(56px, 9vh, 96px); }
+/* The case study ends here — give it room to breathe before the page does. */
+.cs-section--closing { padding-bottom: clamp(96px, 16vh, 190px); }
+/* Same white treatment as the homepage hero's primary CTA, with a little more
+   padding for the end of a case study. */
+.cs-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 232px;
+  padding: 19px 32px;
+  border-radius: 10px;
+  border: 1px solid var(--paper-50);
+  background: var(--paper-50);
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.06), 0 4px 14px rgba(20, 18, 14, 0.05);
+  color: var(--ink-900);
+  text-decoration: none;
+  font-family: "Test Söhne", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background 200ms var(--ease), border-color 200ms var(--ease),
+              transform 200ms var(--ease), box-shadow 200ms var(--ease);
+}
+.cs-cta:hover {
+  background: var(--paper-200);
+  border-color: var(--paper-200);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(20, 18, 14, 0.08), 0 6px 18px rgba(20, 18, 14, 0.07);
+}
+.cs-cta:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+.cs-cta .wave { font-family: "Test Söhne", "Inter", system-ui, sans-serif; font-size: 20px; line-height: 1; }
+.cs-cta .chev { color: var(--ink-900); transform: rotate(-90deg); }
+.cs-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: 0;
+  padding: 6px;
+  cursor: pointer;
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  color: #303030;
+}
+.cs-back:hover { color: #000; }
+.cs-back:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; border-radius: 6px; }
+.cs-back .arrow { transition: transform 220ms var(--ease); }
+.cs-back:hover .arrow { transform: translateX(-4px); }
+
+/* --- Persistent explainer video -----------------------------------------
+   Optional per case study (CS_CONFIG.video.enabled). Fixed bottom-right,
+   survives every section because it lives outside the scrolling content. */
+.cs-video {
+  position: fixed;
+  right: clamp(16px, 3vw, 46px);
+  bottom: clamp(16px, 3vh, 40px);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 560ms var(--ease) 420ms, transform 560ms var(--ease) 420ms;
+}
+html.cs-entered .cs-video { opacity: 1; transform: none; }
+.cs-video[hidden] { display: none; }
+.cs-video-frame {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #2A2A27;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(20, 18, 14, 0.18);
+  transition: width 460ms var(--ease), height 460ms var(--ease), box-shadow 460ms var(--ease);
+}
+.cs-video.is-expanded .cs-video-frame { width: 220px; height: 220px; box-shadow: 0 14px 40px rgba(20, 18, 14, 0.26); }
+/* Arriving straight from the video tab, the player has no small state to grow
+   out of — it is simply already the size it is meant to be. Only the opacity
+   fade remains, so it comes in with the rest of the section rather than
+   performing a resize the reader never asked to watch. */
+.cs-video.is-instant .cs-video-frame { transition: none; }
+.cs-video-frame:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+.cs-video-frame video,
+.cs-video-frame .cs-video-poster {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+/* Obvious placeholder while no explainer video has been supplied. */
+.cs-video-poster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: repeating-linear-gradient(135deg, #33332E 0 10px, #2A2A27 10px 20px);
+  color: rgba(255, 255, 255, 0.72);
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 8px;
+}
+.cs-video-poster span { display: block; }
+/* Hover overlay + white pause control, desktop only. */
+.cs-video-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  transition: opacity 240ms var(--ease);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .cs-video-frame:hover .cs-video-overlay,
+  .cs-video-frame:focus-visible .cs-video-overlay { opacity: 1; }
+}
+.cs-video-overlay .glyph { width: 30px; height: 36px; color: #FFFFFF; }
+/* Persistent black control below the frame — always present, mirrors state. */
+.cs-video-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 15px;
+  color: #1A1815;
+}
+.cs-video-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; padding: 0; border: 0; background: none;
+  color: #1A1815; cursor: pointer;
+}
+.cs-video-toggle:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; border-radius: 3px; }
+/* A real target rather than a 13px character — this is the control that takes
+   the player away, so it needs to be findable and hittable. */
+.cs-video-dismiss {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-size: 19px; line-height: 1; color: #5C5C5C;
+  transition: color 160ms var(--ease), background-color 160ms var(--ease);
+}
+.cs-video-dismiss:hover { color: #1A1815; background: rgba(0, 0, 0, 0.06); }
+
+/* Shown for a moment when the video runs out and returns to the start, so the
+   reader is told it reset rather than left wondering why it stopped. */
+.cs-video-reset {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  background: rgba(20, 18, 14, 0.86);
+  color: #FFFFFF;
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-size: 11px; letter-spacing: 0.04em; text-align: center; padding: 8px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 260ms var(--ease);
+}
+.cs-video-reset svg { width: 26px; height: 26px; }
+.cs-video.is-reset .cs-video-reset { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .cs-video-reset { transition: none; } }
+/* Dismissed → a small bookmark tab that brings it back. */
+.cs-video-restore {
+  position: fixed;
+  right: 0;
+  bottom: clamp(24px, 12vh, 96px);
+  z-index: 50;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 10px 12px;
+  border: 0;
+  border-radius: 16px 0 0 16px;
+  /* Solid. This page is white behind it nearly everywhere, so translucency
+     bought nothing and only weakened the one control that has to stay
+     findable once the player has been put away. */
+  background: #1F1F1F;
+  color: #FFFFFF;
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(20, 18, 14, 0.2);
+}
+.cs-video-restore.is-shown { display: inline-flex; }
+
+/* Direct manipulation: the floating player can be dragged and pinched. */
+.cs-video { touch-action: none; cursor: grab; }
+.cs-video.is-dragging { cursor: grabbing; }
+/* No easing on the size while a gesture is running — the frame must track the
+   fingers, not chase them. */
+.cs-video.is-dragging .cs-video-frame { transition: none; }
+/* The wrap transitions transform with a 420ms delay and a 560ms duration for
+   its entrance. Left in place while dragging, every pointer move was queued
+   behind that delay and then eased — so the player trailed the cursor by the
+   best part of a second. It must track the pointer exactly. */
+.cs-video.is-dragging { transition: none; }
+/* Returning home after being left alone is the one move that should be seen. */
+.cs-video.is-homing { transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cs-close { background: rgba(255, 255, 255, 0.96); }
+}
+/* A real play glyph rather than a text triangle: at 13px the ▸ character read
+   as a bullet, not a control. White, and sized to carry the label. */
+.cs-video-restore .play { flex-shrink: 0; color: #FFFFFF; display: block; }
+.cs-video-restore span { line-height: 1; }
+
+/* --- Section reveals -----------------------------------------------------
+   Same language as the homepage: fade plus a small rise. Graphic leads,
+   copy follows, so the section assembles rather than appearing all at once. */
+.cs-reveal { opacity: 0; transform: translateY(22px); }
+.cs-section .cs-media { transition: opacity 760ms var(--ease), transform 760ms var(--ease); }
+.cs-section .cs-body { transition: opacity 720ms var(--ease) 140ms, transform 720ms var(--ease) 140ms; }
+.cs-section .cs-cue-row { transition: opacity 640ms var(--ease) 300ms, transform 640ms var(--ease) 300ms; }
+.cs-section.is-in .cs-reveal { opacity: 1; transform: none; }
+
+/* --- Entrance ------------------------------------------------------------
+   The page paints white immediately (matching the panel the homepage just
+   expanded), then the logo settles and the chrome fades in. */
+.cs-cover .cs-cue {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 620ms var(--ease) 320ms, transform 620ms var(--ease) 320ms;
+}
+html.cs-entered .cs-cover .cs-cue { opacity: 1; transform: none; }
+
+/* Closing: the whole page eases away as we hand back to the homepage. */
+html.cs-leaving body { transition: opacity 300ms var(--ease); opacity: 0; }
+
+/* --- Responsive ----------------------------------------------------------
+   Mobile keeps the hierarchy, the fades and the sense of progression, but
+   drops to a single column with native scrolling and no pinning. */
+@media (max-width: 899px) {
+  :root { --cs-nav-h: 60px; --cs-logo-w: 92px; --cs-logo-h: 65px; --cs-logo-top: 34px; }
+  .cs-section-inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 0;
+    /* More air between the artwork and the copy that belongs to it. */
+    row-gap: clamp(40px, 9vw, 64px);
+  }
+  .cs-section { min-height: 0; padding-bottom: clamp(36px, 5vh, 56px); }
+
+  /* The logo hands over on the first section and then bows out. Repeating it
+     down the page only costs height on a small screen. */
+  #cs-s2-logo { display: none; }
+  /* Sections with no logo don't need to reserve room for one. */
+  #cs-s2, #cs-s3 { padding-top: clamp(48px, 8vh, 76px); }
+
+  /* Only the cover keeps a scroll cue — once you're into the story, native
+     scrolling is affordance enough, and the cues were adding real height. */
+  .cs-section .cs-cue-row { display: none; }
+  .cs-body { max-width: none; }
+  .cs-cue-row { justify-content: flex-start; }
+  .cs-next { grid-template-columns: 64px minmax(0, 1fr) 20px; gap: 16px; }
+  .cs-next-thumb { width: 64px; height: 64px; }
+  .cs-video-frame { width: 96px; height: 96px; }
+  .cs-video.is-expanded .cs-video-frame { width: 168px; height: 168px; }
+  /* There isn't room beside a centred CTA on a phone, so the explainer steps
+     aside once the reader reaches the end of the story rather than sitting on
+     top of the buttons. It comes back if they scroll away from the end. */
+  /* Needs to outrank `html.cs-entered .cs-video`, which sets opacity: 1. */
+  html.cs-entered .cs-video.is-parked,
+  .cs-video.is-parked { opacity: 0; pointer-events: none; transform: translateY(12px); }
+}
+@media (max-width: 639px) {
+  :root { --cs-pad: 20px; }
+  /* Carries the same two links, at the same size and spacing, as the site's
+     own mobile header — just on the case study's black bar. */
+  .cs-nav-inner { gap: 16px; }
+  .cs-nav-links { gap: 32px; transform: none; }
+  .cs-nav-links a { font-size: 19px; }
+  .cs-nav-links a[href$="#how-this-works"],
+  .cs-nav-links a[href$="#work"] { display: none; }
+  .cs-brand { transform: none; }
+  .cs-brand .studio { font-size: 23px; }
+  .cs-brand .vincent { height: 35px; transform: translateY(-5px); margin-bottom: -5px; }
+  .cs-close { width: 42px; height: 44px; top: calc(var(--cs-nav-h) + 14px); }
+  .cs-grid-6 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-reveal { opacity: 1 !important; transform: none !important; }
+  .cs-section .cs-media,
+  .cs-section .cs-body,
+  .cs-section .cs-cue-row,
+  .cs-close, .cs-video, .cs-next, .cs-cover .cs-cue,
+  .cs-video-frame, .cs-media--swap > .cs-swap-panel,
+  .cs-list-item, .cs-list-item::before {
+    transition: none !important;
+  }
+  .cs-cue-icon--leaf { animation: none !important; }
+  html.cs-leaving body { transition: none !important; }
+}
+</style>
+<noscript>
+  <style>
+    /* Reveals are JS-driven; without it the copy must still be readable. */
+    .cs-reveal { opacity: 1 !important; transform: none !important; }
+    .cs-close, .cs-cover .cs-cue { opacity: 1 !important; transform: none !important; }
+    .cs-logo { position: absolute; top: auto; }
+  </style>
+</noscript>
+</head>
+<body>
+
+<!-- ===== Navigation (Template One chrome) ============================== -->
+<header class="cs-nav">
+  <div class="cs-nav-inner">
+    <a class="cs-brand" href="/" data-cs-exit="/">
+      <span class="studio">Studio</span>
+      <img class="vincent" src="/logo-vincent.png" alt="Studio Vincent" width="62" height="32">
+    </a>
+    <nav class="cs-nav-links" aria-label="Primary">
+      <a href="/#how-this-works" data-cs-exit="/#how-this-works">Work together</a>
+      <a href="/#case-studies" data-cs-exit="/#case-studies">Work</a>
+      <a href="/#work" data-cs-exit="/#work">Writing</a>
+      <a href="/about/" data-cs-exit="/about/">About</a>
+    </nav>
+  </div>
+</header>
+
+<button type="button" class="cs-close" data-cs-exit="/#case-studies" aria-label="Close case study">
+  <!-- Just the mark. The button carries the surface, so the icon no longer
+       draws its own contour — that ring does not follow the button's corner. -->
+  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </svg>
+</button>
+
+<!-- The one persistent case-study graphic. Scroll drives it from the cover
+     down into the opening section's media position. -->
+<div class="cs-logo-rail" aria-hidden="true">
+  <div class="cs-logo-rail-inner">
+    <div class="cs-logo" id="cs-logo">
+      <img src="tag-logo.webp" alt="" width="730" height="516" fetchpriority="high">
+    </div>
+  </div>
+</div>
+
+<div class="cs-stage" id="cs-stage">
+<main>
+
+  <!-- ===== Cover ====================================================== -->
+  <section class="cs-cover" aria-labelledby="cs-heading">
+    <h1 class="cs-sr-only" id="cs-heading">Tag Tuition</h1>
+    <button type="button" class="cs-cue" data-cs-advance>
+      <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+      <span>Scroll to read more</span>
+    </button>
+  </section>
+
+  <!-- ===== Section 1 — opening ======================================== -->
+  <section class="cs-section cs-section--opening" id="cs-s1" aria-labelledby="cs-s1-title">
+    <div class="cs-section-inner">
+      <div class="cs-section-logo" id="cs-s1-logo" aria-hidden="true">
+        <img src="tag-logo.webp" alt="" width="730" height="516" loading="lazy" decoding="async">
+      </div>
+      <div class="cs-media cs-reveal">
+        <div class="cs-spread cs-spread--stagger">
+          <img src="metamorphosis-cover.webp" alt="The TAG Tuition Metamorphosis workbook cover." width="613" height="859" loading="lazy" decoding="async">
+          <img src="creative-comprehension-cover.webp" alt="The Creative Comprehension workbook cover." width="595" height="842" loading="lazy" decoding="async">
+        </div>
+      </div>
+      <div class="cs-body cs-reveal">
+        <h2 class="cs-title" id="cs-s1-title">Turning TAG’s classroom curriculum into a series of illustrated workbooks children could explore on their own.</h2>
+        <p>TAG had years of exercises, ideas and teaching methods developed in the classroom. We wanted to keep what made those lessons special, but make them work without a teacher in the room.</p>
+        <p>Working with founder Amy and the teaching team, we expanded the brand and website to turn the curriculum into a series of 16-page workbooks built around making, drawing, decoding and discovery.</p>
+      </div>
+      <div class="cs-cue-row cs-reveal">
+        <button type="button" class="cs-cue" data-cs-advance>
+          <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+          <span>Scroll to read more</span>
+          <img class="cs-cue-icon" src="tickbox.webp" alt="" width="40" height="40" loading="lazy">
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 2 — Learning by doing (interactive) ================ -->
+  <section class="cs-section" id="cs-s2" aria-labelledby="cs-s2-title">
+    <div class="cs-section-inner">
+      <div class="cs-section-logo" id="cs-s2-logo" aria-hidden="true">
+        <img src="tag-logo.webp" alt="" width="730" height="516" loading="lazy" decoding="async">
+      </div>
+      <div class="cs-media cs-media--swap cs-reveal" id="tt-lbd-media">
+        <div class="cs-swap-panel is-active" data-panel="metamorphosis">
+          <div class="cs-spread">
+            <img src="metamorph-1.webp" alt="Metamorphosis workbook spread introducing Maria Sibylla Merian." width="613" height="859" loading="lazy" decoding="async">
+            <img src="metamorph-2.webp" alt="Metamorphosis workbook spread mapping the stages of a life cycle." width="613" height="859" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="cs-swap-panel" data-panel="sutton-hoo">
+          <div class="cs-spread">
+            <img src="sutton-hoo-part-2.webp" alt="Sutton Hoo workbook spread with helmet fragments to reassemble." width="613" height="859" loading="lazy" decoding="async">
+            <img src="sutton-hoo-part-1.webp" alt="Sutton Hoo workbook spread showing the completed helmet cut-out." width="613" height="859" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="cs-swap-panel" data-panel="runes">
+          <div class="cs-spread">
+            <img src="rune-alphabet.webp" alt="Runes workbook spread with a rune alphabet to fill in." width="614" height="861" loading="lazy" decoding="async">
+            <img src="runes-exercise.webp" alt="Runes workbook spread for making your own rune sticks." width="614" height="861" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="cs-swap-panel" data-panel="hand-gestures">
+          <div class="cs-spread">
+            <img src="hand-gestures-1.webp" alt="Hand gestures workbook spread of diver signals." width="595" height="842" loading="lazy" decoding="async">
+            <img src="hand-gestures-2.webp" alt="Hand gestures workbook spread naming underwater creatures." width="617" height="864" loading="lazy" decoding="async">
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-body cs-reveal">
+        <h2 class="cs-title" id="cs-s2-title">Learning by doing</h2>
+        <p>All exercises, narrative and booklet structure was driven by lesson’s learn’t by staff in the classroom, we reimagined and even invented new activities tailored for self directed study such as:</p>
+        <div class="cs-list" role="tablist" aria-label="Workbook activities" id="tt-lbd-list">
+          <button type="button" class="cs-list-item" role="tab" aria-current="true"  aria-selected="true"  aria-controls="tt-lbd-media" data-target="metamorphosis">Mapping stages of metamorphosis.</button>
+          <button type="button" class="cs-list-item" role="tab" aria-current="false" aria-selected="false" aria-controls="tt-lbd-media" data-target="sutton-hoo">Rebuild the Sutton Hoo helmet from archaeological fragments</button>
+          <button type="button" class="cs-list-item" role="tab" aria-current="false" aria-selected="false" aria-controls="tt-lbd-media" data-target="runes">Draw your own runes sticks</button>
+          <button type="button" class="cs-list-item" role="tab" aria-current="false" aria-selected="false" aria-controls="tt-lbd-media" data-target="hand-gestures">Learn underwater hand gestures</button>
+        </div>
+      </div>
+
+      <div class="cs-cue-row cs-reveal">
+        <button type="button" class="cs-cue" data-cs-advance>
+          <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+          <span>Scroll to read more</span>
+          <img class="cs-cue-icon cs-cue-icon--leaf" src="leaf.webp" alt="" width="58" height="56" loading="lazy">
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 3 — closing ======================================== -->
+  <section class="cs-section cs-section--closing" id="cs-s3" aria-labelledby="cs-s3-title">
+    <div class="cs-section-inner">
+      <div class="cs-media cs-reveal">
+        <div class="cs-grid-6">
+          <img src="book-darwin.webp" alt="Charles Darwin workbook cover." width="613" height="859" loading="lazy" decoding="async">
+          <img src="book-runes.webp" alt="Anglo-Saxon runes workbook cover." width="614" height="861" loading="lazy" decoding="async">
+          <img src="book-constellations.webp" alt="Stories from the Constellations workbook cover." width="613" height="859" loading="lazy" decoding="async">
+          <img src="book-cryptology.webp" alt="Cryptology for 11+ workbook cover." width="595" height="842" loading="lazy" decoding="async">
+          <img src="book-caterpillar.webp" alt="Caterpillar, cocoon and moth workbook cover." width="613" height="859" loading="lazy" decoding="async">
+          <img src="book-insects.webp" alt="British Moths workbook cover." width="613" height="859" loading="lazy" decoding="async">
+        </div>
+      </div>
+
+      <div class="cs-body cs-reveal">
+        <h2 class="cs-title" id="cs-s3-title">Different worlds, one system</h2>
+        <p>I created a visual world for each series using original illustration, hand printed textures and graphic layouts, held together by a shared set of reusable components.</p>
+        <p>That system gave TAG a starting point for producing future books themselves, including the later scholarship and 11+ series.</p>
+        <p>The collection has since grown across astronomy, cryptology, archaeology, naturalism, metamorphosis and riddles and runes.</p>
+
+        <!-- Next project: configured in CS_CONFIG.nextProject. Deliberately a
+             labelled placeholder until the next case study is decided. -->
+        <a class="cs-next" id="cs-next" href="#" data-placeholder="true">
+          <!-- Thumbnail mirrors the project's own card in the homepage
+               carousel. Swap this block when the next project changes. -->
+          <span class="cs-next-thumb" id="cs-next-thumb" style="background:#1E2B2C;">
+            <svg viewBox="0 0 147 97" aria-hidden="true"><path fill-rule="nonzero" fill="#FFFFFF" d="M89.146 0C95.089 1.305e-05 100.729 0.767 106.066 2.301C111.402 3.706 115.95 7.093 119.71 12.46C120.317 17.189 122.015 21.599 124.804 25.688C127.715 29.778 130.869 33.803 134.265 37.765C137.661 41.599 140.632 45.497 143.179 49.459C145.726 53.42 147 57.638 147 62.111C147 64.539 146.454 67.159 145.363 69.97C144.271 72.782 142.876 75.082 141.178 76.872C140.814 77.255 140.268 77.702 139.541 78.214C138.692 78.853 137.903 79.619 137.176 80.514C136.569 81.281 135.902 82.047 135.174 82.814C133.719 84.476 132.203 86.457 130.626 88.757C129.171 90.93 127.473 92.847 125.532 94.508C123.713 96.169 121.53 97 118.983 97C116.8 97 114.495 96.361 112.069 95.083C110.614 93.294 109.886 91.441 109.886 89.524C109.886 86.968 110.978 84.476 113.161 82.048C115.344 79.619 117.891 77.191 120.802 74.763C123.713 72.207 126.26 69.587 128.443 66.903C130.626 64.092 131.718 61.088 131.718 57.893C131.718 55.721 131.111 53.612 129.899 51.568C128.807 49.395 127.533 47.669 126.078 46.391L124.441 45.241C122.015 43.58 119.832 41.343 117.891 38.532C115.102 34.57 115.061 30.31 111.827 26.476C109.886 21.875 105.56 20.129 101.922 16.678C95.15 13.781 89.692 11.886 83.142 11.886C76.714 11.886 70.185 14.122 61.492 17.956C53.002 23.707 51.789 24.666 45.846 31.055C39.903 37.318 31.737 50.609 27.128 57.893C22.64 65.178 21.225 66.712 21.225 72.654C21.225 78.597 24.1 80.426 25.066 82.005C26.032 83.584 25.308 82.047 26.117 84.348C26.117 84.348 26.32 85.321 26.481 86.265C26.642 87.209 26.55 87.437 26.481 88.182C26.412 88.927 26.117 90.099 26.117 90.099C26.117 90.099 25.828 92.539 23.853 93.933C21.878 95.326 9.905 95.85 3.639 95.083C1.213 92.91 8.033e-08 90.099 0 86.648C0 84.731 0.424 82.559 1.273 80.131C2.122 77.575 3.153 75.083 4.366 72.654C5.7 70.226 6.913 68.245 8.005 66.712L11.643 61.919C12.856 60.258 14.008 58.596 15.1 56.935C16.192 55.146 17.283 53.42 18.375 51.759C22.377 45.624 26.38 39.362 30.382 32.972C34.385 26.582 38.872 20.703 43.845 15.336C48.818 9.841 54.7 5.624 61.492 2.684C62.827 2.045 64.403 1.47 66.223 0.958C68.163 0.32 69.922 7.617e-07 71.499 0C72.226 0 72.954 0.064 73.682 0.192L82.597 0.192C84.78 0.064 86.963 0 89.146 0Z"/></svg>
+          </span>
+          <span>
+            <span class="cs-next-title" id="cs-next-title">Next project title</span>
+            <span class="cs-next-desc" id="cs-next-desc"></span>
+          </span>
+          <svg class="cs-next-chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+        </a>
+      </div>
+
+      <div class="cs-outro cs-reveal">
+        <a class="cs-cta" id="cs-book" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer">
+          <span class="wave" aria-hidden="true">👋</span>
+          <span>Book an intro call</span>
+          <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+        </a>
+        <button type="button" class="cs-back" data-cs-exit="/">
+          <svg class="arrow" width="20" height="12" viewBox="0 0 20 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M4.935 0.009C4.792 0.032 4.661 0.099 4.559 0.202C4.559 0.202 0.195 4.570 0.195 4.570C0.188 4.580 0.180 4.589 0.172 4.600C0.127 4.651 0.088 4.707 0.059 4.768C0.047 4.799 0.037 4.831 0.029 4.861C0.014 4.909 0.005 4.956 0.000 5.005C0.000 5.005 0.000 5.055 0.000 5.055C0.000 5.055 0.000 5.105 0.000 5.105C0.005 5.154 0.014 5.205 0.029 5.252C0.037 5.283 0.046 5.312 0.056 5.341C0.087 5.406 0.127 5.467 0.177 5.521C0.185 5.527 0.192 5.531 0.200 5.538C0.200 5.538 0.201 5.538 0.201 5.538C0.201 5.538 4.566 9.908 4.566 9.908C4.833 10.176 5.265 10.176 5.532 9.908C5.798 9.641 5.798 9.209 5.532 8.942C5.532 8.942 2.329 5.736 2.329 5.736C2.329 5.736 15.185 5.736 15.185 5.736C17.096 5.736 18.630 7.275 18.630 9.189C18.630 9.189 18.630 11.318 18.630 11.318C18.630 11.318 18.632 11.318 18.632 11.318C18.632 11.695 18.937 12.000 19.314 12.000C19.495 12.002 19.671 11.930 19.799 11.802C19.928 11.673 20.000 11.499 20.000 11.318C20.000 11.318 20.000 9.189 20.000 9.189C20.000 6.538 17.836 4.371 15.187 4.371C15.187 4.371 2.335 4.371 2.335 4.371C2.335 4.371 5.533 1.171 5.533 1.171C5.533 1.171 5.532 1.170 5.532 1.170C5.660 1.042 5.733 0.868 5.733 0.684C5.733 0.503 5.660 0.329 5.532 0.200C5.378 0.046 5.158 -0.025 4.942 0.008C4.942 0.008 4.935 0.009 4.935 0.009Z"/></svg>
+          <span>Back home</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+
+<!-- ===== Persistent explainer video (optional per case study) ========== -->
+<div class="cs-video" id="cs-video" hidden>
+  <button type="button" class="cs-video-frame" id="cs-video-frame" aria-label="Play the project explainer video">
+    <div class="cs-video-poster" id="cs-video-poster">
+      <span>Explainer</span>
+      <span>video</span>
+      <span style="opacity:.6">to follow</span>
+    </div>
+    <span class="cs-video-reset" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg>
+      <span>Back to the start</span>
+    </span>
+    <span class="cs-video-overlay" aria-hidden="true">
+      <svg class="glyph" id="cs-video-overlay-glyph" viewBox="0 0 28 36" fill="currentColor" aria-hidden="true"><path d="M2 2v32h8V2H2Zm16 0v32h8V2h-8Z"/></svg>
+    </span>
+  </button>
+  <div class="cs-video-meta">
+    <button type="button" class="cs-video-toggle" id="cs-video-toggle" aria-label="Play video">
+      <svg viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" width="10" height="12" id="cs-video-toggle-glyph"><path d="M0 0l10 6-10 6z"/></svg>
+    </button>
+    <span id="cs-video-label">Fred 0:52</span>
+    <button type="button" class="cs-video-dismiss" id="cs-video-dismiss" data-no-drag aria-label="Hide video">×</button>
+  </div>
+</div>
+<button type="button" class="cs-video-restore" id="cs-video-restore" aria-label="Show the video explainer again"><svg class="play" width="15" height="17" viewBox="0 0 15 17" fill="currentColor" aria-hidden="true"><path d="M0 0.9v15.2a.9.9 0 0 0 1.37.77l12.7-7.6a.9.9 0 0 0 0-1.54L1.37.13A.9.9 0 0 0 0 .9Z"/></svg><span>Video explainer</span></button>
+
+<script>
+/* ==========================================================================
+   TEMPLATE ONE — behaviour
+   --------------------------------------------------------------------------
+   CS_CONFIG is the per-case-study configuration surface. Duplicating this
+   template means: copy the file, swap the markup content + assets, and edit
+   this object. Nothing below CS_CONFIG is Tag Tuition-specific except the
+   Learning-by-doing wiring, which is driven entirely by data-target
+   attributes in the markup.
+   ========================================================================== */
+var CS_CONFIG = {
+  slug: 'tag-tuition',
+
+  /* Optional persistent explainer video. src stays null until a real file
+     exists — the component renders an obvious placeholder in the meantime. */
+  video: {
+    enabled: true,
+    src: null,          /* e.g. '/videos/tag-tuition-explainer.mp4' */
+    poster: null,       /* e.g. 'explainer-poster.webp' */
+    label: 'Fred',
+    duration: '0:52'
+  },
+
+  /* Next case study — the card that follows this one in the homepage Work
+     carousel. Title and description are the same copy the carousel uses, so
+     the two stay in step. Monet has no Template One page of its own yet, so
+     the link points at the carousel until it does. */
+  nextProject: {
+    placeholder: false,
+    /* Straight into the next case study. This pointed at '/#case-studies',
+       which loaded the homepage and then snapped down to the carousel — two
+       page loads to reach a page we can go to directly. */
+    href: '/work/monet/',
+    title: 'Monet',
+    description: 'Creating a desirable consumer brand for neuro tech people would actually want to wear.',
+    /* null keeps the Monet arch mark already in the markup. */
+    thumb: null
+  },
+
+  /* Same booking link as the homepage hero's "Book an intro call" — kept
+     here so every Template One case study points at one place. */
+  bookingHref: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true',
+
+  /* Where the × and the nav send the user when the case study is dismissed. */
+  exitHref: '/#case-studies',
+  /* Homepage section to restore behind the closing animation. */
+  returnSection: 'case-studies'
+};
+
+(function () {
+  'use strict';
+
+  var doc = document.documentElement;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------------------------------------------------------------
+     Entrance. The homepage stores the rect of the card it expanded from, so
+     the cover logo can start life at roughly that size/position and grow —
+     making the two documents read as one continuous movement. */
+  var origin = null;
+  try {
+    var raw = sessionStorage.getItem('csOrigin');
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && parsed.slug === CS_CONFIG.slug && (Date.now() - parsed.t) < 4000) origin = parsed;
+    }
+    sessionStorage.removeItem('csOrigin');
+  } catch (e) {}
+
+  /* ---------------------------------------------------------------------
+     Persistent logo.
+     Laid out at its small resting size; scaled up for the cover. Its
+     transform is a pure function of scrollY, so fast, reversed or
+     interrupted scrolling can never strand it between states. */
+  /* The bar is sized by its own padding and type, exactly like the site
+     header, so read its real height back into --cs-nav-h rather than
+     hard-coding a number the two could drift apart on. */
+  var navBar = document.querySelector('.cs-nav');
+  function syncNavHeight() {
+    if (navBar) doc.style.setProperty('--cs-nav-h', Math.round(navBar.getBoundingClientRect().height) + 'px');
+  }
+  syncNavHeight();
+  window.addEventListener('resize', syncNavHeight);
+
+  var logo = document.getElementById('cs-logo');
+  var cover = document.querySelector('.cs-cover');
+  var closing = document.getElementById('cs-s3');
+  var firstSection = document.getElementById('cs-s1');
+  var firstSectionLogo = document.getElementById('cs-s1-logo');
+  var videoWrap = document.getElementById('cs-video');
+  /* Phone-sized layouts get a couple of accommodations the desktop doesn't
+     need — see the explainer parking in applyLogo(). */
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 899px)') : null;
+  /* Once the logo has made its trip from cover-size to its small top-left
+     resting place it simply stays there — no further movement on scroll.
+     The only thing left to do is hand over to the closing section, where the
+     workbook grid takes its place (as drawn in Paper). */
+  function fadeRef() { return closing; }
+
+  var metrics = null;
+  function measure() {
+    if (!logo || !cover) return;
+    /* Measure the UNtransformed layout box (full cover size). getBoundingClientRect
+       includes any transform already applied, so it has to be cleared first. */
+    var prev = logo.style.transform;
+    logo.style.transform = 'none';
+    var r = logo.getBoundingClientRect();
+    logo.style.transform = prev;
+
+    var bigW = r.width;                       /* 730 by default */
+    var bigH = r.height;
+    var restLeft = r.left;                    /* rail origin = the dock */
+    var restTop = r.top;
+
+    /* Docked: the small top-left mark. Cover: big and centred, capped so it
+       never touches the edges. Both are scale-downs of the same layout box. */
+    var dockScale = (parseFloat(getComputedStyle(logo).getPropertyValue('--cs-logo-w')) || 117) / bigW;
+    /* A layout box of zero (image not yet laid out) would make every number
+       below nonsense and strand the logo off-centre until something else
+       forced a re-measure. Keep the previous metrics instead. */
+    if (!bigW || !bigH) return;
+
+    /* Centre on the COVER, not on a measured viewport. The scroll cue below it
+       is centred by the cover's own layout, so any viewport-derived sum drifts
+       away from it the moment the two disagree — a classic scrollbar appearing
+       or going, or the modal stage insetting the panel. Measuring the same box
+       the cue uses means the logo and the cue cannot fall out of alignment. */
+    var cr = cover.getBoundingClientRect();
+    var coverBoxW = cr.width || document.documentElement.clientWidth;
+    var coverW = Math.min(bigW, coverBoxW * 0.62, (window.innerHeight - 200) * (bigW / bigH));
+    var coverScale = coverW / bigW;
+    var coverH = bigH * coverScale;
+    var targetLeft = cr.left + (coverBoxW - coverW) / 2;
+    var targetTop = (window.innerHeight - coverH) / 2;
+
+    metrics = {
+      /* Reduced motion: no cover blow-up and no scroll-linked scaling — the
+         logo simply sits at its resting size throughout. */
+      coverScale: reduce ? dockScale : coverScale,
+      dockScale: dockScale,
+      dx: reduce ? 0 : (targetLeft - restLeft),
+      dy: reduce ? 0 : (targetTop - restTop),
+      /* Depth of the downward swing on the way to the dock. */
+      bow: reduce ? 0 : Math.min(96, window.innerHeight * 0.12),
+      /* The travel finishes exactly as the first section settles at the top,
+         which is where that section's own in-flow logo sits — so the moving
+         one can hand over to it without anything shifting. */
+      coverEnd: Math.max(1, firstSection ? firstSection.offsetTop : cover.offsetHeight * 0.72)
+    };
+  }
+
+  /* Ease-OUT, not ease-in-out. The logo's travel is driven directly by scroll
+     position, so an ease-in start means the first stretch of scrolling barely
+     moves it — at a tenth of the way it had covered two per cent of the
+     distance, which reads as the illustration being stuck in the centre while
+     the page moves under it. This leaves at full speed and settles gently. */
+  function easeOut(t) { return 1 - Math.pow(1 - t, 2); }
+
+  function applyLogo() {
+    if (!logo || !metrics) return;
+    var y = window.scrollY || window.pageYOffset || 0;
+    var p = easeOut(Math.min(1, Math.max(0, y / metrics.coverEnd)));
+
+    var s = metrics.coverScale + (metrics.dockScale - metrics.coverScale) * p;
+
+    /* The logo doesn't take the short diagonal up to its dock — it swings
+       out and down first, travelling with the direction of the scroll, then
+       rises into place. The horizontal leg resolves slightly ahead of the
+       vertical one, and a sine bow (zero at both ends, so it can't strand
+       the logo off-path) carries it below the straight line on the way. */
+    var px = easeOut(Math.min(1, p * 1.18));
+    var x = metrics.dx * (1 - px);
+    var bow = Math.sin(Math.PI * p) * metrics.bow;
+    var ty = metrics.dy * (1 - p) + bow;
+
+    /* The closing section replaces the logo with the workbook grid, so fade
+       it out as that section comes up. On phones the sections are short and
+       flow rather than fill the screen, so a logo pinned over them would sit
+       on top of the content — there it hands over one section earlier. */
+    /* On a phone the fixed explainer would sit on the closing CTAs, so park
+       it as that section arrives. */
+    if (videoWrap && narrow && narrow.matches && closing) {
+      var vr = closing.getBoundingClientRect();
+      videoWrap.classList.toggle('is-parked', vr.top < window.innerHeight * 0.6);
+    } else if (videoWrap) {
+      videoWrap.classList.remove('is-parked');
+    }
+
+    var fade = 1;
+    var ref = fadeRef();
+    if (ref) {
+      var cr = ref.getBoundingClientRect();
+      var start = window.innerHeight * 0.9;
+      if (cr.top < start) fade = Math.max(0, Math.min(1, cr.top / start));
+    }
+
+    logo.style.transform = 'translate3d(' + x + 'px,' + ty + 'px,0) scale(' + s + ')';
+
+    /* Hand over at the end of the travel: the moving logo steps aside and the
+       first section's own in-flow logo — sitting at exactly the same spot —
+       takes its place. Scroll back up and the swap simply reverses. */
+    var docked = p >= 1;
+    logo.style.opacity = docked ? 0 : fade;
+    logo.style.visibility = docked ? 'hidden' : 'visible';
+    if (firstSectionLogo) firstSectionLogo.style.opacity = docked ? '' : '0';
+  }
+
+  /* ---------------------------------------------------------------------
+     Scroll cues. A cue belongs to one stage of the story and is only on
+     screen while the reader is settled on that stage: it eases in as the
+     stage arrives and eases straight back out the moment they scroll on
+     (or click it, which scrolls). Measured against the stage's own resting
+     offset rather than a fixed viewport band, so every stage behaves the
+     same whatever height its content happens to be. */
+  var cues = [];
+  Array.prototype.forEach.call(document.querySelectorAll('.cs-cue'), function (el) {
+    var owner = el.closest('.cs-cover, .cs-section');
+    if (owner) cues.push({ el: el, owner: owner });
+  });
+
+  var cuesLive = false;
+  function applyCues() {
+    if (!cuesLive) return;
+    var vh = window.innerHeight;
+    for (var i = 0; i < cues.length; i++) {
+      var c = cues[i];
+      /* Keyed to where the cue ITSELF is on screen, not to how far the reader
+         has scrolled past its section's top. The old form measured
+         `scrollY - section.offsetTop` and faded out 170px in — but the cue is
+         drawn at the BOTTOM of an 836px section, so by the time it scrolled
+         into view it had already faded to nothing. It was never visible while
+         it was on screen. Measuring the element means the window can't drift
+         out of step with section height again. */
+      var r = c.el.getBoundingClientRect();
+      var mid = r.top + r.height / 2;
+      var arriving = Math.min(1, Math.max(0, (vh - mid) / 60));
+      var leaving = Math.min(1, Math.max(0, mid / 200));
+      var v = arriving * leaving;
+      c.el.style.opacity = v;
+      c.el.style.pointerEvents = v < 0.12 ? 'none' : '';
+    }
+  }
+
+  /* The cover cue eases in via CSS on arrival; JS takes over the moment the
+     reader scrolls (or once that entrance has finished), and from then on the
+     cue's opacity is a pure function of scroll position. Its CSS transition
+     is dropped at handover so the per-frame values aren't chasing a 620ms
+     ease and lagging behind the scroll. */
+  function enableCues() {
+    if (cuesLive) return;
+    cuesLive = true;
+    for (var i = 0; i < cues.length; i++) cues[i].el.style.transition = 'none';
+    applyCues();
+  }
+
+  var ticking = false;
+  function onScroll() {
+    enableCues();
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { applyLogo(); applyCues(); ticking = false; });
+  }
+
+  if (logo && cover) {
+    if (reduce) {
+      /* No scroll-linked movement: the logo simply rests small, and the cover
+         shows it at a fixed comfortable size via a one-off measure. */
+      measure();
+      applyLogo();
+    } else {
+      measure();
+      applyLogo();
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    /* Through resettle(), not measure()+applyLogo() directly. Every one of
+       these is a CORRECTION — the layout changed underneath the logo and it
+       needs to be right again — and a correction must never animate. Applying
+       one while the entrance's 780ms transform transition is still set makes
+       the logo glide across the cover on its own.
+
+       This matters most for `resize`, because the page dispatches it itself:
+       once after the modal finishes expanding, and again in the jump to the
+       video. Both land while that transition is live. */
+    window.addEventListener('resize', function () { syncNavHeight(); resettle(); });
+    window.addEventListener('load', function () { syncNavHeight(); resettle(); });
+
+    /* The cover metrics are derived from the logo's own layout box, so they are
+       only trustworthy once that box is final. Re-measure when the image has
+       actually decoded and when the webfonts land — either can change the box
+       after the first measure and leave the logo sitting off-centre, which a
+       refresh then "fixes" purely because the second load measures a warm
+       cache. Both are cheap and idempotent. */
+    /* Corrections, not animations. These land after the entrance has set a
+       780ms transform transition, so re-applying through it made the logo
+       glide across the cover on its own, seconds after the page had settled —
+       the drift the reader sees as it "shifting around by itself". Transitions
+       are cut for the correction and restored immediately after. */
+    function resettle() {
+      if (!logo) return;
+      var prev = logo.style.transition;
+      logo.style.transition = 'none';
+      measure();
+      applyLogo();
+      void logo.offsetWidth;          /* commit before transitions return */
+      logo.style.transition = prev || '';
+    }
+
+    var logoImg = logo && logo.querySelector('img');
+    if (logoImg && logoImg.decode) {
+      logoImg.decode().then(resettle).catch(function () {});
+    } else if (logoImg && !logoImg.complete) {
+      logoImg.addEventListener('load', resettle);
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(resettle).catch(function () {});
+    }
+    /* The stage's own arrival can change the cover box after the first
+       measure; settle against it once it has finished expanding too. */
+    window.addEventListener('cs:stage-settled', resettle);
+
+    /* Returning to the page without a reload (back/forward, bfcache) restores
+       the old scroll position but leaves the logo holding whatever transform
+       it had — so it would visibly slide into place on its own. Re-sync it to
+       the actual scroll position immediately, with transitions off, so it is
+       simply correct on arrival instead of animating to catch up. */
+    window.addEventListener('pageshow', function () {
+      var prev = logo.style.transition;
+      logo.style.transition = 'none';
+      measure();
+      applyLogo();
+      applyCues();
+      /* Read back to force the change to commit before transitions return. */
+      void logo.offsetWidth;
+      logo.style.transition = prev || '';
+    });
+  }
+
+  /* Entrance: if we know where we came from, start the logo at that rect and
+     let the normal transform take over on the next frame. */
+  function playEntrance() {
+    /* Hand the cues over to scroll once the entrance has played out. */
+    setTimeout(enableCues, reduce ? 0 : 1000);
+    /* `cs-entered` gates the close control, the video and the cover cue, and
+       every path to it below runs inside requestAnimationFrame. A tab that is
+       backgrounded, throttled or restored from bfcache can delay or drop those
+       frames entirely, which leaves the page permanently missing its controls.
+       A timer is not subject to the same throttling, so it guarantees the
+       state is reached even when the frames never come. */
+    setTimeout(function () { doc.classList.add('cs-entered'); }, 900);
+    if (reduce || !logo || !metrics || !origin) {
+      requestAnimationFrame(function () { doc.classList.add('cs-entered'); });
+      return;
+    }
+    var r = logo.getBoundingClientRect();
+    var startScale = Math.max(0.08, (origin.w || 320) / r.width * 0.5);
+    var startX = (origin.x + origin.w / 2) - (r.left + r.width / 2);
+    var startY = (origin.y + origin.h / 2) - (r.top + r.height / 2);
+
+    logo.style.transition = 'none';
+    logo.style.transform = 'translate3d(' + startX + 'px,' + startY + 'px,0) scale(' + startScale + ')';
+    logo.style.opacity = '0';
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        logo.style.transition = 'transform 780ms cubic-bezier(0.22,0.61,0.36,1), opacity 420ms ease-out';
+        applyLogo();
+        doc.classList.add('cs-entered');
+        setTimeout(function () {
+          /* Anything that settled during the arrival — a late webfont, a
+             scrollbar appearing as the images finish — would otherwise leave
+             the logo sitting a few pixels off centre. Correct it against the
+             final layout, but GLIDE the correction: snapping it with
+             transitions already cleared is what produced the visible jump a
+             beat after the entrance had apparently finished. */
+          /* Instant, like every other correction. This used to glide over
+             260ms, which is fine when the correction is a few pixels and very
+             visible when it is not — and it waits on webfonts, so it can land
+             long after the page looks settled. That late glide is the drift. */
+          var settle = resettle;
+          /* Wait for the webfonts so the correction is measured once, against
+             final metrics, rather than fighting a reflow that is still coming. */
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(settle).catch(settle);
+          } else {
+            settle();
+          }
+        }, 820);
+      });
+    });
+  }
+  playEntrance();
+
+  /* ---------------------------------------------------------------------
+     Section reveals. Graphic leads, copy follows. Class toggles only, so
+     there is no state to get stuck in. */
+  var sections = document.querySelectorAll('.cs-section');
+  if (!('IntersectionObserver' in window) || reduce) {
+    Array.prototype.forEach.call(sections, function (s) { s.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+    Array.prototype.forEach.call(sections, function (s) { io.observe(s); });
+  }
+
+  /* ---------------------------------------------------------------------
+     "Scroll to read more" — advances to the next section. Native smooth
+     scroll; we never take the scroll away from the user. */
+  document.addEventListener('click', function (e) {
+    var cue = e.target.closest && e.target.closest('[data-cs-advance]');
+    if (!cue) return;
+    var here = cue.closest('.cs-cover, .cs-section');
+    var next = here && here.nextElementSibling;
+    while (next && !next.matches('.cs-section')) next = next.nextElementSibling;
+    if (!next) return;
+    next.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------------------------------------------------------------------
+     Learning by doing. Hover previews on pointer devices, click/tap commits.
+     Driven entirely by data-target ↔ data-panel pairs in the markup. */
+  var list = document.getElementById('tt-lbd-list');
+  var swapMedia = document.getElementById('tt-lbd-media');
+  if (list && swapMedia) {
+    var items = list.querySelectorAll('.cs-list-item');
+    var panels = swapMedia.querySelectorAll('.cs-swap-panel');
+    var committed = 'metamorphosis';
+    var fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    /* The inactive panels' images are lazy, so the first swap could otherwise
+       land on an empty frame. Warm them into cache once the browser is idle —
+       keeps first paint cheap but makes every swap instant. */
+    var warmed = false;
+    function warmPanels() {
+      if (warmed) return;
+      warmed = true;
+      swapMedia.querySelectorAll('img').forEach(function (img) {
+        if (img.complete) return;
+        var pre = new Image();
+        pre.src = img.currentSrc || img.src;
+      });
+    }
+    if ('requestIdleCallback' in window) requestIdleCallback(warmPanels, { timeout: 2500 });
+    else setTimeout(warmPanels, 1200);
+    list.addEventListener('pointerenter', warmPanels, { once: true });
+
+    function show(target) {
+      Array.prototype.forEach.call(panels, function (p) {
+        p.classList.toggle('is-active', p.getAttribute('data-panel') === target);
+      });
+      Array.prototype.forEach.call(items, function (b) {
+        var on = b.getAttribute('data-target') === target;
+        b.setAttribute('aria-current', on ? 'true' : 'false');
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    /* A one-off nudge: a couple of seconds after the section settles, the
+       selection steps from the first row to the second on its own, so it's
+       obvious the list is interactive. It happens once — it doesn't cycle —
+       and it's cancelled the moment the reader touches the list themselves. */
+    var touched = false;
+    var hinted = false;
+    function cancelHint() { touched = true; }
+
+    function scheduleHint() {
+      if (hinted || touched || items.length < 2) return;
+      hinted = true;
+      setTimeout(function () {
+        if (touched) return;
+        committed = items[1].getAttribute('data-target');
+        show(committed);
+      }, 900);
+    }
+
+    if ('IntersectionObserver' in window) {
+      var hintIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          scheduleHint();
+          hintIO.disconnect();
+        });
+      }, { threshold: 0.5 });
+      hintIO.observe(list.closest('.cs-section') || list);
+    } else {
+      scheduleHint();
+    }
+
+    Array.prototype.forEach.call(items, function (btn) {
+      btn.addEventListener('click', function () {
+        cancelHint();
+        committed = btn.getAttribute('data-target');
+        show(committed);
+      });
+      btn.addEventListener('focus', function () { cancelHint(); show(btn.getAttribute('data-target')); });
+      if (fine) {
+        btn.addEventListener('mouseenter', function () { cancelHint(); show(btn.getAttribute('data-target')); });
+      }
+    });
+    if (fine) {
+      list.addEventListener('mouseleave', function () { show(committed); });
+    }
+    list.addEventListener('keydown', function (e) {
+      var i = Array.prototype.indexOf.call(items, document.activeElement);
+      if (i < 0) return;
+      var n = null;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') n = items[(i + 1) % items.length];
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') n = items[(i - 1 + items.length) % items.length];
+      if (!n) return;
+      e.preventDefault();
+      n.focus();
+    });
+  }
+
+  /* Booking CTA — single source of truth in CS_CONFIG; the markup carries
+     the same URL so it still works without JS. */
+  var book = document.getElementById('cs-book');
+  if (book && CS_CONFIG.bookingHref) book.setAttribute('href', CS_CONFIG.bookingHref);
+
+  /* ---------------------------------------------------------------------
+     Next project. Placeholder until CS_CONFIG.nextProject is filled in. */
+  var np = CS_CONFIG.nextProject || {};
+  var nextEl = document.getElementById('cs-next');
+  if (nextEl) {
+    document.getElementById('cs-next-title').textContent = np.title || 'Next project title';
+    document.getElementById('cs-next-desc').textContent = np.description || '';
+    nextEl.setAttribute('data-placeholder', np.placeholder ? 'true' : 'false');
+    if (np.thumb) {
+      var thumb = document.getElementById('cs-next-thumb');
+      thumb.innerHTML = '';
+      thumb.style.background = 'url(' + np.thumb + ') center / cover no-repeat';
+    }
+    if (np.href) {
+      nextEl.setAttribute('href', np.href);
+      /* Opening the next case study goes straight into its full-screen view —
+         the user never has to bounce off the homepage first. */
+      nextEl.setAttribute('data-cs-next', np.href);
+    } else {
+      nextEl.removeAttribute('href');
+      nextEl.setAttribute('aria-disabled', 'true');
+    }
+  }
+
+  /* ---------------------------------------------------------------------
+     Persistent explainer video. Optional, floats bottom-right, keeps playing
+     across sections because it lives outside the scrolling content. */
+  var vcfg = CS_CONFIG.video || {};
+  var vWrap = document.getElementById('cs-video');
+  if (vWrap && vcfg.enabled) {
+    vWrap.hidden = false;
+    var vFrame = document.getElementById('cs-video-frame');
+    var vToggle = document.getElementById('cs-video-toggle');
+    var vToggleGlyph = document.getElementById('cs-video-toggle-glyph');
+    var vOverlayGlyph = document.getElementById('cs-video-overlay-glyph');
+    var vLabel = document.getElementById('cs-video-label');
+    var vDismiss = document.getElementById('cs-video-dismiss');
+    var vRestore = document.getElementById('cs-video-restore');
+    var vPoster = document.getElementById('cs-video-poster');
+    var media = null;
+    var playing = false;
+
+    vLabel.textContent = (vcfg.label || '') + (vcfg.duration ? ' ' + vcfg.duration : '');
+
+    var PLAY = 'M0 0l10 6-10 6z';
+    var PAUSE = 'M0 0h3.6v12H0zM6.4 0H10v12H6.4z';
+    var PLAY_LG = 'M3 1l22 17L3 35z';
+    var PAUSE_LG = 'M2 2v32h8V2H2Zm16 0v32h8V2h-8Z';
+
+    if (vcfg.src) {
+      media = document.createElement('video');
+      media.src = vcfg.src;
+      /* Not looping: running out is a real event the reader should see marked,
+         rather than the video quietly starting again under them. */
+      media.loop = false;
+      media.playsInline = true;
+      media.preload = 'metadata';
+      if (vcfg.poster) media.poster = vcfg.poster;
+      vFrame.insertBefore(media, vFrame.firstChild);
+      vPoster.hidden = true;
+    }
+
+    function render() {
+      vWrap.classList.toggle('is-expanded', playing);
+      vToggleGlyph.querySelector('path').setAttribute('d', playing ? PAUSE : PLAY);
+      vOverlayGlyph.querySelector('path').setAttribute('d', playing ? PAUSE_LG : PLAY_LG);
+      vToggle.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+      vFrame.setAttribute('aria-label', playing ? 'Pause the project explainer video' : 'Play the project explainer video');
+    }
+
+    /* Reaching the end returns it to the start and stops. Playback position is
+       otherwise never touched, so pausing and playing again continues from
+       exactly where the reader left off. */
+    var resetTimer = null;
+    function markReset() {
+      if (resetTimer) clearTimeout(resetTimer);
+      vWrap.classList.add('is-reset');
+      resetTimer = setTimeout(function () {
+        vWrap.classList.remove('is-reset');
+        resetTimer = null;
+      }, 1600);
+    }
+
+    function setPlaying(next) {
+      /* Starting again after it ran out begins from the top rather than
+         sitting stuck on the final frame. */
+      if (next && media && media.ended) media.currentTime = 0;
+      if (next) vWrap.classList.remove('is-reset');
+      playing = next;
+      if (media) {
+        if (playing) { var p = media.play(); if (p && p.catch) p.catch(function () {}); }
+        else media.pause();
+      }
+      render();
+    }
+
+    /* Asked for from elsewhere — the opening screen's video tab. */
+    document.addEventListener('cs:play-video', function () {
+      vWrap.hidden = false;
+      vRestore.classList.remove('is-shown');
+      /* Commit the expanded size with the size transition switched off, so the
+         player appears at full size rather than growing into it. */
+      vWrap.classList.add('is-instant');
+      setPlaying(true);
+      void vWrap.offsetWidth;
+      setTimeout(function () { vWrap.classList.remove('is-instant'); }, 60);
+    });
+
+    if (media) {
+      media.addEventListener('ended', function () {
+        media.currentTime = 0;
+        setPlaying(false);          /* shrinks back to its resting size */
+        markReset();
+      });
+    }
+
+    vFrame.addEventListener('click', function () { setPlaying(!playing); });
+    vToggle.addEventListener('click', function () { setPlaying(!playing); });
+    vDismiss.addEventListener('click', function () {
+      setPlaying(false);
+      vWrap.hidden = true;
+      vRestore.classList.add('is-shown');
+    });
+    /* Brought back from the tab: the player simply expands and plays where the
+       reader already is. The staged version of this — expanding the page and
+       carrying them to the opening section — belongs only to the tab on the
+       first screen, and that handler unbinds itself once the page has expanded. */
+    vRestore.addEventListener('click', function () {
+      vWrap.hidden = false;
+      vRestore.classList.remove('is-shown');
+      setPlaying(true);
+    });
+    render();
+  }
+
+  /* ---------------------------------------------------------------------
+     Exit. The × , the nav and "Back home" all dismiss the case study: the
+     page eases away and the homepage is told which section to restore, so
+     the user lands back where the card was rather than at the top. */
+  function exitTo(href) {
+    /* The × sends the reader back to wherever they opened the case study
+       from — the homepage carousel or the About page's — rather than always
+       assuming the homepage. */
+    if (href === CS_CONFIG.exitHref && origin && origin.from) href = origin.from;
+    /* Only a carousel-bound exit should restore the carousel. The brand mark
+       goes to the top of the homepage, so flagging a return section for it
+       meant clicking Studio Vincent landed on / and was immediately snapped
+       down to Work. */
+    var toCarousel = href.indexOf('#' + CS_CONFIG.returnSection) > -1;
+    try {
+      if (toCarousel) {
+        sessionStorage.setItem('returnSection', CS_CONFIG.returnSection);
+        sessionStorage.setItem('csClosing', CS_CONFIG.slug);
+      } else {
+        sessionStorage.removeItem('returnSection');
+        sessionStorage.removeItem('csClosing');
+      }
+    } catch (e) {}
+    if (reduce) { window.location.href = href; return; }
+    doc.classList.add('cs-leaving');
+    if (logo && metrics && origin) {
+      var r = logo.getBoundingClientRect();
+      var sx = (origin.x + origin.w / 2) - (r.left + r.width / 2);
+      var sy = (origin.y + origin.h / 2) - (r.top + r.height / 2);
+      logo.style.transition = 'transform 320ms cubic-bezier(0.4,0,0.2,1), opacity 300ms ease-in';
+      logo.style.transform = 'translate3d(' + sx + 'px,' + sy + 'px,0) scale(0.25)';
+      logo.style.opacity = '0';
+    }
+    setTimeout(function () { window.location.href = href; }, 300);
+  }
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-cs-exit], [data-cs-next]');
+    if (!t) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
+    var href = t.getAttribute('data-cs-exit') || t.getAttribute('data-cs-next');
+    if (!href) return;
+    e.preventDefault();
+    exitTo(href);
+  });
+
+  /* Escape closes, matching the × . */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') exitTo(CS_CONFIG.exitHref);
+  });
+})();
+</script>
+
+<script>
+/* --------------------------------------------------------------------------
+   Arrival stages.
+
+   The case study opens as a modal — an inset, rounded panel over a plain
+   ground, navigation still light. The first move onward expands it to the
+   full screen and turns the navigation black on the same action.
+
+   The expansion animates the panel's insets, not a transform, so the box
+   genuinely grows and its corners stay true. Once it has finished the classes
+   come off entirely and the page is an ordinary scrolling document again —
+   the modal is a stage, not a mode the page stays in.
+   -------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+  var doc = document.documentElement;
+  var stage = document.getElementById('cs-stage');
+  if (!stage) return;
+
+  /* Nothing to stage if the modal never applied (phones, or no matchMedia). */
+  if (!doc.classList.contains('cs-modal')) return;
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var EXPAND = reduce ? 0 : 500;
+  var expanded = false;
+
+  function expand() {
+    if (expanded) return;
+    expanded = true;
+    doc.classList.add('cs-full');
+    unbind();
+    /* The cue has done its job the moment it is acted on — fade it with the
+       expansion rather than leaving it sitting over the opening screen. */
+    var cue = document.querySelector('.cs-cover .cs-cue');
+    if (cue) {
+      cue.style.transition = 'opacity 260ms cubic-bezier(0.4, 0, 0.2, 1)';
+      cue.style.opacity = '0';
+      cue.style.pointerEvents = 'none';
+    }
+    window.setTimeout(function () {
+      /* Hand back to normal document flow. At scroll 0 with the insets already
+         driven to the edges, dropping the fixed positioning is invisible. */
+      doc.classList.remove('cs-modal', 'cs-full');
+      doc.classList.add('cs-expanded');
+      window.scrollTo(0, 0);
+      window.dispatchEvent(new Event('cs:stage-settled'));
+      /* The panel was inset while it was a modal, so anything measured
+         against it — the cover logo above all — needs measuring again now
+         that it fills the screen. */
+      window.dispatchEvent(new Event('resize'));
+    }, EXPAND);
+  }
+
+  /* Any attempt to move on counts, including the ones the modal's own
+     overflow:hidden would otherwise swallow. */
+  function onKey(e) {
+    if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'PageDown' ||
+        e.key === 'Enter' || e.key === 'End') expand();
+  }
+  function onCue(e) {
+    /* The compact video tab is the other affordance on the opening screen —
+       acting on it expands the page just as the cue does, and the player then
+       arrives in its full form. */
+    if (e.target.closest && e.target.closest('.cs-video-restore')) {
+      e.preventDefault();
+      e.stopPropagation();
+      /* Responds on the press. The fade begins on this frame — waiting for the
+         panel to finish expanding before anything moved made the control feel
+         unresponsive for the best part of a second. */
+      doc.classList.add('cs-xfade');
+      expand();
+
+      var first = document.getElementById('cs-s1');
+      /* Timed to the panel, not to the fade. The modal holds the scroll locked
+         until it has finished expanding, so jumping at the end of the 260ms
+         fade silently did nothing — the page could not move yet. The cover is
+         long gone by then; this is simply when the page is free to move. */
+      var JUMP = reduce ? 0 : EXPAND + 20;
+      window.setTimeout(function () {
+        /* Nothing is visible at this point, so the move costs nothing to watch. */
+        if (first) {
+          first.scrollIntoView({ behavior: 'instant', block: 'start' });
+          /* Settle the logo synchronously against the new scroll position. The
+             scroll handler would get there eventually, but it works inside a
+             frame — so on arrival the illustration would still be sitting in
+             its cover position for a beat before snapping to its dock. */
+          window.dispatchEvent(new Event('resize'));
+          first.classList.add('is-arriving');
+          window.setTimeout(function () { first.classList.remove('is-arriving'); }, 420);
+        }
+        doc.classList.remove('cs-xfade');
+        /* The page has already come to rest — the scroll was instant and the
+           section is arriving — so the player starts with it rather than after. */
+        document.dispatchEvent(new CustomEvent('cs:play-video'));
+      }, JUMP);
+      return;
+    }
+    if (e.target.closest && e.target.closest('[data-cs-advance]')) {
+      /* Stop the cue's own scroll handler — there is nowhere to scroll yet. */
+      e.preventDefault();
+      e.stopPropagation();
+      expand();
+    }
+  }
+  function unbind() {
+    window.removeEventListener('wheel', expand);
+    window.removeEventListener('touchmove', expand);
+    window.removeEventListener('scroll', expand);
+    window.removeEventListener('keydown', onKey);
+    document.removeEventListener('click', onCue, true);
+  }
+
+  window.addEventListener('wheel', expand, { passive: true });
+  window.addEventListener('touchmove', expand, { passive: true });
+  window.addEventListener('scroll', expand, { passive: true });
+  window.addEventListener('keydown', onKey);
+  /* Capture phase, so this runs before the cue's own advance handler. */
+  document.addEventListener('click', onCue, true);
+})();
+</script>
+
+<script>
+/* The nav frosts once content is passing underneath it. Cheap arithmetic on
+   scrollY, run straight from the listener — no frame to miss. */
+(function () {
+  'use strict';
+  var doc = document.documentElement;
+  var on = null;
+  function sync() {
+    var next = window.scrollY > 12;
+    if (next === on) return;
+    on = next;
+    doc.classList.toggle('cs-scrolled', next);
+  }
+  window.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  sync();
+})();
+</script>
+
+<script>
+/* --------------------------------------------------------------------------
+   Direct manipulation of the floating player.
+
+   Drag it anywhere, pinch to resize. Pointer Events so mouse, touch and pen
+   all run the same path rather than three parallel implementations.
+
+   Two things this has to get right. A drag must not become a click, or every
+   reposition would toggle playback — so movement past a small threshold marks
+   the gesture and a capture-phase click listener swallows the click that
+   follows. And it must stay reachable: the position is clamped so a good part
+   of the player is always on screen, including after the window resizes.
+   -------------------------------------------------------------------------- */
+function csMakeManipulable(wrap, isFloating, atHome) {
+  var dx = 0, dy = 0, scale = 1;
+  var pointers = {};
+  var count = 0;
+  var moved = false, movedAt = 0;
+  var startX = 0, startY = 0, baseX = 0, baseY = 0;
+  var pinchStart = 0, pinchBase = 1;
+  var MIN_SCALE = 0.7, MAX_SCALE = 2.4;
+  var THRESHOLD = 4;
+
+  function apply() {
+    wrap.style.transform =
+      'translate3d(' + Math.round(dx) + 'px,' + Math.round(dy) + 'px,0) scale(' + scale.toFixed(3) + ')';
+  }
+
+  /* Keep it grabbable: never let more than most of it leave the viewport. */
+  function clamp() {
+    if (!isFloating()) return;
+    wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
+    var r = wrap.getBoundingClientRect();
+    /* Enough to stay grabbable, but not so much that the player can never be
+       dragged far enough to trigger the swipe-away threshold above. */
+    var keep = 28;
+    var minX = -(r.left + r.width - keep);
+    var maxX = window.innerWidth - r.left - keep;
+    var minY = -(r.top + r.height - keep);
+    var maxY = window.innerHeight - r.top - keep;
+    dx = Math.min(maxX, Math.max(minX, dx));
+    dy = Math.min(maxY, Math.max(minY, dy));
+    apply();
+  }
+
+  function dist() {
+    var ids = Object.keys(pointers);
+    var a = pointers[ids[0]], b = pointers[ids[1]];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  wrap.addEventListener('pointerdown', function (e) {
+    if (!isFloating()) return;
+    /* The dismiss control is a button, not a handle. */
+    if (e.target.closest && e.target.closest('[data-no-drag]')) return;
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    count++;
+    if (count === 1) {
+      moved = false;
+      startX = e.clientX; startY = e.clientY;
+      baseX = dx; baseY = dy;
+      wrap.classList.add('is-dragging');
+    } else if (count === 2) {
+      pinchStart = dist();
+      pinchBase = scale;
+    }
+    /* Deliberately NOT setPointerCapture. Capture retargets pointerdown and
+       pointerup to the capturing element, so the click they synthesise fires
+       on the wrap instead of the frame — and the frame's own handler, the one
+       that plays the video, never runs. The player became undraggable-or-
+       playable, never both. Listening on the window keeps the pointer while
+       it leaves the element, which is all capture was wanted for. */
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', release);
+    window.removeEventListener('pointercancel', release);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+  });
+
+  function onMove(e) {
+    if (!pointers[e.pointerId]) return;
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+
+    if (count >= 2 && pinchStart > 0) {
+      var ratio = dist() / pinchStart;
+      scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinchBase * ratio));
+      moved = true;
+      apply();
+      return;
+    }
+    var nx = e.clientX - startX, ny = e.clientY - startY;
+    if (!moved && Math.hypot(nx, ny) < THRESHOLD) return;
+    moved = true;
+    dx = baseX + nx;
+    dy = baseY + ny;
+    apply();
+  }
+
+  function release(e) {
+    if (!pointers[e.pointerId]) return;
+    delete pointers[e.pointerId];
+    count = Math.max(0, count - 1);
+    if (count === 0) {
+      /* Only once the last finger is up — tearing these down on the first
+         would strand a two-finger pinch halfway through. */
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', release);
+      if (moved) movedAt = performance.now();
+      wrap.classList.remove('is-dragging');
+      /* Flung off the side: treat it as putting the player away. Dragging
+         something to the edge of the screen to dismiss it is the gesture
+         people already have on a phone, and without it the only way to close
+         the player is a small button. The threshold is deliberately past the
+         edge, not near it, so nudging it into a corner does not dismiss it. */
+      var r = wrap.getBoundingClientRect();
+      var offRight = r.left > window.innerWidth - r.width * 0.35;
+      var offLeft = r.right < r.width * 0.35;
+      if (offRight || offLeft) {
+        var away = wrap.querySelector('[data-no-drag]');
+        dx = 0; dy = 0; scale = 1;
+        apply();
+        if (away) { away.click(); return; }
+      }
+      clamp();
+      snapToCorner();
+      scheduleHome();
+    }
+    if (count < 2) pinchStart = 0;
+  }
+
+  /* Corner snapping. Let go anywhere near a corner and the player settles into
+     it rather than sitting at whatever arbitrary offset the hand stopped at.
+     The corners are derived from the player's own resting inset, so it keeps
+     the margin it was designed with instead of a hardcoded one, and the same
+     four targets hold whatever size a pinch has left it. */
+  function snapToCorner() {
+    var prev = wrap.style.transform;
+    wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
+    var home = wrap.getBoundingClientRect();
+    wrap.style.transform = prev;
+
+    var insetX = Math.round(window.innerWidth - home.right);
+    var insetY = Math.round(window.innerHeight - home.bottom);
+
+    /* The top corners are not the top of the window — the navigation bar and
+       the pinned controls already live there, and a player snapping into that
+       space lands underneath them. The floor is whatever the lowest of those
+       currently reaches, so it settles below the chrome rather than behind it,
+       and it moves with them as they appear and go. */
+    var topY = insetY;
+    var guards = document.querySelectorAll('.cs-nav, .cs-close, .cs-video-restore');
+    for (var g = 0; g < guards.length; g++) {
+      var el = guards[g];
+      if (el === wrap || el.hidden || wrap.contains(el)) continue;
+      var gs = getComputedStyle(el);
+      if (gs.display === 'none' || gs.visibility === 'hidden' || parseFloat(gs.opacity) < 0.05) continue;
+      var gr = el.getBoundingClientRect();
+      if (gr.top > window.innerHeight * 0.5) continue;   /* only what sits up top */
+      topY = Math.max(topY, Math.round(gr.bottom) + 14);
+    }
+
+    var corners = [
+      { x: 0, y: 0 },                                              /* home */
+      { x: insetX - home.left, y: 0 },                             /* bottom-left */
+      { x: 0, y: topY - home.top },                                /* top-right */
+      { x: insetX - home.left, y: topY - home.top }                /* top-left */
+    ];
+
+    var best = null, bestD = Infinity;
+    for (var i = 0; i < corners.length; i++) {
+      var d = Math.hypot(corners[i].x - dx, corners[i].y - dy);
+      if (d < bestD) { bestD = d; best = corners[i]; }
+    }
+    if (!best || bestD > 130) return;
+    if (best.x === dx && best.y === dy) return;
+
+    /* Lands, rather than travels. Animating the snap meant letting go near one
+       corner sent the player gliding across the screen to it — a movement the
+       reader did not ask for and cannot stop. It simply arrives in the corner
+       and stays there until they move it again. (The one-minute return home is
+       different: nothing is being held, so that one is worth seeing.) */
+    dx = best.x; dy = best.y;
+    apply();
+  }
+
+  /* Fail-safe. A player left somewhere awkward — over the text, half off the
+     edge, blown up to twice its size — stays that way for the rest of the
+     visit, and the reader has no reason to know it can be put back. A minute
+     after the last touch it returns to where it belongs, on a transition so
+     the move is legible rather than a jump. Any new gesture cancels it. */
+  var homeTimer = null;
+  function cancelHoming() {
+    clearTimeout(homeTimer);
+    homeTimer = null;
+    wrap.classList.remove('is-homing');
+  }
+  function scheduleHome() {
+    clearTimeout(homeTimer);
+    if (dx === 0 && dy === 0 && scale === 1) return;
+    homeTimer = setTimeout(function () {
+      wrap.classList.add('is-homing');
+      dx = 0; dy = 0; scale = 1;
+      apply();
+      setTimeout(function () { wrap.classList.remove('is-homing'); }, 560);
+    }, 60000);
+  }
+  wrap.addEventListener('pointerdown', cancelHoming);
+
+  /* A drag that ends over the frame would otherwise fire a click and toggle
+     playback. Capture phase, so it never reaches the frame's own handler.
+
+     Time-bounded, not a flag. A mouse drag produces a click that clears the
+     flag; a touch drag produces none, so the flag stayed set and swallowed the
+     next genuine tap — the player could be moved once and then never played
+     again. Only a click arriving straight after a gesture that actually moved
+     is suppressed. */
+  wrap.addEventListener('click', function (e) {
+    if (performance.now() - movedAt > 350) return;
+    e.preventDefault();
+    e.stopPropagation();
+    movedAt = 0;
+  }, true);
+
+  window.addEventListener('resize', clamp);
+
+  /* Back at the top, the player goes back to how it was designed — default
+     position, default size. A dragged, resized player reappearing over the
+     opening composition is the reader's old gesture surfacing somewhere it was
+     never meant to apply; the top of the page should always look like the top
+     of the page. Also covers the case where it stops floating altogether. */
+  function reset() {
+    if (dx === 0 && dy === 0 && scale === 1) return;
+    cancelHoming();
+    wrap.classList.add('is-homing');
+    dx = 0; dy = 0; scale = 1;
+    apply();
+    setTimeout(function () { wrap.classList.remove('is-homing'); }, 560);
+  }
+  window.addEventListener('scroll', function () {
+    if (atHome && atHome()) reset();
+    else if (!isFloating()) reset();
+  }, { passive: true });
+}
+
+(function () {
+  'use strict';
+  var wrap = document.getElementById('cs-video');
+  if (!wrap) return;
+  /* Template One's player is always the floating one; "home" is the cover. */
+  csMakeManipulable(
+    wrap,
+    function () { return !wrap.hidden; },
+    function () { return window.scrollY < 80; }
+  );
+})();
+</script>
+
+</body>
+</html>

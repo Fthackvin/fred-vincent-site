@@ -1,0 +1,202 @@
+{
+  "name": "Studio Vincent — studiovincent.co",
+  "version": "2026-05-13",
+  "description": "Light, Moleskine-style writerly aesthetic. Cream paper background with a fine dot grid, near-black ink for type, display serif (Canela) for headings, Inter for body, JetBrains Mono for caps labels.",
+
+  "background": {
+    "page": {
+      "color": "#F8FAFC",
+      "name": "paper-100",
+      "note": "Slightly off-white cream, sits behind the entire document."
+    },
+    "dotGrid": {
+      "purpose": "Moleskine-style dot grid texture behind all content.",
+      "dot": {
+        "shape": "circle",
+        "radius": 1.25,
+        "fill": "#1A1815",
+        "fillOpacity": 0.38
+      },
+      "tile": {
+        "desktop": { "width": 22, "height": 22, "anchor": [0, 0] },
+        "mobile":  { "width": 26, "height": 26, "anchor": [0, 0], "breakpoint": "max-width: 640px" }
+      },
+      "svgDesktop": "<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='0' cy='0' r='1.25' fill='#1A1815' fill-opacity='0.38'/></svg>",
+      "svgMobile":  "<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><circle cx='0' cy='0' r='1.25' fill='#1A1815' fill-opacity='0.38'/></svg>",
+      "cssDesktop": "background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.38'/></svg>\"); background-repeat: repeat; background-size: 22px 22px;",
+      "cssMobile":  "background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><circle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.38'/></svg>\"); background-size: 26px 26px;",
+      "printRule": "background-image: none !important;"
+    },
+    "darkIntro": {
+      "purpose": "Pre-paint dark mode for the bouncing-dot intro; replaced with the cream + dot grid the moment the dot bursts.",
+      "color": "#1a1a1a",
+      "headlineColor": "#F8FAFC",
+      "exitTransitionMs": 500,
+      "scrollLockedWhileActive": true
+    }
+  },
+
+  "color": {
+    "paper": {
+      "50":  "#FFFFFF",
+      "100": "#F8FAFC",
+      "200": "#F3F3EF",
+      "300": "#E8E8E3"
+    },
+    "ink": {
+      "500": "#6E6A62",
+      "600": "#55514A",
+      "700": "#3A3731",
+      "900": "#1A1815"
+    },
+    "accent": {
+      "error": "#a8331a",
+      "selection": "#E8E8E3"
+    },
+    "border": {
+      "hairline": "rgba(26, 24, 21, 0.22)",
+      "input":    "#E8E8E3",
+      "focus":    "#3A3731"
+    }
+  },
+
+  "typography": {
+    "families": {
+      "display": "\"Canela\", Georgia, serif",
+      "brand":   "\"Cormorant Garamond\", Georgia, serif",
+      "text":    "\"Inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+      "mono":    "\"JetBrains Mono\", ui-monospace, \"SF Mono\", Menlo, monospace"
+    },
+    "weights": { "light": 300, "regular": 400, "medium": 500 },
+    "scale": {
+      "h1":        "clamp(40px, 6vw, 76px)",
+      "h2":        "clamp(32px, 4.5vw, 44px)",
+      "question":  "clamp(18px, 1.8vw, 22px)",
+      "body":      "clamp(15px, 1.4vw + 0.5rem, 18px)",
+      "lead":      "clamp(15px, 1.4vw + 0.5rem, 18px)",
+      "metaCaps":  "11px",
+      "fineprint": "10px",
+      "monoCaps":  "12px"
+    },
+    "lineHeights": { "tight": 1.1, "snug": 1.35, "normal": 1.5, "relaxed": 1.65 },
+    "letterSpacing": {
+      "display":  "-0.015em",
+      "body":     "0",
+      "monoCaps": "0.06em",
+      "ariaCaps": "0.14em"
+    },
+    "caps": { "case": "uppercase" }
+  },
+
+  "spacing": {
+    "s1":  "4px",  "s2":  "8px",   "s3":  "12px", "s4":  "16px",
+    "s5":  "24px", "s6":  "32px",  "s7":  "48px", "s8":  "64px",
+    "s9":  "96px", "s10": "128px", "s11": "160px"
+  },
+
+  "layout": {
+    "container": "1120px",
+    "narrow":    "760px",
+    "content":   "720px",
+    "pageGutter": "clamp(20px, 4vw, 40px)"
+  },
+
+  "radii": { "input": "10px", "button": "10px", "tabGroup": "12px", "card": "10px" },
+
+  "motion": {
+    "ease":            "cubic-bezier(0.22, 0.61, 0.36, 1)",
+    "easeOut":         "cubic-bezier(0.16, 1, 0.3, 1)",
+    "transitionFast":  "180ms",
+    "transitionBase":  "200ms",
+    "transitionSlow":  "280ms",
+    "reducedMotion":   "All transitions and intro animations are bypassed when prefers-reduced-motion: reduce."
+  },
+
+  "components": {
+    "input": {
+      "background": "rgba(255, 255, 255, 0.45)",
+      "backdropFilter": "blur(10px)",
+      "border": "1px solid #E8E8E3",
+      "radius": "10px",
+      "paddingY": "16px",
+      "paddingX": "24px",
+      "fontSize": "clamp(15px, 1.4vw + 0.5rem, 18px)",
+      "lineHeight": 1.6,
+      "focus": {
+        "background": "#FFFFFF",
+        "borderColor": "#3A3731",
+        "boxShadow": "0 1px 2px rgba(20,18,14,0.04), 0 6px 18px rgba(20,18,14,0.04)"
+      }
+    },
+    "ctaPrimary": {
+      "background": "#1A1815",
+      "color": "#FFFFFF",
+      "border": "1px solid #1A1815",
+      "radius": "10px",
+      "padding": "14px 48px",
+      "fontFamily": "Inter",
+      "fontWeight": 500,
+      "fontSize": "14px",
+      "hover": { "background": "#3A3731", "transform": "translateY(-1px)" }
+    },
+    "navCta": {
+      "background": "transparent",
+      "color": "#1A1815",
+      "border": "1px solid rgba(26, 24, 21, 0.22)",
+      "radius": "10px",
+      "padding": "10px 20px",
+      "fontFamily": "Cormorant Garamond",
+      "fontWeight": 500,
+      "fontSize": "20px",
+      "hover": { "background": "#1A1815", "color": "#F8FAFC" }
+    },
+    "segmentedTabs": {
+      "container": { "background": "transparent", "padding": "0", "gap": "0" },
+      "tab": {
+        "background": "transparent",
+        "color": "#6E6A62",
+        "border": "1px solid rgba(26, 24, 21, 0.22)",
+        "marginRight": "-1px",
+        "padding": "11px 18px",
+        "fontFamily": "Inter",
+        "fontWeight": 500,
+        "fontSize": "13px",
+        "radius": "0",
+        "firstChildRadius": { "topLeft": "12px", "bottomLeft": "12px" },
+        "lastChildRadius":  { "topRight": "12px", "bottomRight": "12px" }
+      },
+      "tabActive": {
+        "background": "#FFFFFF",
+        "color": "#1A1815",
+        "borderColor": "#1A1815",
+        "zIndex": 1
+      }
+    },
+    "hairlineRule": "1px solid #E8E8E3"
+  },
+
+  "iconography": {
+    "scribbles": {
+      "purpose": "Hand-drawn pen marks used as list-item icons in the Recent work feed.",
+      "files": [
+        "/drawing/Scan 66 3.svg",
+        "/drawing/Scan 66 4.svg",
+        "/drawing/Scan 66 5.svg",
+        "/drawing/Scan 66 6.svg",
+        "/drawing/Scan 66 7.svg",
+        "/drawing/Scan 66 8.svg",
+        "/drawing/Scan 66 9.svg",
+        "/drawing/Scan 66 10.svg"
+      ]
+    }
+  },
+
+  "principles": [
+    "Cream paper, ink type — no pure white surfaces except inside inputs on focus and the active segmented tab.",
+    "Hairlines instead of full borders on inputs and dividers.",
+    "Generous breathing room between sections (s7/s8); tight rhythm within forms (s5).",
+    "All motion is short (180–280ms) and ease-out (cubic-bezier 0.22, 0.61, 0.36, 1).",
+    "Display serif (Canela) carries the voice; sans (Inter) carries the content; mono (JetBrains Mono) is reserved for caps labels.",
+    "The dot grid is the texture between sections — horizontal rules are hidden by default."
+  ]
+}

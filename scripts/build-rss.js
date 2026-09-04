@@ -40,10 +40,12 @@ const HTML_PATHS = [
 ];
 
 const FEED_URL = 'https://studiovincent.substack.com/feed';
-/* Writing section shows latest Substack posts only; up to 3, never more.
-   Posts that also exist as on-site case studies are filtered out so they
-   appear only in the Recent case studies row above. */
-const MAX_ITEMS = 3;
+/* Writing section shows latest Substack posts only; up to 4, never more.
+   On desktop all 4 render in a 2×2 grid; on mobile the 4th is hidden via
+   CSS (.rw-item:nth-child(4)) so only 3 show. Posts that also exist as
+   on-site case studies are filtered out so they appear only in the Recent
+   case studies row above. */
+const MAX_ITEMS = 4;
 const DESC_LIMIT = 120;
 const MARKER_START = '<!-- RSS:writing:start -->';
 const MARKER_END = '<!-- RSS:writing:end -->';

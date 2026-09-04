@@ -1,0 +1,2286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no, email=no, address=no">
+<script>
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+</script>
+<title>Monet · Studio Vincent</title>
+<meta name="description" content="Creating a desirable consumer brand for neuro tech people would actually want to wear.">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+<link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+<link rel="manifest" href="/favicons/site.webmanifest">
+<meta name="theme-color" content="#1F1F1F">
+<link rel="canonical" href="https://studiovincent.co/work/monet/">
+<meta name="author" content="Fred Vincent">
+<meta name="robots" content="index, follow, max-image-preview:large">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Studio Vincent">
+<meta property="og:url" content="https://studiovincent.co/work/monet/">
+<meta property="og:title" content="Monet">
+<meta property="og:description" content="Creating a desirable consumer brand for neuro tech people would actually want to wear.">
+<meta property="og:image" content="https://studiovincent.co/work/monet/s1-logotype.webp">
+<meta property="og:image:alt" content="The Monet logotype.">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Monet">
+<meta name="twitter:description" content="Creating a desirable consumer brand for neuro tech people would actually want to wear.">
+<meta name="twitter:image" content="https://studiovincent.co/work/monet/s1-logotype.webp">
+
+<!-- The opening media is the one asset the first screen depends on, so it is
+     fetched at high priority alongside the document rather than discovered
+     later by the parser. -->
+<link rel="preload" as="image" href="s1-logotype.webp" fetchpriority="high">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- The faces the first screen is set in, fetched at parse time so they
+     are present for the first paint. Without this `font-display: swap`
+     renders every line in a fallback and visibly re-renders it. -->
+<link rel="preload" as="font" type="font/otf" crossorigin href="/Fonts/TestS%C3%B6hne-Leicht.otf">
+<link rel="preload" as="font" type="font/otf" crossorigin href="/Fonts/TestS%C3%B6hne-Buch.otf">
+<link rel="preload" as="font" type="font/woff" crossorigin href="/Fonts/Canela.woff">
+<!-- Non-blocking. As a plain stylesheet this held up the first paint on a
+     third-party connection, so the page showed nothing at all and then
+     appeared complete — the "blank then it refreshes" arrival. Loaded as
+     print media it is fetched without blocking, then promoted on load. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400&display=swap"></noscript>
+
+<style>
+/* ==========================================================================
+   TEMPLATE TWO — brand / identity case study
+   --------------------------------------------------------------------------
+   Everything prefixed .t2- is generic template chrome, intended to be copied
+   into the next Template Two project. Per-project content lives in the markup
+   plus the T2_CONFIG object at the end of the file.
+
+   Paper = how it looks. The spec = how it behaves. The existing site = what
+   gets reused (tokens, nav treatment, fonts, breakpoints).
+   ========================================================================== */
+
+@font-face {
+  font-family: "Canela";
+  src: url("/Fonts/Canela.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face { font-family: "Test Söhne"; src: url("/Fonts/TestS%C3%B6hne-LeichtKursiv.otf") format("opentype"); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: "Test Söhne"; src: url("/Fonts/TestS%C3%B6hne-BuchKursiv.otf") format("opentype"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Test Söhne"; src: url("/Fonts/TestS%C3%B6hne-Kr%C3%A4ftig.otf") format("opentype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Test Söhne"; src: url("/Fonts/TestS%C3%B6hne-Halbfett.otf") format("opentype"); font-weight: 600; font-style: normal; font-display: swap; }
+
+@font-face {
+  font-family: "Test Söhne";
+  src: url("/Fonts/TestS%C3%B6hne-Leicht.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Test Söhne";
+  src: url("/Fonts/TestS%C3%B6hne-Buch.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper-50: #FFFFFF;
+  --ink-900: #1A1815;
+  --ink-700: #3A3731;
+  --ink-500: #5C5C5C;
+
+  --display: "Canela", Georgia, serif;
+  --body: "Test Söhne", "Inter", system-ui, -apple-system, sans-serif;
+  --brand: "Cormorant Garamond", Georgia, serif;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Reveals use a gentle, near-linear-out curve — the movement should be
+     barely perceptible, so the easing must not draw attention either. */
+  --ease-reveal: cubic-bezier(0.33, 1, 0.68, 1);
+
+  --t2-container: 1120px;
+  --t2-pad: 24px;
+  --t2-nav-h: 76px;
+  /* Where both columns begin once the story is open. */
+  --t2-story-top: 28px;
+  /* A slow, even ease for the story reflow — no snap at either end. */
+  --t2-ease-story: cubic-bezier(0.33, 1, 0.68, 1);
+  /* One curve for the whole minimise, so nothing arrives out of step. */
+  --t2-ease-min: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+  background: var(--paper-50);
+}
+
+body {
+  margin: 0;
+  background: var(--paper-50);
+  color: var(--ink-900);
+  font-family: var(--body);
+  font-weight: 300;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+p { margin: 0; }
+h1, h2 { margin: 0; font-weight: 400; }
+
+.t2-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.t2-wrap {
+  width: 100%;
+  max-width: var(--t2-container);
+  margin: 0 auto;
+  padding: 0 var(--t2-pad);
+}
+@media (min-width: 640px) { .t2-wrap { padding: 0 48px; } }
+@media (min-width: 1024px) { .t2-wrap { padding: 0; } }
+
+/* --- Entrance ------------------------------------------------------------
+   Arriving from the carousel's box expansion, the page previously just
+   appeared, which read as a hard cut. A short fade settles it. Done in CSS
+   with fill:both rather than via JS, so there is no way for content to get
+   stuck invisible if a script fails — and no loading screen or delay. */
+/* Entrance: a plain fade on the first screen only.
+   Fading the whole of `main` meant compositing an 11,000px document — three
+   megabytes of imagery — as a single layer at exactly the moment the browser
+   was decoding it, which is what made arriving on the page feel heavy. The
+   sequence below the fold already reveals on scroll, so there is nothing to
+   gain by fading it a second time here. */
+/* No entrance fade.
+
+   Any animation that starts at opacity 0 — and `both` fill holds that from the
+   moment the element is parsed — makes the browser paint a blank page first
+   and populate it a beat later. That is the blank-then-populate arrival, and
+   no curve or duration fixes it, because the blank frame comes before the
+   animation runs at all.
+
+   So the page simply renders. The transition into the case study belongs to
+   the card expanding on the homepage, which the reader has already watched;
+   arriving to a page that is just there is the calmer half of that movement.
+   The compositions below the fold keep their own scroll reveal. */
+
+/* --- Navigation ----------------------------------------------------------
+   The site's existing case-study nav treatment, reused rather than reinvented:
+   same dark bar, same metrics as Template One so the two behave identically. */
+/* Arrives in the site's default treatment and turns black once the reader
+   starts moving, so the change belongs to that action rather than being
+   already done by the time the page appears. */
+.t2-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  /* Opaque, not transparent. The bar is fixed, so a see-through one lets the
+     page run underneath it — the nav and the content it passes over become
+     unreadable on top of each other. At rest it is simply the page ground. */
+  background: var(--paper-50);
+  padding-top: 22px;
+  padding-bottom: 22px;
+  /* Quick: the bar meeting the work is a small, decisive change, and a long
+     fade leaves it looking undecided while the reader is already moving. */
+  transition: background-color 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.t2-nav .studio, .t2-nav-links a { transition: color 240ms cubic-bezier(0.4, 0, 0.2, 1); }
+/* The signature is black artwork, so `invert` is the lever: 0 leaves it black
+   for the light bar, 1 makes it white for the dark one. Written as two ends of
+   the same function rather than `brightness(0)` and `none`, which are not
+   interpolable — the filter had to snap, and snapping meant it was briefly
+   black against a bar still fading from black. Matched to the type's own
+   duration so the whole bar changes as one thing. */
+.t2-brand .vincent { transition: filter 240ms cubic-bezier(0.4, 0, 0.2, 1); }
+/* Frosted once the work is running underneath it, like the pinned controls.
+   Solid at rest, where there is nothing behind it to show through. */
+html.t2-scrolled .t2-nav {
+  background: rgba(18, 17, 15, 0.66);
+  -webkit-backdrop-filter: blur(18px) saturate(1.7);
+  backdrop-filter: blur(18px) saturate(1.7);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html.t2-scrolled .t2-nav { background: #1F1F1F; }
+}
+
+/* --- Graduated edge ------------------------------------------------------
+   A hard line where the frost stops reads as a pane of glass sitting on the
+   page. This band hangs below the bar and carries the same blur through a
+   mask, so the effect falls away over 34px rather than ending at an edge —
+   content begins to soften slightly before it is genuinely underneath. It is
+   inert to the pointer and only exists once the bar itself is frosted. */
+.t2-nav::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 34px;
+  pointer-events: none;
+  background: rgba(18, 17, 15, 0.42);
+  -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  backdrop-filter: blur(12px) saturate(1.5);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.55) 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.55) 55%, transparent 100%);
+  opacity: 0;
+  transition: opacity 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+html.t2-scrolled .t2-nav::after { opacity: 1; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .t2-nav::after { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t2-nav, .t2-nav .studio, .t2-nav-links a, .t2-brand .vincent { transition: none; }
+}
+.t2-nav-inner {
+  width: 100%;
+  max-width: var(--t2-container);
+  margin: 0 auto;
+  padding: 0 var(--t2-pad);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+@media (min-width: 640px) { .t2-nav-inner { padding: 0 48px; } }
+@media (min-width: 1024px) { .t2-nav-inner { padding: 0; } }
+.t2-brand { display: inline-flex; align-items: center; gap: 8px; line-height: 1; text-decoration: none; }
+.t2-brand .studio {
+  font-family: var(--brand);
+  font-weight: 300;
+  font-size: 23px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+.t2-brand .vincent {
+  height: 35px; width: auto;
+  transform: translateY(-5px); margin-bottom: -5px;
+  filter: invert(0);
+}
+html.t2-scrolled .t2-brand .studio { color: #FFFFFF; }
+html.t2-scrolled .t2-brand .vincent { filter: invert(1); }
+.t2-nav-links { display: flex; flex-wrap: nowrap; align-items: baseline; gap: 12px; }
+@media (min-width: 640px) { .t2-nav-links { gap: 24px; } }
+.t2-nav-links a {
+  font-family: var(--brand);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ink-900);
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0.92;
+  transition: opacity 200ms var(--ease), color 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
+.t2-nav-links a:hover, .t2-nav-links a:focus-visible { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+
+/* --- Opening block -------------------------------------------------------
+   The first screen: title, concise description, tags, and the Project Story
+   control. Nothing here waits on anything below it. */
+.t2-head {
+  padding-top: calc(var(--t2-nav-h) + clamp(64px, 12vh, 132px));
+  /* Room between the Project story control and the first composition, so the
+     opening block reads as its own thing rather than sitting on the work. */
+  padding-bottom: clamp(88px, 13vh, 168px);
+}
+.t2-head-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(32px, 6vw, 96px);
+  align-items: end;
+}
+.t2-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(34px, 4.4vw, 50px);
+  line-height: 1.2;
+  color: #000;
+  margin-bottom: clamp(20px, 3vh, 34px);
+}
+.t2-intro {
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.35;
+  color: var(--ink-700);
+  max-width: 535px;
+}
+.t2-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 17px;
+  margin-top: 18px;
+  padding: 0;
+  list-style: none;
+}
+.t2-tags li {
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.24px;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+/* --- Project Story control ----------------------------------------------
+   Closed: white pill, black label, chevron. Open state (dark, ×) arrives with
+   the Project Story work itself. */
+.t2-story-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 60px;
+  padding: 19px 28px 18px 31px;
+  margin-top: 18px;
+  /* A drawn edge rather than a drop shadow. The shadow lifted the control off
+     the page as though it were floating over the work; a hairline states the
+     boundary and lets it sit in the layout. Kept light — it should read as an
+     edge, not a frame. */
+  border: 1px solid rgba(26, 24, 21, 0.16);
+  border-radius: 6px;
+  background: #FFFFFF;
+  box-shadow: none;
+  color: #000;
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  cursor: pointer;
+  transition: border-color 220ms var(--ease), transform 220ms var(--ease);
+}
+.t2-story-toggle:hover { transform: translateY(-1px); border-color: rgba(26, 24, 21, 0.34); }
+.t2-story-toggle:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+.t2-story-toggle .mark { flex-shrink: 0; display: block; }
+.t2-story-toggle .chev { flex-shrink: 0; display: block; transition: transform 260ms var(--ease); }
+
+/* --- Media sequence ------------------------------------------------------
+   Every media container reserves its aspect ratio up front, so nothing shifts
+   as assets arrive. Widths vary per item rather than repeating one column, so
+   the page reads as an authored sequence rather than a CMS list. */
+.t2-sequence { padding-bottom: 0; }
+/* Items own their own width. Full-bleed is simply "no max-width" rather than
+   a 100vw trick — 100vw includes the scrollbar gutter and would push the page
+   into horizontal overflow. */
+/* Paper stacks the sections 10px apart — each composition already carries its
+   own generous internal whitespace, so adding a large page gap on top of that
+   just pushes the work apart. */
+.t2-item {
+  width: 100%;
+  margin: 10px auto 0;
+}
+.t2-item:first-child { margin-top: 0; }
+.t2-media {
+  width: 100%;
+  display: block;
+  background: #F3F3EF;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.t2-media img { width: 100%; height: auto; display: block; }
+
+/* Media runs full width. Paper composes each section edge to edge, so the
+   media column is the page rather than a column within it. Rhythm comes from
+   the compositions themselves and the space between them. */
+.t2-item { max-width: none; padding: 0; }
+.t2-item .t2-media { border-radius: 0; }
+
+/* --- Sequence vocabulary (spec §8) ---------------------------------------
+   The sequence is an authored order of components, not a fixed template. A
+   Template 2 project composes its page by choosing from these and putting
+   them in whatever order the work wants:
+
+     .t2-item                 full-bleed media (the default beat)
+     .t2-item--screens        media on a dark ground, for interface/device work
+     .t2-item--pair           two media side by side, stacking on narrow
+     .t2-note                 a short narrative beat between compositions
+     .t2-note--lead           the same, one step up, for a section's opening line
+     .t2-quote                a pull quote
+
+   Nothing here is Monet-specific: another project reorders the same set.
+   Reading stays secondary — the notes are captions to what is on screen, not
+   a parallel essay. The full narrative lives in the Project Story.
+
+   Media deliberately stays full-bleed rather than gaining an inset variant:
+   each Paper composition is already edge-to-edge with its own internal
+   whitespace, so rhythm comes from the narrative beats and the dark screens
+   ground instead. */
+/* The narrative beats belong to the story, not to the visual sequence. Closed,
+   the page is only the work — no interstitial text and no gaps where it would
+   have been. They appear between the compositions when the reader asks for the
+   project story, and go again when they close it. `display` rather than
+   opacity, so a closed page reserves nothing for them. */
+.t2-note, .t2-quote { display: none; }
+.t2-body.is-open .t2-note,
+.t2-body.is-open .t2-quote { display: block; }
+
+.t2-note {
+  /* Sits on the page rail rather than running full width, so it reads as an
+     aside to the work above it rather than as a section of its own. */
+  max-width: var(--t2-container);
+  margin: clamp(56px, 9vh, 120px) auto clamp(56px, 9vh, 120px);
+  padding: 0 var(--t2-pad);
+}
+.t2-note p {
+  max-width: 54ch;
+  margin: 0;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: clamp(16px, 0.5vw + 0.85rem, 19px);
+  line-height: 1.6;
+  color: var(--ink-700, #3A3A38);
+  text-wrap: pretty;
+}
+.t2-note p + p { margin-top: 0.9em; }
+.t2-note--lead p {
+  max-width: 30ch;
+  font-family: var(--display);
+  font-size: clamp(22px, 1.6vw + 0.8rem, 32px);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+.t2-note-label {
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-500, #7A7A76);
+}
+
+.t2-quote {
+  max-width: var(--t2-container);
+  margin: clamp(64px, 11vh, 140px) auto;
+  padding: 0 var(--t2-pad);
+}
+.t2-quote blockquote {
+  max-width: 26ch;
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(26px, 2.4vw + 0.8rem, 44px);
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+  color: var(--ink-900);
+  text-wrap: balance;
+}
+
+/* A pair shares one row and falls back to stacking before the columns get too
+   narrow to read as a composition. Unused by Monet; part of the vocabulary. */
+.t2-item--pair .t2-media-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 719px) {
+  .t2-item--pair .t2-media-row { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Once the Project Story is open the sequence is a narrower column, so the
+   notes drop their page rail and sit to the media's own edges. */
+.t2-body.is-open .t2-note,
+.t2-body.is-open .t2-quote { padding-left: 0; padding-right: 0; max-width: none; }
+
+@media (max-width: 899px) {
+  .t2-note, .t2-quote { margin-top: clamp(40px, 7vh, 72px); margin-bottom: clamp(40px, 7vh, 72px); }
+}
+
+/* The interface work sits on its own dark ground, inset and a little smaller,
+   so the screens read as artefacts on a surface. #131313 is sampled from the
+   mobile export's own background, so the ground meets the artwork with no
+   visible seam between two different blacks. */
+.t2-item--screens {
+  background: #131313;
+  padding: clamp(48px, 7vw, 128px) clamp(24px, 6vw, 120px);
+}
+.t2-item--screens .t2-media {
+  max-width: 74%;
+  margin-inline: auto;
+  background: transparent;
+}
+@media (max-width: 899px) {
+  .t2-item--screens { padding: clamp(28px, 7vw, 56px) clamp(16px, 5vw, 40px); }
+  .t2-item--screens .t2-media { max-width: 88%; }
+}
+
+/* --- Reveal --------------------------------------------------------------
+   Media becomes active as it approaches, once. Deliberately close to
+   imperceptible: a fade with a few pixels of travel, on a gentle curve. The
+   work is what should be noticed, not the transition. */
+.t2-reveal {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 520ms var(--ease-reveal), transform 520ms var(--ease-reveal);
+}
+.t2-reveal.is-in { opacity: 1; transform: none; }
+/* Deliberately no `will-change`. Nine panels, each holding a 3000px image,
+   would be promoted to their own composited layer simultaneously — far more
+   GPU memory than the two that are ever animating at once, and enough to make
+   the scroll itself stutter. The transition promotes them while it runs. */
+
+@media (prefers-reduced-motion: reduce) {
+  .t2-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .t2-story-toggle, .t2-close { transition: none !important; }
+}
+
+/* --- Project Story -------------------------------------------------------
+   Closed, the media is the page. Open, a story column takes the left third
+   and the media genuinely reflows into the remaining two thirds — animating
+   the grid's fr units means every image resizes to its new container rather
+   than being cropped, covered or translated. */
+/* The media genuinely moves right and narrows as the story opens — that
+   movement is the point of the interaction. It is a layout animation, which is
+   not free, but only the panel actually on screen is rasterised, so the real
+   cost is one image rather than nine. What made this stutter before was not
+   the reflow: it was a per-frame scrollBy loop running alongside it, forcing a
+   synchronous layout read and fighting the browser's own scroll anchoring on
+   every frame. That is gone; native anchoring holds the reader's place.
+   Restrained on purpose — one movement, a plain ease-out, no overshoot. */
+/* The columns resolve in ONE step, deliberately not over time.
+
+   Animating them means the document's height changes on every frame, and the
+   reader has to be dragged along with it — which is a vertical scroll running
+   underneath a horizontal reflow, so the page appears to pan diagonally and
+   ends up chasing the bottom of a shrinking page. There is no version of that
+   which is calm. The layout lands at once, the scroll is corrected in the same
+   frame so the correction is never seen, and the story text fades in over the
+   top. What moves is the text arriving, not the page. */
+.t2-body {
+  display: grid;
+  grid-template-columns: 0fr minmax(0, 1fr);
+}
+.t2-body.is-open {
+  grid-template-columns: 33fr 67fr;
+  /* Only the story side is inset — the imagery keeps running to the right
+     edge exactly as it does when closed. */
+  padding: 0 0 0 clamp(24px, 3.2vw, 60px);
+  column-gap: clamp(32px, 4vw, 72px);
+}
+/* On a wide screen the story starts on the SAME left edge as the title,
+   description and tags above it — the head block sits on the 1120px container,
+   so the story column starts there too and drops its own inner inset. Below
+   that width there is no spare room to line up with and the column keeps its
+   own comfortable padding. */
+@media (min-width: 1000px) {
+  .t2-body.is-open {
+    padding-left: max(var(--t2-pad), calc((100% - var(--t2-container)) / 2));
+  }
+  .t2-body.is-open .t2-story-inner { padding-left: 0; }
+}
+.t2-story {
+  overflow: hidden;
+  min-width: 0;
+}
+.t2-story-inner {
+  /* Flows with the page rather than scrolling inside its own box — an inner
+     scrollbar in a reading column is its own small annoyance. */
+  padding: var(--t2-story-top) clamp(16px, 1.6vw, 28px) 0;
+  opacity: 0;
+  /* Opacity only: the one property here that costs nothing to animate. */
+  transition: opacity 480ms ease-in;
+}
+/* Both columns start level; on the same clock as the reflow. */
+.t2-body.is-open .t2-sequence { padding-top: var(--t2-story-top); }
+.t2-body.is-open .t2-story-inner { opacity: 1; }
+.t2-story h2 {
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--ink-900);
+  margin: 32px 0 10px;
+}
+.t2-story h2:first-child { margin-top: 0; }
+.t2-story p, .t2-story li {
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-700);
+}
+.t2-story p + p { margin-top: 1em; }
+.t2-story ul { margin: 1em 0 0; padding-left: 1.1em; }
+.t2-story li + li { margin-top: 6px; }
+
+/* Open state of the control: Paper's dark pill, white label, × for chevron. */
+.t2-story-toggle[aria-expanded="true"] {
+  background: #1F1F1F;
+  color: #FFFFFF;
+  border-color: transparent;
+  box-shadow: none;
+}
+.t2-story-toggle .icon-close { display: none; }
+.t2-story-toggle[aria-expanded="true"] .chev { display: none; }
+.t2-story-toggle[aria-expanded="true"] .icon-close { display: block; }
+
+/* Narrow. There is no side-by-side reveal here — a 33% column at 375px is a
+   124px measure, which is not a reading column. The story stacks above the
+   imagery at full width instead, so the writing is still reachable on a phone
+   without pretending the desktop reflow scales down. */
+@media (max-width: 899px) {
+  .t2-body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 0fr auto;
+    transition: grid-template-rows 480ms var(--t2-ease-story),
+                row-gap 480ms var(--t2-ease-story);
+  }
+  .t2-body.is-open {
+    /* Must repeat the single-column track: `.t2-body.is-open` outranks
+       `.t2-body`, so the desktop 33/67 split would otherwise still apply. */
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    padding: 0;
+    column-gap: 0;
+    row-gap: clamp(24px, 6vw, 40px);
+  }
+  .t2-story-inner { padding: var(--t2-story-top) var(--t2-gutter, 20px) 0; }
+  /* The imagery is already at the top of its own row here. */
+  .t2-body.is-open .t2-sequence { padding-top: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t2-body, .t2-story-inner, .t2-sequence { transition: none !important; }
+}
+
+/* --- Project video -------------------------------------------------------
+   Same component as Template One: a square frame that expands while it plays,
+   a hover overlay carrying the white play/pause glyph, and a persistent black
+   control with the speaker's name below it. The one difference Template Two
+   needs is where it starts — Paper places it in the opening block rather than
+   in the corner, so it sits in its slot at 181px and only detaches into the
+   pinned player once it has been played and the opening block scrolls away.
+   It is the same element throughout, so playback survives both pinning and
+   the Project Story opening and closing. */
+.t2-video-slot { width: 181px; }
+.t2-video {
+  position: relative;
+  width: 181px;
+  transition: width 460ms var(--ease);
+}
+/* Pinned. Template One's metrics exactly: small while paused, expanded while
+   it plays. It stays pinned once activated so pausing does not snatch the
+   player away — it just shrinks back. */
+.t2-video.is-pinned {
+  position: fixed;
+  right: clamp(16px, 3vw, 46px);
+  bottom: clamp(16px, 3vh, 40px);
+  width: 116px;
+  z-index: 70;
+  animation: t2-pin-in 320ms var(--ease-reveal) both;
+}
+.t2-video.is-pinned.is-playing { width: 220px; }
+/* Opacity only. This used to animate transform as well, and with `both` fill
+   its final `transform: none` kept ownership of the property for as long as
+   the player stayed pinned — a filling animation outranks inline styles, so
+   every transform the drag wrote was overridden and the player could not be
+   moved at all once it detached into the corner. The arrival reads the same
+   as a fade; the transform belongs to the reader now. */
+@keyframes t2-pin-in { from { opacity: 0; } to { opacity: 1; } }
+/* Coming back down into its slot deserves the same courtesy as leaving it.
+   Without this the player simply reappeared in the opening block, fully formed,
+   the moment the slot came back on screen.
+
+   Opacity only, deliberately: a transform here would be owned by the animation
+   for as long as it fills, and the reader's own drag offset lives on that same
+   property. */
+@keyframes t2-settle { from { opacity: 0; } to { opacity: 1; } }
+.t2-video.is-settling { animation: t2-settle 420ms var(--ease-reveal) both; }
+@media (prefers-reduced-motion: reduce) {
+  .t2-video.is-settling { animation: none; }
+}
+/* The slot holds its space so nothing reflows when the player detaches. */
+.t2-video-slot { min-height: 1px; }
+
+.t2-video-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #2A2A27;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(20, 18, 14, 0.18);
+  transition: box-shadow 460ms var(--ease);
+}
+.t2-video.is-playing .t2-video-frame { box-shadow: 0 14px 40px rgba(20, 18, 14, 0.26); }
+.t2-video-frame:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
+.t2-video-frame video, .t2-video-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Obvious placeholder while no video file has been supplied. */
+.t2-video-poster {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  background: repeating-linear-gradient(135deg, #33332E 0 10px, #2A2A27 10px 20px);
+  color: rgba(255, 255, 255, 0.72);
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; padding: 8px;
+}
+/* Hover overlay + white glyph, as Template One. It also rests visible while
+   paused, because at 181px in the opening composition the block needs to read
+   as a video rather than as a plain image. */
+.t2-video-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  color: #FFFFFF;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 240ms var(--ease), background-color 240ms var(--ease);
+}
+.t2-video.is-playing .t2-video-overlay { opacity: 0; }
+@media (hover: hover) {
+  /* Needs to outrank `.t2-video.is-playing .t2-video-overlay` (0,0,2,0), so
+     the hover state is written at (0,0,3,0) rather than relying on order. */
+  .t2-video .t2-video-frame:hover .t2-video-overlay,
+  .t2-video .t2-video-frame:focus-visible .t2-video-overlay {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.18);
+  }
+}
+.t2-video-overlay .glyph { width: 30px; height: 36px; display: block; }
+/* Persistent black control below the frame — always present, mirrors state. */
+.t2-video-meta {
+  display: flex; align-items: center; gap: 8px; margin-top: 10px;
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif; font-size: 13px; line-height: 15px; color: var(--ink-900);
+}
+/* Pinned, the player floats over whatever section happens to be behind it —
+   including the black grounds and the dark outro — so it carries its own
+   light ground rather than relying on the page being white as it does in
+   Template One. */
+.t2-video.is-pinned .t2-video-meta {
+  color: var(--ink-900);
+  margin-top: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 6px 18px rgba(20, 18, 14, 0.18);
+}
+.t2-video-toggle, .t2-video-dismiss {
+  border: 0; background: none; padding: 0; cursor: pointer; color: inherit;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.t2-video-toggle { width: 14px; height: 16px; }
+/* A real target rather than a 14px character — this is the control that takes
+   the player away, so it needs to be findable and hittable. */
+.t2-video-dismiss {
+  width: 22px; height: 22px; border-radius: 50%;
+  font-size: 19px; line-height: 1;
+  color: var(--ink-500); margin-left: auto;
+  transition: color 160ms var(--ease), background-color 160ms var(--ease);
+}
+.t2-video-dismiss:hover { color: var(--ink-900); background: rgba(0, 0, 0, 0.06); }
+
+/* Shown for a moment when the video runs out and returns to the start, so the
+   reader is told it reset rather than left wondering why it stopped. */
+.t2-video-reset {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  background: rgba(20, 18, 14, 0.86);
+  color: #FFFFFF;
+  font-family: var(--body);
+  font-size: 11px; letter-spacing: 0.04em; text-align: center; padding: 8px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 260ms var(--ease);
+}
+.t2-video-reset svg { width: 26px; height: 26px; }
+.t2-video.is-reset .t2-video-reset { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .t2-video-reset { transition: none; } }
+.t2-video-toggle:focus-visible, .t2-video-dismiss:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
+/* --- Close + next project ------------------------------------------------
+   Both are Template One's. The one change: the × is not present at the top of
+   the page, where the opening composition should be the only thing on screen.
+   It fades in once the reader has committed to scrolling, and is the same
+   control from then on. */
+.t2-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: calc(var(--t2-nav-h, 76px) + 24px);
+  right: clamp(16px, 3.2vw, 46px);
+  z-index: 60;
+  width: 52px;
+  height: 54px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #484848;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease), color 200ms var(--ease);
+}
+.t2-close.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.t2-close:hover { color: var(--ink-900); }
+.t2-close:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 6px; border-radius: 10px; }
+.t2-close svg { display: block; width: 21px; height: 21px; margin: auto; }
+
+/* The Project story control, carried to the top right once its own place in
+   the opening block has scrolled away. It appears on the same trigger as the
+   ×, beside it, so the two ways out of a state sit together: close the story,
+   or close the case study. It is the same control — the head one and this one
+   share a handler and a state. */
+.t2-story-pin {
+  position: fixed;
+  top: calc(var(--t2-nav-h, 76px) + 21px);
+  /* Clear of the × : its own inset, plus the ×'s width, plus a gap. */
+  right: calc(clamp(16px, 3.2vw, 46px) + 52px + 14px);
+  z-index: 60;
+  margin-top: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease),
+              background-color 260ms var(--ease), color 260ms var(--ease);
+}
+.t2-story-pin.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+
+/* --- Glass ---------------------------------------------------------------
+   The pinned controls sit over the work, so a solid white slab reads as a
+   panel dropped on top of it. Frosted instead: they take their tint from
+   whatever composition is behind them and change as the reader moves through
+   the project, while the blur keeps the label legible over both the pale
+   sections and the dark ones. Saturation is pushed a little because blurring
+   averages colour towards grey. */
+.t2-close,
+.t2-story-pin,
+.t2-video-restore {
+  -webkit-backdrop-filter: blur(18px) saturate(1.7);
+  backdrop-filter: blur(18px) saturate(1.7);
+}
+/* Asymmetric: they take their time arriving and leave briskly. A transition's
+   duration comes from the state being moved TO, so the short one lives on the
+   resting rule and the long one on .is-shown. Scrolling back up to the opening
+   block should feel like the chrome getting out of the way, not a slow fade. */
+.t2-close,
+.t2-story-pin,
+.t2-video-restore {
+  transition: opacity 170ms var(--ease), transform 170ms var(--ease);
+}
+.t2-close.is-shown,
+.t2-video-restore.is-shown {
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+}
+.t2-story-pin.is-shown {
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease),
+              width 380ms var(--t2-ease-min),
+              height 380ms var(--t2-ease-min),
+              padding 380ms var(--t2-ease-min),
+              column-gap 380ms var(--t2-ease-min),
+              border-radius 380ms var(--t2-ease-min),
+              background-color 260ms var(--ease), color 260ms var(--ease);
+}
+
+/* All three share the video tag's treatment: dark, translucent, white type.
+   White surfaces sat on top of the work as panels; dark ones read as part of
+   the page's own chrome and hold their contrast over pale and dark
+   compositions alike, which a light glass could not do. */
+.t2-close {
+  border-radius: 16px;
+  /* Thinner than the video tag, so more of the composition reads through. */
+  background: rgba(18, 17, 15, 0.44);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+  color: #FFFFFF;
+}
+.t2-close:hover { background: rgba(18, 17, 15, 0.68); color: #FFFFFF; }
+
+.t2-story-pin {
+  background: rgba(18, 17, 15, 0.44);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+  color: #FFFFFF;
+  /* Light hairline: the inked one from the head control would disappear into
+     the dark glass and darken its edge. */
+  border-color: rgba(255, 255, 255, 0.18);
+  /* The ×'s own corner. At the head control's 6px it read as a different kind
+     of object sitting next to it rather than one of a pair. */
+  border-radius: 16px;
+}
+.t2-story-pin:hover { background: rgba(18, 17, 15, 0.68); }
+/* Open, it goes fully solid — the active state should not be ambiguous.
+   Written at this specificity to outrank .t2-story-toggle[aria-expanded]. */
+.t2-story-pin[aria-expanded="true"] {
+  background: rgba(18, 17, 15, 0.86);
+  color: #FFFFFF;
+}
+
+/* Dark glass, so it stays the emphatic one of the three without going opaque. */
+.t2-video-restore {
+  background: rgba(18, 17, 15, 0.55);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+}
+.t2-video-restore:hover { background: rgba(18, 17, 15, 0.72); }
+
+/* Safari on older versions, and Firefox with the feature off, get the solid
+   treatment rather than a barely-there wash over the artwork. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .t2-close, .t2-story-pin, .t2-video-restore { background: #1F1F1F; }
+}
+
+/* Minimised, once the reader is properly into the page: the same footprint as
+   the × beside it, carrying just the chevron. It grows back into the labelled
+   control on the way up, and is gone entirely at the very top where the head
+   control is doing the job. */
+.t2-story-pin {
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease),
+              width 380ms var(--t2-ease-min),
+              height 380ms var(--t2-ease-min),
+              padding 380ms var(--t2-ease-min),
+              column-gap 380ms var(--t2-ease-min),
+              border-radius 380ms var(--t2-ease-min),
+              background-color 260ms var(--ease), color 260ms var(--ease);
+}
+/* The label and mark collapse on the SAME clock as the box, via max-width
+   rather than width. Collapsing them instantly — which is what a width change
+   outside the transition list does — pulled the content out from under a box
+   that was still shrinking, so the button appeared to snap closed and then
+   settle open again. Everything now moves together. */
+.t2-story-pin .label {
+  display: inline-block;
+  max-width: 240px;
+  overflow: hidden;
+  transition: opacity 200ms var(--t2-ease-min), max-width 380ms var(--t2-ease-min);
+}
+.t2-story-pin .mark {
+  max-width: 24px;
+  transition: opacity 200ms var(--t2-ease-min), max-width 380ms var(--t2-ease-min);
+}
+.t2-story-pin.is-min {
+  width: 52px;
+  height: 54px;
+  padding: 0;
+  column-gap: 0;
+  border-radius: 16px;
+  justify-content: center;
+  /* Sits where the × sits, so the pair reads as one row of controls. */
+  top: calc(var(--t2-nav-h, 76px) + 24px);
+}
+.t2-story-pin.is-min .label,
+.t2-story-pin.is-min .mark { opacity: 0; max-width: 0; }
+
+/* The chevron is the one thing that survives the minimise, so it is the one
+   thing you can watch travel: the box collapses around it and it slides across
+   to the middle. Fading it through the change means the size difference is all
+   you see — it is simply in a different place when it comes back. */
+.t2-story-pin .chev { transition: opacity 150ms var(--t2-ease-min); }
+.t2-story-pin.is-swapping .chev { opacity: 0; }
+
+/* Open, it grows back to the labelled control even while minimised. In its
+   active state this button carries an ×, and a bare × sitting beside the
+   close × is two crosses meaning two different things. Labelled, it reads as
+   "close the story" against "close the case study". */
+.t2-story-pin.is-min[aria-expanded="true"] {
+  width: auto;
+  height: 60px;
+  padding: 19px 28px 18px 31px;
+  column-gap: 14px;
+  border-radius: 16px;
+  top: calc(var(--t2-nav-h, 76px) + 21px);
+}
+.t2-story-pin.is-min[aria-expanded="true"] .label { opacity: 1; max-width: 240px; }
+.t2-story-pin.is-min[aria-expanded="true"] .mark { opacity: 1; max-width: 24px; }
+@media (prefers-reduced-motion: reduce) {
+  .t2-story-pin, .t2-story-pin .label, .t2-story-pin .mark { transition: none; }
+}
+/* No room for it beside the × on a phone, and the head control is still
+   reachable there. */
+@media (max-width: 899px) { .t2-story-pin { display: none; } }
+@media (prefers-reduced-motion: reduce) { .t2-story-pin { transition: none; } }
+
+.t2-next {
+  margin-top: clamp(36px, 5vh, 56px);
+  display: grid;
+  grid-template-columns: 81px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 23px;
+  text-decoration: none;
+  color: inherit;
+}
+.t2-next-thumb {
+  width: 81px; height: 81px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #1E2B2C center / cover no-repeat;
+}
+.t2-next-label {
+  display: block;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.6);
+  margin-bottom: 6px;
+}
+.t2-next-title {
+  display: block;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 18px;
+  color: #FFFFFF;
+}
+.t2-next-desc {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 19px;
+  color: #C9C9C4;
+}
+.t2-next-chev { transform: rotate(-90deg); color: #FFFFFF; }
+.t2-next:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 6px; border-radius: 6px; }
+@media (max-width: 899px) {
+  .t2-next { grid-template-columns: 64px minmax(0, 1fr) 20px; gap: 16px; }
+  .t2-next-thumb { width: 64px; height: 64px; }
+}
+
+/* Dismissed -> a small bookmark tab that brings it back. */
+/* Sits with the other controls, under the × and the Project story button,
+   rather than off on its own at the foot of the window. Dismissing the player
+   should put it away, not make it vanish — the tab is how it comes back, so it
+   has to be somewhere the reader is already looking. */
+.t2-video-restore {
+  position: fixed;
+  right: clamp(16px, 3.2vw, 46px);
+  top: calc(var(--t2-nav-h, 76px) + 24px + 54px + 14px);
+  bottom: auto;
+  z-index: 70;
+  border-radius: 6px;
+  display: inline-flex; align-items: center; gap: 8px;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+  padding: 10px 14px 10px 12px; border: 0;
+  color: #FFFFFF;
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif; font-size: 12px; cursor: pointer;
+  box-shadow: 0 6px 18px rgba(20, 18, 14, 0.2);
+}
+.t2-video-restore.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+
+/* Direct manipulation: the player can be dragged and pinched once it is
+   floating. In its slot it is part of the composition, so it stays put. */
+/* Draggable in either state, so the affordance and the touch behaviour have to
+   apply in either state too — not just once pinned. */
+.t2-video { touch-action: none; cursor: grab; }
+.t2-video.is-dragging { cursor: grabbing; }
+.t2-video.is-dragging .t2-video-frame { transition: none; }
+/* A dragged player keeps the position it was given rather than snapping back
+   to the corner when its size changes. */
+.t2-video.is-dragging { transition: none; }
+/* Returning home after being left alone is the one move that should be seen. */
+.t2-video.is-homing { transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+
+.t2-video-restore .play { flex-shrink: 0; color: #FFFFFF; display: block; }
+.t2-video-restore span { line-height: 1; }
+@media (max-width: 899px) {
+  .t2-video-slot { width: 132px; margin-top: 28px; }
+  .t2-video { width: 132px; }
+  .t2-video.is-pinned { width: 96px; }
+  .t2-video.is-pinned.is-playing { width: 168px; }
+  .t2-video-overlay .glyph { width: 24px; height: 29px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t2-video, .t2-video-frame, .t2-video-overlay { transition: none; }
+  .t2-video.is-pinned { animation: none; }
+}
+
+/* --- Contact + footer ----------------------------------------------------
+   The homepage's dark-mode ending, reused so every case study closes the same
+   way the homepage does. Colours are the homepage's dark-active values rather
+   than new ones. */
+.t2-outro {
+  background: #1a1a1a;
+  color: #F8FAFC;
+  padding: clamp(64px, 12vh, 150px) 0 clamp(40px, 6vh, 72px);
+  margin-top: 0;
+}
+.t2-outro-inner { max-width: var(--t2-container); margin: 0 auto; padding: 0 var(--t2-pad); }
+@media (min-width: 640px) { .t2-outro-inner { padding: 0 48px; } }
+@media (min-width: 1024px) { .t2-outro-inner { padding: 0; } }
+.t2-outro h2 {
+  font-family: var(--brand);
+  font-weight: 500;
+  color: #FFFFFF;
+  font-size: clamp(32px, 5.5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 24px 0;
+  max-width: 18ch;
+  text-wrap: pretty;
+}
+.t2-outro .sub {
+  font-family: "Test Söhne", "Inter", system-ui, sans-serif;
+  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
+  line-height: 1.55;
+  color: #F3F3EF;
+  margin: 0 0 32px 0;
+  max-width: 38ch;
+}
+/* Outlined, matching the homepage's own CTA on its dark section: white rule
+   and white type on the ground, filling to solid on hover. A solid white
+   button here was the loudest thing on the page. */
+.t2-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  min-width: 200px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--paper-50);
+  font-family: "Test Söhne", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: background-color 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              border-color 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              color 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 200ms var(--ease);
+}
+.t2-cta:hover, .t2-cta:focus-visible {
+  background: var(--paper-50);
+  border-color: var(--paper-50);
+  color: var(--ink-900);
+  transform: translateY(-1px);
+}
+.t2-cta:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 4px; }
+
+.t2-footer {
+  background: #1a1a1a;
+  border-top: 1px solid rgba(248, 250, 252, 0.14);
+  padding: 24px 0 32px;
+}
+.t2-footer .row {
+  max-width: var(--t2-container);
+  margin: 0 auto;
+  padding: 0 var(--t2-pad);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-family: "Test Söhne", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(248, 250, 252, 0.78);
+}
+@media (min-width: 640px) { .t2-footer .row { padding: 0 48px; } }
+@media (min-width: 1024px) { .t2-footer .row { padding: 0; } }
+.t2-footer .links { display: inline-flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.t2-footer .links a {
+  font-family: inherit; font-size: 11px; letter-spacing: 0.06em;
+  color: rgba(248, 250, 252, 0.78);
+  text-decoration: none;
+  display: inline-flex; align-items: baseline; gap: 6px;
+}
+.t2-footer .links a:hover { color: #F8FAFC; text-decoration: underline; text-underline-offset: 3px; }
+.t2-footer .links a.cv-download { align-items: center; }
+.t2-footer .copy { color: rgba(248, 250, 252, 0.6); }
+
+@media (max-width: 899px) {
+  :root { --t2-nav-h: 68px; --t2-pad: 20px; }
+  .t2-head-inner { grid-template-columns: minmax(0, 1fr); }
+  .t2-brand .studio { font-size: 23px; }
+  .t2-nav-links { gap: 32px; }
+  .t2-nav-links a[href$="#how-this-works"],
+  .t2-nav-links a[href$="#work"] { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="t2-nav">
+  <div class="t2-nav-inner">
+    <a class="t2-brand" href="/">
+      <span class="studio">Studio</span>
+      <img class="vincent" src="/logo-vincent.png" alt="Studio Vincent" width="62" height="32">
+    </a>
+    <nav class="t2-nav-links" aria-label="Primary">
+      <a href="/#how-this-works">Work together</a>
+      <a href="/#case-studies">Work</a>
+      <a href="/#work">Writing</a>
+      <a href="/about/">About</a>
+    </nav>
+  </div>
+</header>
+
+<button type="button" class="t2-close" id="t2-close" data-t2-exit="/#case-studies" aria-label="Close case study">
+  <!-- Just the mark. The button itself is the surface now, so the icon no
+       longer draws its own container — that contour was still being stroked
+       and showed as a ring that did not follow the button's corner. -->
+  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </svg>
+</button>
+
+<main>
+
+  <!-- ===== Opening block (above the fold) ============================== -->
+  <section class="t2-head">
+    <div class="t2-wrap t2-head-inner">
+      <div>
+        <h1 class="t2-title">Monet</h1>
+        <p class="t2-intro">Creating a desirable consumer brand for neuro tech people would actually want to wear.</p>
+        <ul class="t2-tags">
+          <li>Brand strategy</li>
+          <li>Creative direction</li>
+          <li>Identity</li>
+          <li>Naming</li>
+        </ul>
+
+        <button type="button" class="t2-story-toggle" id="t2-story-toggle" aria-expanded="false" aria-controls="t2-story">
+          <svg class="mark" width="20" height="21" viewBox="0 0 20.17 21" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor">
+            <g transform="translate(6.772 0)"><path fill-rule="nonzero" d="M13.289 1.294L11.076 0.029C11.027 0.001 10.969 -0.007 10.914 0.007C10.859 0.021 10.812 0.056 10.783 0.104L0.031 18.187C0.018 18.209 0.011 18.233 0.007 18.257C0.006 18.263 0.005 18.27 0.004 18.276C0.004 18.282 0.002 18.287 0.002 18.293L0 20.79C0 20.865 0.04 20.934 0.106 20.971C0.14 20.991 0.177 21 0.214 21C0.251 21 0.287 20.991 0.32 20.973L2.534 19.741C2.54 19.738 2.544 19.733 2.55 19.73C2.555 19.726 2.56 19.723 2.565 19.719C2.584 19.703 2.601 19.685 2.614 19.664L13.366 1.581C13.425 1.481 13.391 1.352 13.289 1.294ZM11.045 0.497L11.781 0.918L1.245 18.639L0.509 18.218L11.045 0.497ZM0.43 18.659L1.214 19.107L1.999 19.556L0.429 20.429L0.43 18.659ZM2.352 19.271L1.615 18.85L12.152 1.13L12.888 1.551L2.352 19.271Z"/></g>
+            <g transform="translate(0 20.566)"><path fill-rule="nonzero" d="M5.731 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42L5.731 0.42C5.85 0.42 5.946 0.326 5.946 0.21C5.946 0.094 5.85 0 5.731 0Z"/></g>
+            <g transform="translate(0 18.281)"><path fill-rule="nonzero" d="M0.214 0.42L5.501 0.42C5.62 0.42 5.716 0.326 5.716 0.21C5.716 0.094 5.62 0 5.501 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42Z"/></g>
+            <g transform="translate(0 15.996)"><path fill-rule="nonzero" d="M5.928 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42L5.928 0.42C6.047 0.42 6.143 0.326 6.143 0.21C6.143 0.094 6.047 0 5.928 0Z"/></g>
+            <g transform="translate(0 13.71)"><path fill-rule="nonzero" d="M0.214 0.42L7.702 0.42C7.82 0.42 7.916 0.326 7.916 0.21C7.916 0.094 7.82 0 7.702 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42Z"/></g>
+            <g transform="translate(0 11.426)"><path fill-rule="nonzero" d="M0.214 0.42L8.293 0.42C8.411 0.42 8.507 0.326 8.507 0.21C8.507 0.094 8.411 0 8.293 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42Z"/></g>
+            <g transform="translate(0 9.14)"><path fill-rule="nonzero" d="M0.214 0.42L10.066 0.42C10.184 0.42 10.28 0.326 10.28 0.21C10.28 0.094 10.184 0 10.066 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42Z"/></g>
+            <g transform="translate(0 6.856)"><path fill-rule="nonzero" d="M0.214 0.42L11.774 0.42C11.892 0.42 11.988 0.326 11.988 0.21C11.988 0.094 11.892 0 11.774 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42Z"/></g>
+            <g transform="translate(0 4.57)"><path fill-rule="nonzero" d="M0.214 0.42L12.562 0.42C12.681 0.42 12.776 0.326 12.776 0.21C12.776 0.094 12.681 0 12.562 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42Z"/></g>
+            <g transform="translate(0 2.285)"><path fill-rule="nonzero" d="M0.214 0.42L13.646 0.42C13.764 0.42 13.86 0.326 13.86 0.21C13.86 0.094 13.764 0 13.646 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42Z"/></g>
+            <g><path fill-rule="nonzero" d="M0.214 0.42L15.616 0.42C15.735 0.42 15.83 0.326 15.83 0.21C15.83 0.094 15.735 0 15.616 0L0.214 0C0.096 0 0 0.094 0 0.21C0 0.326 0.096 0.42 0.214 0.42Z"/></g>
+          </svg>
+          <span class="label">Project story</span>
+          <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+          <svg class="icon-close" width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1 1l13 13M14 1L1 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
+        </button>
+      </div>
+
+      <!-- Project video. Sits here in the opening block, per Paper, and pins
+           to the corner if the reader plays it and scrolls on. -->
+      <div class="t2-head-aside t2-video-slot" id="t2-video-slot">
+        <div class="t2-video" id="t2-video" hidden>
+          <button type="button" class="t2-video-frame" id="t2-video-frame" aria-label="Play the project video">
+            <span class="t2-video-poster" id="t2-video-poster">
+              <span>Project</span><span>video</span><span style="opacity:.6">to follow</span>
+            </span>
+            <span class="t2-video-reset" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg>
+      <span>Back to the start</span>
+    </span>
+    <span class="t2-video-overlay" aria-hidden="true">
+              <svg class="glyph" id="t2-video-overlay-glyph" viewBox="0 0 28 36" fill="currentColor"><path d="M3 1l22 17L3 35z"/></svg>
+            </span>
+          </button>
+          <div class="t2-video-meta">
+            <button type="button" class="t2-video-toggle" id="t2-video-toggle" aria-label="Play video">
+              <svg width="12" height="14" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" id="t2-video-toggle-glyph"><path d="M0 0l10 6-10 6z"/></svg>
+            </button>
+            <span id="t2-video-label">Fred 0:52</span>
+            <button type="button" class="t2-video-dismiss" id="t2-video-dismiss" data-no-drag aria-label="Hide video">×</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Media sequence ============================================== -->
+  <div class="t2-body" id="t2-body">
+    <aside class="t2-story" id="t2-story" aria-label="Project story">
+      <div class="t2-story-inner">
+        <p>Peter and the team are developing a wearable that could passively read brain activity but also addictively improve peoples focus and creativity. They needed a launch brand.</p>
+        <p>The challenge was to make something unfamiliar and deeply personal feel desirable, trustworthy and part of everyday life, without falling into the clinical, wellness or science-fiction language surrounding every other similar product neuro-tech.</p>
+        <p>After auditing the category alongside references from fashion, culture, wellness and luxury, we workshopped what mattered most to the company, what customers should feel on first encounter and how that relationship might change over time which gave some clear tensions:</p>
+        <ul>
+          <li>Advanced, but not sci-fi.</li>
+          <li>Premium, but not stuffy.</li>
+          <li>Human, but not generic wellness.</li>
+          <li>Performance, without sports culture.</li>
+          <li>Visible enough to be desirable yet quiet enough to fade into the background when needed.</li>
+        </ul>
+
+        <h2>Neuro-tech to fashion</h2>
+        <p>I deliberately moved away from brains, neural imagery and the familiar visual language of neurotech.</p>
+        <p>Instead, the identity began to borrow from fashion, art and culture: expressive marks paired with restrained typography, generous space, rich greens and neutrals, and small flashes of brighter colour.</p>
+        <p>The imagery focused less on what the technology was doing and more on what it might enable: concentration, movement, creativity and flow.</p>
+
+        <h2>Building a world around the product</h2>
+        <p>The identity was tested beyond a logo from the beginning.</p>
+        <p>On the street it could be rougher and more mysterious. Around the product it became quieter and more precise whilst in the physical spaces it became warmer, tactile and social.</p>
+        <p>That led to ideas for apparel, campaign imagery, packaging and digital experiences, but also a different kind of retail environment: part store, part listening bar, part creative space.</p>
+
+        <h2>Outcome</h2>
+        <p>The work gave the team an MVP identity they could immediately start applying across fundraising, product, website and go-to-market material.</p>
+      </div>
+    </aside>
+
+  <div class="t2-sequence">
+
+      <!-- Opening media: the one asset the first screen depends on, so it is
+           eager and high priority. Everything after it defers. -->
+      <figure class="t2-item">
+        <div class="t2-media" style="aspect-ratio: 2984 / 2072;">
+          <img src="s1-logotype.webp" alt="The Monet logotype, its arch mark set into the wordmark."
+               width="2984" height="2072" fetchpriority="high" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 3024 / 2190;">
+          <img src="s2-composition.webp" fetchpriority="high" alt="Monet identity composition with the cap, wordmark and supporting imagery."
+               width="3024" height="2190" loading="eager" decoding="async">
+        </div>
+      </figure>
+
+      <div class="t2-note">
+        <span class="t2-note-label">Direction</span>
+        <p>The identity moves away from brains, neural imagery and the visual language the rest of the category shares. It borrows from fashion, art and culture instead: expressive marks against restrained typography, generous space, rich greens and neutrals.</p>
+      </div>
+
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 3024 / 2174;">
+          <img src="s3-cap.webp" alt="The Monet cap with the arch mark."
+               width="3024" height="2174" loading="eager" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 3024 / 2174;">
+          <img src="s4-typefaces.webp" alt="The Grand and Future typefaces with their character sets."
+               width="3024" height="2174" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <div class="t2-quote">
+        <blockquote>Advanced, but not sci‑fi. Premium, but not stuffy.</blockquote>
+      </div>
+
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 3036 / 2042;">
+          <img src="s5-environment.webp" alt="The brand in an environmental setting."
+               width="3036" height="2042" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <div class="t2-note">
+        <span class="t2-note-label">Range</span>
+        <p>Tested beyond a logo from the beginning. On the street it can be rougher and more mysterious; around the product it becomes quieter and more precise.</p>
+      </div>
+
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 3002 / 3424;">
+          <img src="s7-grid.webp" alt="A grid of Monet print and product references."
+               width="3002" height="3424" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 3040 / 1878;">
+          <img src="s8-editorial.webp" alt="Editorial composition — a tactile, creatively driven, calm and warm environment by day."
+               width="3040" height="1878" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 3028 / 1956;">
+          <img src="s9-embossed.webp" alt="Embossed hand painted patterns across the cap and printed matter."
+               width="3028" height="1956" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <div class="t2-note">
+        <span class="t2-note-label">Intent</span>
+        <p>The imagery focuses less on what the technology is doing and more on what it might enable: concentration, movement, creativity and flow.</p>
+      </div>
+
+      <figure class="t2-item t2-item--screens t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 2988 / 1760;">
+          <img src="s10-web.webp" alt="The Monet website."
+               width="2988" height="1760" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-item--screens t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 3052 / 2338;">
+          <img src="s11-mobile.webp" alt="The Monet store on mobile."
+               width="3052" height="2338" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+    </div>
+  </div>
+
+  <!-- Closes the same way the homepage does, in its dark treatment. -->
+  <section class="t2-outro">
+    <div class="t2-outro-inner">
+      <h2>Available for hire; contact me for availability.</h2>
+      <p class="sub">Open to founders and product teams who want help finding the version of the work that's worth committing to.</p>
+      <a class="t2-cta" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer">
+        <span>Book an intro call</span>
+        <svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true" style="transform: rotate(-90deg);"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+      </a>
+
+      <!-- Next project: the following card in the homepage carousel. Monet is
+           the last, so it wraps back round to the first. -->
+      <a class="t2-next" href="/work/tag-tuition/" data-t2-exit="/work/tag-tuition/">
+        <span class="t2-next-thumb" style="background-image:url('/work/general/tag-tuition-splash.jpg');"></span>
+        <span>
+          <span class="t2-next-label">Next project</span>
+          <span class="t2-next-title">Tag Tuition</span>
+          <span class="t2-next-desc">Turning a classroom curriculum into illustrated workbooks children could explore independently.</span>
+        </span>
+        <svg class="t2-next-chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+      </a>
+    </div>
+  </section>
+
+</main>
+<button type="button" class="t2-video-restore" id="t2-video-restore" aria-label="Show the project video again"><svg class="play" width="15" height="17" viewBox="0 0 15 17" fill="currentColor" aria-hidden="true"><path d="M0 0.9v15.2a.9.9 0 0 0 1.37.77l12.7-7.6a.9.9 0 0 0 0-1.54L1.37.13A.9.9 0 0 0 0 .9Z"/></svg><span>Project video</span></button>
+
+<footer class="t2-footer">
+  <div class="wrap row">
+    <span class="copy">© Coded by Fred 2026</span>
+    <span class="links">
+      <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener noreferrer"><span class="lt">LinkedIn</span><span class="arrow" aria-hidden="true"><svg width="10" height="8" viewBox="0 0 9.55 7.99" xmlns="http://www.w3.org/2000/svg" style="transform:rotate(180deg)"><g transform="translate(0 7.99) scale(1 -1)"><path fill="currentColor" d="M3.33 0C3.088 0 2.886 0.202 2.886 0.444L2.886 1.11L1.221 1.11C0.548 1.11 0 1.658 0 2.331L0 6.771C0 7.444 0.548 7.992 1.221 7.992L8.325 7.992C8.998 7.992 9.546 7.444 9.546 6.771L9.546 2.331C9.546 1.658 8.998 1.11 8.325 1.11L6.66 1.11L6.66 0.444C6.66 0.202 6.458 0 6.216 0L3.33 0ZM3.33 0.444L6.216 0.444L6.216 1.11L3.33 1.11L3.33 0.444ZM1.221 1.554L8.325 1.554C8.759 1.554 9.102 1.897 9.102 2.331L9.102 3.313C8.192 3.829 6.979 4.184 5.619 4.291C5.507 3.929 5.17 3.663 4.773 3.663C4.375 3.663 4.039 3.929 3.927 4.291C2.566 4.184 1.354 3.83 0.444 3.313L0.444 2.331C0.444 1.897 0.787 1.554 1.221 1.554ZM0.444 3.819C1.394 4.311 2.588 4.637 3.906 4.738C3.993 5.136 4.35 5.439 4.773 5.439C5.196 5.439 5.553 5.136 5.64 4.738C6.959 4.637 8.152 4.311 9.102 3.819L9.102 6.771C9.102 7.205 8.759 7.548 8.325 7.548L1.221 7.548C0.787 7.548 0.444 7.205 0.444 6.771L0.444 3.819ZM4.773 4.107C5.021 4.107 5.217 4.303 5.217 4.551C5.217 4.799 5.021 4.995 4.773 4.995C4.525 4.995 4.329 4.799 4.329 4.551C4.329 4.303 4.525 4.107 4.773 4.107Z"/></g></svg></span></a>
+      <a class="cv-download" href="Frederick%20Vincent%2020262.pdf" download><span class="lt">Download CV</span><span class="dl-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span></a>
+      <a href="https://studiovincent.substack.com" target="_blank" rel="noopener noreferrer"><span class="lt">Substack</span><span class="arrow" aria-hidden="true"><svg width="12" height="13" viewBox="0 0 12.5 13.02" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g transform="translate(4.197 0)"><path d="M8.237 0.802L6.865 0.018C6.835 0 6.798 -0.005 6.764 0.004C6.73 0.013 6.701 0.035 6.684 0.065L0.019 11.273C0.011 11.286 0.007 11.301 0.004 11.316C0.004 11.32 0.003 11.324 0.003 11.328C0.002 11.331 0.001 11.335 0.001 11.338L0 12.886C0 12.932 0.025 12.975 0.066 12.998C0.087 13.01 0.11 13.016 0.133 13.016C0.155 13.016 0.178 13.011 0.198 12.999L1.571 12.236C1.574 12.234 1.577 12.231 1.581 12.229C1.584 12.227 1.587 12.225 1.59 12.222C1.602 12.212 1.612 12.201 1.62 12.188L8.284 0.98C8.321 0.918 8.3 0.838 8.237 0.802ZM6.846 0.308L7.302 0.569L0.772 11.553L0.315 11.291L6.846 0.308ZM0.266 11.565L0.753 11.843L1.239 12.121L0.266 12.662L0.266 11.565ZM1.458 11.945L1.001 11.684L7.532 0.7L7.988 0.961L1.458 11.945Z"/></g><g transform="translate(0 12.747)"><path d="M3.552 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26L3.552 0.26C3.626 0.26 3.685 0.202 3.685 0.13C3.685 0.058 3.626 0 3.552 0Z"/></g><g transform="translate(0 11.331)"><path d="M0.133 0.26L3.41 0.26C3.483 0.26 3.543 0.202 3.543 0.13C3.543 0.058 3.483 0 3.41 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 9.915)"><path d="M3.675 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26L3.675 0.26C3.748 0.26 3.807 0.202 3.807 0.13C3.807 0.058 3.748 0 3.675 0Z"/></g><g transform="translate(0 8.498)"><path d="M0.133 0.26L4.774 0.26C4.847 0.26 4.906 0.202 4.906 0.13C4.906 0.058 4.847 0 4.774 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 7.082)"><path d="M0.133 0.26L5.14 0.26C5.213 0.26 5.273 0.202 5.273 0.13C5.273 0.058 5.213 0 5.14 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 5.665)"><path d="M0.133 0.26L6.239 0.26C6.312 0.26 6.372 0.202 6.372 0.13C6.372 0.058 6.312 0 6.239 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 4.249)"><path d="M0.133 0.26L7.298 0.26C7.371 0.26 7.43 0.202 7.43 0.13C7.43 0.058 7.371 0 7.298 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 2.833)"><path d="M0.133 0.26L7.786 0.26C7.86 0.26 7.919 0.202 7.919 0.13C7.919 0.058 7.86 0 7.786 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 1.416)"><path d="M0.133 0.26L8.458 0.26C8.531 0.26 8.591 0.202 8.591 0.13C8.591 0.058 8.531 0 8.458 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g><path d="M0.133 0.26L9.679 0.26C9.753 0.26 9.812 0.202 9.812 0.13C9.812 0.058 9.753 0 9.679 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g></svg></span></a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* --------------------------------------------------------------------------
+   Progressive reveal.
+
+   Media becomes active as it approaches the viewport rather than everything
+   animating at load. Each item is observed once and unobserved the moment it
+   reveals, so nothing re-animates as the reader moves back up the page and
+   the observer stops doing work it no longer needs to.
+
+   Reduced motion short-circuits the whole thing: content is simply present.
+   -------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+  var items = Array.prototype.slice.call(document.querySelectorAll('.t2-reveal'));
+  if (!items.length) return;
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || !('IntersectionObserver' in window)) {
+    items.forEach(function (el) { el.classList.add('is-in'); });
+    return;
+  }
+
+  var pending = items.slice();
+
+  function reveal(el) {
+    if (el.classList.contains('is-in')) return;
+    el.classList.add('is-in');
+    io.unobserve(el);
+    var i = pending.indexOf(el);
+    if (i > -1) pending.splice(i, 1);
+    if (!pending.length) window.removeEventListener('scroll', onScroll);
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) reveal(entry.target);
+    });
+  }, {
+    /* Start well before the panel arrives so it is settled by the time the
+       reader is looking at it. A ratio threshold is wrong here: the panels are
+       taller than the viewport, so requiring a percentage of their own area
+       delays the trigger the taller the panel gets. Margin alone is uniform. */
+    rootMargin: '0px 0px 260px 0px',
+    threshold: 0
+  });
+
+  items.forEach(function (el) { io.observe(el); });
+
+  /* Safety net. IntersectionObserver only reports a *change* it managed to
+     sample, so a fast flick or an anchor jump can carry an item right past
+     the viewport without ever producing an entry — leaving it invisible for
+     the rest of the session. This sweeps anything that has already reached
+     the viewport and reveals it. It unbinds itself the moment nothing is
+     pending, so there is no ongoing scroll cost. */
+  var ticking = false;
+  function sweep() {
+    ticking = false;
+    pending.slice().forEach(function (el) {
+      /* Match the observer's own trigger point. Firing as soon as the top
+         edge crosses the fold would pre-empt it on every ordinary scroll, so
+         items would finish fading while still below the viewport and appear
+         to pop in with no transition at all. */
+      if (el.getBoundingClientRect().top < window.innerHeight + 260) reveal(el);
+    });
+  }
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(sweep);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   TEMPLATE TWO — behaviour
+   T2_CONFIG is the per-project configuration surface.
+   ========================================================================== */
+var T2_CONFIG = {
+  slug: 'monet',
+  /* Optional project video. `enabled: false` renders nothing at all — no
+     element, no placeholder, no reserved space. `src` stays null until a real
+     file exists; the component shows an obvious placeholder meanwhile and no
+     URL is invented. */
+  video: { enabled: true, src: null, poster: null, label: 'Fred', duration: '0:52' },
+  exitHref: '/#case-studies',
+  returnSection: 'case-studies'
+};
+</script>
+
+<script>
+/* --------------------------------------------------------------------------
+   Project video.
+
+   One element throughout. When it is playing and its place in the opening
+   block scrolls away, it is pinned to the corner rather than rebuilt — so
+   playback position and state are never reset. Scrolling back returns it to
+   the slot. If no video has been supplied it still demonstrates the motion
+   against an obvious placeholder, and no URL is invented.
+   -------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+  var cfg = (window.T2_CONFIG && T2_CONFIG.video) || null;
+  var wrap = document.getElementById('t2-video');
+  var slot = document.getElementById('t2-video-slot');
+  if (!wrap || !slot) return;
+  if (!cfg || !cfg.enabled) { slot.remove(); return; }
+
+  wrap.hidden = false;
+
+  var frame = document.getElementById('t2-video-frame');
+  var toggle = document.getElementById('t2-video-toggle');
+  var toggleGlyph = document.getElementById('t2-video-toggle-glyph').querySelector('path');
+  var overlayGlyph = document.getElementById('t2-video-overlay-glyph').querySelector('path');
+  var label = document.getElementById('t2-video-label');
+  var dismiss = document.getElementById('t2-video-dismiss');
+  var restore = document.getElementById('t2-video-restore');
+  var poster = document.getElementById('t2-video-poster');
+
+  /* Same glyph pairs as Template One — small for the black control, large for
+     the overlay over the frame. */
+  var PLAY = 'M0 0l10 6-10 6z';
+  var PAUSE = 'M0 0h3.6v12H0zM6.4 0H10v12H6.4z';
+  var PLAY_LG = 'M3 1l22 17L3 35z';
+  var PAUSE_LG = 'M2 2v32h8V2H2Zm16 0v32h8V2h-8Z';
+  var media = null;
+  var playing = false;
+  /* Latched on first play. Pinning keys off this rather than off `playing`,
+     so pausing the pinned player shrinks it back to its small state — as in
+     Template One — instead of yanking it off screen into an out-of-view slot. */
+  var activated = false;
+
+  label.textContent = (cfg.label || '') + (cfg.duration ? ' ' + cfg.duration : '');
+
+  if (cfg.src) {
+    media = document.createElement('video');
+    media.src = cfg.src;
+    /* Not looping: running out is a real event the reader should see marked,
+       rather than the video quietly starting again under them. */
+    media.loop = false;
+    media.playsInline = true;
+    media.preload = 'metadata';
+    if (cfg.poster) media.poster = cfg.poster;
+    frame.insertBefore(media, frame.firstChild);
+    poster.hidden = true;
+  }
+
+  function render() {
+    wrap.classList.toggle('is-playing', playing);
+    toggleGlyph.setAttribute('d', playing ? PAUSE : PLAY);
+    overlayGlyph.setAttribute('d', playing ? PAUSE_LG : PLAY_LG);
+    toggle.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+    frame.setAttribute('aria-label', playing ? 'Pause the project video' : 'Play the project video');
+  }
+
+  /* Reaching the end returns it to the start and stops. Playback position is
+     otherwise never touched, so pausing and playing again continues from
+     exactly where the reader left off. */
+  var resetTimer = null;
+  function markReset() {
+    if (resetTimer) clearTimeout(resetTimer);
+    wrap.classList.add('is-reset');
+    resetTimer = setTimeout(function () {
+      wrap.classList.remove('is-reset');
+      resetTimer = null;
+    }, 1600);
+  }
+
+  function setPlaying(next) {
+    /* Starting again after it ran out begins from the top rather than sitting
+       stuck on the final frame. */
+    if (next && media && media.ended) media.currentTime = 0;
+    if (next) wrap.classList.remove('is-reset');
+    playing = next;
+    if (playing) activated = true;
+    if (media) {
+      if (playing) { var p = media.play(); if (p && p.catch) p.catch(function () {}); }
+      else media.pause();
+    }
+    render();
+    syncPinned();
+  }
+
+  /* Pinning is driven by whether the slot is still on screen. Reserving the
+     slot's height first means detaching the player cannot reflow the page. */
+  var slotVisible = true;
+  function syncPinned() {
+    var shouldPin = activated && !slotVisible && !wrap.hidden;
+    if (shouldPin === wrap.classList.contains('is-pinned')) return;
+    if (shouldPin) {
+      slot.style.minHeight = slot.getBoundingClientRect().height + 'px';
+      wrap.classList.add('is-pinned');
+      /* Out to the body. The opening block carries the page's entrance
+         animation, and an animation with `both` fill creates a stacking
+         context that never goes away — so a fixed, z-indexed player nested
+         inside it is confined to the head's place in the paint order and
+         disappears behind every composition that follows. Reparenting is the
+         only reliable escape; z-index cannot climb out of a stacking context. */
+      if (wrap.parentNode !== document.body) document.body.appendChild(wrap);
+    } else {
+      var wasPinned = wrap.classList.contains('is-pinned');
+      wrap.classList.remove('is-pinned');
+      slot.style.minHeight = '';
+      if (wrap.parentNode !== slot) slot.appendChild(wrap);
+      /* Only when it has actually come back from the corner — not on every
+         idle pass of the observer. */
+      if (wasPinned) {
+        wrap.classList.remove('is-settling');
+        void wrap.offsetWidth;                 /* restart the animation */
+        wrap.classList.add('is-settling');
+        var done = function () {
+          wrap.classList.remove('is-settling');
+          wrap.removeEventListener('animationend', done);
+        };
+        wrap.addEventListener('animationend', done);
+        setTimeout(done, 700);                 /* in case the frame never lands */
+      }
+    }
+  }
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      slotVisible = entries[0].isIntersecting;
+      syncPinned();
+    }, { threshold: 0 }).observe(slot);
+  }
+
+  /* Asked for by the drag handler: the reader has started moving the player
+     while it is still sitting in its slot, so lift it out into the corner
+     first. Dragging something is a request for it to be free of the layout. */
+  document.addEventListener('t2:video-detach', function () {
+    if (wrap.hidden || wrap.classList.contains('is-pinned')) return;
+    activated = true;
+    slot.style.minHeight = slot.getBoundingClientRect().height + 'px';
+    wrap.classList.add('is-pinned');
+    if (wrap.parentNode !== document.body) document.body.appendChild(wrap);
+  });
+
+  frame.addEventListener('click', function () { setPlaying(!playing); });
+  toggle.addEventListener('click', function () { setPlaying(!playing); });
+
+  /* Nothing plays while it cannot be seen. Leaving the tab pauses; coming back
+     resumes only what was actually playing when the reader left, so returning
+     never starts audio or motion the reader did not ask for. */
+  var resumeOnReturn = false;
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      resumeOnReturn = playing;
+      if (playing) setPlaying(false);
+    } else if (resumeOnReturn) {
+      resumeOnReturn = false;
+      setPlaying(true);
+    }
+  });
+  /* Dismissing hides the player but does not un-activate it, so restoring it
+     from the bookmark tab returns it to the corner rather than to a slot that
+     has long since scrolled away. */
+  dismiss.addEventListener('click', function () {
+    setPlaying(false);
+    wrap.hidden = true;
+    wrap.classList.remove('is-pinned');
+    slot.style.minHeight = '';
+    restore.classList.add('is-shown');
+  });
+  /* Brought back from the tab: the player expands and plays where the reader
+     already is, rather than only reappearing at its resting size. */
+  restore.addEventListener('click', function () {
+    wrap.hidden = false;
+    restore.classList.remove('is-shown');
+    /* setPlaying first: pinning keys off `activated`, which only becomes true
+       once it has been played, so pinning before that would do nothing. */
+    setPlaying(true);
+    syncPinned();
+  });
+
+  if (media) {
+    media.addEventListener('ended', function () {
+      media.currentTime = 0;
+      setPlaying(false);          /* shrinks back to its resting size */
+      markReset();
+    });
+  }
+
+  render();
+})();
+</script>
+
+<script>
+/* --------------------------------------------------------------------------
+   Project Story.
+
+   Toggling changes layout state only — it never rebuilds the media sequence,
+   so images keep their loaded state and the video keeps playing. The media
+   genuinely reflows because the grid's fr units animate: every figure resizes
+   to its new container instead of being cropped or translated.
+
+   Narrowing the media makes every image shorter, so the page gets
+   dramatically shorter too. The browser's native scroll anchoring is what
+   keeps the reader in place through that — see the note on the click handler
+   for why doing it by hand always read as a second animation.
+   -------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+  var body = document.getElementById('t2-body');
+  var toggle = document.getElementById('t2-story-toggle');
+  var story = document.getElementById('t2-story');
+  if (!body || !toggle || !story) return;
+
+  story.id = 't2-story';
+  toggle.setAttribute('aria-controls', 't2-story');
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var DURATION = 560;
+
+  /* A second instance of the same control, pinned top right once the opening
+     block has scrolled away. Cloned rather than written out again so the two
+     can never drift apart visually, and driven through the same handler so
+     they can never disagree about whether the story is open. */
+  var pin = toggle.cloneNode(true);
+  pin.id = 't2-story-pin';
+  pin.classList.add('t2-story-pin');
+  document.body.appendChild(pin);
+  var controls = [toggle, pin];
+
+  function setExpanded(open) {
+    for (var i = 0; i < controls.length; i++) {
+      controls[i].setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+  }
+
+  /* Collapsed, the story is a zero-width grid column — invisible, but still
+     two thousand characters of live text. A screen reader would read the whole
+     thing before reaching the work, and Tab would land inside it. Hiding it
+     from assistive technology while it is closed is the only thing that makes
+     the collapsed state mean the same thing to every reader.
+     `inert` covers focus; `aria-hidden` covers browsers without it. */
+  var closeTimer = null;
+  function conceal(hidden) {
+    if (hidden) {
+      story.setAttribute('aria-hidden', 'true');
+      story.setAttribute('inert', '');
+    } else {
+      story.removeAttribute('aria-hidden');
+      story.removeAttribute('inert');
+    }
+  }
+  conceal(toggle.getAttribute('aria-expanded') !== 'true');
+
+  /* Holding the reader's place through the reflow.
+
+     Opening the story narrows every image, so the document gets dramatically
+     shorter — 12,084px to 8,501px. Deep in the page that puts the current
+     scroll position past the new maximum, and without a correction the browser
+     clamps and dumps the reader at the bottom.
+
+     Because the layout now lands in a single step, a single correction in the
+     same frame is exact and invisible. */
+  function anchor() {
+    var items = document.querySelectorAll('.t2-item');
+    for (var i = 0; i < items.length; i++) {
+      var r = items[i].getBoundingClientRect();
+      if (r.bottom > 0) return { el: items[i], top: r.top };
+    }
+    return null;
+  }
+
+  /* One correction, in the same frame as the layout change, so the reader
+     keeps the position they would have had if the story had been open all
+     along. Synchronous — nothing animates, so there is nothing to watch. */
+  function keepPlace(keep) {
+    if (!keep) return;
+    var delta = keep.el.getBoundingClientRect().top - keep.top;
+    if (delta) window.scrollBy(0, delta);
+  }
+
+  function onToggle() {
+    var open = toggle.getAttribute('aria-expanded') === 'true';
+    var keep = anchor();
+
+    setExpanded(!open);
+    body.classList.toggle('is-open', !open);
+    keepPlace(keep);
+
+    /* Opening exposes it immediately so it is readable as it arrives; closing
+       waits for the reflow to finish, so the text is still announced while it
+       is still on screen. */
+    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+    if (open) {
+      closeTimer = setTimeout(function () { conceal(true); }, reduce ? 0 : DURATION);
+    } else {
+      conceal(false);
+    }
+  }
+
+  for (var c = 0; c < controls.length; c++) {
+    controls[c].addEventListener('click', onToggle);
+  }
+})();
+</script>
+
+<script>
+/* --------------------------------------------------------------------------
+   Leaving. The × and the next-project card both hand the reader back to the
+   carousel they came from, and set the same sessionStorage keys Template One
+   does so the homepage restores its scroll position and card state.
+   -------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+  var EXIT = '/#case-studies';
+
+  /* The × appears once the reader has actually started reading, not over the
+     opening composition. Driven straight off scrollY so it can never be left
+     stranded in the wrong state by a fast flick or a restored scroll position. */
+  /* The bar turns black when the work reaches it — the moment the first
+     composition arrives under the nav, not on an arbitrary number of pixels.
+     Over the white opening block it stays in the site's default treatment;
+     over the creative it is the dark case-study bar, as in Template One. */
+  (function () {
+     var navDark = null;
+     var firstItem = document.querySelector('.t2-item');
+     /* Geometry is measured once and re-measured on resize and load, so the
+        scroll handler itself only does arithmetic — no layout read, nothing
+        worth deferring to a frame. */
+     var flipAt = 0;
+     function remeasure() {
+       var nav = document.querySelector('.t2-nav');
+       var navH = nav ? nav.getBoundingClientRect().height : 76;
+       flipAt = firstItem
+         ? firstItem.getBoundingClientRect().top + window.scrollY - navH
+         : 24;
+       syncNav();
+     }
+     function syncNav() {
+       var next = window.scrollY >= flipAt;
+       if (next === navDark) return;
+       navDark = next;
+       document.documentElement.classList.toggle('t2-scrolled', next);
+     }
+     /* Deliberately NOT throttled through requestAnimationFrame. The previous
+        form set a `ticking` flag before asking for a frame and cleared it
+        inside the callback — so if that frame never arrived, which is exactly
+        what happens when a tab is backgrounded or throttled mid-scroll, the
+        flag latched true and every later scroll was ignored for the rest of
+        the session. The controls simply never came back. */
+     window.addEventListener('scroll', syncNav, { passive: true });
+     window.addEventListener('resize', remeasure);
+     window.addEventListener('load', remeasure);
+     remeasure();
+  })();
+
+  var close = document.getElementById('t2-close');
+  if (close) {
+    var shown = null, minned = null, swapTimer = null;
+    /* The same line the navigation uses: these controls arrive as the work
+       reaches the top of the screen and the bar goes black. Keyed to a
+       fraction of the viewport instead, they appeared while the head's own
+       white Project story button was still on screen — two versions of the
+       same control visible at once. Cached, and re-measured on resize/load. */
+    var firstItem = document.querySelector('.t2-item');
+    var showAt = 0;
+    function measureShowAt() {
+      var nav = document.querySelector('.t2-nav');
+      var navH = nav ? nav.getBoundingClientRect().height : 76;
+      showAt = firstItem
+        ? firstItem.getBoundingClientRect().top + window.scrollY - navH
+        : window.innerHeight * 0.4;
+      sync();
+    }
+    function sync() {
+      var y = window.scrollY;
+      var vh = window.innerHeight;
+      var pin = document.getElementById('t2-story-pin');
+
+      /* Three states for the pinned control: gone until the work reaches the
+         bar; the full labelled control as it first appears; and minimised to
+         the ×'s own footprint once the reader is well into the page. */
+      var next = y >= showAt;
+      if (next !== shown) {
+        shown = next;
+        close.classList.toggle('is-shown', next);
+        if (pin) pin.classList.toggle('is-shown', next);
+      }
+      var small = y > vh * 0.95;
+      if (small !== minned) {
+        minned = small;
+        if (pin) {
+          /* Hide the chevron for the length of the resize so it is never seen
+             crossing the button, then let it fade back in place. */
+          pin.classList.add('is-swapping');
+          pin.classList.toggle('is-min', small);
+          clearTimeout(swapTimer);
+          swapTimer = setTimeout(function () {
+            pin.classList.remove('is-swapping');
+          }, 260);
+        }
+      }
+
+      /* The video tab joins the same cluster on the same trigger — unless the
+         player itself is already up in the corner, in which case the tab would
+         be offering something the reader can already see. */
+      var vtab = document.getElementById('t2-video-restore');
+      var vwrap = document.querySelector('.t2-video');
+      if (vtab && vwrap) {
+        var playerUp = !vwrap.hidden && vwrap.classList.contains('is-pinned');
+        vtab.classList.toggle('is-shown', next && !playerUp);
+      }
+    }
+    /* Reads only scrollY against a cached threshold — no layout, so it runs
+       directly on the scroll rather than behind a frame that may never come. */
+    window.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', measureShowAt);
+    window.addEventListener('load', measureShowAt);
+    measureShowAt();
+  }
+
+  function exitTo(href) {
+    /* Only a carousel-bound exit restores the carousel — see Template One. */
+    var toCarousel = href.indexOf('#case-studies') > -1;
+    try {
+      if (toCarousel) {
+        sessionStorage.setItem('returnSection', 'case-studies');
+        sessionStorage.setItem('csClosing', 'monet');
+      } else {
+        sessionStorage.removeItem('returnSection');
+        sessionStorage.removeItem('csClosing');
+      }
+    } catch (e) {}
+    window.location.href = href;
+  }
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-t2-exit]');
+    if (!t) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
+    e.preventDefault();
+    exitTo(t.getAttribute('data-t2-exit') || EXIT);
+  });
+
+  /* Escape closes, matching the ×. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') exitTo(EXIT);
+  });
+})();
+</script>
+
+<script>
+/* --------------------------------------------------------------------------
+   Direct manipulation of the floating player.
+
+   Drag it anywhere, pinch to resize. Pointer Events so mouse, touch and pen
+   all run the same path rather than three parallel implementations.
+
+   Two things this has to get right. A drag must not become a click, or every
+   reposition would toggle playback — so movement past a small threshold marks
+   the gesture and a capture-phase click listener swallows the click that
+   follows. And it must stay reachable: the position is clamped so a good part
+   of the player is always on screen, including after the window resizes.
+   -------------------------------------------------------------------------- */
+function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
+  var dx = 0, dy = 0, scale = 1;
+  var pointers = {};
+  var count = 0;
+  var moved = false, movedAt = 0;
+  var startX = 0, startY = 0, baseX = 0, baseY = 0;
+  var pinchStart = 0, pinchBase = 1;
+  var MIN_SCALE = 0.7, MAX_SCALE = 2.4;
+  var THRESHOLD = 4;
+
+  function apply() {
+    wrap.style.transform =
+      'translate3d(' + Math.round(dx) + 'px,' + Math.round(dy) + 'px,0) scale(' + scale.toFixed(3) + ')';
+  }
+
+  /* Keep it grabbable: never let more than most of it leave the viewport. */
+  function clamp() {
+    if (!isFloating()) return;
+    wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
+    var r = wrap.getBoundingClientRect();
+    /* Enough to stay grabbable, but not so much that the player can never be
+       dragged far enough to trigger the swipe-away threshold above. */
+    var keep = 28;
+    var minX = -(r.left + r.width - keep);
+    var maxX = window.innerWidth - r.left - keep;
+    var minY = -(r.top + r.height - keep);
+    var maxY = window.innerHeight - r.top - keep;
+    dx = Math.min(maxX, Math.max(minX, dx));
+    dy = Math.min(maxY, Math.max(minY, dy));
+    apply();
+  }
+
+  function dist() {
+    var ids = Object.keys(pointers);
+    var a = pointers[ids[0]], b = pointers[ids[1]];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  wrap.addEventListener('pointerdown', function (e) {
+    if (!isFloating()) return;
+    /* The dismiss control is a button, not a handle. */
+    if (e.target.closest && e.target.closest('[data-no-drag]')) return;
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    count++;
+    if (count === 1) {
+      moved = false;
+      startX = e.clientX; startY = e.clientY;
+      baseX = dx; baseY = dy;
+      wrap.classList.add('is-dragging');
+    } else if (count === 2) {
+      pinchStart = dist();
+      pinchBase = scale;
+    }
+    /* Deliberately NOT setPointerCapture. Capture retargets pointerdown and
+       pointerup to the capturing element, so the click they synthesise fires
+       on the wrap instead of the frame — and the frame's own handler, the one
+       that plays the video, never runs. The player became undraggable-or-
+       playable, never both. Listening on the window keeps the pointer while
+       it leaves the element, which is all capture was wanted for. */
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', release);
+    window.removeEventListener('pointercancel', release);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+  });
+
+  function onMove(e) {
+    if (!pointers[e.pointerId]) return;
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+
+    if (count >= 2 && pinchStart > 0) {
+      var ratio = dist() / pinchStart;
+      scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinchBase * ratio));
+      moved = true;
+      apply();
+      return;
+    }
+    var nx = e.clientX - startX, ny = e.clientY - startY;
+    if (!moved && Math.hypot(nx, ny) < THRESHOLD) return;
+    if (!moved && onFirstMove) onFirstMove();
+    moved = true;
+    dx = baseX + nx;
+    dy = baseY + ny;
+    apply();
+  }
+
+  function release(e) {
+    if (!pointers[e.pointerId]) return;
+    delete pointers[e.pointerId];
+    count = Math.max(0, count - 1);
+    if (count === 0) {
+      /* Only once the last finger is up — tearing these down on the first
+         would strand a two-finger pinch halfway through. */
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', release);
+      if (moved) movedAt = performance.now();
+      wrap.classList.remove('is-dragging');
+      /* Flung off the side: treat it as putting the player away. Dragging
+         something to the edge of the screen to dismiss it is the gesture
+         people already have on a phone, and without it the only way to close
+         the player is a small button. The threshold is deliberately past the
+         edge, not near it, so nudging it into a corner does not dismiss it. */
+      var r = wrap.getBoundingClientRect();
+      var offRight = r.left > window.innerWidth - r.width * 0.35;
+      var offLeft = r.right < r.width * 0.35;
+      if (offRight || offLeft) {
+        var away = wrap.querySelector('[data-no-drag]');
+        dx = 0; dy = 0; scale = 1;
+        apply();
+        if (away) { away.click(); return; }
+      }
+      clamp();
+      snapToCorner();
+      scheduleHome();
+    }
+    if (count < 2) pinchStart = 0;
+  }
+
+  /* Corner snapping. Let go anywhere near a corner and the player settles into
+     it rather than sitting at whatever arbitrary offset the hand stopped at.
+     The corners are derived from the player's own resting inset, so it keeps
+     the margin it was designed with instead of a hardcoded one, and the same
+     four targets hold whatever size a pinch has left it. */
+  function snapToCorner() {
+    var prev = wrap.style.transform;
+    wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
+    var home = wrap.getBoundingClientRect();
+    wrap.style.transform = prev;
+
+    var insetX = Math.round(window.innerWidth - home.right);
+    var insetY = Math.round(window.innerHeight - home.bottom);
+
+    /* The top corners are not the top of the window — the navigation bar and
+       the pinned controls already live there, and a player snapping into that
+       space lands underneath them. The floor is whatever the lowest of those
+       currently reaches, so it settles below the chrome rather than behind it,
+       and it moves with them as they appear and go. */
+    var topY = insetY;
+    var guards = document.querySelectorAll('.t2-nav, .t2-close, .t2-story-pin, .t2-video-restore');
+    for (var g = 0; g < guards.length; g++) {
+      var el = guards[g];
+      if (el === wrap || el.hidden || wrap.contains(el)) continue;
+      var gs = getComputedStyle(el);
+      if (gs.display === 'none' || gs.visibility === 'hidden' || parseFloat(gs.opacity) < 0.05) continue;
+      var gr = el.getBoundingClientRect();
+      if (gr.top > window.innerHeight * 0.5) continue;   /* only what sits up top */
+      topY = Math.max(topY, Math.round(gr.bottom) + 14);
+    }
+
+    var corners = [
+      { x: 0, y: 0 },                                              /* home */
+      { x: insetX - home.left, y: 0 },                             /* bottom-left */
+      { x: 0, y: topY - home.top },                                /* top-right */
+      { x: insetX - home.left, y: topY - home.top }                /* top-left */
+    ];
+
+    var best = null, bestD = Infinity;
+    for (var i = 0; i < corners.length; i++) {
+      var d = Math.hypot(corners[i].x - dx, corners[i].y - dy);
+      if (d < bestD) { bestD = d; best = corners[i]; }
+    }
+    if (!best || bestD > 130) return;
+    if (best.x === dx && best.y === dy) return;
+
+    /* Lands, rather than travels. Animating the snap meant letting go near one
+       corner sent the player gliding across the screen to it — a movement the
+       reader did not ask for and cannot stop. It simply arrives in the corner
+       and stays there until they move it again. (The one-minute return home is
+       different: nothing is being held, so that one is worth seeing.) */
+    dx = best.x; dy = best.y;
+    apply();
+  }
+
+  /* Fail-safe. A player left somewhere awkward — over the text, half off the
+     edge, blown up to twice its size — stays that way for the rest of the
+     visit, and the reader has no reason to know it can be put back. A minute
+     after the last touch it returns to where it belongs, on a transition so
+     the move is legible rather than a jump. Any new gesture cancels it. */
+  var homeTimer = null;
+  function cancelHoming() {
+    clearTimeout(homeTimer);
+    homeTimer = null;
+    wrap.classList.remove('is-homing');
+  }
+  function scheduleHome() {
+    clearTimeout(homeTimer);
+    if (dx === 0 && dy === 0 && scale === 1) return;
+    homeTimer = setTimeout(function () {
+      wrap.classList.add('is-homing');
+      dx = 0; dy = 0; scale = 1;
+      apply();
+      setTimeout(function () { wrap.classList.remove('is-homing'); }, 560);
+    }, 60000);
+  }
+  wrap.addEventListener('pointerdown', cancelHoming);
+
+  /* A drag that ends over the frame would otherwise fire a click and toggle
+     playback. Capture phase, so it never reaches the frame's own handler.
+
+     Time-bounded, not a flag. A mouse drag produces a click that clears the
+     flag; a touch drag produces none, so the flag stayed set and swallowed the
+     next genuine tap — the player could be moved once and then never played
+     again. Only a click arriving straight after a gesture that actually moved
+     is suppressed. */
+  wrap.addEventListener('click', function (e) {
+    if (performance.now() - movedAt > 350) return;
+    e.preventDefault();
+    e.stopPropagation();
+    movedAt = 0;
+  }, true);
+
+  window.addEventListener('resize', clamp);
+
+  /* Back at the top, the player goes back to how it was designed — default
+     position, default size. A dragged, resized player reappearing over the
+     opening composition is the reader's old gesture surfacing somewhere it was
+     never meant to apply; the top of the page should always look like the top
+     of the page. Also covers the case where it stops floating altogether. */
+  function reset() {
+    if (dx === 0 && dy === 0 && scale === 1) return;
+    cancelHoming();
+    wrap.classList.add('is-homing');
+    dx = 0; dy = 0; scale = 1;
+    apply();
+    setTimeout(function () { wrap.classList.remove('is-homing'); }, 560);
+  }
+  window.addEventListener('scroll', function () {
+    if (atHome && atHome()) reset();
+    else if (!isFloating()) reset();
+  }, { passive: true });
+}
+
+(function () {
+  'use strict';
+  var wrap = document.querySelector('.t2-video');
+  if (!wrap) return;
+  /* Only once it has detached into the corner — in its slot it is part of the
+     opening composition and should not be draggable. */
+  /* "Home" here is the player back in its slot — it stops floating, so any
+     drag offset must go with it. */
+  /* Draggable whenever it is on screen — including while it is expanded and
+     playing in its slot, which is exactly when a reader is most likely to want
+     it out of the way. The first movement lifts it out of the layout. */
+  t2MakeManipulable(
+    wrap,
+    function () { return !wrap.hidden; },
+    function () { return window.scrollY < 80; },
+    function () { document.dispatchEvent(new Event('t2:video-detach')); }
+  );
+})();
+</script>
+
+</body>
+</html>
