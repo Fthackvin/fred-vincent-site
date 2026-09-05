@@ -154,7 +154,12 @@ h1, h2 { margin: 0; font-weight: 400; }
   padding: 0 var(--t2-pad);
 }
 @media (min-width: 640px) { .t2-wrap { padding: 0 48px; } }
-@media (min-width: 1024px) { .t2-wrap { padding: 0; } }
+/* The gutter is never zeroed. Widening the box by twice the gutter puts the
+   content on exactly the same edge as before at desktop width, while a
+   narrow window keeps its margin instead of running the copy into the
+   glass. Same arithmetic as .t2-body's max() below, so the open story
+   column and everything around it share one left edge at every size. */
+@media (min-width: 1024px) { .t2-wrap { max-width: calc(var(--t2-container) + 96px); padding: 0 48px; } }
 
 /* --- Entrance ------------------------------------------------------------
    Arriving from the carousel's box expansion, the page previously just
@@ -278,7 +283,12 @@ html.t2-scrolled .t2-nav::after { opacity: 1; }
   gap: 16px;
 }
 @media (min-width: 640px) { .t2-nav-inner { padding: 0 48px; } }
-@media (min-width: 1024px) { .t2-nav-inner { padding: 0; } }
+/* The gutter is never zeroed. Widening the box by twice the gutter puts the
+   content on exactly the same edge as before at desktop width, while a
+   narrow window keeps its margin instead of running the copy into the
+   glass. Same arithmetic as .t2-body's max() below, so the open story
+   column and everything around it share one left edge at every size. */
+@media (min-width: 1024px) { .t2-nav-inner { max-width: calc(var(--t2-container) + 96px); padding: 0 48px; } }
 .t2-brand { display: inline-flex; align-items: center; gap: 8px; line-height: 1; text-decoration: none; }
 .t2-brand .studio {
   font-family: var(--brand);
@@ -602,7 +612,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    own comfortable padding. */
 @media (min-width: 1000px) {
   .t2-body.is-open {
-    padding-left: max(var(--t2-pad), calc((100% - var(--t2-container)) / 2));
+    padding-left: max(48px, calc((100% - var(--t2-container)) / 2));
   }
   .t2-body.is-open .t2-story-inner { padding-left: 0; }
 }
@@ -943,9 +953,10 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   background: rgba(18, 17, 15, 0.44);
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
   color: #FFFFFF;
-  /* Light hairline: the inked one from the head control would disappear into
-     the dark glass and darken its edge. */
-  border-color: rgba(255, 255, 255, 0.18);
+  /* No hairline at all. It inherits the head control's 1px border, and any
+     colour on it reads as a ring drawn around the pill rather than as its
+     edge — the glass and the shadow already state where the control stops. */
+  border-color: transparent;
   /* The ×'s own corner. At the head control's 6px it read as a different kind
      of object sitting next to it rather than one of a pair. */
   border-radius: 16px;
@@ -1240,22 +1251,18 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 .t2-outro-inner { max-width: var(--t2-container); margin: 0 auto; padding: 0 var(--t2-pad); }
 @media (min-width: 640px) { .t2-outro-inner { padding: 0 48px; } }
-@media (min-width: 1024px) { .t2-outro-inner { padding: 0; } }
+/* The gutter is never zeroed. Widening the box by twice the gutter puts the
+   content on exactly the same edge as before at desktop width, while a
+   narrow window keeps its margin instead of running the copy into the
+   glass. Same arithmetic as .t2-body's max() below, so the open story
+   column and everything around it share one left edge at every size. */
+@media (min-width: 1024px) { .t2-outro-inner { max-width: calc(var(--t2-container) + 96px); padding: 0 48px; } }
 /* With the story open, the work above is inset from the left by the same
    clamp the body takes on. Between 1024px and the container width the outro
    still had no padding at all, so the ending sat hard against the window edge
    while everything above it was indented — the page looked like it had lost
    its margin at the last moment. Only the left, matching the body: the
    imagery and the chevron keep running to the right edge. */
-/* Only in the band where the two disagree. Above ~1180px both the open story
-   and the outro take their left edge from the 1120px container and already
-   line up; below 1024px the outro has its own 24/48px inset. In between, the
-   outro's padding drops to 0 while the open body is inset by the clamp, and
-   the ending sat hard against the window edge with everything above it
-   indented. Left only — the imagery and the chevron keep running right. */
-@media (min-width: 1024px) and (max-width: 1180px) {
-  html.t2-story-open .t2-outro-inner { padding-left: clamp(24px, 3.2vw, 60px); }
-}
 .t2-outro h2 {
   font-family: var(--brand);
   font-weight: 500;
@@ -1325,7 +1332,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   color: rgba(248, 250, 252, 0.78);
 }
 @media (min-width: 640px) { .t2-footer .row { padding: 0 48px; } }
-@media (min-width: 1024px) { .t2-footer .row { padding: 0; } }
+/* The gutter is never zeroed. Widening the box by twice the gutter puts the
+   content on exactly the same edge as before at desktop width, while a
+   narrow window keeps its margin instead of running the copy into the
+   glass. Same arithmetic as .t2-body's max() below, so the open story
+   column and everything around it share one left edge at every size. */
+@media (min-width: 1024px) { .t2-footer .row { max-width: calc(var(--t2-container) + 96px); padding: 0 48px; } }
 .t2-footer .links { display: inline-flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
 .t2-footer .links a {
   font-family: inherit; font-size: 11px; letter-spacing: 0.06em;

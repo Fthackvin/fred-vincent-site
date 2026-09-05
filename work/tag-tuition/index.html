@@ -208,7 +208,10 @@ html.cs-scrolled .cs-nav { background: #1F1F1F; }
   gap: 16px;
 }
 @media (min-width: 640px) { .cs-nav-inner { padding: 0 48px; } }
-@media (min-width: 1024px) { .cs-nav-inner { padding: 0; } }
+/* The gutter is never zeroed. Widening the box by twice the gutter puts the
+   content on the same edge as before at desktop width, while a narrow
+   window keeps its margin instead of running the wordmark into the glass. */
+@media (min-width: 1024px) { .cs-nav-inner { max-width: calc(1120px + 48px); padding: 0 24px; } }
 /* Deliberately the homepage's own nav metrics (26px brand / 22px links /
    24px gap / 40px signature) with the same contraction transform the
    homepage applies on its way here. Matching by construction rather than by
