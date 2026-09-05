@@ -1241,6 +1241,21 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .t2-outro-inner { max-width: var(--t2-container); margin: 0 auto; padding: 0 var(--t2-pad); }
 @media (min-width: 640px) { .t2-outro-inner { padding: 0 48px; } }
 @media (min-width: 1024px) { .t2-outro-inner { padding: 0; } }
+/* With the story open, the work above is inset from the left by the same
+   clamp the body takes on. Between 1024px and the container width the outro
+   still had no padding at all, so the ending sat hard against the window edge
+   while everything above it was indented — the page looked like it had lost
+   its margin at the last moment. Only the left, matching the body: the
+   imagery and the chevron keep running to the right edge. */
+/* Only in the band where the two disagree. Above ~1180px both the open story
+   and the outro take their left edge from the 1120px container and already
+   line up; below 1024px the outro has its own 24/48px inset. In between, the
+   outro's padding drops to 0 while the open body is inset by the clamp, and
+   the ending sat hard against the window edge with everything above it
+   indented. Left only — the imagery and the chevron keep running right. */
+@media (min-width: 1024px) and (max-width: 1180px) {
+  html.t2-story-open .t2-outro-inner { padding-left: clamp(24px, 3.2vw, 60px); }
+}
 .t2-outro h2 {
   font-family: var(--brand);
   font-weight: 500;
@@ -2078,6 +2093,9 @@ var T2_CONFIG = {
 
     setExpanded(!open);
     body.classList.toggle('is-open', !open);
+    /* Mirrored on the root so anything outside .t2-body — the outro below it —
+       can follow the same inset. */
+    document.documentElement.classList.toggle('t2-story-open', !open);
     keepPlace(keep);
     slideMedia(seqBox);
 
