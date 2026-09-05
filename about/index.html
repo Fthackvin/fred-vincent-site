@@ -1788,6 +1788,18 @@ img { max-width: 100%; height: auto; display: block; }
   var DURATION = 760;
   var busy = false;
 
+  /* Coming back to this page does not re-run the script — a back-navigation
+     restores it from the back/forward cache with every variable exactly as it
+     was left, including `busy`, which the opening sets and never clears. The
+     result was a homepage whose cards silently ignored every click after the
+     first case study had been opened. The expanding panel and its contents
+     survive the same way, so they are cleared out here too. */
+  window.addEventListener('pageshow', function () {
+    busy = false;
+    var stale = document.querySelectorAll('.cs-open-overlay, .cs-open-art, .cs-open-mark');
+    for (var i = 0; i < stale.length; i++) stale[i].remove();
+  });
+
   /* Warm the destination before it is asked for. Without this the browser does
      not begin fetching the case study until the box animation ends, so the
      reader watches the panel expand for 670ms and *then* waits on a cold load
@@ -1833,6 +1845,17 @@ img { max-width: 100%; height: auto; display: block; }
     } catch (err) {}
 
     if (reduce) { window.location.href = href; return; }
+
+    /* Only Template One opens with the expanding panel, because only Template
+       One arrives as that panel — the two halves are one movement. Template Two
+       renders as an ordinary page, so there is nothing for the box to grow
+       into, and playing it anyway just held the navigation for the length of
+       the animation before anything happened. It goes straight there. */
+    if (hit.getAttribute('data-cs-mode') !== 'modal') {
+      window.location.href = href;
+      return;
+    }
+
     busy = true;
 
     var vw = document.documentElement.clientWidth;

@@ -167,18 +167,36 @@ h1, h2 { margin: 0; font-weight: 400; }
    was decoding it, which is what made arriving on the page feel heavy. The
    sequence below the fold already reveals on scroll, so there is nothing to
    gain by fading it a second time here. */
-/* No entrance fade.
+/* Entrance.
 
-   Any animation that starts at opacity 0 — and `both` fill holds that from the
-   moment the element is parsed — makes the browser paint a blank page first
-   and populate it a beat later. That is the blank-then-populate arrival, and
-   no curve or duration fixes it, because the blank frame comes before the
-   animation runs at all.
+   This was removed for a while, because an animation starting at opacity 0
+   held the first screen invisible and the page appeared to load blank and then
+   populate. The real cause of that was the font stylesheet blocking the first
+   paint: nothing was drawn for as long as it took to resolve, and only then did
+   the fade begin. With that unblocked and the first screen's faces preloaded,
+   the paint happens immediately and the fade runs from the first frame — which
+   is what it was meant to be.
 
-   So the page simply renders. The transition into the case study belongs to
-   the card expanding on the homepage, which the reader has already watched;
-   arriving to a page that is just there is the calmer half of that movement.
-   The compositions below the fold keep their own scroll reveal. */
+   Applied to the individual pieces rather than to `.t2-head`, deliberately: a
+   filling animation on that section creates a stacking context that outlives
+   it, and the pinned video player lives inside it — which is how the player
+   ended up rendering behind the artwork. Kept short, and staggered only
+   slightly, so it reads as the page settling rather than as a sequence. */
+@keyframes t2-enter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes t2-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.t2-nav { animation: t2-enter 400ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.t2-title { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 60ms both; }
+.t2-intro { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 130ms both; }
+.t2-tags { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 190ms both; }
+.t2-head .t2-story-toggle { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 250ms both; }
+.t2-video-slot { animation: t2-enter 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 250ms both; }
+.t2-sequence > .t2-item:first-of-type { animation: t2-enter 700ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .t2-nav, .t2-title, .t2-intro, .t2-tags, .t2-head .t2-story-toggle,
+  .t2-video-slot, .t2-sequence > .t2-item:first-of-type { animation: none; }
+}
 
 /* --- Navigation ----------------------------------------------------------
    The site's existing case-study nav treatment, reused rather than reinvented:
@@ -597,8 +615,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
      scrollbar in a reading column is its own small annoyance. */
   padding: var(--t2-story-top) clamp(16px, 1.6vw, 28px) 0;
   opacity: 0;
-  /* Opacity only: the one property here that costs nothing to animate. */
-  transition: opacity 480ms ease-in;
+  /* A fade and nothing else. The text does not need to travel — the imagery
+     moving aside is the movement in this interaction, and giving the words
+     their own little journey on top of it was one gesture too many. Delayed,
+     so it follows the slide rather than competing with it. */
+  transition: opacity 520ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms;
 }
 /* Both columns start level; on the same clock as the reflow. */
 .t2-body.is-open .t2-sequence { padding-top: var(--t2-story-top); }
@@ -661,6 +682,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
 @media (prefers-reduced-motion: reduce) {
   .t2-body, .t2-story-inner, .t2-sequence { transition: none !important; }
+  .t2-story-inner { transform: none !important; }
 }
 
 /* --- Project video -------------------------------------------------------
@@ -1845,13 +1867,50 @@ var T2_CONFIG = {
     if (delta) window.scrollBy(0, delta);
   }
 
+  /* The imagery slides across, without any of it being a layout animation.
+
+     The columns still resolve in one frame — animating them is what made the
+     document's height change on every frame, which forced the scroll to chase
+     it and produced the diagonal pan. This measures where the media was, lets
+     the layout land, then puts it back with a transform and releases it. Only
+     `transform` animates: no reflow, no height change, nothing for the scroll
+     to follow. The width change is instant underneath, so what the reader sees
+     is the work moving aside. */
+  var sequence = document.querySelector('.t2-sequence');
+  function slideMedia(fromLeft) {
+    if (!sequence || reduce || fromLeft === null) return;
+    var dx = fromLeft - sequence.getBoundingClientRect().left;
+    if (!dx) return;
+    sequence.style.transition = 'none';
+    sequence.style.transform = 'translateX(' + dx + 'px)';
+    void sequence.offsetWidth;                 /* commit the start position */
+    /* A shallow dip in opacity across the move. The images change width in a
+       single frame — that cannot be animated without becoming a layout
+       animation again — and easing the whole column down and back covers that
+       change, so it reads as one continuous movement rather than a resize
+       followed by a slide. */
+    sequence.style.opacity = '0.86';
+    void sequence.offsetWidth;
+    var EASE = 'cubic-bezier(0.32, 0.72, 0.24, 1)';
+    sequence.style.transition = 'transform 620ms ' + EASE + ', opacity 620ms ' + EASE;
+    sequence.style.transform = 'translateX(0)';
+    sequence.style.opacity = '1';
+    window.setTimeout(function () {
+      sequence.style.transition = '';
+      sequence.style.transform = '';
+      sequence.style.opacity = '';
+    }, 700);
+  }
+
   function onToggle() {
     var open = toggle.getAttribute('aria-expanded') === 'true';
     var keep = anchor();
+    var seqLeft = sequence ? sequence.getBoundingClientRect().left : null;
 
     setExpanded(!open);
     body.classList.toggle('is-open', !open);
     keepPlace(keep);
+    slideMedia(seqLeft);
 
     /* Opening exposes it immediately so it is readable as it arrives; closing
        waits for the reflow to finish, so the text is still announced while it
@@ -1902,8 +1961,16 @@ var T2_CONFIG = {
          : 24;
        syncNav();
      }
+     /* Hysteresis. A single threshold means a scroll that comes to rest on it —
+        or the small jitter of a trackpad, or the browser's own scroll
+        anchoring nudging the page — flips the class on and off repeatedly,
+        restarting the 240ms colour transition each time. That is the flicker.
+        The bar goes dark at the line and only comes back light 64px above it,
+        so no realistic movement can sit inside both. */
+     var NAV_HYST = 64;
      function syncNav() {
-       var next = window.scrollY >= flipAt;
+       var y = window.scrollY;
+       var next = navDark ? y >= flipAt - NAV_HYST : y >= flipAt;
        if (next === navDark) return;
        navDark = next;
        document.documentElement.classList.toggle('t2-scrolled', next);
@@ -1946,13 +2013,16 @@ var T2_CONFIG = {
       /* Three states for the pinned control: gone until the work reaches the
          bar; the full labelled control as it first appears; and minimised to
          the ×'s own footprint once the reader is well into the page. */
-      var next = y >= showAt;
+      /* Same dead band as the navigation, for the same reason: these fade over
+         420ms, and a threshold the scroll can rest on restarts that fade on
+         every jitter. */
+      var next = shown ? y >= showAt - 64 : y >= showAt;
       if (next !== shown) {
         shown = next;
         close.classList.toggle('is-shown', next);
         if (pin) pin.classList.toggle('is-shown', next);
       }
-      var small = y > vh * 0.95;
+      var small = minned ? y > vh * 0.95 - 64 : y > vh * 0.95;
       if (small !== minned) {
         minned = small;
         if (pin) {

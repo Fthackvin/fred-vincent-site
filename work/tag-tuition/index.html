@@ -521,6 +521,16 @@ html.cs-xfade .cs-logo {
 }
 .cs-section.is-arriving { animation: cs-arrive 360ms cubic-bezier(0.33, 1, 0.68, 1) both; }
 @keyframes cs-arrive { from { opacity: 0; } to { opacity: 1; } }
+/* The cue comes in after the section it belongs to, rather than with it — the
+   reader should see where they have landed before being told there is more.
+   An animation rather than a transition on purpose: applyCues() writes the
+   cue's opacity inline every frame, and an animation outranks that for as long
+   as it runs, then hands the property straight back. */
+.cs-section.is-arriving .cs-cue { animation: cs-cue-in 460ms cubic-bezier(0.33, 1, 0.68, 1) 240ms both; }
+@keyframes cs-cue-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .cs-section.is-arriving .cs-cue { animation: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   html.cs-xfade .cs-cover, html.cs-xfade .cs-logo { transition: none; }
   .cs-section.is-arriving { animation: none; }
@@ -1350,7 +1360,11 @@ var CS_CONFIG = {
        the cue uses means the logo and the cue cannot fall out of alignment. */
     var cr = cover.getBoundingClientRect();
     var coverBoxW = cr.width || document.documentElement.clientWidth;
-    var coverW = Math.min(bigW, coverBoxW * 0.62, (window.innerHeight - 200) * (bigW / bigH));
+    /* 0.85 of the artwork's own width. The viewport cap alone could not make
+       this smaller on a wide screen — at 1512px it works out above the
+       illustration's intrinsic 730, so the intrinsic size always won and
+       changing the cap did nothing. This scales the artwork itself. */
+    var coverW = Math.min(bigW * 0.85, coverBoxW * 0.58, (window.innerHeight - 200) * (bigW / bigH));
     var coverScale = coverW / bigW;
     var coverH = bigH * coverScale;
     var targetLeft = cr.left + (coverBoxW - coverW) / 2;
@@ -1520,12 +1534,16 @@ var CS_CONFIG = {
        are cut for the correction and restored immediately after. */
     function resettle() {
       if (!logo) return;
-      var prev = logo.style.transition;
       logo.style.transition = 'none';
       measure();
       applyLogo();
-      void logo.offsetWidth;          /* commit before transitions return */
-      logo.style.transition = prev || '';
+      void logo.offsetWidth;
+      /* Cleared, not restored. The entrance sets a 780ms transform transition
+         and nothing else took it off, so every scroll-driven update afterwards
+         eased over three quarters of a second — the logo lagged the scroll and
+         carried on moving after the reader had stopped. Its position is a pure
+         function of scroll offset; it must not be animated. */
+      logo.style.transition = '';
     }
 
     var logoImg = logo && logo.querySelector('img');
@@ -1552,9 +1570,10 @@ var CS_CONFIG = {
       measure();
       applyLogo();
       applyCues();
-      /* Read back to force the change to commit before transitions return. */
+      /* Read back to force the change to commit, then leave the logo
+         untransitioned — see resettle(). */
       void logo.offsetWidth;
-      logo.style.transition = prev || '';
+      logo.style.transition = '';
     });
   }
 
@@ -1586,6 +1605,9 @@ var CS_CONFIG = {
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         logo.style.transition = 'transform 780ms cubic-bezier(0.22,0.61,0.36,1), opacity 420ms ease-out';
+        /* Take it off again the moment the arrival is over. Anything left here
+           would be applied to every scroll-driven update that follows. */
+        window.setTimeout(function () { logo.style.transition = ''; }, 800);
         applyLogo();
         doc.classList.add('cs-entered');
         setTimeout(function () {
@@ -1992,51 +2014,54 @@ var CS_CONFIG = {
     if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'PageDown' ||
         e.key === 'Enter' || e.key === 'End') expand();
   }
+  /* Expanding and moving on are one action, not two. Whether the reader uses
+     the scroll cue or the video tab, the modal is a stage on the way to the
+     opening section — stopping at the full-screen cover leaves them looking at
+     the same thing they were already looking at, one step further in.
+
+     The cover fades, the page moves while nothing is visible, and the section
+     arrives. `playVideo` is the only difference between the two entry points. */
+  function advance(playVideo) {
+    doc.classList.add('cs-xfade');
+    expand();
+
+    var first = document.getElementById('cs-s1');
+    /* Timed to the panel, not to the fade. The modal holds the scroll locked
+       until it has finished expanding, so jumping at the end of the 260ms fade
+       silently did nothing — the page could not move yet. */
+    var JUMP = reduce ? 0 : EXPAND + 20;
+    window.setTimeout(function () {
+      if (first) {
+        first.scrollIntoView({ behavior: 'instant', block: 'start' });
+        /* Settle the logo synchronously against the new scroll position: the
+           scroll handler works inside a frame, so the illustration would sit in
+           its cover position for a beat before snapping to its dock. */
+        window.dispatchEvent(new Event('resize'));
+        first.classList.add('is-arriving');
+        window.setTimeout(function () { first.classList.remove('is-arriving'); }, 760);
+      }
+      doc.classList.remove('cs-xfade');
+      if (playVideo) document.dispatchEvent(new CustomEvent('cs:play-video'));
+    }, JUMP);
+  }
+
   function onCue(e) {
-    /* The compact video tab is the other affordance on the opening screen —
-       acting on it expands the page just as the cue does, and the player then
-       arrives in its full form. */
-    if (e.target.closest && e.target.closest('.cs-video-restore')) {
+    if (!e.target.closest) return;
+    /* The video tab: the same move, and the player arrives playing. */
+    if (e.target.closest('.cs-video-restore')) {
       e.preventDefault();
       e.stopPropagation();
-      /* Responds on the press. The fade begins on this frame — waiting for the
-         panel to finish expanding before anything moved made the control feel
-         unresponsive for the best part of a second. */
-      doc.classList.add('cs-xfade');
-      expand();
-
-      var first = document.getElementById('cs-s1');
-      /* Timed to the panel, not to the fade. The modal holds the scroll locked
-         until it has finished expanding, so jumping at the end of the 260ms
-         fade silently did nothing — the page could not move yet. The cover is
-         long gone by then; this is simply when the page is free to move. */
-      var JUMP = reduce ? 0 : EXPAND + 20;
-      window.setTimeout(function () {
-        /* Nothing is visible at this point, so the move costs nothing to watch. */
-        if (first) {
-          first.scrollIntoView({ behavior: 'instant', block: 'start' });
-          /* Settle the logo synchronously against the new scroll position. The
-             scroll handler would get there eventually, but it works inside a
-             frame — so on arrival the illustration would still be sitting in
-             its cover position for a beat before snapping to its dock. */
-          window.dispatchEvent(new Event('resize'));
-          first.classList.add('is-arriving');
-          window.setTimeout(function () { first.classList.remove('is-arriving'); }, 420);
-        }
-        doc.classList.remove('cs-xfade');
-        /* The page has already come to rest — the scroll was instant and the
-           section is arriving — so the player starts with it rather than after. */
-        document.dispatchEvent(new CustomEvent('cs:play-video'));
-      }, JUMP);
+      advance(true);
       return;
     }
-    if (e.target.closest && e.target.closest('[data-cs-advance]')) {
-      /* Stop the cue's own scroll handler — there is nowhere to scroll yet. */
+    /* The scroll cue: the same move, without the video. */
+    if (e.target.closest('[data-cs-advance]')) {
       e.preventDefault();
       e.stopPropagation();
-      expand();
+      advance(false);
     }
   }
+
   function unbind() {
     window.removeEventListener('wheel', expand);
     window.removeEventListener('touchmove', expand);
@@ -2062,7 +2087,9 @@ var CS_CONFIG = {
   var doc = document.documentElement;
   var on = null;
   function sync() {
-    var next = window.scrollY > 12;
+    /* Hysteresis, as on Template Two — a bare threshold flickers when the
+       scroll comes to rest on it. */
+    var next = on ? window.scrollY > 12 - 10 : window.scrollY > 12;
     if (next === on) return;
     on = next;
     doc.classList.toggle('cs-scrolled', next);

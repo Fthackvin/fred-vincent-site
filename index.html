@@ -4416,11 +4416,17 @@ main > hr,
 
   var ticking = false;
   function apply() {
-    /* Fires as the boundary section starts entering, rather than waiting for
-       it to reach the middle of the screen — by then the reader is well past
-       the end of the case studies and the change arrives after the moment it
-       is meant to mark. 0.8 puts it just after that bottom edge passes. */
-    var isDark = boundary.getBoundingClientRect().top <= window.innerHeight * 0.8;
+    /* Late enough that arriving at the work does not trigger it, early enough
+       that it does not feel like it is catching up.
+
+       Clicking "Work" in the navigation lands the reader at the top of the
+       carousel, and at 0.8 the boundary was already inside the trigger line
+       from that position — so the page went dark the instant they arrived,
+       before they had scrolled at all. 0.62 clears the landing point by about
+       145px, so the change belongs to the reader moving on from the work
+       rather than to them reaching it. 0.70 is as high as it goes before the
+       landing point is inside the trigger again. */
+    var isDark = boundary.getBoundingClientRect().top <= window.innerHeight * 0.70;
     document.documentElement.classList.toggle('dark-active', isDark);
     ticking = false;
   }
@@ -4538,6 +4544,18 @@ main > hr,
   var DURATION = 760;
   var busy = false;
 
+  /* Coming back to this page does not re-run the script — a back-navigation
+     restores it from the back/forward cache with every variable exactly as it
+     was left, including `busy`, which the opening sets and never clears. The
+     result was a homepage whose cards silently ignored every click after the
+     first case study had been opened. The expanding panel and its contents
+     survive the same way, so they are cleared out here too. */
+  window.addEventListener('pageshow', function () {
+    busy = false;
+    var stale = document.querySelectorAll('.cs-open-overlay, .cs-open-art, .cs-open-mark');
+    for (var i = 0; i < stale.length; i++) stale[i].remove();
+  });
+
   /* Warm the destination before it is asked for. Without this the browser does
      not begin fetching the case study until the box animation ends, so the
      reader watches the panel expand for 670ms and *then* waits on a cold load
@@ -4583,6 +4601,17 @@ main > hr,
     } catch (err) {}
 
     if (reduce) { window.location.href = href; return; }
+
+    /* Only Template One opens with the expanding panel, because only Template
+       One arrives as that panel — the two halves are one movement. Template Two
+       renders as an ordinary page, so there is nothing for the box to grow
+       into, and playing it anyway just held the navigation for the length of
+       the animation before anything happened. It goes straight there. */
+    if (hit.getAttribute('data-cs-mode') !== 'modal') {
+      window.location.href = href;
+      return;
+    }
+
     busy = true;
 
     var vw = document.documentElement.clientWidth;
