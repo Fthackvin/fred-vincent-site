@@ -659,22 +659,45 @@ html.cs-expanded .cs-cover .cs-cue {
 }
 
 /* Next project preview — thumbnail, title, description, chevron. */
+/* The next project reads as the last thing on the page rather than a small
+   card appended to the contact block: a full-width band with a landscape
+   still, sitting directly on the footer so the two make one closing unit.
+   The old 81px square gave the next piece of work the weight of a footnote. */
 .cs-next {
-  margin-top: clamp(36px, 5vh, 56px);
+  margin-top: clamp(56px, 8vh, 96px);
   display: grid;
-  grid-template-columns: 81px minmax(0, 1fr) 24px;
+  grid-template-columns: 191px minmax(0, 1fr) 28px;
   align-items: center;
-  gap: 23px;
+  gap: clamp(24px, 3vw, 48px);
   text-decoration: none;
   color: inherit;
+  padding-top: clamp(28px, 4vh, 44px);
+  border-top: 1px solid rgba(26, 24, 21, 0.12);
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 620ms var(--ease), transform 620ms var(--ease);
 }
+.cs-next:hover .cs-next-thumb { transform: scale(1.02); }
+.cs-next:hover .cs-next-chev { transform: translateX(4px); }
+.cs-next-chev { transition: transform 260ms var(--ease); }
+@media (max-width: 719px) {
+  .cs-next { grid-template-columns: minmax(0, 1fr) 24px; gap: 20px; }
+  .cs-next-thumb { grid-column: 1 / -1; }
+}
+/* Revealed with the contact block it now sits in. It used to be keyed to
+   `.cs-section--closing.is-in`, and moving it out of that section without
+   this would have left it permanently at opacity 0. */
+.cs-contact.is-in .cs-next,
 .cs-section--closing.is-in .cs-next { opacity: 1; transform: none; transition-delay: 420ms; }
 .cs-next-thumb {
-  width: 81px; height: 81px;
-  border-radius: 4px;
+  /* Square, at the height the landscape crop had. The extra width was the
+     wrong axis to grow on — the mark inside is square, so a 16:9 frame just
+     padded it out sideways. */
+  width: 191px;
+  height: 191px;
+  aspect-ratio: auto;
+  border-radius: 6px;
+  transition: transform 420ms var(--ease);
   background: rgba(0, 0, 0, 0.43);
   object-fit: cover;
   display: flex;
@@ -686,17 +709,31 @@ html.cs-expanded .cs-cover .cs-cue {
 /* Paper sets the next-project label at 15px/18px Test Söhne Light, its
    thumbnail 81px square with a 23px gap. The description isn't in Paper —
    it carries the same copy the homepage card uses, one step down. */
-.cs-next-title {
+/* Scaled to the band. At 15px it was the same size as its own description,
+   which is why the block read as a footnote however wide it got. */
+.cs-next-eyebrow {
   display: block;
   font-family: var(--body);
   font-weight: 300;
-  font-size: 15px;
-  line-height: 18px;
-  color: #000;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-500, #6E6A62);
+  margin-bottom: 10px;
+}
+.cs-next-title {
+  display: block;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(26px, 2.6vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink-900);
 }
 .cs-next-desc {
   display: block;
-  margin-top: 7px;
+  max-width: 44ch;
+  margin-top: 12px;
   font-family: var(--body);
   font-weight: 300;
   font-size: 14px;
@@ -717,7 +754,17 @@ html.cs-expanded .cs-cover .cs-cue {
 /* Final CTAs. Matches the homepage's Book an intro call button, in black. */
 .cs-outro { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 28px; margin-top: clamp(56px, 9vh, 96px); }
 /* The case study ends here — give it room to breathe before the page does. */
-.cs-section--closing { padding-bottom: clamp(96px, 16vh, 190px); }
+/* The closing section is sized by its content, not held to a full screen.
+
+   Every other section is a screen-height stage, which is right while the
+   reader is moving through the work. This one is the last, and it now runs
+   into the contact block — so holding it to 100svh only ever added slack
+   below the grid that no amount of padding trimming could reach, because the
+   content is centred in whatever height is left over. */
+.cs-section--closing {
+  min-height: 0;
+  padding-bottom: clamp(48px, 8vh, 95px);
+}
 /* Same white treatment as the homepage hero's primary CTA, with a little more
    padding for the end of a case study. */
 .cs-cta {
@@ -775,7 +822,8 @@ html.cs-expanded .cs-cover .cs-cue {
   position: fixed;
   right: clamp(16px, 3vw, 46px);
   bottom: clamp(16px, 3vh, 40px);
-  z-index: 50;
+  /* Above every band it crosses, the closing footer included. */
+  z-index: 60;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -785,6 +833,17 @@ html.cs-expanded .cs-cover .cs-cue {
   transition: opacity 560ms var(--ease) 420ms, transform 560ms var(--ease) 420ms;
 }
 html.cs-entered .cs-video { opacity: 1; transform: none; }
+/* The player belongs to the case study, not to the ending. Once the reader
+   reaches the contact block it goes away, and comes back if they scroll back
+   up into the work. Faster leaving than arriving: it is getting out of the
+   way, which should not be something you wait for.
+
+   `is-live` is added once the entrance has finished, so this quick pair of
+   transitions cannot steal the staged arrival the base rule above describes. */
+.cs-video.is-live { transition: opacity 380ms var(--ease); }
+html.cs-entered .cs-video.is-away,
+.cs-video.is-away { opacity: 0; pointer-events: none; }
+.cs-video.is-live.is-away { transition: opacity 240ms var(--ease); }
 .cs-video[hidden] { display: none; }
 .cs-video-frame {
   position: relative;
@@ -889,7 +948,8 @@ html.cs-entered .cs-video { opacity: 1; transform: none; }
   position: fixed;
   right: 0;
   bottom: clamp(24px, 12vh, 96px);
-  z-index: 50;
+  z-index: 60;
+  transition: opacity 300ms var(--ease);
   display: none;
   align-items: center;
   gap: 8px;
@@ -907,6 +967,7 @@ html.cs-entered .cs-video { opacity: 1; transform: none; }
   box-shadow: 0 6px 18px rgba(20, 18, 14, 0.2);
 }
 .cs-video-restore.is-shown { display: inline-flex; }
+.cs-video-restore.is-away { opacity: 0; pointer-events: none; }
 
 /* Direct manipulation: the floating player can be dragged and pinched. */
 .cs-video { touch-action: none; cursor: grab; }
@@ -930,6 +991,112 @@ html.cs-entered .cs-video { opacity: 1; transform: none; }
 .cs-video-restore .play { flex-shrink: 0; color: #FFFFFF; display: block; }
 .cs-video-restore span { line-height: 1; }
 
+
+/* --- Contact + footer ----------------------------------------------------
+   Template Two's closing shape, split the way the homepage splits it: the
+   contact block stays on the page's own white, and the footer is the dark bar
+   that ends every page on the site. */
+/* The gap above was doing too much work — it read as the page having ended
+   before the contact block began. Tightened, and the block now runs straight
+   into the footer so contact, next project and footer close as one. */
+.cs-contact {
+  background: var(--paper-50);
+  padding: clamp(28px, 4vh, 52px) 0 clamp(48px, 7vh, 80px);
+  margin-top: clamp(20px, 3vh, 36px);
+}
+.cs-contact-inner {
+  max-width: var(--cs-container);
+  margin: 0 auto;
+  padding: 0 var(--cs-pad);
+}
+@media (min-width: 1024px) { .cs-contact-inner { padding: 0 24px; } }
+.cs-contact h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(30px, 4.4vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+  margin: 0 0 22px;
+  max-width: 18ch;
+  text-wrap: pretty;
+}
+.cs-contact .sub {
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: clamp(15px, 1.4vw + 0.5rem, 18px);
+  line-height: 1.55;
+  color: var(--ink-700);
+  margin: 0 0 34px;
+  max-width: 38ch;
+}
+/* The homepage hero's own button: dark fill, light type. On a pale ground the
+   outlined treatment Template Two uses would have almost nothing to sit
+   against. */
+.cs-contact-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 24px;
+  min-width: 210px;
+  border: 1px solid var(--ink-900);
+  border-radius: 10px;
+  background: var(--ink-900);
+  color: var(--paper-50);
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background-color 220ms var(--ease), color 220ms var(--ease),
+              border-color 220ms var(--ease), transform 220ms var(--ease);
+}
+.cs-contact-cta:hover {
+  background: transparent;
+  color: var(--ink-900);
+  transform: translateY(-1px);
+}
+.cs-contact-cta:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+.cs-contact-cta .wave { font-size: 18px; line-height: 1; }
+
+/* The homepage's dark footer, reproduced: by the time a reader reaches the
+   foot of that page the whole thing has gone dark, so the bar reads as ink
+   with light type. Here the page stays white, so the footer carries that
+   ground itself. The exact values are the homepage's own. */
+.cs-footer {
+  background: #1a1a1a;
+  padding: clamp(28px, 5vh, 56px) 0 clamp(28px, 5vh, 56px);
+}
+.cs-footer .row {
+  max-width: var(--cs-container);
+  margin: 0 auto;
+  padding: 0 var(--cs-pad);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+@media (min-width: 1024px) { .cs-footer .row { padding-left: 24px; padding-right: 24px; } }
+.cs-footer .copy {
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 13px;
+  color: rgba(248, 250, 252, 0.55);
+}
+.cs-footer .links a {
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 13px;
+  color: rgba(248, 250, 252, 0.78);
+  text-decoration: none;
+}
+.cs-footer .links { display: flex; align-items: baseline; gap: clamp(16px, 2.4vw, 32px); flex-wrap: wrap; }
+.cs-footer .links a { display: inline-flex; align-items: baseline; gap: 6px; }
+.cs-footer .links a:hover { color: #F8FAFC; text-decoration: underline; text-underline-offset: 4px; }
+.cs-footer .links a.cv-download { align-items: center; }
+.cs-footer .links a svg { color: currentColor; }
+
 /* --- Section reveals -----------------------------------------------------
    Same language as the homepage: fade plus a small rise. Graphic leads,
    copy follows, so the section assembles rather than appearing all at once. */
@@ -938,6 +1105,23 @@ html.cs-entered .cs-video { opacity: 1; transform: none; }
 .cs-section .cs-body { transition: opacity 720ms var(--ease) 140ms, transform 720ms var(--ease) 140ms; }
 .cs-section .cs-cue-row { transition: opacity 640ms var(--ease) 300ms, transform 640ms var(--ease) 300ms; }
 .cs-section.is-in .cs-reveal { opacity: 1; transform: none; }
+
+/* The contact block assembles on arrival like every other section — heading,
+   then supporting line, then the control. Staggered on the same curve, so the
+   page ends the way it reads rather than the last screen simply being there.
+   The next-project band already has its own delay further down. */
+.cs-contact h2,
+.cs-contact .sub,
+.cs-contact-cta {
+  opacity: 0;
+  transform: translateY(22px);
+}
+.cs-contact h2 { transition: opacity 760ms var(--ease), transform 760ms var(--ease); }
+.cs-contact .sub { transition: opacity 720ms var(--ease) 120ms, transform 720ms var(--ease) 120ms; }
+.cs-contact-cta { transition: opacity 640ms var(--ease) 240ms, transform 640ms var(--ease) 240ms; }
+.cs-contact.is-in h2,
+.cs-contact.is-in .sub,
+.cs-contact.is-in .cs-contact-cta { opacity: 1; transform: none; }
 
 /* --- Entrance ------------------------------------------------------------
    The page paints white immediately (matching the panel the homepage just
@@ -1005,7 +1189,8 @@ html.cs-leaving body { transition: opacity 300ms var(--ease); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cs-reveal { opacity: 1 !important; transform: none !important; }
+  .cs-reveal,
+  .cs-contact h2, .cs-contact .sub, .cs-contact-cta { opacity: 1 !important; transform: none !important; }
   .cs-section .cs-media,
   .cs-section .cs-body,
   .cs-section .cs-cue-row,
@@ -1021,7 +1206,8 @@ html.cs-leaving body { transition: opacity 300ms var(--ease); opacity: 0; }
 <noscript>
   <style>
     /* Reveals are JS-driven; without it the copy must still be readable. */
-    .cs-reveal { opacity: 1 !important; transform: none !important; }
+    .cs-reveal,
+  .cs-contact h2, .cs-contact .sub, .cs-contact-cta { opacity: 1 !important; transform: none !important; }
     .cs-close, .cs-cover .cs-cue { opacity: 1 !important; transform: none !important; }
     .cs-logo { position: absolute; top: auto; }
   </style>
@@ -1176,38 +1362,62 @@ html.cs-leaving body { transition: opacity 300ms var(--ease); opacity: 0; }
         <p>That system gave TAG a starting point for producing future books themselves, including the later scholarship and 11+ series.</p>
         <p>The collection has since grown across astronomy, cryptology, archaeology, naturalism, metamorphosis and riddles and runes.</p>
 
-        <!-- Next project: configured in CS_CONFIG.nextProject. Deliberately a
-             labelled placeholder until the next case study is decided. -->
-        <a class="cs-next" id="cs-next" href="#" data-placeholder="true">
-          <!-- Thumbnail mirrors the project's own card in the homepage
-               carousel. Swap this block when the next project changes. -->
-          <span class="cs-next-thumb" id="cs-next-thumb" style="background:#1E2B2C;">
-            <svg viewBox="0 0 147 97" aria-hidden="true"><path fill-rule="nonzero" fill="#FFFFFF" d="M89.146 0C95.089 1.305e-05 100.729 0.767 106.066 2.301C111.402 3.706 115.95 7.093 119.71 12.46C120.317 17.189 122.015 21.599 124.804 25.688C127.715 29.778 130.869 33.803 134.265 37.765C137.661 41.599 140.632 45.497 143.179 49.459C145.726 53.42 147 57.638 147 62.111C147 64.539 146.454 67.159 145.363 69.97C144.271 72.782 142.876 75.082 141.178 76.872C140.814 77.255 140.268 77.702 139.541 78.214C138.692 78.853 137.903 79.619 137.176 80.514C136.569 81.281 135.902 82.047 135.174 82.814C133.719 84.476 132.203 86.457 130.626 88.757C129.171 90.93 127.473 92.847 125.532 94.508C123.713 96.169 121.53 97 118.983 97C116.8 97 114.495 96.361 112.069 95.083C110.614 93.294 109.886 91.441 109.886 89.524C109.886 86.968 110.978 84.476 113.161 82.048C115.344 79.619 117.891 77.191 120.802 74.763C123.713 72.207 126.26 69.587 128.443 66.903C130.626 64.092 131.718 61.088 131.718 57.893C131.718 55.721 131.111 53.612 129.899 51.568C128.807 49.395 127.533 47.669 126.078 46.391L124.441 45.241C122.015 43.58 119.832 41.343 117.891 38.532C115.102 34.57 115.061 30.31 111.827 26.476C109.886 21.875 105.56 20.129 101.922 16.678C95.15 13.781 89.692 11.886 83.142 11.886C76.714 11.886 70.185 14.122 61.492 17.956C53.002 23.707 51.789 24.666 45.846 31.055C39.903 37.318 31.737 50.609 27.128 57.893C22.64 65.178 21.225 66.712 21.225 72.654C21.225 78.597 24.1 80.426 25.066 82.005C26.032 83.584 25.308 82.047 26.117 84.348C26.117 84.348 26.32 85.321 26.481 86.265C26.642 87.209 26.55 87.437 26.481 88.182C26.412 88.927 26.117 90.099 26.117 90.099C26.117 90.099 25.828 92.539 23.853 93.933C21.878 95.326 9.905 95.85 3.639 95.083C1.213 92.91 8.033e-08 90.099 0 86.648C0 84.731 0.424 82.559 1.273 80.131C2.122 77.575 3.153 75.083 4.366 72.654C5.7 70.226 6.913 68.245 8.005 66.712L11.643 61.919C12.856 60.258 14.008 58.596 15.1 56.935C16.192 55.146 17.283 53.42 18.375 51.759C22.377 45.624 26.38 39.362 30.382 32.972C34.385 26.582 38.872 20.703 43.845 15.336C48.818 9.841 54.7 5.624 61.492 2.684C62.827 2.045 64.403 1.47 66.223 0.958C68.163 0.32 69.922 7.617e-07 71.499 0C72.226 0 72.954 0.064 73.682 0.192L82.597 0.192C84.78 0.064 86.963 0 89.146 0Z"/></svg>
-          </span>
-          <span>
-            <span class="cs-next-title" id="cs-next-title">Next project title</span>
-            <span class="cs-next-desc" id="cs-next-desc"></span>
-          </span>
-          <svg class="cs-next-chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
-        </a>
+
       </div>
 
-      <div class="cs-outro cs-reveal">
-        <a class="cs-cta" id="cs-book" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer">
-          <span class="wave" aria-hidden="true">👋</span>
-          <span>Book an intro call</span>
-          <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
-        </a>
-        <button type="button" class="cs-back" data-cs-exit="/">
-          <svg class="arrow" width="20" height="12" viewBox="0 0 20 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M4.935 0.009C4.792 0.032 4.661 0.099 4.559 0.202C4.559 0.202 0.195 4.570 0.195 4.570C0.188 4.580 0.180 4.589 0.172 4.600C0.127 4.651 0.088 4.707 0.059 4.768C0.047 4.799 0.037 4.831 0.029 4.861C0.014 4.909 0.005 4.956 0.000 5.005C0.000 5.005 0.000 5.055 0.000 5.055C0.000 5.055 0.000 5.105 0.000 5.105C0.005 5.154 0.014 5.205 0.029 5.252C0.037 5.283 0.046 5.312 0.056 5.341C0.087 5.406 0.127 5.467 0.177 5.521C0.185 5.527 0.192 5.531 0.200 5.538C0.200 5.538 0.201 5.538 0.201 5.538C0.201 5.538 4.566 9.908 4.566 9.908C4.833 10.176 5.265 10.176 5.532 9.908C5.798 9.641 5.798 9.209 5.532 8.942C5.532 8.942 2.329 5.736 2.329 5.736C2.329 5.736 15.185 5.736 15.185 5.736C17.096 5.736 18.630 7.275 18.630 9.189C18.630 9.189 18.630 11.318 18.630 11.318C18.630 11.318 18.632 11.318 18.632 11.318C18.632 11.695 18.937 12.000 19.314 12.000C19.495 12.002 19.671 11.930 19.799 11.802C19.928 11.673 20.000 11.499 20.000 11.318C20.000 11.318 20.000 9.189 20.000 9.189C20.000 6.538 17.836 4.371 15.187 4.371C15.187 4.371 2.335 4.371 2.335 4.371C2.335 4.371 5.533 1.171 5.533 1.171C5.533 1.171 5.532 1.170 5.532 1.170C5.660 1.042 5.733 0.868 5.733 0.684C5.733 0.503 5.660 0.329 5.532 0.200C5.378 0.046 5.158 -0.025 4.942 0.008C4.942 0.008 4.935 0.009 4.935 0.009Z"/></svg>
-          <span>Back home</span>
-        </button>
-      </div>
-    </div>
+      <!-- The closing CTA and the back button used to sit here. They are now
+           a full contact section and footer below, so the case study ends the
+           way the site does rather than with two stray controls. -->
+
   </section>
+
+<!-- ===== Contact + footer ============================================
+     The case study ends the way the rest of the site does. Template Two's
+     shape, in Template One's light treatment: this page is white all the way
+     down, and dropping to a dark block at the very end read as arriving
+     somewhere else rather than reaching the end of the work. -->
+<section class="cs-contact">
+  <div class="cs-contact-inner">
+    <h2>Available for hire; contact me for availability.</h2>
+    <p class="sub">Open to founders and product teams who want help finding the version of the work that&#39;s worth committing to.</p>
+    <a class="cs-contact-cta" id="cs-book" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer">
+      <span class="wave" aria-hidden="true">&#128075;</span>
+      <span>Book an intro call</span>
+      <svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true" style="transform: rotate(-90deg);"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+    </a>
+
+    <!-- Next project: configured in CS_CONFIG.nextProject. Deliberately a
+         labelled placeholder until the next case study is decided. -->
+    <a class="cs-next" id="cs-next" href="#" data-placeholder="true">
+      <!-- Thumbnail mirrors the project's own card in the homepage
+           carousel. Swap this block when the next project changes. -->
+      <span class="cs-next-thumb" id="cs-next-thumb" style="background:#1E2B2C;">
+        <svg viewBox="0 0 147 97" aria-hidden="true"><path fill-rule="nonzero" fill="#FFFFFF" d="M89.146 0C95.089 1.305e-05 100.729 0.767 106.066 2.301C111.402 3.706 115.95 7.093 119.71 12.46C120.317 17.189 122.015 21.599 124.804 25.688C127.715 29.778 130.869 33.803 134.265 37.765C137.661 41.599 140.632 45.497 143.179 49.459C145.726 53.42 147 57.638 147 62.111C147 64.539 146.454 67.159 145.363 69.97C144.271 72.782 142.876 75.082 141.178 76.872C140.814 77.255 140.268 77.702 139.541 78.214C138.692 78.853 137.903 79.619 137.176 80.514C136.569 81.281 135.902 82.047 135.174 82.814C133.719 84.476 132.203 86.457 130.626 88.757C129.171 90.93 127.473 92.847 125.532 94.508C123.713 96.169 121.53 97 118.983 97C116.8 97 114.495 96.361 112.069 95.083C110.614 93.294 109.886 91.441 109.886 89.524C109.886 86.968 110.978 84.476 113.161 82.048C115.344 79.619 117.891 77.191 120.802 74.763C123.713 72.207 126.26 69.587 128.443 66.903C130.626 64.092 131.718 61.088 131.718 57.893C131.718 55.721 131.111 53.612 129.899 51.568C128.807 49.395 127.533 47.669 126.078 46.391L124.441 45.241C122.015 43.58 119.832 41.343 117.891 38.532C115.102 34.57 115.061 30.31 111.827 26.476C109.886 21.875 105.56 20.129 101.922 16.678C95.15 13.781 89.692 11.886 83.142 11.886C76.714 11.886 70.185 14.122 61.492 17.956C53.002 23.707 51.789 24.666 45.846 31.055C39.903 37.318 31.737 50.609 27.128 57.893C22.64 65.178 21.225 66.712 21.225 72.654C21.225 78.597 24.1 80.426 25.066 82.005C26.032 83.584 25.308 82.047 26.117 84.348C26.117 84.348 26.32 85.321 26.481 86.265C26.642 87.209 26.55 87.437 26.481 88.182C26.412 88.927 26.117 90.099 26.117 90.099C26.117 90.099 25.828 92.539 23.853 93.933C21.878 95.326 9.905 95.85 3.639 95.083C1.213 92.91 8.033e-08 90.099 0 86.648C0 84.731 0.424 82.559 1.273 80.131C2.122 77.575 3.153 75.083 4.366 72.654C5.7 70.226 6.913 68.245 8.005 66.712L11.643 61.919C12.856 60.258 14.008 58.596 15.1 56.935C16.192 55.146 17.283 53.42 18.375 51.759C22.377 45.624 26.38 39.362 30.382 32.972C34.385 26.582 38.872 20.703 43.845 15.336C48.818 9.841 54.7 5.624 61.492 2.684C62.827 2.045 64.403 1.47 66.223 0.958C68.163 0.32 69.922 7.617e-07 71.499 0C72.226 0 72.954 0.064 73.682 0.192L82.597 0.192C84.78 0.064 86.963 0 89.146 0Z"/></svg>
+      </span>
+      <span>
+        <span class="cs-next-eyebrow">Next project</span>
+            <span class="cs-next-title" id="cs-next-title">Next project title</span>
+        <span class="cs-next-desc" id="cs-next-desc"></span>
+      </span>
+      <svg class="cs-next-chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer class="cs-footer">
+  <div class="wrap row">
+    <span class="copy">© Coded by Fred 2026</span>
+    <span class="links">
+      <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener noreferrer"><span class="lt">LinkedIn</span><span class="arrow" aria-hidden="true"><svg width="10" height="8" viewBox="0 0 9.55 7.99" xmlns="http://www.w3.org/2000/svg" style="transform:rotate(180deg)"><g transform="translate(0 7.99) scale(1 -1)"><path fill="currentColor" d="M3.33 0C3.088 0 2.886 0.202 2.886 0.444L2.886 1.11L1.221 1.11C0.548 1.11 0 1.658 0 2.331L0 6.771C0 7.444 0.548 7.992 1.221 7.992L8.325 7.992C8.998 7.992 9.546 7.444 9.546 6.771L9.546 2.331C9.546 1.658 8.998 1.11 8.325 1.11L6.66 1.11L6.66 0.444C6.66 0.202 6.458 0 6.216 0L3.33 0ZM3.33 0.444L6.216 0.444L6.216 1.11L3.33 1.11L3.33 0.444ZM1.221 1.554L8.325 1.554C8.759 1.554 9.102 1.897 9.102 2.331L9.102 3.313C8.192 3.829 6.979 4.184 5.619 4.291C5.507 3.929 5.17 3.663 4.773 3.663C4.375 3.663 4.039 3.929 3.927 4.291C2.566 4.184 1.354 3.83 0.444 3.313L0.444 2.331C0.444 1.897 0.787 1.554 1.221 1.554ZM0.444 3.819C1.394 4.311 2.588 4.637 3.906 4.738C3.993 5.136 4.35 5.439 4.773 5.439C5.196 5.439 5.553 5.136 5.64 4.738C6.959 4.637 8.152 4.311 9.102 3.819L9.102 6.771C9.102 7.205 8.759 7.548 8.325 7.548L1.221 7.548C0.787 7.548 0.444 7.205 0.444 6.771L0.444 3.819ZM4.773 4.107C5.021 4.107 5.217 4.303 5.217 4.551C5.217 4.799 5.021 4.995 4.773 4.995C4.525 4.995 4.329 4.799 4.329 4.551C4.329 4.303 4.525 4.107 4.773 4.107Z"/></g></svg></span></a>
+      <a class="cv-download" href="Frederick%20Vincent%2020262.pdf" download><span class="lt">Download CV</span><span class="dl-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span></a>
+      <a href="https://studiovincent.substack.com" target="_blank" rel="noopener noreferrer"><span class="lt">Substack</span><span class="arrow" aria-hidden="true"><svg width="12" height="13" viewBox="0 0 12.5 13.02" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g transform="translate(4.197 0)"><path d="M8.237 0.802L6.865 0.018C6.835 0 6.798 -0.005 6.764 0.004C6.73 0.013 6.701 0.035 6.684 0.065L0.019 11.273C0.011 11.286 0.007 11.301 0.004 11.316C0.004 11.32 0.003 11.324 0.003 11.328C0.002 11.331 0.001 11.335 0.001 11.338L0 12.886C0 12.932 0.025 12.975 0.066 12.998C0.087 13.01 0.11 13.016 0.133 13.016C0.155 13.016 0.178 13.011 0.198 12.999L1.571 12.236C1.574 12.234 1.577 12.231 1.581 12.229C1.584 12.227 1.587 12.225 1.59 12.222C1.602 12.212 1.612 12.201 1.62 12.188L8.284 0.98C8.321 0.918 8.3 0.838 8.237 0.802ZM6.846 0.308L7.302 0.569L0.772 11.553L0.315 11.291L6.846 0.308ZM0.266 11.565L0.753 11.843L1.239 12.121L0.266 12.662L0.266 11.565ZM1.458 11.945L1.001 11.684L7.532 0.7L7.988 0.961L1.458 11.945Z"/></g><g transform="translate(0 12.747)"><path d="M3.552 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26L3.552 0.26C3.626 0.26 3.685 0.202 3.685 0.13C3.685 0.058 3.626 0 3.552 0Z"/></g><g transform="translate(0 11.331)"><path d="M0.133 0.26L3.41 0.26C3.483 0.26 3.543 0.202 3.543 0.13C3.543 0.058 3.483 0 3.41 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 9.915)"><path d="M3.675 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26L3.675 0.26C3.748 0.26 3.807 0.202 3.807 0.13C3.807 0.058 3.748 0 3.675 0Z"/></g><g transform="translate(0 8.498)"><path d="M0.133 0.26L4.774 0.26C4.847 0.26 4.906 0.202 4.906 0.13C4.906 0.058 4.847 0 4.774 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 7.082)"><path d="M0.133 0.26L5.14 0.26C5.213 0.26 5.273 0.202 5.273 0.13C5.273 0.058 5.213 0 5.14 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 5.665)"><path d="M0.133 0.26L6.239 0.26C6.312 0.26 6.372 0.202 6.372 0.13C6.372 0.058 6.312 0 6.239 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 4.249)"><path d="M0.133 0.26L7.298 0.26C7.371 0.26 7.43 0.202 7.43 0.13C7.43 0.058 7.371 0 7.298 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 2.833)"><path d="M0.133 0.26L7.786 0.26C7.86 0.26 7.919 0.202 7.919 0.13C7.919 0.058 7.86 0 7.786 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 1.416)"><path d="M0.133 0.26L8.458 0.26C8.531 0.26 8.591 0.202 8.591 0.13C8.591 0.058 8.531 0 8.458 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g><path d="M0.133 0.26L9.679 0.26C9.753 0.26 9.812 0.202 9.812 0.13C9.812 0.058 9.753 0 9.679 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g></svg></span></a>
+    </span>
+  </div>
+</footer>
 
 </main>
 </div>
+
 
 
 <!-- ===== Persistent explainer video (optional per case study) ========== -->
@@ -1656,6 +1866,34 @@ var CS_CONFIG = {
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
     Array.prototype.forEach.call(sections, function (s) { io.observe(s); });
   }
+
+  /* The closing block gets its own, later trigger. It is the tallest thing on
+     the page — heading, line, control and the next-project band — so a ratio
+     threshold shared with the sections above fired while it was still a screen
+     and a half away, and by the time the reader arrived the stagger had long
+     since finished: the ending was simply there. Keyed to the block's own top
+     crossing 82% of the viewport instead, it assembles as they come down onto
+     it. The page-bottom fallback covers the case where the block is short
+     enough that the line is never crossed. */
+  (function () {
+    var contact = document.querySelector('.cs-contact');
+    if (!contact) return;
+    if (!('IntersectionObserver' in window) || reduce) { contact.classList.add('is-in'); return; }
+    function reveal() {
+      contact.classList.add('is-in');
+      cio.disconnect();
+      window.removeEventListener('scroll', atBottom);
+    }
+    var cio = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) reveal();
+    }, { rootMargin: '0px 0px -18% 0px', threshold: 0 });
+    cio.observe(contact);
+    function atBottom() {
+      var d = document.documentElement;
+      if (window.innerHeight + window.scrollY >= d.scrollHeight - 4) reveal();
+    }
+    window.addEventListener('scroll', atBottom, { passive: true });
+  })();
 
   /* ---------------------------------------------------------------------
      "Scroll to read more" — advances to the next section. Native smooth
@@ -2349,6 +2587,40 @@ function csMakeManipulable(wrap, isFloating, atHome) {
     else if (!isFloating()) reset();
   }, { passive: true });
 }
+
+/* The player only belongs to the case study. The page now ends on a contact
+   block and a black footer, and a floating dark panel coming to rest on top of
+   that reads as a smudge with an unreadable control bar under it — but the
+   answer is not to dodge the footer, it is to leave. Once the closing block is
+   arriving the player fades out; scroll back up into the work and it returns.
+
+   Hysteresis, not a single line: the player sitting on the exact threshold
+   would otherwise flicker in and out with every small scroll. */
+(function () {
+  'use strict';
+  var contact = document.querySelector('.cs-contact');
+  var wrap = document.getElementById('cs-video');
+  var tab = document.getElementById('cs-video-restore');
+  if (!contact || (!wrap && !tab)) return;
+  var away = false;
+  function sync() {
+    var top = contact.getBoundingClientRect().top;
+    var vh = window.innerHeight;
+    var next = away ? top < vh * 0.98 : top < vh * 0.86;
+    if (next === away) return;
+    away = next;
+    if (wrap) wrap.classList.toggle('is-away', away);
+    if (tab) tab.classList.toggle('is-away', away);
+  }
+  sync();
+  window.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  /* Only after the entrance has played, so the quick transitions belong to
+     scrolling rather than to arrival. */
+  window.setTimeout(function () {
+    if (wrap) wrap.classList.add('is-live');
+  }, 2000);
+})();
 
 (function () {
   'use strict';

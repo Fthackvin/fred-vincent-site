@@ -709,9 +709,19 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   bottom: clamp(16px, 3vh, 40px);
   width: 116px;
   z-index: 70;
-  animation: t2-pin-in 320ms var(--ease-reveal) both;
+  /* Not `both`. A filling animation owns the property it animates for as long
+     as it fills, and this one animates opacity — with a forwards fill it held
+     opacity at 1 forever and the fade-away below could never take effect. The
+     backwards half was doing nothing here anyway: there is no delay. */
+  animation: t2-pin-in 320ms var(--ease-reveal);
+  transition: width 460ms var(--ease), opacity 380ms var(--ease);
 }
 .t2-video.is-pinned.is-playing { width: 220px; }
+/* The player belongs to the case study, not to the ending. Once the reader
+   reaches the closing block it goes away, and comes back if they scroll back
+   up into the work. Quicker leaving than arriving — it is getting out of the
+   way, which is not something you should have to wait for. */
+.t2-video.is-away { opacity: 0; pointer-events: none; transition: opacity 240ms var(--ease); }
 /* Opacity only. This used to animate transform as well, and with `both` fill
    its final `transform: none` kept ownership of the property for as long as
    the player stayed pinned — a filling animation outranks inline styles, so
@@ -1106,6 +1116,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   box-shadow: 0 6px 18px rgba(20, 18, 14, 0.2);
 }
 .t2-video-restore.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.t2-video-restore.is-away { opacity: 0; pointer-events: none; transition: opacity 240ms var(--ease); }
 
 /* Direct manipulation: the player can be dragged and pinched once it is
    floating. In its slot it is part of the composition, so it stays put. */
@@ -2119,6 +2130,31 @@ var T2_CONFIG = {
    follows. And it must stay reachable: the position is clamped so a good part
    of the player is always on screen, including after the window resizes.
    -------------------------------------------------------------------------- */
+/* Shared with Template One: the floating player is chrome for the case study
+   and has no business over the closing block, where a dark panel lands on a
+   dark ground. Hysteresis rather than a single line, so a player resting on
+   the threshold does not flicker with every small scroll. */
+(function () {
+  'use strict';
+  var outro = document.querySelector('.t2-outro');
+  var wrap = document.getElementById('t2-video');
+  var tab = document.getElementById('t2-video-restore');
+  if (!outro || (!wrap && !tab)) return;
+  var away = false;
+  function sync() {
+    var top = outro.getBoundingClientRect().top;
+    var vh = window.innerHeight;
+    var next = away ? top < vh * 0.98 : top < vh * 0.86;
+    if (next === away) return;
+    away = next;
+    if (wrap) wrap.classList.toggle('is-away', away);
+    if (tab) tab.classList.toggle('is-away', away);
+  }
+  sync();
+  window.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+})();
+
 function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
   var dx = 0, dy = 0, scale = 1;
   var pointers = {};
