@@ -987,7 +987,9 @@ html.cs-entered .cs-video.is-away,
   align-items: center;
   gap: 14px;
   padding: 14px;
-  border-radius: 20px;
+  /* 16px, the same corner as the pinned controls — 20 read as a softer,
+     separate family of object. */
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(18, 17, 15, 0.55);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
@@ -998,12 +1000,16 @@ html.cs-entered .cs-video.is-away,
   opacity: 0;
   transform: translateY(10px);
   pointer-events: none;
-  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+  /* Waits out the player's exit on the way in, so the corner is empty for a
+     beat rather than one thing crossfading into another. Leaving has no delay:
+     it is getting out of the real card's way. */
+  transition: opacity 380ms var(--ease) 260ms, transform 380ms var(--ease) 260ms;
 }
 .cs-nextfloat.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.cs-nextfloat:not(.is-shown) { transition: opacity 220ms var(--ease), transform 220ms var(--ease); }
 .cs-nextfloat-thumb {
   width: 64px; height: 64px;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
   background: #1E2B2C center / cover no-repeat;
   display: flex; align-items: center; justify-content: center;
@@ -1227,16 +1233,19 @@ html.cs-leaving body { transition: opacity 300ms var(--ease); opacity: 0; }
   .cs-section .cs-cue-row { display: none; }
   .cs-body { max-width: none; }
   .cs-cue-row { justify-content: flex-start; }
-  .cs-next { grid-template-columns: 64px minmax(0, 1fr) 20px; gap: 16px; }
-  .cs-next-thumb { width: 64px; height: 64px; }
-  .cs-video-frame { width: 96px; height: 96px; }
-  .cs-video.is-expanded .cs-video-frame { width: 168px; height: 168px; }
-  /* There isn't room beside a centred CTA on a phone, so the explainer steps
-     aside once the reader reaches the end of the story rather than sitting on
-     top of the buttons. It comes back if they scroll away from the end. */
+  /* The band keeps its full 191px thumbnail down to 720px; the single-column
+     rule below takes over from there. The 64px chip that used to live here
+     outranked it and left phones with the old small card. */
+  .cs-video-frame { width: 76px; height: 76px; }
+  .cs-video.is-expanded .cs-video-frame { width: 148px; height: 148px; }
+}
+@media (max-width: 719px) {
+  /* Collapsed into the edge tab once the reader is properly into the story.
+     A fixed square is a lot of a phone screen to give up for the whole scroll;
+     the tab keeps it one tap away and gives the reading the room back. */
   /* Needs to outrank `html.cs-entered .cs-video`, which sets opacity: 1. */
-  html.cs-entered .cs-video.is-parked,
-  .cs-video.is-parked { opacity: 0; pointer-events: none; transform: translateY(12px); }
+  html.cs-entered .cs-video.is-collapsed,
+  .cs-video.is-collapsed { opacity: 0; pointer-events: none; transform: translateY(8px); }
 }
 @media (max-width: 639px) {
   :root { --cs-pad: 20px; }
@@ -1706,14 +1715,12 @@ var CS_CONFIG = {
        it out as that section comes up. On phones the sections are short and
        flow rather than fill the screen, so a logo pinned over them would sit
        on top of the content — there it hands over one section earlier. */
-    /* On a phone the fixed explainer would sit on the closing CTAs, so park
-       it as that section arrives. */
-    if (videoWrap && narrow && narrow.matches && closing) {
-      var vr = closing.getBoundingClientRect();
-      videoWrap.classList.toggle('is-parked', vr.top < window.innerHeight * 0.6);
-    } else if (videoWrap) {
-      videoWrap.classList.remove('is-parked');
-    }
+    /* The explainer used to be parked here, keyed to the closing section —
+       written when that section held the CTAs. They live in the contact block
+       further down now, so this fired while the reader was still a whole
+       section away and the player vanished long before anything needed the
+       room. Stepping aside for the ending is the away watcher's job, and it
+       does it at every width. */
 
     var fade = 1;
     var ref = fadeRef();
@@ -2137,6 +2144,9 @@ var CS_CONFIG = {
   /* ---------------------------------------------------------------------
      Persistent explainer video. Optional, floats bottom-right, keeps playing
      across sections because it lives outside the scrolling content. */
+  /* Shared between the dismiss control, the restore tab and the phone morph
+     below, so none of them can undo another's decision by accident. */
+  var csVideoState = { dismissed: false, collapsed: false, held: false };
   var vcfg = CS_CONFIG.video || {};
   var vWrap = document.getElementById('cs-video');
   if (vWrap && vcfg.enabled) {
@@ -2232,6 +2242,7 @@ var CS_CONFIG = {
       setPlaying(false);
       vWrap.hidden = true;
       vRestore.classList.add('is-shown');
+      csVideoState.dismissed = true;
     });
     /* Brought back from the tab: the player simply expands and plays where the
        reader already is. The staged version of this — expanding the page and
@@ -2240,9 +2251,48 @@ var CS_CONFIG = {
     vRestore.addEventListener('click', function () {
       vWrap.hidden = false;
       vRestore.classList.remove('is-shown');
+      /* Asked for back by hand, so stop the scroll position collapsing it
+         again underneath them. Scrolling back up above the line releases it. */
+      csVideoState.dismissed = false;
+      csVideoState.held = true;
+      vWrap.classList.remove('is-collapsed');
       setPlaying(true);
     });
     render();
+
+    /* ---------------------------------------------------------------------
+       Phone: the square becomes the edge tab. A fixed square is a lot of a
+       small screen to give up for the whole scroll, so once the reader is
+       properly into the story it collapses into the tab that already exists
+       for the dismissed state, and comes back if they scroll up out of it.
+       Hysteresis on the line, and never against an explicit choice: dismissing
+       keeps it dismissed, tapping the tab keeps it open until they leave. */
+    var narrowQ = window.matchMedia('(max-width: 719px)');
+    function morph() {
+      if (!narrowQ.matches) {
+        if (csVideoState.collapsed) {
+          csVideoState.collapsed = false;
+          vWrap.classList.remove('is-collapsed');
+          if (!csVideoState.dismissed) vRestore.classList.remove('is-shown');
+        }
+        return;
+      }
+      if (csVideoState.dismissed) return;
+      var d = document.documentElement;
+      var max = d.scrollHeight - window.innerHeight;
+      var p = max > 0 ? window.scrollY / max : 0;
+      var next = csVideoState.collapsed ? p > 0.28 : p > 0.33;
+      if (!next) csVideoState.held = false;
+      if (csVideoState.held && next) return;
+      if (next === csVideoState.collapsed) return;
+      csVideoState.collapsed = next;
+      if (next) setPlaying(false);
+      vWrap.classList.toggle('is-collapsed', next);
+      vRestore.classList.toggle('is-shown', next);
+    }
+    morph();
+    window.addEventListener('scroll', morph, { passive: true });
+    window.addEventListener('resize', morph);
   }
 
   /* ---------------------------------------------------------------------
@@ -2675,6 +2725,18 @@ function csMakeManipulable(wrap, isFloating, atHome) {
      opening composition is the reader's old gesture surfacing somewhere it was
      never meant to apply; the top of the page should always look like the top
      of the page. Also covers the case where it stops floating altogether. */
+  /* Sent when the player fades out at the ending. It is invisible at that
+     moment, so a dragged or pinched player is put back silently and is simply
+     where it belongs if the reader scrolls up into the work again — rather
+     than reappearing in a corner they left it in a page ago, or travelling
+     home in front of them. */
+  wrap.addEventListener('cs:reset-position', function () {
+    cancelHoming();
+    if (dx === 0 && dy === 0 && scale === 1) return;
+    dx = 0; dy = 0; scale = 1;
+    apply();
+  });
+
   function reset() {
     if (dx === 0 && dy === 0 && scale === 1) return;
     cancelHoming();
@@ -2710,21 +2772,28 @@ function csMakeManipulable(wrap, isFloating, atHome) {
   function sync() {
     var top = contact.getBoundingClientRect().top;
     var vh = window.innerHeight;
-    var next = away ? top < vh * 0.98 : top < vh * 0.86;
+    /* Earlier than it was. At 0.86 the player was still sitting there while
+       the ending was already coming up under it; it should be gone before the
+       reader arrives, not as they do. */
+    var next = away ? top < vh * 1.24 : top < vh * 1.10;
     if (next !== away) {
       away = next;
-      if (wrap) wrap.classList.toggle('is-away', away);
+      if (wrap) {
+        wrap.classList.toggle('is-away', away);
+        /* Put a moved player back while nobody can see it happen. */
+        if (away) wrap.dispatchEvent(new Event('cs:reset-position'));
+      }
       if (tab) tab.classList.toggle('is-away', away);
     }
-    /* The hint takes over the corner the player just left, and stands down
-       once the real card is on screen — the two are never up together. */
+    /* Stage three. The hint takes over the corner the player just left, and
+       stands down the moment the real card crosses into the viewport — not
+       when it reaches the widget, which left the two on screen together and
+       said the same thing twice. Arriving, it waits out the player's exit
+       (the delay is on the CSS); leaving, it goes immediately. */
     if (hint && card) {
-      /* Stands down when the real card reaches the widget's own zone, so the
-         two never share the corner — and not a screen earlier, which left the
-         hint up for only a few hundred pixels of scroll. */
       var cardTop = card.getBoundingClientRect().top;
-      var line = vh - 190;
-      var show = away && (hinting ? cardTop > line : cardTop > line + 30);
+      var clear = hinting ? cardTop > vh - 24 : cardTop > vh + 40;
+      var show = away && clear;
       if (show !== hinting) {
         hinting = show;
         hint.classList.toggle('is-shown', hinting);

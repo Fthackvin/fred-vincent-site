@@ -1146,7 +1146,9 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   align-items: center;
   gap: 14px;
   padding: 14px;
-  border-radius: 20px;
+  /* 16px, the same corner as the pinned controls — 20 read as a softer,
+     separate family of object. */
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(18, 17, 15, 0.55);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
@@ -1157,12 +1159,16 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   opacity: 0;
   transform: translateY(10px);
   pointer-events: none;
-  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+  /* Waits out the player's exit on the way in, so the corner is empty for a
+     beat rather than one thing crossfading into another. Leaving has no delay:
+     it is getting out of the real card's way. */
+  transition: opacity 380ms var(--ease) 260ms, transform 380ms var(--ease) 260ms;
 }
 .t2-nextfloat.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.t2-nextfloat:not(.is-shown) { transition: opacity 220ms var(--ease), transform 220ms var(--ease); }
 .t2-nextfloat-thumb {
   width: 64px; height: 64px;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
   background: #1E2B2C center / cover no-repeat;
 }
@@ -1206,8 +1212,15 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 @media (max-width: 899px) {
   .t2-video-slot { width: 132px; margin-top: 28px; }
   .t2-video { width: 132px; }
-  .t2-video.is-pinned { width: 96px; }
-  .t2-video.is-pinned.is-playing { width: 168px; }
+  .t2-video.is-pinned { width: 76px; }
+  .t2-video.is-pinned.is-playing { width: 148px; }
+  /* Once the head stacks, the slot's square drops underneath the copy as a
+     large block of nothing — it is a placeholder, not a composition, and it
+     reads as content the reader has to get past. Below this width the player
+     is the edge tab from the start, clipped to the right side, and only
+     becomes a square when they ask for it. `display: none` rather than a fade,
+     so the slot reserves no height for it either. */
+  .t2-video.is-collapsed { display: none; }
   .t2-video-overlay .glyph { width: 24px; height: 29px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1700,6 +1713,9 @@ var T2_CONFIG = {
   var toggleGlyph = document.getElementById('t2-video-toggle-glyph').querySelector('path');
   var overlayGlyph = document.getElementById('t2-video-overlay-glyph').querySelector('path');
   var label = document.getElementById('t2-video-label');
+  /* Shared between the dismiss control, the restore tab and the phone morph,
+     so none of them can undo another's decision by accident. */
+  var t2VideoState = { dismissed: false, collapsed: false, held: false };
   var dismiss = document.getElementById('t2-video-dismiss');
   var restore = document.getElementById('t2-video-restore');
   var poster = document.getElementById('t2-video-poster');
@@ -1848,6 +1864,7 @@ var T2_CONFIG = {
     wrap.classList.remove('is-pinned');
     slot.style.minHeight = '';
     restore.classList.add('is-shown');
+    t2VideoState.dismissed = true;
   });
   /* Brought back from the tab: the player expands and plays where the reader
      already is, rather than only reappearing at its resting size. */
@@ -1857,8 +1874,46 @@ var T2_CONFIG = {
     /* setPlaying first: pinning keys off `activated`, which only becomes true
        once it has been played, so pinning before that would do nothing. */
     setPlaying(true);
+    /* Asked for back by hand, so the scroll position must not collapse it
+       again underneath them. Scrolling up past the line releases it. */
+    t2VideoState.dismissed = false;
+    t2VideoState.held = true;
+    wrap.classList.remove('is-collapsed');
     syncPinned();
   });
+
+  /* -----------------------------------------------------------------------
+     Phone: the pinned square becomes the edge tab. Template One's behaviour,
+     inherited — a fixed square is a lot of a small screen to give up for the
+     whole scroll, so once the reader is into the work it collapses into the
+     tab that already exists for the dismissed state and comes back if they
+     scroll up out of it. Never against an explicit choice. */
+  /* The same width at which the head stacks — that is the moment the square
+     has nowhere left to sit. */
+  var t2NarrowQ = window.matchMedia('(max-width: 899px)');
+  function t2Morph() {
+    if (!t2NarrowQ.matches) {
+      if (t2VideoState.collapsed) {
+        t2VideoState.collapsed = false;
+        wrap.classList.remove('is-collapsed');
+        if (!t2VideoState.dismissed) restore.classList.remove('is-shown');
+      }
+      return;
+    }
+    /* Not a scroll threshold here. Template One's player floats over the page,
+       so it can be a square near the top and collapse as the reader gets into
+       it. This one lives in the head composition, and once that stacks the
+       square has nowhere to be except underneath the copy. So on a narrow
+       screen it is the tab from the outset. */
+    if (t2VideoState.dismissed || t2VideoState.held || t2VideoState.collapsed) return;
+    t2VideoState.collapsed = true;
+    setPlaying(false);
+    wrap.classList.add('is-collapsed');
+    restore.classList.add('is-shown');
+  }
+  t2Morph();
+  window.addEventListener('scroll', t2Morph, { passive: true });
+  window.addEventListener('resize', t2Morph);
 
   if (media) {
     media.addEventListener('ended', function () {
@@ -2157,8 +2212,13 @@ var T2_CONFIG = {
       var vtab = document.getElementById('t2-video-restore');
       var vwrap = document.querySelector('.t2-video');
       if (vtab && vwrap) {
-        var playerUp = !vwrap.hidden && vwrap.classList.contains('is-pinned');
-        vtab.classList.toggle('is-shown', next && !playerUp);
+        /* One representation of the video at a time, and only one. The tab is
+           shown exactly when the player is not on the page — dismissed, or
+           collapsed into the tab on a narrow screen. It used to key off the
+           scroll position and whether the player had pinned yet, which put the
+           tab up at the top while the player was still sitting in its slot
+           further down: the same thing offered twice. */
+        vtab.classList.toggle('is-shown', vwrap.hidden || vwrap.classList.contains('is-collapsed'));
       }
     }
     /* Reads only scrollY against a cached threshold — no layout, so it runs
@@ -2222,25 +2282,35 @@ var T2_CONFIG = {
   var wrap = document.getElementById('t2-video');
   var tab = document.getElementById('t2-video-restore');
   var hint = document.getElementById('t2-nextfloat');
+  var card = document.querySelector('.t2-next');
   if (!outro || (!wrap && !tab && !hint)) return;
   var away = false;
   var hinting = false;
   function sync() {
     var top = outro.getBoundingClientRect().top;
     var vh = window.innerHeight;
-    var next = away ? top < vh * 0.98 : top < vh * 0.86;
+    /* Earlier than it was. At 0.86 the player was still sitting there while
+       the ending was already coming up under it; it should be gone before the
+       reader arrives, not as they do. */
+    var next = away ? top < vh * 1.24 : top < vh * 1.10;
     if (next !== away) {
       away = next;
-      if (wrap) wrap.classList.toggle('is-away', away);
+      if (wrap) {
+        wrap.classList.toggle('is-away', away);
+        /* Put a moved player back while nobody can see it happen. */
+        if (away) wrap.dispatchEvent(new Event('t2:reset-position'));
+      }
       if (tab) tab.classList.toggle('is-away', away);
     }
-    /* Keyed to the outro rather than to the band inside it. Template One's
-       ending is white and the hint can ride down onto it; this one is black,
-       and a translucent dark widget on it would disappear. So the hint lives
-       only while the work is still on screen and is gone by the time the dark
-       block owns the view. */
-    if (hint) {
-      var show = away && (hinting ? top > vh * 0.30 : top > vh * 0.36);
+    /* Stage three, keyed to the real band exactly as Template One is. Keying
+       it to the outro instead left the hint up while that band was already on
+       screen, saying the same thing twice. It rides onto the dark block for a
+       moment on the way, which reads fine — the hairline and the thumbnail
+       carry it. */
+    if (hint && card) {
+      var cardTop = card.getBoundingClientRect().top;
+      var clear = hinting ? cardTop > vh - 24 : cardTop > vh + 40;
+      var show = away && clear;
       if (show !== hinting) {
         hinting = show;
         hint.classList.toggle('is-shown', hinting);
@@ -2474,6 +2544,18 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
      opening composition is the reader's old gesture surfacing somewhere it was
      never meant to apply; the top of the page should always look like the top
      of the page. Also covers the case where it stops floating altogether. */
+  /* Sent when the player fades out at the ending. It is invisible at that
+     moment, so a dragged or pinched player is put back silently and is simply
+     where it belongs if the reader scrolls up into the work again — rather
+     than reappearing in a corner they left it in a page ago, or travelling
+     home in front of them. */
+  wrap.addEventListener('t2:reset-position', function () {
+    cancelHoming();
+    if (dx === 0 && dy === 0 && scale === 1) return;
+    dx = 0; dy = 0; scale = 1;
+    apply();
+  });
+
   function reset() {
     if (dx === 0 && dy === 0 && scale === 1) return;
     cancelHoming();
