@@ -1863,6 +1863,17 @@ var T2_CONFIG = {
      along. Synchronous — nothing animates, so there is nothing to watch. */
   function keepPlace(keep) {
     if (!keep) return;
+
+    /* One correction, synchronous, before the media is given its transform.
+
+       It must stay before slideMedia: a second pass on the next frame measures
+       the anchor through the scale that slideMedia has by then applied, so it
+       reads a box 1.8x its real size and corrects by a distance that does not
+       exist. That made the drift worse, not better.
+
+       Chrome's native scroll anchoring quietly assists here; Safari has none
+       (`overflow-anchor` is unsupported), so in Safari this is the only thing
+       holding the reader's place. */
     var delta = keep.el.getBoundingClientRect().top - keep.top;
     if (delta) window.scrollBy(0, delta);
   }
