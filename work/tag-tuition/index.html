@@ -131,7 +131,12 @@
   --cs-logo-h: 83px;
   --cs-logo-top: 46px;
   /* Layout size of the animated cover logo (it scales down from here). */
-  --cs-logo-big: 730px;
+  /* The illustration's layout size, and therefore its size on the cover.
+     It was 730, which is what the page painted before JS had measured
+     anything — so the reader saw the full-size artwork and then watched it
+     snap down once the cover scale was applied. Smaller here means smaller
+     at both points, with nothing to snap between. */
+  --cs-logo-big: 620px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -1360,11 +1365,10 @@ var CS_CONFIG = {
        the cue uses means the logo and the cue cannot fall out of alignment. */
     var cr = cover.getBoundingClientRect();
     var coverBoxW = cr.width || document.documentElement.clientWidth;
-    /* 0.85 of the artwork's own width. The viewport cap alone could not make
-       this smaller on a wide screen — at 1512px it works out above the
-       illustration's intrinsic 730, so the intrinsic size always won and
-       changing the cap did nothing. This scales the artwork itself. */
-    var coverW = Math.min(bigW * 0.85, coverBoxW * 0.58, (window.innerHeight - 200) * (bigW / bigH));
+    /* No extra multiplier: the layout size IS the cover size now, so the
+       cover needs no scaling at all and the artwork is never resampled. The
+       caps still apply on shorter or narrower screens. */
+    var coverW = Math.min(bigW, coverBoxW * 0.58, (window.innerHeight - 200) * (bigW / bigH));
     var coverScale = coverW / bigW;
     var coverH = bigH * coverScale;
     var targetLeft = cr.left + (coverBoxW - coverW) / 2;

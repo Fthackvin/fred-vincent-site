@@ -1877,40 +1877,50 @@ var T2_CONFIG = {
      to follow. The width change is instant underneath, so what the reader sees
      is the work moving aside. */
   var sequence = document.querySelector('.t2-sequence');
-  function slideMedia(fromLeft) {
-    if (!sequence || reduce || fromLeft === null) return;
-    var dx = fromLeft - sequence.getBoundingClientRect().left;
-    if (!dx) return;
+  function slideMedia(from) {
+    if (!sequence || reduce || !from) return;
+    var now = sequence.getBoundingClientRect();
+    var ratio = now.width ? from.width / now.width : 1;
+    if (Math.abs(ratio - 1) < 0.001) return;
+
+    /* Anchored right, and scaled — no translation at all.
+
+       The column does not move: its right edge is fixed and it narrows from
+       the left (closed 0→1512, open 671→1512). Translating it, which is what
+       this did first, dragged the already-narrow box leftward and left a gap
+       down the right for the length of the animation. Scaling about the right
+       edge reproduces the old box exactly, so the left edge sweeps in and the
+       right stays put — which is what actually happens, just over time.
+
+       The vertical origin sits on the reader's eye line rather than the top of
+       a 12,000px column, so the panel they are looking at holds still while
+       the rest scales around it.
+
+       Transform only: no layout change, no document-height change, nothing for
+       the scroll to chase. Chasing it is what made the page pan diagonally. */
+    sequence.style.transformOrigin = '100% ' + Math.round((window.innerHeight / 2) - now.top) + 'px';
     sequence.style.transition = 'none';
-    sequence.style.transform = 'translateX(' + dx + 'px)';
-    void sequence.offsetWidth;                 /* commit the start position */
-    /* A shallow dip in opacity across the move. The images change width in a
-       single frame — that cannot be animated without becoming a layout
-       animation again — and easing the whole column down and back covers that
-       change, so it reads as one continuous movement rather than a resize
-       followed by a slide. */
-    sequence.style.opacity = '0.86';
+    sequence.style.transform = 'scale(' + ratio.toFixed(4) + ')';
     void sequence.offsetWidth;
-    var EASE = 'cubic-bezier(0.32, 0.72, 0.24, 1)';
-    sequence.style.transition = 'transform 620ms ' + EASE + ', opacity 620ms ' + EASE;
-    sequence.style.transform = 'translateX(0)';
-    sequence.style.opacity = '1';
+
+    sequence.style.transition = 'transform 620ms cubic-bezier(0.32, 0.72, 0.24, 1)';
+    sequence.style.transform = 'scale(1)';
     window.setTimeout(function () {
       sequence.style.transition = '';
       sequence.style.transform = '';
-      sequence.style.opacity = '';
+      sequence.style.transformOrigin = '';
     }, 700);
   }
 
   function onToggle() {
     var open = toggle.getAttribute('aria-expanded') === 'true';
     var keep = anchor();
-    var seqLeft = sequence ? sequence.getBoundingClientRect().left : null;
+    var seqBox = sequence ? sequence.getBoundingClientRect() : null;
 
     setExpanded(!open);
     body.classList.toggle('is-open', !open);
     keepPlace(keep);
-    slideMedia(seqLeft);
+    slideMedia(seqBox);
 
     /* Opening exposes it immediately so it is readable as it arrives; closing
        waits for the reflow to finish, so the text is still announced while it
