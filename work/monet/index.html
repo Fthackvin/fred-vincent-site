@@ -1045,17 +1045,23 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 @media (prefers-reduced-motion: reduce) { .t2-story-pin { transition: none; } }
 
 .t2-next {
-  margin-top: clamp(36px, 5vh, 56px);
+  /* Matched to Template One's band. The small version read as a footnote
+     rather than as the next piece of work: same 191px square thumbnail, same
+     display-face title, same hairline above it — only the colours differ,
+     because this one sits on the dark outro. */
+  margin-top: clamp(56px, 8vh, 96px);
+  padding-top: clamp(28px, 4vh, 44px);
+  border-top: 1px solid rgba(248, 250, 252, 0.16);
   display: grid;
-  grid-template-columns: 81px minmax(0, 1fr) 24px;
+  grid-template-columns: 191px minmax(0, 1fr) 28px;
   align-items: center;
-  gap: 23px;
+  gap: clamp(24px, 3vw, 48px);
   text-decoration: none;
   color: inherit;
 }
 .t2-next-thumb {
-  width: 81px; height: 81px;
-  border-radius: 4px;
+  width: 191px; height: 191px;
+  border-radius: 6px;
   overflow: hidden;
   background: #1E2B2C center / cover no-repeat;
 }
@@ -1064,33 +1070,37 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   font-family: var(--body);
   font-weight: 300;
   font-size: 12px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: rgba(248, 250, 252, 0.6);
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 .t2-next-title {
   display: block;
-  font-family: var(--body);
-  font-weight: 300;
-  font-size: 15px;
-  line-height: 18px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(26px, 2.6vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
   color: #FFFFFF;
 }
 .t2-next-desc {
   display: block;
-  margin-top: 7px;
+  margin-top: 12px;
+  max-width: 34ch;
   font-family: var(--body);
   font-weight: 300;
   font-size: 14px;
-  line-height: 19px;
+  line-height: 1.45;
   color: #C9C9C4;
 }
 .t2-next-chev { transform: rotate(-90deg); color: #FFFFFF; }
 .t2-next:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 6px; border-radius: 6px; }
-@media (max-width: 899px) {
-  .t2-next { grid-template-columns: 64px minmax(0, 1fr) 20px; gap: 16px; }
-  .t2-next-thumb { width: 64px; height: 64px; }
+/* The thumbnail takes the full width above the text rather than shrinking to
+   a chip — same behaviour as Template One's band. */
+@media (max-width: 719px) {
+  .t2-next { grid-template-columns: minmax(0, 1fr) 24px; gap: 20px; }
+  .t2-next-thumb { grid-column: 1 / -1; }
 }
 
 /* Dismissed -> a small bookmark tab that brings it back. */
@@ -1117,6 +1127,66 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 .t2-video-restore.is-shown { opacity: 1; transform: none; pointer-events: auto; }
 .t2-video-restore.is-away { opacity: 0; pointer-events: none; transition: opacity 240ms var(--ease); }
+
+/* --- Floating next-case-study hint ---------------------------------------
+   Template One's widget, on Template Two's terms. The player vacates the
+   bottom-right corner as the ending arrives and this takes it over: the same
+   glass treatment as the pinned controls, at widget rather than button scale.
+   It stands down while the outro is still arriving — a translucent dark panel
+   on Template Two's dark closing block would be a smudge, and the real band is
+   right there anyway. */
+.t2-nextfloat {
+  position: fixed;
+  right: clamp(16px, 3.2vw, 46px);
+  bottom: clamp(16px, 3vh, 40px);
+  z-index: 70;
+  width: 320px;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(18, 17, 15, 0.55);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 16px 44px rgba(20, 18, 14, 0.22);
+  text-decoration: none;
+  color: inherit;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+}
+.t2-nextfloat.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.t2-nextfloat-thumb {
+  width: 64px; height: 64px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1E2B2C center / cover no-repeat;
+}
+.t2-nextfloat-eyebrow {
+  display: block;
+  font-family: var(--body); font-weight: 300;
+  font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+  margin-bottom: 5px;
+}
+.t2-nextfloat-title {
+  display: block;
+  font-family: var(--display); font-weight: 400;
+  font-size: 21px; line-height: 1.1; letter-spacing: -0.01em;
+  color: #FFFFFF;
+}
+.t2-nextfloat-chev { color: rgba(255, 255, 255, 0.72); transition: transform 260ms var(--ease); }
+.t2-nextfloat:hover .t2-nextfloat-chev { transform: translateX(3px); }
+.t2-nextfloat:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 4px; }
+@media (max-width: 719px) { .t2-nextfloat { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .t2-nextfloat { transition: opacity 200ms linear; transform: none; }
+  .t2-nextfloat.is-shown { transform: none; }
+}
 
 /* Direct manipulation: the player can be dragged and pinched once it is
    floating. In its slot it is part of the composition, so it stays put. */
@@ -1489,6 +1559,18 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   </section>
 
 </main>
+<!-- Floating hint at the next case study. Mirrors the .t2-next band in the
+     outro; it only exists in the window between the player leaving and that
+     band arriving. -->
+<a class="t2-nextfloat" id="t2-nextfloat" href="/work/tag-tuition/" data-t2-exit="/work/tag-tuition/" aria-label="Next case study: Tag Tuition" tabindex="-1">
+  <span class="t2-nextfloat-thumb" style="background-image:url('/work/general/tag-tuition-splash.jpg');"></span>
+  <span>
+    <span class="t2-nextfloat-eyebrow">Next case study</span>
+    <span class="t2-nextfloat-title">Tag Tuition</span>
+  </span>
+  <svg class="t2-nextfloat-chev" width="16" height="9" viewBox="0 0 16.48 8.9" style="transform: rotate(-90deg);" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+</a>
+
 <button type="button" class="t2-video-restore" id="t2-video-restore" aria-label="Show the project video again"><svg class="play" width="15" height="17" viewBox="0 0 15 17" fill="currentColor" aria-hidden="true"><path d="M0 0.9v15.2a.9.9 0 0 0 1.37.77l12.7-7.6a.9.9 0 0 0 0-1.54L1.37.13A.9.9 0 0 0 0 .9Z"/></svg><span>Project video</span></button>
 
 <footer class="t2-footer">
@@ -2139,16 +2221,33 @@ var T2_CONFIG = {
   var outro = document.querySelector('.t2-outro');
   var wrap = document.getElementById('t2-video');
   var tab = document.getElementById('t2-video-restore');
-  if (!outro || (!wrap && !tab)) return;
+  var hint = document.getElementById('t2-nextfloat');
+  if (!outro || (!wrap && !tab && !hint)) return;
   var away = false;
+  var hinting = false;
   function sync() {
     var top = outro.getBoundingClientRect().top;
     var vh = window.innerHeight;
     var next = away ? top < vh * 0.98 : top < vh * 0.86;
-    if (next === away) return;
-    away = next;
-    if (wrap) wrap.classList.toggle('is-away', away);
-    if (tab) tab.classList.toggle('is-away', away);
+    if (next !== away) {
+      away = next;
+      if (wrap) wrap.classList.toggle('is-away', away);
+      if (tab) tab.classList.toggle('is-away', away);
+    }
+    /* Keyed to the outro rather than to the band inside it. Template One's
+       ending is white and the hint can ride down onto it; this one is black,
+       and a translucent dark widget on it would disappear. So the hint lives
+       only while the work is still on screen and is gone by the time the dark
+       block owns the view. */
+    if (hint) {
+      var show = away && (hinting ? top > vh * 0.30 : top > vh * 0.36);
+      if (show !== hinting) {
+        hinting = show;
+        hint.classList.toggle('is-shown', hinting);
+        if (hinting) hint.removeAttribute('tabindex');
+        else hint.setAttribute('tabindex', '-1');
+      }
+    }
   }
   sync();
   window.addEventListener('scroll', sync, { passive: true });
