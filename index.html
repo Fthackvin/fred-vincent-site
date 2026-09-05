@@ -486,8 +486,12 @@ p { margin: 0; }
 /* At 1024px+ the max-width cap plus its own auto-centering already produces
    generous side margins, so the extra inner padding is dropped — matches the
    reduced page margins in the updated Paper design. */
+/* The gutter is never zeroed. Widening the box by twice the gutter puts the
+   content on exactly the same edge as before at desktop width, while a
+   narrower window keeps its margin instead of running the wordmark, the hero
+   and the footer into the glass. */
 @media (min-width: 1024px) {
-  .wrap { padding: 0; }
+  .wrap { max-width: calc(var(--container) + (2 * var(--s7))); padding: 0 var(--s7); }
 }
 
 .narrow { max-width: var(--narrow); }
@@ -1936,7 +1940,7 @@ section#contact.block { padding-bottom: var(--s4); }
   .tiers::-webkit-scrollbar { display: none; }
 }
 @media (min-width: 1024px) {
-  .tiers { padding-left: max(0px, calc((100% - var(--container)) / 2)); padding-right: var(--s7); }
+  .tiers { padding-left: max(var(--s7), calc((100% - var(--container)) / 2)); padding-right: var(--s7); }
 }
 .tier {
   display: flex;
@@ -2324,7 +2328,11 @@ section#contact.block { padding-bottom: var(--s4); }
   gap: 31px;
   list-style: none;
   margin: 0;
-  padding: 0 24px var(--s6);
+  /* The first card starts on the same left edge as the "Work" heading above
+     it and as every other container on the page. It used to sit at a flat
+     24px, so once the page gutter grew the row hung off to the left of its
+     own section. The trailing spacer already uses this idea. */
+  padding: 0 24px var(--s6) max(24px, calc((100vw - var(--container)) / 2));
 }
 /* The trailing edge mirrors the leading one, so scrolling fully right ends the
    row on the container rather than flush against the screen.
@@ -2344,7 +2352,7 @@ section#contact.block { padding-bottom: var(--s4); }
   .work-row-viewport { --row-edge: var(--s7); }
 }
 @media (min-width: 1024px) {
-  .work-row { padding-left: max(0px, calc((100% - var(--container)) / 2)); }
+  .work-row { padding-left: max(var(--s7), calc((100% - var(--container)) / 2)); }
   /* 100vw, not 100%: as a flex-basis a percentage resolves against the row's
      own max-content width — the whole scrollable track — not the window.
      The row's 31px gap lands before the spacer too, so it comes off the top. */
@@ -2397,6 +2405,10 @@ section#contact.block { padding-bottom: var(--s4); }
 .work-card-media img { position: absolute; display: block; }
 .work-card-body {
   margin-top: 22px;
+  /* Held in from the card's left edge rather than flush with it. Hard against
+     the artwork the copy read as a caption belonging to the image; a small
+     inset lets the title sit as the start of its own column. */
+  padding-left: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
