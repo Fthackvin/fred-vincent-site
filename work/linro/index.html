@@ -6,7 +6,23 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no, email=no, address=no">
 <script>
+  /* The case study always opens at its own beginning — the arrival is the
+     entry point, and a restored scroll position would land the reader past it. */
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  /* Linro arrives the way Template One does: as an inset panel over a plain
+     ground, with the mark drawing itself inside it. The reader's first move
+     onward expands that panel and hands over to the Template Two page beneath.
+
+     Set here, in the head, so the very first paint is already the panel —
+     applied from the end of the body the browser paints the full page first
+     and it visibly snaps into the panel a frame later.
+
+     Desktop only. On a phone an inset panel wastes the little width there is,
+     and locking the scroll to stage an expansion fights the device. */
+  if (window.matchMedia && window.matchMedia('(min-width: 900px)').matches &&
+      !(window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    document.documentElement.classList.add('lin-stage', 'lin-arriving');
+  }
 </script>
 <title>Linro · Studio Vincent</title>
 <meta name="description" content="Giving invisible security infrastructure a visible language, built around lineage.">
@@ -26,14 +42,14 @@
 <meta property="og:url" content="https://studiovincent.co/work/linro/">
 <meta property="og:title" content="Linro">
 <meta property="og:description" content="Giving invisible security infrastructure a visible language, built around lineage.">
-<meta property="og:image" content="https://studiovincent.co/work/linro/../general/linro-logo.png">
+<meta property="og:image" content="https://studiovincent.co/work/general/linro-logo.png">
 <meta property="og:image:alt" content="The Linro wordmark.">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Linro">
 <meta name="twitter:description" content="Giving invisible security infrastructure a visible language, built around lineage.">
-<meta name="twitter:image" content="https://studiovincent.co/work/linro/../general/linro-logo.png">
+<meta name="twitter:image" content="https://studiovincent.co/work/general/linro-logo.png">
 
 <!-- The opening media is the one asset the first screen depends on, so it is
      fetched at high priority alongside the document rather than discovered
@@ -1463,13 +1479,167 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
 /* The wordmark replaces the title lockup at the top of the page. The text is
    still there for anything that isn't looking at pixels. */
-.lw-title { margin: 0 0 clamp(20px, 3vh, 34px); }
-.lw-title .lw { width: min(560px, 100%); }
-.lw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+/* Held until the mark is on screen. Paused rather than unset, so removing
+   the class starts the sequence from its first frame instead of dropping the
+   reader into the middle of one that has been running unseen. */
+.lw--held * { animation-play-state: paused; }
+
+/* Sequence slots awaiting artwork. Linro's imagery is not in the repo yet, so
+   each beat holds its place at its real proportion rather than collapsing the
+   page — the rhythm is right and the pictures drop straight in. */
+.t2-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F3F3EF;
+  border: 1px dashed #D6D6CE;
+}
+.t2-slot span {
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #9A9A92;
+}
+
+/* --- The mark as a slide -------------------------------------------------
+   First beat of the sequence: the mark at size, running, on its own ground.
+   Full bleed like every other item, so it reads as part of the sequence
+   rather than as a component sitting in the page. */
+.t2-item--mark .lw-stage {
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(64px, 13vw, 168px) clamp(24px, 6vw, 104px);
+}
+.t2-item--mark .lw { width: min(880px, 100%); }
+
+/* --- Arrival -------------------------------------------------------------
+   Template One's opening, on a Template Two page. The case study does not
+   land as a page: it arrives as an inset, rounded panel over a plain ground,
+   with the mark drawing itself inside it and the navigation still light. The
+   first deliberate move onward expands the panel to the screen edges and then
+   fades it, leaving the page that was underneath it all along.
+
+   The expansion animates the panel's own insets rather than transforming it,
+   which is what makes it read as a box genuinely growing — the corners stay
+   true and nothing is scaled. Once it is done the classes come off and the
+   document is ordinary again: the arrival is a stage, not a mode. */
+:root {
+  --lin-side: clamp(12px, 2.2vw, 34px);
+  --lin-expand: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The ground the panel sits on, and the scroll lock that holds the reader on
+   it. Both only exist while the arrival is on screen. */
+html.lin-arriving,
+html.lin-arriving body { height: 100%; overflow: hidden; background: #E9E7E2; }
+
+.lin-arrival { display: none; }
+html.lin-stage .lin-arrival {
+  display: block;
+  position: fixed;
+  z-index: 60;
+  left: var(--lin-side);
+  right: var(--lin-side);
+  top: calc(var(--t2-nav-h) + var(--lin-side));
+  bottom: var(--lin-side);
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--paper-50);
+  box-shadow: 0 24px 70px rgba(20, 18, 14, 0.18);
+  transition: left var(--lin-expand), right var(--lin-expand),
+              top var(--lin-expand), bottom var(--lin-expand),
+              border-radius var(--lin-expand), box-shadow var(--lin-expand);
+}
+/* Expanded: the same element, its insets driven to the edges. */
+html.lin-full .lin-arrival {
+  left: 0; right: 0; top: 0; bottom: 0;
+  border-radius: 0;
+  box-shadow: 0 24px 70px rgba(20, 18, 14, 0);
+}
+/* Spent: the page beneath is already at the top and fully painted, so the
+   panel simply stops being in the way. */
+html.lin-gone .lin-arrival {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 380ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lin-arrival-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(620px, 58%);
+}
+.lin-arrival-mark .lw { width: 100%; }
+
+.lin-cue {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: clamp(48px, 9vh, 96px);
+  display: inline-flex;
+  align-items: center;
+  gap: 17px;
+  background: none;
+  border: 0;
+  padding: 6px 4px;
+  margin: 0;
+  cursor: pointer;
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #000;
+  /* Comes in behind the mark, not with it — the reader should see where they
+     have landed before being told there is more. */
+  animation: lin-cue-in 620ms var(--ease) 900ms both;
+}
+.lin-cue .chev { color: #484848; display: block; flex-shrink: 0; transition: transform 300ms var(--ease); }
+.lin-cue:hover .chev { transform: translateY(3px); }
+.lin-cue:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; border-radius: 6px; }
+@keyframes lin-cue-in { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* The x belongs to the full-screen page; over the panel the nav is still the
+   way out and the panel edge is the affordance. */
+html.lin-arriving .t2-close { opacity: 0; pointer-events: none; }
+
+/* The page's own entrance is held while the panel is over it. Paused rather
+   than cancelled, so it plays properly on the handover instead of having
+   already finished behind the panel. */
+html.lin-arriving .t2-title,
+html.lin-arriving .t2-intro,
+html.lin-arriving .t2-tags,
+html.lin-arriving .t2-video-slot,
+html.lin-arriving .t2-head .t2-story-toggle,
+html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.lin-stage .lin-arrival { transition: none; }
+  .lin-cue { animation: none; }
+}
 
 </style>
 </head>
 <body>
+
+<!-- ===== Arrival ========================================================
+     Template One's opening, borrowed. The homepage card grows into this
+     panel, the mark assembles inside it, and the reader's first move onward
+     expands the panel away to leave the Template Two page underneath. The
+     whole thing is one element, so nothing has to be kept in step with
+     anything else. -->
+<div class="lin-arrival" id="lin-arrival">
+  <div class="lin-arrival-mark" id="lin-arrival-mark" role="img" aria-label="The Linro wordmark drawing itself"></div>
+  <button type="button" class="lin-cue" id="lin-cue">
+    <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+    <span>Scroll to read more</span>
+  </button>
+</div>
 
 <header class="t2-nav">
   <div class="t2-nav-inner">
@@ -1501,30 +1671,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   <section class="t2-head">
     <div class="t2-wrap t2-head-inner">
       <div>
-        <h1 class="t2-title lw-title"><span class="lw-sr">Linro</span>
-        <svg class="lw lw--thread lw--ink" viewBox="-8 -10 199.24 61.73" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Linro">
-          <defs>
-            <mask id="lw-threads-hero" maskUnits="userSpaceOnUse" x="-10" y="-10" width="220" height="70">
-              <path class="th th-L" d="M 2.5 1.2 L 2.5 39 L 29.7 39" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-I" d="M 44.3 1.2 L 44.3 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-N" d="M 61.2 41.6 L 61.2 2.2 L 84.6 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-N2" d="M 89 41.6 L 89 1.2" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-Rstem" d="M 104.4 0.6 L 104.4 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-Rbowl" d="M 104.4 4 L 121 4 Q 128 4 128 11 L 128 17 Q 128 19.6 124.3 20.2 L 106.2 28.9" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-Rleg" d="M 123.2 28.6 L 127.8 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-            </mask>
-            <mask id="lw-ring-hero" maskUnits="userSpaceOnUse" x="-10" y="-10" width="203.25" height="61.73">
-              <circle class="drawer" cx="158.49" cy="21.50" r="17.67" fill="none" stroke="#fff" stroke-width="6.50" pathLength="1"/>
-            </mask>
-          </defs>
-          <g class="letters" fill="currentColor" mask="url(#lw-threads-hero)"><path class="ltr ltr-L" d="M 29.620 41.105 C 29.711 41.305 29.570 41.525 29.351 41.525 L 1.000 41.525 C 0.851 41.525 0.700 41.495 0.570 41.425 C 0.230 41.265 0.000 40.925 0.000 40.525 L 0.000 4.025 C 0.000 3.635 0.230 3.285 0.580 3.115 L 4.570 1.245 C 4.771 1.155 5.000 1.295 5.000 1.515 L 5.000 36.425 C 5.000 36.480 5.045 36.525 5.101 36.525 L 26.851 36.525 C 27.230 36.525 27.591 36.755 27.750 37.105 Z"/><path class="ltr ltr-I" d="M 84.610 40.891 C 84.610 40.895 84.614 40.898 84.614 40.902 C 84.614 40.905 84.610 40.908 84.610 40.911 L 84.610 40.951 L 84.603 40.967 L 84.600 40.972 L 84.600 40.982 C 84.600 40.992 84.600 41.002 84.589 41.013 L 84.589 41.023 C 84.589 41.033 84.580 41.033 84.580 41.033 C 84.570 41.052 84.559 41.071 84.534 41.089 C 84.480 41.150 84.408 41.192 84.321 41.191 C 84.297 41.190 84.281 41.169 84.259 41.163 C 84.255 41.163 84.253 41.167 84.249 41.167 L 84.239 41.167 C 84.230 41.176 84.229 41.177 84.229 41.167 L 84.209 41.167 L 84.209 41.156 C 84.199 41.156 84.188 41.156 84.188 41.146 L 84.179 41.146 C 84.179 41.146 84.154 41.126 84.133 41.106 C 84.127 41.101 84.121 41.098 84.116 41.092 C 84.116 41.092 84.116 41.091 84.115 41.091 C 84.112 41.088 84.108 41.085 84.108 41.085 C 84.099 41.074 84.089 41.054 84.079 41.044 L 84.079 41.033 L 84.068 41.023 L 83.898 40.766 L 83.778 40.592 L 81.574 37.327 L 80.903 36.331 L 80.794 36.177 L 80.272 35.417 L 80.263 35.407 C 80.242 35.376 80.213 35.356 80.192 35.325 L 79.892 34.863 L 79.861 34.822 L 79.461 34.237 C 79.421 34.186 79.401 34.134 79.382 34.083 L 79.171 33.765 L 79.171 33.754 L 78.800 33.210 L 78.659 32.995 L 78.589 32.882 L 77.527 31.260 L 77.527 31.249 L 76.807 30.182 L 74.422 26.609 C 74.402 26.588 74.402 26.568 74.393 26.547 L 72.179 23.262 L 68.041 17.143 L 67.922 16.969 L 67.922 16.958 L 63.765 10.813 L 63.765 40.533 C 63.765 41.093 63.315 41.533 62.765 41.533 L 59.765 41.533 C 59.215 41.533 58.765 41.093 58.765 40.533 L 58.765 4.033 C 58.765 3.643 58.985 3.293 59.345 3.133 L 59.385 3.113 L 60.795 2.453 L 62.955 1.433 L 63.335 1.253 C 63.365 1.233 63.405 1.223 63.435 1.223 C 63.536 1.217 63.634 1.264 63.696 1.341 C 63.704 1.342 63.710 1.343 63.714 1.343 L 63.765 1.425 L 72.159 13.858 C 72.169 13.878 72.188 13.878 72.199 13.899 L 83.628 30.828 L 83.809 31.095 L 84.409 31.896 C 84.526 32.056 84.578 32.241 84.594 32.426 C 84.595 32.428 84.594 32.428 84.595 32.429 C 84.607 32.473 84.606 32.502 84.605 32.537 L 84.605 32.545 L 84.614 32.574 L 84.610 40.284 Z M 41.760 4.084 C 41.760 3.696 41.984 3.343 42.336 3.178 L 46.333 1.308 C 46.532 1.215 46.760 1.360 46.760 1.580 L 46.760 40.588 C 46.760 41.140 46.312 41.588 45.760 41.588 L 42.760 41.588 C 42.208 41.588 41.760 41.140 41.760 40.588 Z"/><path class="ltr ltr-N" d="M 91.528 1.573 L 91.528 40.573 C 91.528 41.133 91.078 41.573 90.528 41.573 L 87.528 41.573 C 87.348 41.573 87.178 41.523 87.028 41.433 C 86.878 41.353 86.748 41.233 86.668 41.073 C 86.578 40.933 86.528 40.763 86.528 40.573 L 86.528 4.073 C 86.528 3.683 86.748 3.333 87.108 3.173 L 91.098 1.293 C 91.298 1.203 91.528 1.353 91.528 1.573 Z"/><path class="ltr ltr-R" d="M 128.379 21.268 L 128.109 21.388 L 113.529 28.148 L 113.379 28.218 L 111.689 29.008 L 111.600 29.048 C 111.589 29.048 111.589 29.038 111.589 29.038 L 111.419 29.118 L 111.379 29.138 L 106.939 31.198 L 106.939 40.858 C 106.939 40.938 106.929 41.018 106.900 41.088 C 106.789 41.458 106.400 41.728 105.939 41.728 L 102.939 41.728 C 102.850 41.728 102.759 41.718 102.669 41.688 C 102.539 41.678 102.409 41.638 102.299 41.588 C 102.150 41.518 102.020 41.408 101.939 41.268 C 101.900 41.218 101.869 41.168 101.859 41.108 C 101.850 41.088 101.839 41.058 101.839 41.038 L 101.839 41.028 C 101.839 41.018 101.829 41.018 101.829 41.008 C 101.810 40.978 101.810 40.938 101.810 40.898 L 101.810 28.538 C 101.810 28.488 101.810 28.448 101.819 28.408 C 101.829 28.338 101.839 28.268 101.869 28.208 C 101.890 28.128 101.919 28.068 101.969 27.998 L 101.979 27.988 C 102.020 27.928 102.069 27.888 102.109 27.838 C 102.119 27.818 102.129 27.808 102.150 27.788 C 102.159 27.778 102.179 27.768 102.189 27.758 L 102.199 27.758 C 102.259 27.718 102.310 27.678 102.369 27.648 C 102.400 27.618 102.429 27.598 102.459 27.588 L 103.539 27.098 L 103.640 27.048 C 103.650 27.038 103.659 27.038 103.679 27.028 L 104.239 26.768 L 106.299 25.798 L 106.379 25.758 C 106.400 25.748 106.419 25.758 106.429 25.748 L 106.600 25.678 L 106.640 25.658 L 106.789 25.588 L 106.879 25.548 L 106.879 25.538 L 107.479 25.268 L 117.669 20.548 L 124.069 17.588 L 124.489 17.388 L 124.600 17.338 C 124.600 17.338 124.642 17.317 124.654 17.308 C 124.663 17.303 124.679 17.288 124.679 17.278 C 124.829 16.648 124.900 15.988 124.900 15.308 C 124.900 14.168 124.689 13.068 124.319 12.048 C 123.469 9.768 121.759 7.928 119.609 6.948 C 119.589 6.938 119.579 6.928 119.560 6.928 C 119.429 6.868 119.299 6.808 119.169 6.758 C 119.159 6.758 119.150 6.748 119.140 6.748 C 119.119 6.738 119.089 6.728 119.069 6.718 C 118.949 6.658 118.819 6.608 118.689 6.568 C 118.650 6.538 118.629 6.528 118.589 6.528 C 118.579 6.528 118.579 6.528 118.569 6.518 C 118.489 6.498 118.400 6.478 118.329 6.458 C 118.310 6.458 118.299 6.448 118.279 6.448 C 118.270 6.438 118.249 6.438 118.239 6.438 C 118.229 6.428 118.229 6.428 118.219 6.428 C 117.999 6.368 117.770 6.318 117.539 6.278 C 117.379 6.248 117.219 6.218 117.049 6.208 L 107.049 6.208 C 106.989 6.208 106.939 6.258 106.939 6.318 L 106.939 6.988 L 106.929 8.018 L 106.929 12.458 L 106.890 19.038 L 106.890 20.818 C 106.890 20.848 106.869 20.868 106.869 20.898 C 106.869 20.928 106.869 20.968 106.859 20.998 L 106.859 21.058 L 106.850 22.338 C 106.850 22.378 106.850 22.408 106.839 22.438 C 106.839 22.468 106.829 22.498 106.829 22.528 C 106.770 22.838 106.569 23.108 106.270 23.238 L 105.049 23.808 L 104.679 23.978 L 102.270 25.088 C 102.069 25.178 101.839 25.028 101.839 24.808 L 101.839 16.418 C 101.810 16.028 101.789 15.638 101.789 15.238 C 101.789 14.838 101.810 14.448 101.839 14.058 L 101.839 3.988 C 101.869 3.628 102.079 3.308 102.419 3.158 L 105.969 1.488 L 106.060 1.438 L 106.390 1.288 C 106.400 1.288 106.400 1.278 106.409 1.278 C 106.439 1.268 106.479 1.258 106.509 1.248 L 106.520 1.248 C 106.529 1.238 106.539 1.238 106.549 1.238 C 106.619 1.218 106.699 1.208 106.779 1.208 L 118.400 1.208 C 118.409 1.208 118.545 1.210 118.579 1.214 L 118.611 1.219 L 118.635 1.221 C 118.815 1.231 118.909 1.238 119.079 1.268 C 119.579 1.348 120.079 1.468 120.560 1.618 C 126.109 3.548 130.089 8.928 130.089 15.238 C 130.089 16.488 129.929 17.688 129.629 18.848 C 129.619 18.908 129.600 18.958 129.589 19.008 C 129.539 19.228 129.479 19.448 129.409 19.658 C 129.359 19.818 129.310 19.968 129.249 20.128 C 129.219 20.208 129.189 20.298 129.159 20.378 C 129.150 20.418 129.129 20.458 129.119 20.498 C 129.109 20.518 129.100 20.548 129.089 20.578 C 129.089 20.588 129.079 20.588 129.079 20.598 C 128.979 20.808 128.810 20.968 128.619 21.108 L 128.609 21.118 L 128.579 21.138 C 128.520 21.188 128.449 21.238 128.379 21.268 Z M 130.669 41.058 C 130.749 41.258 130.609 41.488 130.399 41.488 L 125.979 41.488 C 125.600 41.498 125.229 41.268 125.069 40.918 L 124.819 40.378 C 124.819 40.368 124.810 40.368 124.810 40.358 C 124.789 40.338 124.779 40.318 124.770 40.298 L 124.359 39.388 L 122.609 35.598 C 122.600 35.578 122.589 35.558 122.579 35.538 L 122.159 34.628 L 121.329 32.825 L 121.343 32.819 L 120.433 30.841 C 120.393 30.761 120.362 30.681 120.362 30.591 C 120.311 30.365 120.349 30.140 120.455 29.946 C 120.552 29.746 120.718 29.576 120.941 29.472 L 123.661 28.212 C 124.071 28.022 124.541 28.132 124.821 28.452 C 124.831 28.462 124.831 28.462 124.831 28.472 C 124.901 28.542 124.951 28.612 124.991 28.702 L 126.981 33.042 L 126.981 33.052 L 129.312 38.012 C 129.342 38.080 129.345 38.151 129.327 38.215 Z"/></g>
-          <g class="letters-final" fill="currentColor"><path class="lf lf-L" d="M 29.620 41.105 C 29.711 41.305 29.570 41.525 29.351 41.525 L 1.000 41.525 C 0.851 41.525 0.700 41.495 0.570 41.425 C 0.230 41.265 0.000 40.925 0.000 40.525 L 0.000 4.025 C 0.000 3.635 0.230 3.285 0.580 3.115 L 4.570 1.245 C 4.771 1.155 5.000 1.295 5.000 1.515 L 5.000 36.425 C 5.000 36.480 5.045 36.525 5.101 36.525 L 26.851 36.525 C 27.230 36.525 27.591 36.755 27.750 37.105 Z"/><path class="lf lf-I" d="M 84.610 40.891 C 84.610 40.895 84.614 40.898 84.614 40.902 C 84.614 40.905 84.610 40.908 84.610 40.911 L 84.610 40.951 L 84.603 40.967 L 84.600 40.972 L 84.600 40.982 C 84.600 40.992 84.600 41.002 84.589 41.013 L 84.589 41.023 C 84.589 41.033 84.580 41.033 84.580 41.033 C 84.570 41.052 84.559 41.071 84.534 41.089 C 84.480 41.150 84.408 41.192 84.321 41.191 C 84.297 41.190 84.281 41.169 84.259 41.163 C 84.255 41.163 84.253 41.167 84.249 41.167 L 84.239 41.167 C 84.230 41.176 84.229 41.177 84.229 41.167 L 84.209 41.167 L 84.209 41.156 C 84.199 41.156 84.188 41.156 84.188 41.146 L 84.179 41.146 C 84.179 41.146 84.154 41.126 84.133 41.106 C 84.127 41.101 84.121 41.098 84.116 41.092 C 84.116 41.092 84.116 41.091 84.115 41.091 C 84.112 41.088 84.108 41.085 84.108 41.085 C 84.099 41.074 84.089 41.054 84.079 41.044 L 84.079 41.033 L 84.068 41.023 L 83.898 40.766 L 83.778 40.592 L 81.574 37.327 L 80.903 36.331 L 80.794 36.177 L 80.272 35.417 L 80.263 35.407 C 80.242 35.376 80.213 35.356 80.192 35.325 L 79.892 34.863 L 79.861 34.822 L 79.461 34.237 C 79.421 34.186 79.401 34.134 79.382 34.083 L 79.171 33.765 L 79.171 33.754 L 78.800 33.210 L 78.659 32.995 L 78.589 32.882 L 77.527 31.260 L 77.527 31.249 L 76.807 30.182 L 74.422 26.609 C 74.402 26.588 74.402 26.568 74.393 26.547 L 72.179 23.262 L 68.041 17.143 L 67.922 16.969 L 67.922 16.958 L 63.765 10.813 L 63.765 40.533 C 63.765 41.093 63.315 41.533 62.765 41.533 L 59.765 41.533 C 59.215 41.533 58.765 41.093 58.765 40.533 L 58.765 4.033 C 58.765 3.643 58.985 3.293 59.345 3.133 L 59.385 3.113 L 60.795 2.453 L 62.955 1.433 L 63.335 1.253 C 63.365 1.233 63.405 1.223 63.435 1.223 C 63.536 1.217 63.634 1.264 63.696 1.341 C 63.704 1.342 63.710 1.343 63.714 1.343 L 63.765 1.425 L 72.159 13.858 C 72.169 13.878 72.188 13.878 72.199 13.899 L 83.628 30.828 L 83.809 31.095 L 84.409 31.896 C 84.526 32.056 84.578 32.241 84.594 32.426 C 84.595 32.428 84.594 32.428 84.595 32.429 C 84.607 32.473 84.606 32.502 84.605 32.537 L 84.605 32.545 L 84.614 32.574 L 84.610 40.284 Z M 41.760 4.084 C 41.760 3.696 41.984 3.343 42.336 3.178 L 46.333 1.308 C 46.532 1.215 46.760 1.360 46.760 1.580 L 46.760 40.588 C 46.760 41.140 46.312 41.588 45.760 41.588 L 42.760 41.588 C 42.208 41.588 41.760 41.140 41.760 40.588 Z"/><path class="lf lf-N" d="M 91.528 1.573 L 91.528 40.573 C 91.528 41.133 91.078 41.573 90.528 41.573 L 87.528 41.573 C 87.348 41.573 87.178 41.523 87.028 41.433 C 86.878 41.353 86.748 41.233 86.668 41.073 C 86.578 40.933 86.528 40.763 86.528 40.573 L 86.528 4.073 C 86.528 3.683 86.748 3.333 87.108 3.173 L 91.098 1.293 C 91.298 1.203 91.528 1.353 91.528 1.573 Z"/><path class="lf lf-R" d="M 128.379 21.268 L 128.109 21.388 L 113.529 28.148 L 113.379 28.218 L 111.689 29.008 L 111.600 29.048 C 111.589 29.048 111.589 29.038 111.589 29.038 L 111.419 29.118 L 111.379 29.138 L 106.939 31.198 L 106.939 40.858 C 106.939 40.938 106.929 41.018 106.900 41.088 C 106.789 41.458 106.400 41.728 105.939 41.728 L 102.939 41.728 C 102.850 41.728 102.759 41.718 102.669 41.688 C 102.539 41.678 102.409 41.638 102.299 41.588 C 102.150 41.518 102.020 41.408 101.939 41.268 C 101.900 41.218 101.869 41.168 101.859 41.108 C 101.850 41.088 101.839 41.058 101.839 41.038 L 101.839 41.028 C 101.839 41.018 101.829 41.018 101.829 41.008 C 101.810 40.978 101.810 40.938 101.810 40.898 L 101.810 28.538 C 101.810 28.488 101.810 28.448 101.819 28.408 C 101.829 28.338 101.839 28.268 101.869 28.208 C 101.890 28.128 101.919 28.068 101.969 27.998 L 101.979 27.988 C 102.020 27.928 102.069 27.888 102.109 27.838 C 102.119 27.818 102.129 27.808 102.150 27.788 C 102.159 27.778 102.179 27.768 102.189 27.758 L 102.199 27.758 C 102.259 27.718 102.310 27.678 102.369 27.648 C 102.400 27.618 102.429 27.598 102.459 27.588 L 103.539 27.098 L 103.640 27.048 C 103.650 27.038 103.659 27.038 103.679 27.028 L 104.239 26.768 L 106.299 25.798 L 106.379 25.758 C 106.400 25.748 106.419 25.758 106.429 25.748 L 106.600 25.678 L 106.640 25.658 L 106.789 25.588 L 106.879 25.548 L 106.879 25.538 L 107.479 25.268 L 117.669 20.548 L 124.069 17.588 L 124.489 17.388 L 124.600 17.338 C 124.600 17.338 124.642 17.317 124.654 17.308 C 124.663 17.303 124.679 17.288 124.679 17.278 C 124.829 16.648 124.900 15.988 124.900 15.308 C 124.900 14.168 124.689 13.068 124.319 12.048 C 123.469 9.768 121.759 7.928 119.609 6.948 C 119.589 6.938 119.579 6.928 119.560 6.928 C 119.429 6.868 119.299 6.808 119.169 6.758 C 119.159 6.758 119.150 6.748 119.140 6.748 C 119.119 6.738 119.089 6.728 119.069 6.718 C 118.949 6.658 118.819 6.608 118.689 6.568 C 118.650 6.538 118.629 6.528 118.589 6.528 C 118.579 6.528 118.579 6.528 118.569 6.518 C 118.489 6.498 118.400 6.478 118.329 6.458 C 118.310 6.458 118.299 6.448 118.279 6.448 C 118.270 6.438 118.249 6.438 118.239 6.438 C 118.229 6.428 118.229 6.428 118.219 6.428 C 117.999 6.368 117.770 6.318 117.539 6.278 C 117.379 6.248 117.219 6.218 117.049 6.208 L 107.049 6.208 C 106.989 6.208 106.939 6.258 106.939 6.318 L 106.939 6.988 L 106.929 8.018 L 106.929 12.458 L 106.890 19.038 L 106.890 20.818 C 106.890 20.848 106.869 20.868 106.869 20.898 C 106.869 20.928 106.869 20.968 106.859 20.998 L 106.859 21.058 L 106.850 22.338 C 106.850 22.378 106.850 22.408 106.839 22.438 C 106.839 22.468 106.829 22.498 106.829 22.528 C 106.770 22.838 106.569 23.108 106.270 23.238 L 105.049 23.808 L 104.679 23.978 L 102.270 25.088 C 102.069 25.178 101.839 25.028 101.839 24.808 L 101.839 16.418 C 101.810 16.028 101.789 15.638 101.789 15.238 C 101.789 14.838 101.810 14.448 101.839 14.058 L 101.839 3.988 C 101.869 3.628 102.079 3.308 102.419 3.158 L 105.969 1.488 L 106.060 1.438 L 106.390 1.288 C 106.400 1.288 106.400 1.278 106.409 1.278 C 106.439 1.268 106.479 1.258 106.509 1.248 L 106.520 1.248 C 106.529 1.238 106.539 1.238 106.549 1.238 C 106.619 1.218 106.699 1.208 106.779 1.208 L 118.400 1.208 C 118.409 1.208 118.545 1.210 118.579 1.214 L 118.611 1.219 L 118.635 1.221 C 118.815 1.231 118.909 1.238 119.079 1.268 C 119.579 1.348 120.079 1.468 120.560 1.618 C 126.109 3.548 130.089 8.928 130.089 15.238 C 130.089 16.488 129.929 17.688 129.629 18.848 C 129.619 18.908 129.600 18.958 129.589 19.008 C 129.539 19.228 129.479 19.448 129.409 19.658 C 129.359 19.818 129.310 19.968 129.249 20.128 C 129.219 20.208 129.189 20.298 129.159 20.378 C 129.150 20.418 129.129 20.458 129.119 20.498 C 129.109 20.518 129.100 20.548 129.089 20.578 C 129.089 20.588 129.079 20.588 129.079 20.598 C 128.979 20.808 128.810 20.968 128.619 21.108 L 128.609 21.118 L 128.579 21.138 C 128.520 21.188 128.449 21.238 128.379 21.268 Z M 130.669 41.058 C 130.749 41.258 130.609 41.488 130.399 41.488 L 125.979 41.488 C 125.600 41.498 125.229 41.268 125.069 40.918 L 124.819 40.378 C 124.819 40.368 124.810 40.368 124.810 40.358 C 124.789 40.338 124.779 40.318 124.770 40.298 L 124.359 39.388 L 122.609 35.598 C 122.600 35.578 122.589 35.558 122.579 35.538 L 122.159 34.628 L 121.329 32.825 L 121.343 32.819 L 120.433 30.841 C 120.393 30.761 120.362 30.681 120.362 30.591 C 120.311 30.365 120.349 30.140 120.455 29.946 C 120.552 29.746 120.718 29.576 120.941 29.472 L 123.661 28.212 C 124.071 28.022 124.541 28.132 124.821 28.452 C 124.831 28.462 124.831 28.462 124.831 28.472 C 124.901 28.542 124.951 28.612 124.991 28.702 L 126.981 33.042 L 126.981 33.052 L 129.312 38.012 C 129.342 38.080 129.345 38.151 129.327 38.215 Z"/></g>
-          <g class="o" fill="currentColor">
-            <g mask="url(#lw-ring-hero)"><path class="ring-cut" d="M 158.597 41.675 C 157.650 41.678 156.698 41.615 155.743 41.484 C 144.726 39.969 136.993 29.770 138.507 18.751 C 140.022 7.733 150.212 0.000 161.240 1.514 C 164.943 2.024 168.354 3.512 171.183 5.809 L 165.923 8.262 C 164.286 7.343 162.475 6.731 160.559 6.468 C 159.845 6.369 159.136 6.323 158.435 6.325 C 150.998 6.348 144.502 11.858 143.460 19.433 C 142.321 27.720 148.138 35.391 156.426 36.531 C 160.441 37.082 164.431 36.038 167.659 33.589 C 170.888 31.140 172.971 27.581 173.522 23.566 C 173.551 23.356 173.575 23.146 173.596 22.936 L 178.649 20.580 C 178.701 21.792 178.645 23.019 178.476 24.247 C 177.742 29.585 174.973 34.318 170.680 37.574 C 167.154 40.247 162.945 41.662 158.597 41.675 Z"/></g>
-            <g class="bars"><path class="bar home" style="--i:0;--sx:2.22px;--sy:-2.31px;--phi:-24.2deg;--ex:1.000;transform-origin:170.54px 8.99px" d="M 169.112 10.165 C 169.104 10.169 169.096 10.173 169.087 10.177 C 169.014 10.213 168.917 10.260 168.840 10.189 L 168.161 9.650 C 168.135 9.595 168.186 9.574 168.247 9.549 C 168.260 9.543 168.275 9.538 168.289 9.531 L 172.874 7.392 C 172.883 7.388 172.894 7.384 172.906 7.382 C 173.130 7.612 173.350 7.848 173.565 8.090 C 173.560 8.092 173.556 8.094 173.551 8.096 Z"/><path class="bar home" style="--i:1;--sx:2.58px;--sy:-1.89px;--phi:-21.3deg;--ex:1.834;transform-origin:173.17px 10.78px" d="M 173.120 11.325 C 173.109 11.330 173.094 11.338 173.077 11.346 C 172.981 11.396 172.810 11.484 172.759 11.413 L 172.220 10.764 C 172.179 10.716 172.266 10.678 172.339 10.645 C 172.350 10.640 172.361 10.636 172.371 10.631 L 174.730 9.531 C 174.921 9.790 175.106 10.053 175.284 10.319 Z"/><path class="bar home" style="--i:2;--sx:2.86px;--sy:-1.44px;--phi:-25.0deg;--ex:1.270;transform-origin:173.95px 13.74px" d="M 172.920 14.715 C 172.845 14.750 172.755 14.718 172.721 14.642 L 172.467 14.100 C 172.433 14.025 172.465 13.936 172.540 13.901 L 176.357 12.120 C 176.497 12.386 176.631 12.654 176.758 12.924 Z"/><path class="bar home" style="--i:3;--sx:3.05px;--sy:-0.97px;--phi:-25.2deg;--ex:1.913;transform-origin:175.95px 15.93px" d="M 175.378 16.694 C 175.303 16.729 175.214 16.697 175.179 16.621 L 174.926 16.079 C 174.891 16.004 174.923 15.915 174.998 15.880 L 177.499 14.713 C 177.601 14.997 177.696 15.283 177.784 15.571 Z"/><path class="bar home" style="--i:4;--sx:3.18px;--sy:-0.38px;--phi:-24.2deg;--ex:1.021;transform-origin:176.10px 19.37px" d="M 178.227 18.859 L 173.917 20.799 C 173.747 20.886 173.745 20.824 173.742 20.753 C 173.741 20.731 173.741 20.708 173.735 20.688 L 173.715 20.145 C 173.715 20.132 173.714 20.118 173.713 20.104 C 173.708 20.001 173.700 19.866 173.864 19.800 L 178.186 17.831 L 178.201 17.824 C 178.239 17.807 178.286 17.785 178.328 17.775 C 178.387 18.091 178.438 18.409 178.482 18.728 C 178.429 18.775 178.333 18.815 178.269 18.841 C 178.252 18.848 178.238 18.854 178.227 18.859 Z"/></g>
-          </g>
-        </svg>
-      </h1>
+        <h1 class="t2-title">Linro</h1>
         <p class="t2-intro">Giving invisible security infrastructure a visible language, built around lineage.</p>
         <ul class="t2-tags">
           <li>Brand strategy</li>
@@ -1614,36 +1761,33 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
       <!-- Opening media: the one asset the first screen depends on, so it is
            eager and high priority. Everything after it defers. -->
-      <figure class="t2-item">
-        <div class="t2-media" style="aspect-ratio: 2984 / 2072;">
-          <img src="../general/linro-logo.png" alt="The Monet logotype, its arch mark set into the wordmark."
-               width="2984" height="2072" fetchpriority="high" decoding="async">
-        </div>
+      <!-- The mark, at size, as the first beat of the sequence. It is the
+           work, so it is shown live rather than as a flat export — the same
+           component the arrival uses, in its dark-ground treatment. -->
+      <figure class="t2-item t2-item--mark">
+        <div class="lw-stage" id="lw-slide" role="img" aria-label="The Linro wordmark drawing itself"></div>
       </figure>
 
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3024 / 2190;">
-          <img src="s2-composition.webp" fetchpriority="high" alt="Monet identity composition with the cap, wordmark and supporting imagery."
-               width="3024" height="2190" loading="eager" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 3024 / 2190;" role="img" aria-label="Identity system — artwork to follow">
+          <span>Identity system</span>
         </div>
       </figure>
 
       <div class="t2-note">
         <span class="t2-note-label">Direction</span>
-        <p>The identity moves away from brains, neural imagery and the visual language the rest of the category shares. It borrows from fashion, art and culture instead: expressive marks against restrained typography, generous space, rich greens and neutrals.</p>
+        <p>The identity moves away from the shields, gradients and navy the rest of the category shares. It borrows from Bauhaus systems and modular graphic design instead: a fixed set of blocks, generous space, and restraint everywhere the work does not need to speak.</p>
       </div>
 
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3024 / 2174;">
-          <img src="s3-cap.webp" alt="The Monet cap with the arch mark."
-               width="3024" height="2174" loading="eager" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 3024 / 2174;" role="img" aria-label="The mark — construction — artwork to follow">
+          <span>The mark — construction</span>
         </div>
       </figure>
 
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3024 / 2174;">
-          <img src="s4-typefaces.webp" alt="The Grand and Future typefaces with their character sets."
-               width="3024" height="2174" loading="lazy" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 3024 / 2174;" role="img" aria-label="Typography — artwork to follow">
+          <span>Typography</span>
         </div>
       </figure>
 
@@ -1652,54 +1796,48 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       </div>
 
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3036 / 2042;">
-          <img src="s5-environment.webp" alt="The brand in an environmental setting."
-               width="3036" height="2042" loading="lazy" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 3036 / 2042;" role="img" aria-label="Colour and state — artwork to follow">
+          <span>Colour and state</span>
         </div>
       </figure>
 
       <div class="t2-note">
-        <span class="t2-note-label">Range</span>
-        <p>Tested beyond a logo from the beginning. On the street it can be rougher and more mysterious; around the product it becomes quieter and more precise.</p>
+        <span class="t2-note-label">System</span>
+        <p>One set of parts builds everything. The wordmark, the graphic language and the motion are all assembled from the same blocks, so the identity behaves the way the product does — a thing that can be traced back to what it came from.</p>
       </div>
 
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3002 / 3424;">
-          <img src="s7-grid.webp" alt="A grid of Monet print and product references."
-               width="3002" height="3424" loading="lazy" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 3002 / 3424;" role="img" aria-label="Graphic language — artwork to follow">
+          <span>Graphic language</span>
         </div>
       </figure>
 
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3040 / 1878;">
-          <img src="s8-editorial.webp" alt="Editorial composition — a tactile, creatively driven, calm and warm environment by day."
-               width="3040" height="1878" loading="lazy" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 3040 / 1878;" role="img" aria-label="Brand in use — artwork to follow">
+          <span>Brand in use</span>
         </div>
       </figure>
 
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3028 / 1956;">
-          <img src="s9-embossed.webp" alt="Embossed hand painted patterns across the cap and printed matter."
-               width="3028" height="1956" loading="lazy" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 3028 / 1956;" role="img" aria-label="Motion system — artwork to follow">
+          <span>Motion system</span>
         </div>
       </figure>
 
       <div class="t2-note">
-        <span class="t2-note-label">Intent</span>
-        <p>The imagery focuses less on what the technology is doing and more on what it might enable: concentration, movement, creativity and flow.</p>
+        <span class="t2-note-label">Restraint</span>
+        <p>Dark green, charcoal and off-white carry the brand. Colour is held back for state and alert, so that when something is wrong it is the only thing on the screen.</p>
       </div>
 
       <figure class="t2-item t2-item--screens t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 2988 / 1760;">
-          <img src="s10-web.webp" alt="The Monet website."
-               width="2988" height="1760" loading="lazy" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 2988 / 1760;" role="img" aria-label="Product — web — artwork to follow">
+          <span>Product — web</span>
         </div>
       </figure>
 
       <figure class="t2-item t2-item--screens t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3052 / 2338;">
-          <img src="s11-mobile.webp" alt="The Monet store on mobile."
-               width="3052" height="2338" loading="lazy" decoding="async">
+        <div class="t2-media t2-slot" style="aspect-ratio: 3052 / 2338;" role="img" aria-label="Product — mobile — artwork to follow">
+          <span>Product — mobile</span>
         </div>
       </figure>
 
@@ -1716,8 +1854,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         <svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true" style="transform: rotate(-90deg);"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
       </a>
 
-      <!-- Next project: the following card in the homepage carousel. Monet is
-           the last, so it wraps back round to the first. -->
+      <!-- Next project: the following card in the homepage carousel. -->
       <a class="t2-next" href="/work/tag-tuition/" data-t2-exit="/work/tag-tuition/">
         <span class="t2-next-thumb" style="background-image:url('/work/general/tag-tuition-splash.jpg');"></span>
         <span>
@@ -1836,7 +1973,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    T2_CONFIG is the per-project configuration surface.
    ========================================================================== */
 var T2_CONFIG = {
-  slug: 'monet',
+  slug: 'linro',
   /* Optional project video. `enabled: false` renders nothing at all — no
      element, no placeholder, no reserved space. `src` stays null until a real
      file exists; the component shows an obvious placeholder meanwhile and no
@@ -2397,7 +2534,7 @@ var T2_CONFIG = {
     try {
       if (toCarousel) {
         sessionStorage.setItem('returnSection', 'case-studies');
-        sessionStorage.setItem('csClosing', 'monet');
+        sessionStorage.setItem('csClosing', (window.T2_CONFIG && T2_CONFIG.slug) || '');
       } else {
         sessionStorage.removeItem('returnSection');
         sessionStorage.removeItem('csClosing');
@@ -2749,6 +2886,159 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
     function () { return window.scrollY < 80; },
     function () { document.dispatchEvent(new Event('t2:video-detach')); }
   );
+})();
+</script>
+
+<!-- The wordmark, once. Every instance on the page is stamped from here with
+     its own mask ids, so the same geometry can run in a different mode and
+     treatment in each place without three copies of the paths. -->
+<template id="lw-tpl">
+        <svg class="lw" viewBox="-8 -10 199.24 61.73" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Linro">
+          <defs>
+            <mask id="lw-threads-__ID__" maskUnits="userSpaceOnUse" x="-10" y="-10" width="220" height="70">
+              <path class="th th-L" d="M 2.5 1.2 L 2.5 39 L 29.7 39" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-I" d="M 44.3 1.2 L 44.3 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-N" d="M 61.2 41.6 L 61.2 2.2 L 84.6 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-N2" d="M 89 41.6 L 89 1.2" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-Rstem" d="M 104.4 0.6 L 104.4 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-Rbowl" d="M 104.4 4 L 121 4 Q 128 4 128 11 L 128 17 Q 128 19.6 124.3 20.2 L 106.2 28.9" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-Rleg" d="M 123.2 28.6 L 127.8 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+            </mask>
+            <mask id="lw-ring-__ID__" maskUnits="userSpaceOnUse" x="-10" y="-10" width="203.25" height="61.73">
+              <circle class="drawer" cx="158.49" cy="21.50" r="17.67" fill="none" stroke="#fff" stroke-width="6.50" pathLength="1"/>
+            </mask>
+          </defs>
+          <g class="letters" fill="currentColor" mask="url(#lw-threads-__ID__)"><path class="ltr ltr-L" d="M 29.620 41.105 C 29.711 41.305 29.570 41.525 29.351 41.525 L 1.000 41.525 C 0.851 41.525 0.700 41.495 0.570 41.425 C 0.230 41.265 0.000 40.925 0.000 40.525 L 0.000 4.025 C 0.000 3.635 0.230 3.285 0.580 3.115 L 4.570 1.245 C 4.771 1.155 5.000 1.295 5.000 1.515 L 5.000 36.425 C 5.000 36.480 5.045 36.525 5.101 36.525 L 26.851 36.525 C 27.230 36.525 27.591 36.755 27.750 37.105 Z"/><path class="ltr ltr-I" d="M 84.610 40.891 C 84.610 40.895 84.614 40.898 84.614 40.902 C 84.614 40.905 84.610 40.908 84.610 40.911 L 84.610 40.951 L 84.603 40.967 L 84.600 40.972 L 84.600 40.982 C 84.600 40.992 84.600 41.002 84.589 41.013 L 84.589 41.023 C 84.589 41.033 84.580 41.033 84.580 41.033 C 84.570 41.052 84.559 41.071 84.534 41.089 C 84.480 41.150 84.408 41.192 84.321 41.191 C 84.297 41.190 84.281 41.169 84.259 41.163 C 84.255 41.163 84.253 41.167 84.249 41.167 L 84.239 41.167 C 84.230 41.176 84.229 41.177 84.229 41.167 L 84.209 41.167 L 84.209 41.156 C 84.199 41.156 84.188 41.156 84.188 41.146 L 84.179 41.146 C 84.179 41.146 84.154 41.126 84.133 41.106 C 84.127 41.101 84.121 41.098 84.116 41.092 C 84.116 41.092 84.116 41.091 84.115 41.091 C 84.112 41.088 84.108 41.085 84.108 41.085 C 84.099 41.074 84.089 41.054 84.079 41.044 L 84.079 41.033 L 84.068 41.023 L 83.898 40.766 L 83.778 40.592 L 81.574 37.327 L 80.903 36.331 L 80.794 36.177 L 80.272 35.417 L 80.263 35.407 C 80.242 35.376 80.213 35.356 80.192 35.325 L 79.892 34.863 L 79.861 34.822 L 79.461 34.237 C 79.421 34.186 79.401 34.134 79.382 34.083 L 79.171 33.765 L 79.171 33.754 L 78.800 33.210 L 78.659 32.995 L 78.589 32.882 L 77.527 31.260 L 77.527 31.249 L 76.807 30.182 L 74.422 26.609 C 74.402 26.588 74.402 26.568 74.393 26.547 L 72.179 23.262 L 68.041 17.143 L 67.922 16.969 L 67.922 16.958 L 63.765 10.813 L 63.765 40.533 C 63.765 41.093 63.315 41.533 62.765 41.533 L 59.765 41.533 C 59.215 41.533 58.765 41.093 58.765 40.533 L 58.765 4.033 C 58.765 3.643 58.985 3.293 59.345 3.133 L 59.385 3.113 L 60.795 2.453 L 62.955 1.433 L 63.335 1.253 C 63.365 1.233 63.405 1.223 63.435 1.223 C 63.536 1.217 63.634 1.264 63.696 1.341 C 63.704 1.342 63.710 1.343 63.714 1.343 L 63.765 1.425 L 72.159 13.858 C 72.169 13.878 72.188 13.878 72.199 13.899 L 83.628 30.828 L 83.809 31.095 L 84.409 31.896 C 84.526 32.056 84.578 32.241 84.594 32.426 C 84.595 32.428 84.594 32.428 84.595 32.429 C 84.607 32.473 84.606 32.502 84.605 32.537 L 84.605 32.545 L 84.614 32.574 L 84.610 40.284 Z M 41.760 4.084 C 41.760 3.696 41.984 3.343 42.336 3.178 L 46.333 1.308 C 46.532 1.215 46.760 1.360 46.760 1.580 L 46.760 40.588 C 46.760 41.140 46.312 41.588 45.760 41.588 L 42.760 41.588 C 42.208 41.588 41.760 41.140 41.760 40.588 Z"/><path class="ltr ltr-N" d="M 91.528 1.573 L 91.528 40.573 C 91.528 41.133 91.078 41.573 90.528 41.573 L 87.528 41.573 C 87.348 41.573 87.178 41.523 87.028 41.433 C 86.878 41.353 86.748 41.233 86.668 41.073 C 86.578 40.933 86.528 40.763 86.528 40.573 L 86.528 4.073 C 86.528 3.683 86.748 3.333 87.108 3.173 L 91.098 1.293 C 91.298 1.203 91.528 1.353 91.528 1.573 Z"/><path class="ltr ltr-R" d="M 128.379 21.268 L 128.109 21.388 L 113.529 28.148 L 113.379 28.218 L 111.689 29.008 L 111.600 29.048 C 111.589 29.048 111.589 29.038 111.589 29.038 L 111.419 29.118 L 111.379 29.138 L 106.939 31.198 L 106.939 40.858 C 106.939 40.938 106.929 41.018 106.900 41.088 C 106.789 41.458 106.400 41.728 105.939 41.728 L 102.939 41.728 C 102.850 41.728 102.759 41.718 102.669 41.688 C 102.539 41.678 102.409 41.638 102.299 41.588 C 102.150 41.518 102.020 41.408 101.939 41.268 C 101.900 41.218 101.869 41.168 101.859 41.108 C 101.850 41.088 101.839 41.058 101.839 41.038 L 101.839 41.028 C 101.839 41.018 101.829 41.018 101.829 41.008 C 101.810 40.978 101.810 40.938 101.810 40.898 L 101.810 28.538 C 101.810 28.488 101.810 28.448 101.819 28.408 C 101.829 28.338 101.839 28.268 101.869 28.208 C 101.890 28.128 101.919 28.068 101.969 27.998 L 101.979 27.988 C 102.020 27.928 102.069 27.888 102.109 27.838 C 102.119 27.818 102.129 27.808 102.150 27.788 C 102.159 27.778 102.179 27.768 102.189 27.758 L 102.199 27.758 C 102.259 27.718 102.310 27.678 102.369 27.648 C 102.400 27.618 102.429 27.598 102.459 27.588 L 103.539 27.098 L 103.640 27.048 C 103.650 27.038 103.659 27.038 103.679 27.028 L 104.239 26.768 L 106.299 25.798 L 106.379 25.758 C 106.400 25.748 106.419 25.758 106.429 25.748 L 106.600 25.678 L 106.640 25.658 L 106.789 25.588 L 106.879 25.548 L 106.879 25.538 L 107.479 25.268 L 117.669 20.548 L 124.069 17.588 L 124.489 17.388 L 124.600 17.338 C 124.600 17.338 124.642 17.317 124.654 17.308 C 124.663 17.303 124.679 17.288 124.679 17.278 C 124.829 16.648 124.900 15.988 124.900 15.308 C 124.900 14.168 124.689 13.068 124.319 12.048 C 123.469 9.768 121.759 7.928 119.609 6.948 C 119.589 6.938 119.579 6.928 119.560 6.928 C 119.429 6.868 119.299 6.808 119.169 6.758 C 119.159 6.758 119.150 6.748 119.140 6.748 C 119.119 6.738 119.089 6.728 119.069 6.718 C 118.949 6.658 118.819 6.608 118.689 6.568 C 118.650 6.538 118.629 6.528 118.589 6.528 C 118.579 6.528 118.579 6.528 118.569 6.518 C 118.489 6.498 118.400 6.478 118.329 6.458 C 118.310 6.458 118.299 6.448 118.279 6.448 C 118.270 6.438 118.249 6.438 118.239 6.438 C 118.229 6.428 118.229 6.428 118.219 6.428 C 117.999 6.368 117.770 6.318 117.539 6.278 C 117.379 6.248 117.219 6.218 117.049 6.208 L 107.049 6.208 C 106.989 6.208 106.939 6.258 106.939 6.318 L 106.939 6.988 L 106.929 8.018 L 106.929 12.458 L 106.890 19.038 L 106.890 20.818 C 106.890 20.848 106.869 20.868 106.869 20.898 C 106.869 20.928 106.869 20.968 106.859 20.998 L 106.859 21.058 L 106.850 22.338 C 106.850 22.378 106.850 22.408 106.839 22.438 C 106.839 22.468 106.829 22.498 106.829 22.528 C 106.770 22.838 106.569 23.108 106.270 23.238 L 105.049 23.808 L 104.679 23.978 L 102.270 25.088 C 102.069 25.178 101.839 25.028 101.839 24.808 L 101.839 16.418 C 101.810 16.028 101.789 15.638 101.789 15.238 C 101.789 14.838 101.810 14.448 101.839 14.058 L 101.839 3.988 C 101.869 3.628 102.079 3.308 102.419 3.158 L 105.969 1.488 L 106.060 1.438 L 106.390 1.288 C 106.400 1.288 106.400 1.278 106.409 1.278 C 106.439 1.268 106.479 1.258 106.509 1.248 L 106.520 1.248 C 106.529 1.238 106.539 1.238 106.549 1.238 C 106.619 1.218 106.699 1.208 106.779 1.208 L 118.400 1.208 C 118.409 1.208 118.545 1.210 118.579 1.214 L 118.611 1.219 L 118.635 1.221 C 118.815 1.231 118.909 1.238 119.079 1.268 C 119.579 1.348 120.079 1.468 120.560 1.618 C 126.109 3.548 130.089 8.928 130.089 15.238 C 130.089 16.488 129.929 17.688 129.629 18.848 C 129.619 18.908 129.600 18.958 129.589 19.008 C 129.539 19.228 129.479 19.448 129.409 19.658 C 129.359 19.818 129.310 19.968 129.249 20.128 C 129.219 20.208 129.189 20.298 129.159 20.378 C 129.150 20.418 129.129 20.458 129.119 20.498 C 129.109 20.518 129.100 20.548 129.089 20.578 C 129.089 20.588 129.079 20.588 129.079 20.598 C 128.979 20.808 128.810 20.968 128.619 21.108 L 128.609 21.118 L 128.579 21.138 C 128.520 21.188 128.449 21.238 128.379 21.268 Z M 130.669 41.058 C 130.749 41.258 130.609 41.488 130.399 41.488 L 125.979 41.488 C 125.600 41.498 125.229 41.268 125.069 40.918 L 124.819 40.378 C 124.819 40.368 124.810 40.368 124.810 40.358 C 124.789 40.338 124.779 40.318 124.770 40.298 L 124.359 39.388 L 122.609 35.598 C 122.600 35.578 122.589 35.558 122.579 35.538 L 122.159 34.628 L 121.329 32.825 L 121.343 32.819 L 120.433 30.841 C 120.393 30.761 120.362 30.681 120.362 30.591 C 120.311 30.365 120.349 30.140 120.455 29.946 C 120.552 29.746 120.718 29.576 120.941 29.472 L 123.661 28.212 C 124.071 28.022 124.541 28.132 124.821 28.452 C 124.831 28.462 124.831 28.462 124.831 28.472 C 124.901 28.542 124.951 28.612 124.991 28.702 L 126.981 33.042 L 126.981 33.052 L 129.312 38.012 C 129.342 38.080 129.345 38.151 129.327 38.215 Z"/></g>
+          <g class="letters-final" fill="currentColor"><path class="lf lf-L" d="M 29.620 41.105 C 29.711 41.305 29.570 41.525 29.351 41.525 L 1.000 41.525 C 0.851 41.525 0.700 41.495 0.570 41.425 C 0.230 41.265 0.000 40.925 0.000 40.525 L 0.000 4.025 C 0.000 3.635 0.230 3.285 0.580 3.115 L 4.570 1.245 C 4.771 1.155 5.000 1.295 5.000 1.515 L 5.000 36.425 C 5.000 36.480 5.045 36.525 5.101 36.525 L 26.851 36.525 C 27.230 36.525 27.591 36.755 27.750 37.105 Z"/><path class="lf lf-I" d="M 84.610 40.891 C 84.610 40.895 84.614 40.898 84.614 40.902 C 84.614 40.905 84.610 40.908 84.610 40.911 L 84.610 40.951 L 84.603 40.967 L 84.600 40.972 L 84.600 40.982 C 84.600 40.992 84.600 41.002 84.589 41.013 L 84.589 41.023 C 84.589 41.033 84.580 41.033 84.580 41.033 C 84.570 41.052 84.559 41.071 84.534 41.089 C 84.480 41.150 84.408 41.192 84.321 41.191 C 84.297 41.190 84.281 41.169 84.259 41.163 C 84.255 41.163 84.253 41.167 84.249 41.167 L 84.239 41.167 C 84.230 41.176 84.229 41.177 84.229 41.167 L 84.209 41.167 L 84.209 41.156 C 84.199 41.156 84.188 41.156 84.188 41.146 L 84.179 41.146 C 84.179 41.146 84.154 41.126 84.133 41.106 C 84.127 41.101 84.121 41.098 84.116 41.092 C 84.116 41.092 84.116 41.091 84.115 41.091 C 84.112 41.088 84.108 41.085 84.108 41.085 C 84.099 41.074 84.089 41.054 84.079 41.044 L 84.079 41.033 L 84.068 41.023 L 83.898 40.766 L 83.778 40.592 L 81.574 37.327 L 80.903 36.331 L 80.794 36.177 L 80.272 35.417 L 80.263 35.407 C 80.242 35.376 80.213 35.356 80.192 35.325 L 79.892 34.863 L 79.861 34.822 L 79.461 34.237 C 79.421 34.186 79.401 34.134 79.382 34.083 L 79.171 33.765 L 79.171 33.754 L 78.800 33.210 L 78.659 32.995 L 78.589 32.882 L 77.527 31.260 L 77.527 31.249 L 76.807 30.182 L 74.422 26.609 C 74.402 26.588 74.402 26.568 74.393 26.547 L 72.179 23.262 L 68.041 17.143 L 67.922 16.969 L 67.922 16.958 L 63.765 10.813 L 63.765 40.533 C 63.765 41.093 63.315 41.533 62.765 41.533 L 59.765 41.533 C 59.215 41.533 58.765 41.093 58.765 40.533 L 58.765 4.033 C 58.765 3.643 58.985 3.293 59.345 3.133 L 59.385 3.113 L 60.795 2.453 L 62.955 1.433 L 63.335 1.253 C 63.365 1.233 63.405 1.223 63.435 1.223 C 63.536 1.217 63.634 1.264 63.696 1.341 C 63.704 1.342 63.710 1.343 63.714 1.343 L 63.765 1.425 L 72.159 13.858 C 72.169 13.878 72.188 13.878 72.199 13.899 L 83.628 30.828 L 83.809 31.095 L 84.409 31.896 C 84.526 32.056 84.578 32.241 84.594 32.426 C 84.595 32.428 84.594 32.428 84.595 32.429 C 84.607 32.473 84.606 32.502 84.605 32.537 L 84.605 32.545 L 84.614 32.574 L 84.610 40.284 Z M 41.760 4.084 C 41.760 3.696 41.984 3.343 42.336 3.178 L 46.333 1.308 C 46.532 1.215 46.760 1.360 46.760 1.580 L 46.760 40.588 C 46.760 41.140 46.312 41.588 45.760 41.588 L 42.760 41.588 C 42.208 41.588 41.760 41.140 41.760 40.588 Z"/><path class="lf lf-N" d="M 91.528 1.573 L 91.528 40.573 C 91.528 41.133 91.078 41.573 90.528 41.573 L 87.528 41.573 C 87.348 41.573 87.178 41.523 87.028 41.433 C 86.878 41.353 86.748 41.233 86.668 41.073 C 86.578 40.933 86.528 40.763 86.528 40.573 L 86.528 4.073 C 86.528 3.683 86.748 3.333 87.108 3.173 L 91.098 1.293 C 91.298 1.203 91.528 1.353 91.528 1.573 Z"/><path class="lf lf-R" d="M 128.379 21.268 L 128.109 21.388 L 113.529 28.148 L 113.379 28.218 L 111.689 29.008 L 111.600 29.048 C 111.589 29.048 111.589 29.038 111.589 29.038 L 111.419 29.118 L 111.379 29.138 L 106.939 31.198 L 106.939 40.858 C 106.939 40.938 106.929 41.018 106.900 41.088 C 106.789 41.458 106.400 41.728 105.939 41.728 L 102.939 41.728 C 102.850 41.728 102.759 41.718 102.669 41.688 C 102.539 41.678 102.409 41.638 102.299 41.588 C 102.150 41.518 102.020 41.408 101.939 41.268 C 101.900 41.218 101.869 41.168 101.859 41.108 C 101.850 41.088 101.839 41.058 101.839 41.038 L 101.839 41.028 C 101.839 41.018 101.829 41.018 101.829 41.008 C 101.810 40.978 101.810 40.938 101.810 40.898 L 101.810 28.538 C 101.810 28.488 101.810 28.448 101.819 28.408 C 101.829 28.338 101.839 28.268 101.869 28.208 C 101.890 28.128 101.919 28.068 101.969 27.998 L 101.979 27.988 C 102.020 27.928 102.069 27.888 102.109 27.838 C 102.119 27.818 102.129 27.808 102.150 27.788 C 102.159 27.778 102.179 27.768 102.189 27.758 L 102.199 27.758 C 102.259 27.718 102.310 27.678 102.369 27.648 C 102.400 27.618 102.429 27.598 102.459 27.588 L 103.539 27.098 L 103.640 27.048 C 103.650 27.038 103.659 27.038 103.679 27.028 L 104.239 26.768 L 106.299 25.798 L 106.379 25.758 C 106.400 25.748 106.419 25.758 106.429 25.748 L 106.600 25.678 L 106.640 25.658 L 106.789 25.588 L 106.879 25.548 L 106.879 25.538 L 107.479 25.268 L 117.669 20.548 L 124.069 17.588 L 124.489 17.388 L 124.600 17.338 C 124.600 17.338 124.642 17.317 124.654 17.308 C 124.663 17.303 124.679 17.288 124.679 17.278 C 124.829 16.648 124.900 15.988 124.900 15.308 C 124.900 14.168 124.689 13.068 124.319 12.048 C 123.469 9.768 121.759 7.928 119.609 6.948 C 119.589 6.938 119.579 6.928 119.560 6.928 C 119.429 6.868 119.299 6.808 119.169 6.758 C 119.159 6.758 119.150 6.748 119.140 6.748 C 119.119 6.738 119.089 6.728 119.069 6.718 C 118.949 6.658 118.819 6.608 118.689 6.568 C 118.650 6.538 118.629 6.528 118.589 6.528 C 118.579 6.528 118.579 6.528 118.569 6.518 C 118.489 6.498 118.400 6.478 118.329 6.458 C 118.310 6.458 118.299 6.448 118.279 6.448 C 118.270 6.438 118.249 6.438 118.239 6.438 C 118.229 6.428 118.229 6.428 118.219 6.428 C 117.999 6.368 117.770 6.318 117.539 6.278 C 117.379 6.248 117.219 6.218 117.049 6.208 L 107.049 6.208 C 106.989 6.208 106.939 6.258 106.939 6.318 L 106.939 6.988 L 106.929 8.018 L 106.929 12.458 L 106.890 19.038 L 106.890 20.818 C 106.890 20.848 106.869 20.868 106.869 20.898 C 106.869 20.928 106.869 20.968 106.859 20.998 L 106.859 21.058 L 106.850 22.338 C 106.850 22.378 106.850 22.408 106.839 22.438 C 106.839 22.468 106.829 22.498 106.829 22.528 C 106.770 22.838 106.569 23.108 106.270 23.238 L 105.049 23.808 L 104.679 23.978 L 102.270 25.088 C 102.069 25.178 101.839 25.028 101.839 24.808 L 101.839 16.418 C 101.810 16.028 101.789 15.638 101.789 15.238 C 101.789 14.838 101.810 14.448 101.839 14.058 L 101.839 3.988 C 101.869 3.628 102.079 3.308 102.419 3.158 L 105.969 1.488 L 106.060 1.438 L 106.390 1.288 C 106.400 1.288 106.400 1.278 106.409 1.278 C 106.439 1.268 106.479 1.258 106.509 1.248 L 106.520 1.248 C 106.529 1.238 106.539 1.238 106.549 1.238 C 106.619 1.218 106.699 1.208 106.779 1.208 L 118.400 1.208 C 118.409 1.208 118.545 1.210 118.579 1.214 L 118.611 1.219 L 118.635 1.221 C 118.815 1.231 118.909 1.238 119.079 1.268 C 119.579 1.348 120.079 1.468 120.560 1.618 C 126.109 3.548 130.089 8.928 130.089 15.238 C 130.089 16.488 129.929 17.688 129.629 18.848 C 129.619 18.908 129.600 18.958 129.589 19.008 C 129.539 19.228 129.479 19.448 129.409 19.658 C 129.359 19.818 129.310 19.968 129.249 20.128 C 129.219 20.208 129.189 20.298 129.159 20.378 C 129.150 20.418 129.129 20.458 129.119 20.498 C 129.109 20.518 129.100 20.548 129.089 20.578 C 129.089 20.588 129.079 20.588 129.079 20.598 C 128.979 20.808 128.810 20.968 128.619 21.108 L 128.609 21.118 L 128.579 21.138 C 128.520 21.188 128.449 21.238 128.379 21.268 Z M 130.669 41.058 C 130.749 41.258 130.609 41.488 130.399 41.488 L 125.979 41.488 C 125.600 41.498 125.229 41.268 125.069 40.918 L 124.819 40.378 C 124.819 40.368 124.810 40.368 124.810 40.358 C 124.789 40.338 124.779 40.318 124.770 40.298 L 124.359 39.388 L 122.609 35.598 C 122.600 35.578 122.589 35.558 122.579 35.538 L 122.159 34.628 L 121.329 32.825 L 121.343 32.819 L 120.433 30.841 C 120.393 30.761 120.362 30.681 120.362 30.591 C 120.311 30.365 120.349 30.140 120.455 29.946 C 120.552 29.746 120.718 29.576 120.941 29.472 L 123.661 28.212 C 124.071 28.022 124.541 28.132 124.821 28.452 C 124.831 28.462 124.831 28.462 124.831 28.472 C 124.901 28.542 124.951 28.612 124.991 28.702 L 126.981 33.042 L 126.981 33.052 L 129.312 38.012 C 129.342 38.080 129.345 38.151 129.327 38.215 Z"/></g>
+          <g class="o" fill="currentColor">
+            <g mask="url(#lw-ring-__ID__)"><path class="ring-cut" d="M 158.597 41.675 C 157.650 41.678 156.698 41.615 155.743 41.484 C 144.726 39.969 136.993 29.770 138.507 18.751 C 140.022 7.733 150.212 0.000 161.240 1.514 C 164.943 2.024 168.354 3.512 171.183 5.809 L 165.923 8.262 C 164.286 7.343 162.475 6.731 160.559 6.468 C 159.845 6.369 159.136 6.323 158.435 6.325 C 150.998 6.348 144.502 11.858 143.460 19.433 C 142.321 27.720 148.138 35.391 156.426 36.531 C 160.441 37.082 164.431 36.038 167.659 33.589 C 170.888 31.140 172.971 27.581 173.522 23.566 C 173.551 23.356 173.575 23.146 173.596 22.936 L 178.649 20.580 C 178.701 21.792 178.645 23.019 178.476 24.247 C 177.742 29.585 174.973 34.318 170.680 37.574 C 167.154 40.247 162.945 41.662 158.597 41.675 Z"/></g>
+            <g class="bars"><path class="bar home" style="--i:0;--sx:2.22px;--sy:-2.31px;--phi:-24.2deg;--ex:1.000;transform-origin:170.54px 8.99px" d="M 169.112 10.165 C 169.104 10.169 169.096 10.173 169.087 10.177 C 169.014 10.213 168.917 10.260 168.840 10.189 L 168.161 9.650 C 168.135 9.595 168.186 9.574 168.247 9.549 C 168.260 9.543 168.275 9.538 168.289 9.531 L 172.874 7.392 C 172.883 7.388 172.894 7.384 172.906 7.382 C 173.130 7.612 173.350 7.848 173.565 8.090 C 173.560 8.092 173.556 8.094 173.551 8.096 Z"/><path class="bar home" style="--i:1;--sx:2.58px;--sy:-1.89px;--phi:-21.3deg;--ex:1.834;transform-origin:173.17px 10.78px" d="M 173.120 11.325 C 173.109 11.330 173.094 11.338 173.077 11.346 C 172.981 11.396 172.810 11.484 172.759 11.413 L 172.220 10.764 C 172.179 10.716 172.266 10.678 172.339 10.645 C 172.350 10.640 172.361 10.636 172.371 10.631 L 174.730 9.531 C 174.921 9.790 175.106 10.053 175.284 10.319 Z"/><path class="bar home" style="--i:2;--sx:2.86px;--sy:-1.44px;--phi:-25.0deg;--ex:1.270;transform-origin:173.95px 13.74px" d="M 172.920 14.715 C 172.845 14.750 172.755 14.718 172.721 14.642 L 172.467 14.100 C 172.433 14.025 172.465 13.936 172.540 13.901 L 176.357 12.120 C 176.497 12.386 176.631 12.654 176.758 12.924 Z"/><path class="bar home" style="--i:3;--sx:3.05px;--sy:-0.97px;--phi:-25.2deg;--ex:1.913;transform-origin:175.95px 15.93px" d="M 175.378 16.694 C 175.303 16.729 175.214 16.697 175.179 16.621 L 174.926 16.079 C 174.891 16.004 174.923 15.915 174.998 15.880 L 177.499 14.713 C 177.601 14.997 177.696 15.283 177.784 15.571 Z"/><path class="bar home" style="--i:4;--sx:3.18px;--sy:-0.38px;--phi:-24.2deg;--ex:1.021;transform-origin:176.10px 19.37px" d="M 178.227 18.859 L 173.917 20.799 C 173.747 20.886 173.745 20.824 173.742 20.753 C 173.741 20.731 173.741 20.708 173.735 20.688 L 173.715 20.145 C 173.715 20.132 173.714 20.118 173.713 20.104 C 173.708 20.001 173.700 19.866 173.864 19.800 L 178.186 17.831 L 178.201 17.824 C 178.239 17.807 178.286 17.785 178.328 17.775 C 178.387 18.091 178.438 18.409 178.482 18.728 C 178.429 18.775 178.333 18.815 178.269 18.841 C 178.252 18.848 178.238 18.854 178.227 18.859 Z"/></g>
+          </g>
+        </svg>
+</template>
+
+<script>
+/* Wordmark instances ------------------------------------------------------
+   SVG mask ids are document-global, so two copies of the same markup would
+   share one mask and only the last would draw. Each instance gets its own. */
+(function () {
+  var tpl = document.getElementById('lw-tpl');
+  if (!tpl) return;
+  var raw = tpl.innerHTML;
+  var n = 0;
+
+  function mount(host, classes) {
+    if (!host) return null;
+    host.innerHTML = raw.split('__ID__').join('lw' + (++n));
+    var svg = host.querySelector('svg');
+    if (svg) svg.setAttribute('class', 'lw ' + classes);
+    return svg;
+  }
+
+  /* The arrival: black on the white panel. */
+  mount(document.getElementById('lin-arrival-mark'), 'lw--thread lw--ink');
+
+  /* The first slide: white on black, and held until it is actually on screen
+     — a mark that has already finished assembling by the time the reader
+     reaches it has shown them nothing. */
+  var slide = mount(document.getElementById('lw-slide'), 'lw--thread lw--paper lw--held');
+  if (slide) {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) {
+      slide.classList.remove('lw--held');
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        slide.classList.remove('lw--held');
+        io.disconnect();
+      }, { threshold: 0.35 });
+      io.observe(slide);
+    }
+  }
+})();
+</script>
+
+<script>
+/* Arrival stage -----------------------------------------------------------
+   The panel is on screen from the first paint. Any attempt to move on — the
+   cue, a scroll, a key, a click on the panel — expands it to the screen edges
+   and then fades it out, handing the reader to the page underneath.
+
+   Everything the modal's own overflow:hidden would otherwise swallow is
+   listened for explicitly: with the scroll locked there is no scroll event to
+   wait on, so wheel and touch are what actually report the intent. */
+(function () {
+  'use strict';
+  var doc = document.documentElement;
+  if (!doc.classList.contains('lin-arriving')) return;
+
+  var EXPAND = 500;
+  var FADE = 380;
+  var done = false;
+
+  function unbind() {
+    window.removeEventListener('wheel', onMove);
+    window.removeEventListener('touchmove', onMove);
+    window.removeEventListener('scroll', onMove);
+    window.removeEventListener('keydown', onKey);
+  }
+
+  function advance() {
+    if (done) return;
+    done = true;
+    unbind();
+    doc.classList.add('lin-full');
+
+    window.setTimeout(function () {
+      /* Hand back to an ordinary document. The page has been sitting at scroll
+         0 behind a panel that now fills the screen, so releasing the lock and
+         dropping the grey ground is invisible — and un-pausing the entrance
+         means it plays into the fade rather than having been spent behind it. */
+      doc.classList.remove('lin-arriving');
+      doc.classList.add('lin-gone');
+      window.scrollTo(0, 0);
+      window.setTimeout(function () {
+        doc.classList.remove('lin-stage', 'lin-full', 'lin-gone');
+        var panel = document.getElementById('lin-arrival');
+        if (panel) panel.remove();
+        /* Anything measured against the window while it was covered — the
+           pinned chrome above all — measures again now. */
+        window.dispatchEvent(new Event('resize'));
+      }, FADE);
+    }, EXPAND);
+  }
+
+  function onMove(e) {
+    /* Only forward intent. Trying to scroll up on the opening screen is not
+       a request to leave it. */
+    if (e && e.type === 'wheel' && e.deltaY < 0) return;
+    advance();
+  }
+  function onKey(e) {
+    if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'PageDown' ||
+        e.key === 'Enter' || e.key === 'End') advance();
+  }
+
+  window.addEventListener('wheel', onMove, { passive: true });
+  window.addEventListener('touchmove', onMove, { passive: true });
+  window.addEventListener('scroll', onMove, { passive: true });
+  window.addEventListener('keydown', onKey);
+
+  var cue = document.getElementById('lin-cue');
+  if (cue) cue.addEventListener('click', advance);
+  var panel = document.getElementById('lin-arrival');
+  if (panel) panel.addEventListener('click', function (e) {
+    if (e.target.closest('.lin-cue')) return;
+    advance();
+  });
+
+  /* A back-navigation restores this document from the back/forward cache with
+     every variable exactly as it was left, including `done` — so the arrival
+     would be staged and nothing would ever dismiss it. */
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    doc.classList.remove('lin-stage', 'lin-arriving', 'lin-full', 'lin-gone');
+  });
 })();
 </script>
 

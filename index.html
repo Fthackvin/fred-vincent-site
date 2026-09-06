@@ -3451,10 +3451,15 @@ main > hr,
         </li>
 
         <li class="work-card work-card--linro">
-          <button type="button" class="work-card-hit" aria-label="View Linro case study">
+          <button type="button" class="work-card-hit" aria-label="View Linro case study" data-cs-open="/work/linro/" data-cs-slug="linro" data-cs-mode="modal" data-cs-tint="#000000">
           <div class="work-card-media" style="background-color:#000000;">
             <div class="work-card-media-frame">
-            <div aria-hidden="true" style="position:absolute; left:52px; top:112.8px; width:229px; height:68px; background-image:url('/work/general/linro-logo.png'); background-size:231.5% 254.35%; background-position:4.89% 79.58%; background-repeat:no-repeat;"></div>
+            <!-- The live mark rather than a flat export: on the card only the
+                 five blocks move, so the thumbnail has a pulse without
+                 announcing itself next to the video cards either side. The
+                 full drawing is what the case study opens with. -->
+            <img src="/work/general/linro-mark-bars.svg" alt="" aria-hidden="true" width="229" height="71"
+                 style="position:absolute; left:46px; top:110px; width:229px; height:auto;">
             </div>
           </div>
           <div class="work-card-body">
@@ -4653,6 +4658,12 @@ main > hr,
 
     var overlay = document.createElement('div');
     overlay.className = 'cs-open-overlay';
+    /* The box is the destination's panel, so it is white. A card that is not
+       white would otherwise flip colour on the click, before it has moved —
+       `data-cs-tint` lets it start in the card's own ground and turn over the
+       course of the opening instead. */
+    var tint = hit.getAttribute('data-cs-tint');
+    if (tint) overlay.style.backgroundColor = tint;
     overlay.style.clipPath =
       'inset(' + r.top + 'px ' + (vw - r.right) + 'px ' + (vh - r.bottom) + 'px ' + r.left + 'px round 14px)';
     document.body.appendChild(overlay);
@@ -4716,7 +4727,9 @@ main > hr,
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         var ease = modal ? 'cubic-bezier(0.4, 0, 0.2, 1)' : 'cubic-bezier(0.22, 1, 0.36, 1)';
-        overlay.style.transition = 'clip-path ' + DURATION + 'ms ' + ease;
+        overlay.style.transition = 'clip-path ' + DURATION + 'ms ' + ease +
+          (tint ? ', background-color ' + Math.round(DURATION * 0.55) + 'ms ease-out' : '');
+        if (tint) overlay.style.backgroundColor = '#FFFFFF';
         overlay.style.clipPath =
           'inset(' + MODAL_TOP + 'px ' + MODAL_SIDE + 'px ' + MODAL_SIDE + 'px ' +
           MODAL_SIDE + 'px round ' + MODAL_RADIUS + 'px)';
