@@ -1538,23 +1538,15 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .t2-item--mark .lw { width: min(880px, 100%); }
 
 /* --- Deck slides ---------------------------------------------------------
-   The brand deck's own pages. They are white artwork, so a full-bleed white
-   slide on a white page would lose its edges entirely — they sit on the
-   paper-200 ground with a hairline instead, which is also what keeps three
-   of them in a row reading as a set rather than one long sheet. */
+   The brand deck's own pages, cropped to their artwork. They sit on the page
+   ground as artwork rather than in a frame — the slides carry their own
+   generous margins, so a box around them would only be a second margin. */
 .t2-item--slide {
-  background: var(--paper-200, #F3F3EF);
-  padding: clamp(28px, 4vw, 64px) clamp(16px, 4vw, 64px);
+  background: var(--paper-50);
+  padding: clamp(20px, 3vw, 48px) clamp(16px, 4vw, 64px);
 }
 .t2-item--slide .t2-slide-inner { max-width: 1180px; margin: 0 auto; }
-.t2-item--slide img {
-  width: 100%;
-  height: auto;
-  display: block;
-  background: #FFFFFF;
-  border: 1px solid rgba(26, 24, 21, 0.09);
-  border-radius: 2px;
-}
+.t2-item--slide img { width: 100%; height: auto; display: block; }
 
 /* --- Live screens --------------------------------------------------------
    The product screens and the interaction marks are working documents, not
@@ -1899,17 +1891,17 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 
       <figure class="t2-item t2-item--slide t2-reveal">
         <div class="t2-slide-inner">
-          <img src="deck/slide-01.png" alt="Palette: a primary range of near-blacks, deep green and off-whites, and a secondary range of blues and reds held for state." width="1920" height="1386" loading="lazy" decoding="async">
+          <img src="deck/slide-01.png" alt="Palette: a primary range of near-blacks, deep green and off-whites, and a secondary range of blues and reds held for state." width="1920" height="1090" loading="lazy" decoding="async">
         </div>
       </figure>
       <figure class="t2-item t2-item--slide t2-reveal">
         <div class="t2-slide-inner">
-          <img src="deck/slide-07.png" alt="Headline typeface: Aeonik, a geometric neo-grotesque with precise terminals and circular forms." width="1920" height="1386" loading="lazy" decoding="async">
+          <img src="deck/slide-07.png" alt="Headline typeface: Aeonik, a geometric neo-grotesque with precise terminals and circular forms." width="1920" height="1090" loading="lazy" decoding="async">
         </div>
       </figure>
       <figure class="t2-item t2-item--slide t2-reveal">
         <div class="t2-slide-inner">
-          <img src="deck/slide-08.png" alt="Body typeface: League Spartan, a geometric sans taking its influence from ATF&rsquo;s Spartan family." width="1920" height="1386" loading="lazy" decoding="async">
+          <img src="deck/slide-08.png" alt="Body typeface: League Spartan, a geometric sans taking its influence from ATF&rsquo;s Spartan family." width="1920" height="1090" loading="lazy" decoding="async">
         </div>
       </figure>
 
