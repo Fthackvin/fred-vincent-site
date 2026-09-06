@@ -531,7 +531,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 
 /* A pair shares one row and falls back to stacking before the columns get too
-   narrow to read as a composition. Unused by Monet; part of the vocabulary. */
+   narrow to read as a composition. Unused here; part of the vocabulary. */
 .t2-item--pair .t2-media-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1504,25 +1504,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
 /* The wordmark replaces the title lockup at the top of the page. The text is
    still there for anything that isn't looking at pixels. */
-/* Sequence slots awaiting artwork. Linro's imagery is not in the repo yet, so
-   each beat holds its place at its real proportion rather than collapsing the
-   page — the rhythm is right and the pictures drop straight in. */
-.t2-slot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #F3F3EF;
-  border: 1px dashed #D6D6CE;
-}
-.t2-slot span {
-  font-family: var(--body);
-  font-weight: 400;
-  font-size: 12px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: #9A9A92;
-}
-
 /* --- The mark as a slide -------------------------------------------------
    First beat of the sequence: the mark at size, running, on its own ground.
    Full bleed like every other item, so it reads as part of the sequence
@@ -1593,20 +1574,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   transform-origin: top left;
 }
 .t2-frame.is-fit { aspect-ratio: auto; }
-.t2-screens-cap {
-  display: flex;
-  gap: 16px;
-  align-items: baseline;
-  margin-top: 14px;
-  font-family: var(--body);
-  font-weight: 400;
-  font-size: 12px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.42);
-}
-.t2-screens-cap b { font-weight: 400; color: rgba(248, 250, 252, 0.72); }
-.t2-screens-cap span { margin-left: auto; letter-spacing: 0; text-transform: none; font-size: 12.5px; }
 
 /* --- Arrival -------------------------------------------------------------
    Template One's opening, on a Template Two page. The case study does not
@@ -1872,22 +1839,12 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
         <div class="lw-stage lw-stage--light" id="lw-slide-2" role="img" aria-label="The Linro wordmark drawing itself, on a light ground"></div>
       </figure>
 
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 3024 / 2190;" role="img" aria-label="Identity system — artwork to follow">
-          <span>Identity system</span>
-        </div>
-      </figure>
 
       <div class="t2-note">
         <span class="t2-note-label">Direction</span>
         <p>The identity moves away from the shields, gradients and navy the rest of the category shares. It borrows from Bauhaus systems and modular graphic design instead: a fixed set of blocks, generous space, and restraint everywhere the work does not need to speak.</p>
       </div>
 
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 3024 / 2174;" role="img" aria-label="The mark — construction — artwork to follow">
-          <span>The mark — construction</span>
-        </div>
-      </figure>
 
       <figure class="t2-item t2-item--slide t2-reveal">
         <div class="t2-slide-inner">
@@ -1906,18 +1863,18 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
       </figure>
 
       <div class="t2-quote">
-        <blockquote>Advanced, but not sci‑fi. Premium, but not stuffy.</blockquote>
+        <blockquote>Nothing ships until it is in the lineage.</blockquote>
       </div>
 
 
       <div class="t2-note">
-        <span class="t2-note-label">System</span>
-        <p>One set of parts builds everything. The wordmark, the graphic language and the motion are all assembled from the same blocks, so the identity behaves the way the product does — a thing that can be traced back to what it came from.</p>
+        <span class="t2-note-label">Restraint</span>
+        <p>Near-black, deep green and off-white carry the brand. The blues and reds sit in a secondary range and are only spent on state, so that when something is wrong it is the only thing on the screen. Aeonik for headlines, League Spartan for body.</p>
       </div>
 
       <div class="t2-note">
         <span class="t2-note-label">Marks</span>
-        <p>The wordmark is cut from a set of blocks, so the interface uses the same ones. Every state in the product is a small composition of them — same corner, same 28° terminal, at whatever size and proportion the composition needs.</p>
+        <p>One set of parts builds everything. The wordmark is cut from a set of blocks, so the graphic language, the motion and the interface all use the same ones — and every state in the product is a small composition of them, same corner, same 28° terminal, at whatever size the moment needs. The identity behaves the way the product does: a thing that can be traced back to what it came from.</p>
       </div>
 
       <figure class="t2-item t2-screens">
@@ -1925,7 +1882,6 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:1560" data-w="1280" data-h="1560">
             <iframe src="screens/marks.html?bare&set=all" title="The full sheet" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>01</b> The full sheet <span>Fifteen states. Presence, policy, alert, enforcement, lineage.</span></figcaption>
         </div>
       </figure>
 
@@ -1939,7 +1895,6 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:900" data-w="1280" data-h="900">
             <iframe src="screens/marks.html?bare&set=core" title="Core set" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>02</b> Core set <span>The grammar, seven states at size.</span></figcaption>
         </div>
       </figure>
 
@@ -1953,7 +1908,6 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
             <iframe src="screens/violations.html?bare" title="Violations" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>03</b> Violations <span>Marks carry state; lineage reads as a ribbon.</span></figcaption>
         </div>
       </figure>
       <figure class="t2-item t2-screens">
@@ -1961,7 +1915,6 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
             <iframe src="screens/agent.html?bare" title="Agent" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>04</b> Agent <span>A run as a readable track, not a log.</span></figcaption>
         </div>
       </figure>
       <figure class="t2-item t2-screens">
@@ -1969,45 +1922,14 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
             <iframe src="screens/simulate.html?bare" title="Simulate" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>05</b> Simulate <span>Replay a policy against the record before it ships.</span></figcaption>
         </div>
       </figure>
 
 
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 3002 / 3424;" role="img" aria-label="Graphic language — artwork to follow">
-          <span>Graphic language</span>
-        </div>
-      </figure>
 
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 3040 / 1878;" role="img" aria-label="Brand in use — artwork to follow">
-          <span>Brand in use</span>
-        </div>
-      </figure>
 
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 3028 / 1956;" role="img" aria-label="Motion system — artwork to follow">
-          <span>Motion system</span>
-        </div>
-      </figure>
 
-      <div class="t2-note">
-        <span class="t2-note-label">Restraint</span>
-        <p>Near-black, deep green and off-white carry the brand. The blues and reds sit in a secondary range and are only spent on state, so that when something is wrong it is the only thing on the screen. Aeonik for headlines, League Spartan for body.</p>
-      </div>
 
-      <figure class="t2-item t2-item--screens t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 2988 / 1760;" role="img" aria-label="Product — web — artwork to follow">
-          <span>Product — web</span>
-        </div>
-      </figure>
-
-      <figure class="t2-item t2-item--screens t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 3052 / 2338;" role="img" aria-label="Product — mobile — artwork to follow">
-          <span>Product — mobile</span>
-        </div>
-      </figure>
 
     </div>
   </div>
