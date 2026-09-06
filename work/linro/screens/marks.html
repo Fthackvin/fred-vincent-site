@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 /* =====================================================================
-   LINRO — interaction marks.
+   LINRO — interaction marks. v3.
 
    Bauhaus blocks cut from the wordmark: same corner, same 28° terminal,
    in whatever size and proportion the composition needs. White is a
@@ -27,7 +27,7 @@
 :root{
   --ground:#0D1013; --surface:#131619; --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.12);
   --text:#E8E8E8; --text-2:#9AA1A0; --text-3:#5E6664;
-  --wh:#E8E8E8; --ink:#0D1013; --vi:#8A7BD8; --rd:#E5534B; --bl:#5E74D8;
+  --wh:#E8E8E8; --ink:#0D1013; --vi:#8A7BD8; --rd:#E5534B; --bl:#5E74D8; --teal-l:#3E8C7F;
 }
 *{box-sizing:border-box}
 body{margin:0;background:#08090B;color:var(--text);font:14px/1.5 "League Spartan",-apple-system,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
@@ -72,7 +72,7 @@ body.bare h2{margin-top:34px}
 .f-wh{fill:var(--wh)}
 .f-ou{fill:var(--ink);stroke:var(--wh);stroke-width:1.3}
 .f-gh{fill:var(--wh);opacity:.32}
-.f-rd{fill:var(--rd)}.f-vi{fill:var(--vi)}.f-bl{fill:var(--bl)}.f-none{fill:none}
+.f-rd{fill:var(--rd)}.f-ink{fill:var(--ink)}.f-vi{fill:var(--vi)}.f-bl{fill:var(--bl)}.f-none{fill:none}
 .f-hz{fill:url(#hz)}.f-dtr{fill:url(#dtr)}.f-hzr{fill:url(#hzr)}.f-dt{fill:url(#dt)}
 .thread{stroke:var(--line2);stroke-width:1.4;fill:none}
 .pol{fill:none;stroke:var(--wh);stroke-width:1.2;stroke-dasharray:4 3;opacity:.55}
@@ -81,25 +81,30 @@ body.term .f-ou{stroke-width:1}
 /* motion base */
 .b,.thread,.pol{animation-duration:var(--d,4.2s);animation-timing-function:var(--e,cubic-bezier(.5,0,.2,1));animation-iteration-count:infinite;animation-delay:var(--dl,0s);animation-fill-mode:both}
 
-/* --- ambient: agent travels the perimeter; solid while working, outline as it goes quiet --- */
+/* --- ambient: the agent travels the perimeter, solid while it moves --- */
 .a-perim{animation-name:perim;--d:7s;--e:cubic-bezier(.45,0,.2,1)}
 @keyframes perim{0%{transform:translate(0,0);fill:var(--wh);stroke:var(--wh)}26%{transform:translate(var(--px),0);fill:var(--wh);stroke:var(--wh)}52%{transform:translate(var(--px),var(--py));fill:var(--wh);stroke:var(--wh)}56%{fill:var(--ink)}78%,100%{transform:translate(0,var(--py));fill:var(--ink);stroke:var(--wh)}}
 
-/* --- multi: all appear white, then one keeps working, the others go quiet --- */
+/* --- multi: all appear white, then one keeps working and the rest go quiet --- */
 .a-quiet{animation-name:quiet;--d:7s;--e:steps(1)}
 @keyframes quiet{0%,10%{opacity:0}20%,40%{opacity:1;fill:var(--wh)}41%,100%{opacity:1;fill:var(--ink);stroke:var(--wh)}}
 .a-working{animation-name:working;--d:7s;--e:ease-in-out}
 @keyframes working{0%,10%{opacity:0}20%,40%{opacity:1}46%{opacity:.4}52%{opacity:1}58%{opacity:.4}64%{opacity:1}70%{opacity:.4}76%{opacity:1}82%{opacity:.4}88%,100%{opacity:1}}
 
-/* --- drift: rules stack in from the left; the last comes away and turns violet --- */
+/* --- drift: rules stack in; the last empties, takes a violet edge, fills, and leaves --- */
 .a-stack{--d:5.4s;--e:cubic-bezier(.05,.9,.15,1)}
-.a-away{animation-name:away;--d:5.4s;--e:cubic-bezier(.05,.9,.15,1)}
-@keyframes away{0%,52%{opacity:0;transform:translateX(calc(var(--u) * -2))}62%{opacity:1;transform:translateX(0);fill:var(--wh)}78%{transform:translateX(calc(var(--u) * 1.1));fill:var(--wh)}86%,100%{transform:translateX(calc(var(--u) * 1.1));fill:var(--vi)}}
+.a-driftseq{animation-name:driftseq;--d:5.4s;--e:cubic-bezier(.2,.9,.25,1);stroke-width:1.3}
+@keyframes driftseq{
+  0%,26%{opacity:0;transform:translateX(calc(var(--u) * -2));fill:var(--wh);stroke:var(--wh)}
+  34%{opacity:1;transform:translateX(0);fill:var(--wh);stroke:var(--wh)}
+  46%{fill:var(--ink);stroke:var(--wh)}
+  56%{fill:var(--ink);stroke:var(--vi)}
+  68%{fill:var(--vi);stroke:var(--vi);transform:translateX(0)}
+  86%,100%{fill:var(--vi);stroke:var(--vi);transform:translateX(calc(var(--u) * 1.1))}}
 
-/* --- PR flag: bars grow in one by one; the violet one arrives angled and overhangs --- */
-.a-grow{--d:5.4s;--e:cubic-bezier(.4,0,.15,1);transform-origin:left}
-.a-slotB{animation-name:slotB;--d:5.4s;--e:cubic-bezier(.05,.9,.15,1);transform-origin:left}
-@keyframes slotB{0%,44%{transform:scaleX(0)}62%,100%{transform:scaleX(1)}}
+/* --- PR flag: bars drop in on an even beat, then the violet one slides out --- */
+.a-flagslide{animation-name:flagslide;--d:5s;--e:cubic-bezier(.2,.9,.25,1)}
+@keyframes flagslide{0%,44%{opacity:0;transform:translateX(0)}53%{opacity:1;transform:translateX(0)}72%,100%{opacity:1;transform:translateX(calc(var(--u) * 1.6))}}
 
 /* --- suspected: a ghost of the file slides out, and lines start moving over it --- */
 .a-ghostL{animation-name:ghostL;--d:6s;--e:cubic-bezier(.4,0,.2,1)}
@@ -107,12 +112,17 @@ body.term .f-ou{stroke-width:1}
 .a-linesL{animation-name:linesL;--d:6s;--e:cubic-bezier(.4,0,.2,1)}
 @keyframes linesL{0%,36%{opacity:0;transform:translateX(0)}42%{transform:translateX(calc(var(--u) * -3))}50%,100%{opacity:1;transform:translateX(calc(var(--u) * -3))}}
 
-/* --- alert: ghost slides out with dots (analysing), then the file pops red --- */
-.a-dotsL{animation-name:linesL;--d:6s}
-.a-dotsRed{animation-name:dotsRed;--d:6s;--e:steps(1)}
-@keyframes dotsRed{0%,58%{opacity:0}60%,100%{opacity:1}}
-.a-popRed{animation-name:popRed;--d:6s;--e:cubic-bezier(.2,.9,.2,1)}
-@keyframes popRed{0%,76%{fill:var(--wh);transform:scale(1)}80%{fill:var(--rd);transform:scale(1.06)}86%,100%{fill:var(--rd);transform:scale(1)}}
+/* --- alert: dots scan each file in turn; on the second they turn red, and it does too --- */
+.a-scanA{animation-name:scanA;--d:6.4s;--e:steps(1)}
+@keyframes scanA{0%,30%{opacity:0}32%,42%{opacity:1}44%,100%{opacity:0}}
+.a-scanB{animation-name:scanB;--d:6.4s;--e:steps(1)}
+@keyframes scanB{0%,44%{opacity:0}46%,56%{opacity:1}58%,100%{opacity:0}}
+.a-scanC{animation-name:scanC;--d:6.4s;--e:steps(1)}
+@keyframes scanC{0%,58%{opacity:0}60%,70%{opacity:1}72%,100%{opacity:0}}
+.a-scanRed{animation-name:scanRed;--d:6.4s;--e:steps(1)}
+@keyframes scanRed{0%,72%{opacity:0}74%,86%{opacity:1}88%,100%{opacity:0}}
+.a-fileIn{--d:6.4s;--e:cubic-bezier(.3,.9,.3,1)}
+.a-fileInRed{--d:6.4s;--e:cubic-bezier(.3,.9,.3,1)}
 
 /* --- blocked: a signal runs the thread; the step it meets comes alive and absorbs it --- */
 .a-signal{animation-name:signal;--d:4.6s;--e:cubic-bezier(.5,0,.3,1)}
@@ -126,42 +136,43 @@ body.term .f-ou{stroke-width:1}
 .a-acq{--d:5.6s;--e:steps(1)}
 .a-acqRed{--d:5.6s;--e:steps(1)}
 
+/* --- commit: a change locks into the gap and the mosaic solves itself --- */
+.a-slide{--d:7.5s;--e:cubic-bezier(.3,0,.15,1)}
+.a-lockSlide{animation-name:lockSlide;--d:7.5s;--e:cubic-bezier(.3,0,.15,1)}
+@keyframes lockSlide{0%,8%{transform:translate(calc(var(--u) * 1.4),calc(var(--u) * -1.4));fill:var(--ink);stroke:var(--wh);opacity:0}14%{opacity:1}24%{transform:translate(0,0);fill:var(--ink)}28%,38%{transform:translate(0,0);fill:var(--wh);stroke:var(--wh)}46%,100%{transform:translate(var(--px),var(--py));fill:var(--wh);stroke:var(--wh)}}
+
 /* --- unrecognised: a clear block crosses, is refused, comes back red and spinning --- */
 .a-cross{animation-name:cross;--d:5.6s;--e:cubic-bezier(.45,0,.2,1)}
 @keyframes cross{0%,6%{transform:translateX(0) rotate(0);fill:var(--ink);stroke:var(--wh);opacity:0}12%{opacity:1}40%{transform:translateX(var(--to)) rotate(0);fill:var(--ink);stroke:var(--wh)}46%{transform:translateX(calc(var(--to) - var(--u) * .3)) rotate(0);fill:var(--rd);stroke:var(--rd)}72%{transform:translateX(0) rotate(-360deg);fill:var(--rd);stroke:var(--rd);opacity:1}78%{opacity:.3}84%{opacity:1}90%{opacity:.3}96%,100%{opacity:1;transform:translateX(0) rotate(-360deg);fill:var(--rd);stroke:var(--rd)}}
 
-/* --- impersonation: the shape is rebuilt beside itself, then shown as a fake --- */
+/* --- impersonation: the copy is rebuilt, then red dots pulse across it and it turns --- */
 .a-copyIn{--d:5.4s;--e:cubic-bezier(.3,.9,.3,1)}
-.a-fakeLines{animation-name:fakeLines;--d:5.4s;--e:steps(1)}
-@keyframes fakeLines{0%,70%{opacity:0}72%,100%{opacity:.95}}
-.a-fakeFill{animation-name:fakeFill;--d:5.4s;--e:steps(1)}
-@keyframes fakeFill{0%,70%{fill:var(--wh)}72%,100%{fill:#5A1F1F}}
+.a-dotsIn{animation-name:dotsIn;--d:5.4s;--e:ease-in-out}
+@keyframes dotsIn{0%,60%{opacity:0}66%{opacity:1}72%{opacity:.35}78%{opacity:1}84%{opacity:.35}90%,100%{opacity:1}}
+.a-turnRed{animation-name:turnRed;--d:5.4s;--e:steps(1)}
+@keyframes turnRed{0%,87%{fill:var(--wh)}88%,100%{fill:var(--rd)}}
 
-/* --- outside policy: a grant carries a block out through the boundary --- */
-.a-leave{animation-name:leave;--d:5s;--e:cubic-bezier(.45,0,.2,1)}
-@keyframes leave{0%,30%{transform:translateX(0);fill:var(--wh)}58%{transform:translateX(var(--to));fill:var(--wh)}64%,100%{transform:translateX(var(--to));fill:var(--bl)}}
-.a-fence{animation-name:fence;--d:5s;--e:steps(1)}
-@keyframes fence{0%,60%{stroke:var(--wh);opacity:.55}62%{stroke:var(--bl);opacity:1}68%{opacity:.55}72%,100%{stroke:var(--bl);opacity:1}}
+/* --- outside policy: a block is selected, emptied, edged violet, and carried out --- */
+.a-select{animation-name:selectout;--d:5.4s;--e:cubic-bezier(.35,0,.2,1);stroke-width:1.3}
+@keyframes selectout{
+  0%,22%{fill:var(--wh);stroke:var(--wh);transform:translateX(0)}
+  34%{fill:var(--ink);stroke:var(--wh)}
+  46%{fill:var(--ink);stroke:var(--vi)}
+  58%{fill:var(--ink);stroke:var(--vi);transform:translateX(0)}
+  78%{fill:var(--ink);stroke:var(--vi);transform:translateX(var(--to))}
+  86%,100%{fill:var(--bl);stroke:var(--bl);transform:translateX(var(--to))}}
+.a-fence{animation-name:fence;--d:5.4s;--e:steps(1)}
+@keyframes fence{0%,74%{stroke:var(--wh);opacity:.5}78%{stroke:var(--bl);opacity:1}84%{opacity:.5}90%,100%{stroke:var(--bl);opacity:1}}
 
-/* --- handoff: the scope detaches from one agent, travels, docks into the next --- */
+/* --- handoff: the agent lifts out of one block and settles inside the next --- */
 .a-dock{animation-name:dock;--d:5s;--e:cubic-bezier(.5,0,.15,1)}
-@keyframes dock{0%,22%{transform:translate(0,0)}34%{transform:translate(0,calc(var(--u) * -1.1))}58%{transform:translate(var(--to),calc(var(--u) * -1.1))}70%,100%{transform:translate(var(--to),0)}}
+@keyframes dock{0%,26%{transform:translateX(0);fill:var(--ink)}36%{fill:var(--wh)}70%{transform:translateX(var(--to));fill:var(--wh)}78%,100%{transform:translateX(var(--to));fill:var(--ink)}}
 .a-receiver{animation-name:receiver;--d:5s;--e:steps(1)}
 @keyframes receiver{0%,69%{fill:var(--ink);stroke:var(--wh)}70%,100%{fill:var(--wh);stroke:var(--wh)}}
 
-/* --- checking latest policy: a reader climbs the stack and stops on the newest --- */
-.a-read{animation-name:read;--d:5.2s;--e:steps(3,end)}
-@keyframes read{0%,20%{transform:translateY(0)}72%,100%{transform:translateY(var(--py))}}
-.a-latest{animation-name:latest;--d:5.2s;--e:steps(1)}
-@keyframes latest{0%,71%{fill:var(--ink);stroke:var(--wh)}72%,100%{fill:var(--wh);stroke:var(--wh)}}
-.a-older{animation-name:older;--d:5.2s;--e:steps(1)}
-@keyframes older{0%,71%{fill:var(--wh)}72%,100%{fill:var(--ink);stroke:var(--wh)}}
-
-/* --- commit: an outline drops into the record, locks solid, and the record re-forms --- */
-.a-reform{animation-name:reform;--d:6.5s;--e:cubic-bezier(.35,0,.15,1)}
-@keyframes reform{0%,56%{transform:translate(0,0)}76%,100%{transform:translate(var(--px),var(--py))}}
-.a-lockReform{animation-name:lockReform;--d:6.5s;--e:cubic-bezier(.35,0,.15,1)}
-@keyframes lockReform{0%,20%{transform:translate(calc(var(--u) * 1.6),calc(var(--u) * -1.6));fill:var(--ink);stroke:var(--wh);opacity:0}26%{opacity:1}42%{transform:translate(0,0);fill:var(--ink)}45%,56%{transform:translate(0,0);fill:var(--wh);stroke:var(--wh)}76%,100%{transform:translate(var(--px),var(--py));fill:var(--wh);stroke:var(--wh)}}
+/* --- checking latest policy: the agent runs the baseline and the rules fill behind it --- */
+.a-run2{animation-name:run2;--d:5.4s;--e:steps(6,end)}
+@keyframes run2{0%,10%{transform:translateX(0)}52%,62%{transform:translateX(var(--px))}86%,100%{transform:translateX(0)}}
 
 @media(prefers-reduced-motion:reduce){.b,.thread,.pol{animation:none!important}}
 </style>
@@ -170,10 +181,10 @@ body.term .f-ou{stroke-width:1}
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <pattern id="hz" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)"><rect width="1.3" height="4" fill="#E8E8E8"/><animateTransform attributeName="patternTransform" type="translate" from="0 0" to="4 0" dur="1.1s" repeatCount="indefinite" additive="sum"/></pattern>
+    <pattern id="hz" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)"><rect width="2.1" height="5" fill="#E8E8E8"/><animateTransform attributeName="patternTransform" type="translate" from="0 0" to="5 0" dur=".65s" repeatCount="indefinite" additive="sum"/></pattern>
     <pattern id="hzr" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)"><rect width="1.3" height="4" fill="#E5534B"/><animateTransform attributeName="patternTransform" type="translate" from="0 0" to="4 0" dur="1.1s" repeatCount="indefinite" additive="sum"/></pattern>
-    <pattern id="dtr" patternUnits="userSpaceOnUse" width="3.2" height="3.2"><circle cx="1.6" cy="1.6" r=".62" fill="#E5534B"/><animateTransform attributeName="patternTransform" type="translate" from="0 0" to="0 3.2" dur="1.1s" repeatCount="indefinite"/></pattern>
-    <pattern id="dt" patternUnits="userSpaceOnUse" width="3.2" height="3.2"><circle cx="1.6" cy="1.6" r=".62" fill="#E8E8E8"/></pattern>
+    <pattern id="dtr" patternUnits="userSpaceOnUse" width="4.4" height="4.4"><circle cx="2.2" cy="2.2" r="1.15" fill="#E5534B"/><animateTransform attributeName="patternTransform" type="translate" values="0 0; 1.9 1.1; -.9 2.6; 1.3 3.6; 0 4.4" dur=".8s" repeatCount="indefinite"/></pattern>
+    <pattern id="dt" patternUnits="userSpaceOnUse" width="4.4" height="4.4"><circle cx="2.2" cy="2.2" r="1.15" fill="#0D1013"/></pattern>
   </defs>
 </svg>
 
@@ -203,16 +214,21 @@ body.term .f-ou{stroke-width:1}
 const RAD = 0.11, CUT_DEG = 28;
 
 /* One block. Same corner radius and the same 28° terminal as the wordmark,
-   at whatever size the composition asks for. `term` is the terminal
-   rendering: square corners, no cut. */
+   at whatever size the composition asks for. `tri` is the flag: the whole
+   right end cut back on one long diagonal rather than a corner clipped.
+   `term` is the terminal rendering: square corners, no cut. */
 function blockPath(x, y, w, h, cut, term) {
   const r = term ? 0 : Math.min(w, h) * RAD;
   const c = term ? null : cut;
   const cl = Math.min(w, h) * 0.55, ch = cl * Math.tan(CUT_DEG * Math.PI / 180);
   const P = [];
   if (c === 'tl') { P.push([x, y + ch]); P.push([x + cl, y]); } else P.push([x, y]);
-  if (c === 'tr') { P.push([x + w - cl, y]); P.push([x + w, y + ch]); } else P.push([x + w, y]);
-  if (c === 'br') { P.push([x + w, y + h - ch]); P.push([x + w - cl, y + h]); } else P.push([x + w, y + h]);
+  if (c === 'tri') { P.push([x + w, y]); P.push([x + w - h * 0.85, y + h]); }
+  else if (c === 'tr') { P.push([x + w - cl, y]); P.push([x + w, y + ch]); }
+  else P.push([x + w, y]);
+  if (c === 'tri') { /* the diagonal already reached the baseline */ }
+  else if (c === 'br') { P.push([x + w, y + h - ch]); P.push([x + w - cl, y + h]); }
+  else P.push([x + w, y + h]);
   if (c === 'bl') { P.push([x + cl, y + h]); P.push([x, y + h - ch]); } else P.push([x, y + h]);
   if (r <= 0) return 'M' + P.map(p => p.join(' ')).join('L') + 'Z';
   const n = P.length; let d = '';
@@ -232,9 +248,15 @@ function blockPath(x, y, w, h, cut, term) {
    selector cannot take a var(), so each distinct start generates its own
    set of keyframes once and the element points at it by name. */
 const KF = {
+  fileIn:      k => `0%,${k}%{opacity:0;transform:translateY(8px)}${k + 7}%,100%{opacity:1;transform:translateY(0)}`,
+  fileInRed:   k => `0%,${k}%{opacity:0;transform:translateY(8px);fill:var(--wh)}${k + 7}%,86%{opacity:1;transform:translateY(0);fill:var(--wh)}88%,100%{opacity:1;transform:translateY(0);fill:var(--rd)}`,
+  bump:        k => `0%,${k}%{opacity:0;transform:translateY(-6px)}${k + 6}%,100%{opacity:1;transform:translateY(0)}`,
+  fill:        k => `0%,${k}%{fill:none;stroke:var(--wh)}${k + 2}%,${k + 18}%{fill:var(--wh);stroke:var(--wh)}${k + 24}%,${k + 34}%{fill:var(--teal-l);stroke:var(--teal-l)}${k + 42}%,100%{fill:var(--wh);stroke:var(--wh)}`,
+  fillTeal:    k => `0%,${k}%{fill:none;stroke:var(--teal-l)}${k + 2}%,100%{fill:var(--teal-l);stroke:var(--teal-l)}`,
+  slide:       k => `0%,${k}%{transform:translate(0,0)}${k + 7}%,100%{transform:translate(var(--px),var(--py))}`,
   acq:         k => `0%,${k}%{fill:var(--ink);stroke:var(--wh)}${k + 1}%,100%{fill:var(--wh);stroke:var(--wh)}`,
   acqRed:      k => `0%,${k}%{fill:var(--ink);stroke:var(--wh)}${k + 1}%,100%{fill:var(--rd);stroke:var(--rd)}`,
-  stack:       k => `0%,${k}%{opacity:0;transform:translateX(calc(var(--u) * -2))}${k + 10}%,100%{opacity:1;transform:none}`,
+  stack:       k => `0%,${k}%{opacity:0;transform:translateX(calc(var(--u) * -2))}${k + 6}%,100%{opacity:1;transform:none}`,
   growx:       k => `0%,${k}%{transform:scaleX(0)}${k + 14}%,100%{transform:scaleX(1)}`,
   infect:      k => `0%,${k}%{opacity:1}${k + 1}%,100%{opacity:.32}`,
   infectLines: k => `0%,${k}%{opacity:0}${k + 1}%{opacity:1}${k + 10}%{opacity:.4}${k + 18}%{opacity:1}${k + 26}%{opacity:.4}${k + 34}%,100%{opacity:1}`,
@@ -252,19 +274,25 @@ function kfFor(type, k) {
   return nm;
 }
 /* Generated animations, keyed by the class that asks for one. */
-const AMAP = {'a-acq':'acq','a-acqRed':'acqRed','a-stack':'stack','a-grow':'growx','a-infect':'infect','a-infectLines':'infectLines','a-copyIn':'copyIn'};
+const AMAP = {'a-fileIn':'fileIn','a-fileInRed':'fileInRed','a-bump':'bump','a-fill':'fill','a-fillTeal':'fillTeal','a-slide':'slide','a-acq':'acq','a-acqRed':'acqRed','a-stack':'stack','a-grow':'growx','a-infect':'infect','a-infectLines':'infectLines','a-copyIn':'copyIn'};
 /* Plain ones that may share an element with a generated one. Writing
    animation-name inline replaces whatever the classes declared, so any
    plain animation on the same element has to be named here or it is
    silently dropped — which is what was happening to the impersonation
-   copies: they animated in, but never changed colour. */
-const SMAP = {'a-fakeFill':'fakeFill','a-fakeLines':'fakeLines'};
+   copies: they animated in, but never turned red. */
+const SMAP = {'a-turnRed':'turnRed','a-dotsIn':'dotsIn'};
 
 function el(b, term, U) {
-  const x = b.x * U, y = b.y * U, w = b.w * U, h = b.h * U;
+  /* `g` insets the block inside its cell, so a mosaic can be laid out on
+     whole units and still read as separate pieces. */
+  const G = b.g != null ? b.g : 0;
+  const x = b.x * U + G / 2, y = b.y * U + G / 2, w = b.w * U - G, h = b.h * U - G;
   const cut = b.doc ? 'tr' : b.cut;
   const st = [`--u:${U}px`];
   if (b.to != null) st.push(`--to:${b.to * U}px`);
+  /* Both --px and --py carry their unit. They are read as lengths by every
+     animation that uses them, so a bare number silently kills the whole
+     transform — which took out the ambient agent and the commit mosaic. */
   if (b.px != null) st.push(`--px:${b.px * U}px;--py:${(b.py || 0) * U}px`);
   if (b.dl) st.push(`--dl:${b.dl}s`);
   if (b.k) {
@@ -289,17 +317,24 @@ const STATES = [
  {id:'multi',nm:'Multi agent',cat:'presence',sets:['core','mini'],how:'Three agents appear white around the parent. Then one keeps working, pulsing, while the other two go quiet as outlines.',
   w:5.4,h:5.2,b:[{x:1.2,y:1.1,w:3,h:3,f:'wh',cut:'tl'},{x:4.5,y:.4,w:.9,h:.9,f:'wh',a:'a-quiet'},{x:4.5,y:4,w:.9,h:.9,f:'wh',a:'a-working',dl:.15},{x:0,y:4,w:.9,h:.9,f:'wh',a:'a-quiet',dl:.3}]},
 
- {id:'drift',nm:'Policy drift',cat:'policy',sets:['core','policy','mini'],how:'Rules stack in from the left, quick then settling, in different weights. The last one drifts off along the line and turns violet.',
-  w:10.2,h:3,b:[{x:0,y:0,w:2,h:3,f:'wh',a:'a-stack',k:'6%'},{x:2.3,y:.4,w:1.1,h:2.6,f:'wh',a:'a-stack',k:'16%'},{x:3.7,y:0,w:2.6,h:3,f:'wh',a:'a-stack',k:'26%',cut:'tl'},{x:6.6,y:.7,w:1.2,h:2.3,f:'wh',a:'a-stack',k:'36%'},{x:8.1,y:0,w:1.6,h:3,f:'wh',a:'a-away'}]},
+ {id:'drift',nm:'Policy drift',cat:'policy',sets:['core','policy','mini'],how:'Rules stack in quickly from the left. The last one empties to an outline, its border turns violet, then it fills violet and drifts off along the line.',
+  w:10.6,h:3,b:[{x:0,y:0,w:2,h:3,f:'wh',a:'a-stack',k:'2%'},{x:2.3,y:.4,w:1.1,h:2.6,f:'wh',a:'a-stack',k:'8%'},{x:3.7,y:0,w:2.6,h:3,f:'wh',a:'a-stack',k:'14%',cut:'tl'},{x:6.6,y:.7,w:1.2,h:2.3,f:'wh',a:'a-stack',k:'20%'},{x:8.1,y:0,w:1.6,h:3,f:'wh',a:'a-driftseq'}]},
 
- {id:'pr',nm:'PR flag',cat:'policy',sets:['policy'],how:'Three white bars, the same length, grow in. Then a violet one arrives already violet, angled, and sticks out past the others on the right. A flag.',
-  w:6,h:4.2,b:[{x:0,y:0,w:3.6,h:.8,f:'wh',a:'a-grow',k:'4%'},{x:0,y:1.1,w:3.6,h:.8,f:'wh',a:'a-grow',k:'16%'},{x:0,y:2.2,w:3.6,h:.8,f:'wh',a:'a-grow',k:'28%'},{x:0,y:3.3,w:5.2,h:.8,f:'vi',cut:'tr',a:'a-slotB'}]},
+ {id:'pr',nm:'PR flag',cat:'policy',sets:['policy'],how:'Bars stack in and fade on an even beat. Then the violet one slides out to the right, its end cut on a sharp diagonal. A flag.',
+  w:6.4,h:5.6,b:[{x:0,y:0,w:4,h:1.1,f:'wh',a:'a-bump',k:'8%'},{x:0,y:1.5,w:4,h:1.1,f:'wh',a:'a-bump',k:'20%'},{x:0,y:3,w:4,h:1.1,f:'wh',a:'a-bump',k:'32%'},{x:0,y:4.5,w:4,h:1.1,f:'vi',cut:'tri',a:'a-flagslide'}]},
 
  {id:'suspect',nm:'Suspected file',cat:'alert',sets:['alerts','mini'],how:'The file appears white. A ghost of it slides out to the left, and lines start moving across the ghost.',
   w:6.4,h:3.6,b:[{x:3.7,y:0,w:2.7,h:3.6,f:'gh',doc:true,a:'a-ghostL'},{x:3.7,y:0,w:2.7,h:3.6,f:'hz',doc:true,a:'a-linesL'},{x:3.7,y:0,w:2.7,h:3.6,f:'wh',doc:true}]},
 
- {id:'alertfile',nm:'Alert file',cat:'alert',sets:['alerts','mini'],how:'A ghost of the file comes fully out with white dots. The dots turn red and start moving: analysing. Then the file itself turns red.',
-  w:6.4,h:3.6,b:[{x:3.7,y:0,w:2.7,h:3.6,f:'gh',doc:true,a:'a-ghostL'},{x:3.7,y:0,w:2.7,h:3.6,f:'dt',doc:true,a:'a-dotsL'},{x:3.7,y:0,w:2.7,h:3.6,f:'dtr',doc:true,a:'a-dotsRed'},{x:3.7,y:0,w:2.7,h:3.6,f:'wh',doc:true,a:'a-popRed'}]},
+ {id:'alertfile',nm:'Alert file',cat:'alert',sets:['alerts','mini'],how:'Three files load in white. Dots scan across all three in turn. On the second, the dots turn red — and then that file fills solid red. The others stay white.',
+  w:9.7,h:3.6,b:[
+   {x:0,y:0,w:2.7,h:3.6,f:'wh',doc:true,a:'a-fileIn',k:'6%'},
+   {x:3.5,y:0,w:2.7,h:3.6,f:'wh',doc:true,a:'a-fileInRed',k:'14%'},
+   {x:7,y:0,w:2.7,h:3.6,f:'wh',doc:true,a:'a-fileIn',k:'22%'},
+   {x:0,y:0,w:2.7,h:3.6,f:'dt',doc:true,a:'a-scanA'},
+   {x:3.5,y:0,w:2.7,h:3.6,f:'dt',doc:true,a:'a-scanB'},
+   {x:7,y:0,w:2.7,h:3.6,f:'dt',doc:true,a:'a-scanC'},
+   {x:3.5,y:0,w:2.7,h:3.6,f:'dtr',doc:true,a:'a-scanRed'}]},
 
  {id:'blocked',nm:'What would have been blocked',cat:'enforcement',sets:['core','alerts','mini'],how:'Two ends, with ghosts of the steps between. A signal runs the thread. When it hits the middle one, that one comes alive with moving lines and the signal is absorbed.',
   w:8.4,h:3,thr:[[1.4,1.5,7,1.5,'']],b:[{x:0,y:.4,w:1.4,h:2.2,f:'wh',cut:'tl'},{x:7,y:.4,w:1.4,h:2.2,f:'wh'},{x:2.3,y:.8,w:.9,h:1.4,f:'gh'},{x:3.8,y:.5,w:1,h:2,f:'gh'},{x:5.4,y:.8,w:.9,h:1.4,f:'gh'},{x:3.8,y:.5,w:1,h:2,f:'hz',a:'a-hit'},{x:1.5,y:1.1,w:.8,h:.8,f:'wh',a:'a-signal',to:2.35}]},
@@ -313,25 +348,34 @@ const STATES = [
  {id:'escalate',nm:'Privilege escalation',cat:'alert',sets:['core','alerts','mini'],how:'Permissions in a row, the dashed line marking what this agent is allowed. It acquires them left to right, one lighting after another. The first one past the line lights red.',
   w:9.2,h:2.6,pol:[[5.55,-.4,0,3.4]],b:[{x:0,y:.3,w:1.6,h:2,f:'ou',a:'a-acq',k:'14%'},{x:1.9,y:0,w:1.2,h:2.6,f:'ou',a:'a-acq',k:'26%'},{x:3.4,y:.5,w:1.9,h:1.6,f:'ou',cut:'tl',a:'a-acq',k:'38%'},{x:5.8,y:.2,w:1.4,h:2.2,f:'ou',a:'a-acqRed',k:'56%'},{x:7.5,y:.6,w:1.7,h:1.4,f:'ou'}]},
 
- {id:'commit',nm:'Commit change to lineage',cat:'lineage',sets:['core','policy','mini'],how:'The record is a clump. A change arrives on the diagonal as an outline and locks solid. Then the whole record re-forms into a new geometry around it: every block moves, and it settles.',
-  w:7.4,h:4.4,b:[{x:0,y:0,w:2.2,h:2.2,f:'wh',cut:'tl',a:'a-reform',px:1.50,py:1.30},{x:2.5,y:0,w:1,h:1,f:'wh',a:'a-reform',px:0.40,py:0.00},{x:3.8,y:0,w:2.6,h:1,f:'wh',a:'a-reform',px:-3.80,py:0.00},{x:0,y:2.5,w:1,h:1.9,f:'wh',a:'a-reform',px:4.00,py:-1.20},{x:1.3,y:2.5,w:2.2,h:1.9,f:'wh',a:'a-reform',px:3.90,py:-1.20},{x:3.8,y:1.3,w:1.2,h:3.1,f:'wh',a:'a-reform',px:-3.80,py:0.00},{x:5.3,y:1.3,w:1.1,h:1.1,f:'ou',a:'a-lockReform',px:-1.10,py:-1.30}]},
+ {id:'commit',nm:'Commit change to lineage',cat:'lineage',sets:['core','policy','mini'],how:'A mosaic of different weights with one empty cell. A change arrives as an outline and locks solid. Then the mosaic solves itself: block after block slides into the gap, never overlapping, until it has re-formed.',
+  w:8,h:5,b:[
+   {x:0,y:0,w:3,h:2,f:'wh',cut:'tl',g:5,a:'a-slide',px:0,py:3,k:'86%'},
+   {x:3,y:0,w:2,h:1,f:'wh',g:5,a:'a-slide',px:-3,py:0,k:'78%'},
+   {x:5,y:0,w:3,h:2,f:'wh',g:5},
+   {x:3,y:1,w:2,h:1,f:'wh',g:5,a:'a-slide',px:0,py:-1,k:'70%'},
+   {x:0,y:2,w:2,h:1,f:'wh',g:5,a:'a-slide',px:3,py:0,k:'62%'},
+   {x:2,y:2,w:3,h:1,f:'wh',g:5,a:'a-slide',px:-2,py:0,k:'54%'},
+   {x:5,y:2,w:3,h:1,f:'wh',g:5},
+   {x:0,y:3,w:2,h:2,f:'wh',g:5,a:'a-slide',px:0,py:-1,k:'46%'},
+   {x:2,y:3,w:3,h:2,f:'ou',g:5,a:'a-lockSlide',px:3,py:-3}]},
 
  {id:'unrec',nm:'Unrecognised process',cat:'alert',sets:['alerts'],how:'A clear block crosses the thread to the file. It is refused. It comes back red, spinning, and is gone.',
   w:8.2,h:2.4,thr:[[1.4,1.2,6.8,1.2,'']],b:[{x:0,y:.2,w:1.4,h:2,f:'wh'},{x:6.8,y:0,w:1.4,h:2.4,f:'wh',doc:true},{x:1.6,y:.75,w:.9,h:.9,f:'ou',a:'a-cross',to:4.3}]},
 
- {id:'imperson',nm:'Impersonation',cat:'alert',sets:['alerts'],how:'A shape with character. Beside it the same shape is rebuilt piece by piece, white, convincingly. Then the whole copy changes colour and red lines run over it.',
+ {id:'imperson',nm:'Impersonation',cat:'alert',sets:['alerts'],how:'A shape with character. Beside it the same shape is rebuilt piece by piece, white, convincingly. Then red dots begin pulsing across the copy, and it turns red.',
   w:9.6,h:4,b:[{x:0,y:0,w:2.2,h:2.2,f:'wh',cut:'tl'},{x:2.5,y:0,w:1,h:1,f:'wh'},{x:2.5,y:1.2,w:1,h:1,f:'wh'},{x:0,y:2.5,w:1,h:1.5,f:'wh'},{x:1.3,y:2.5,w:2.2,h:1.5,f:'wh'},
-   {x:5.4,y:0,w:2.2,h:2.2,f:'wh',cut:'tl',a:'a-copyIn a-fakeFill',k:'22%'},{x:7.9,y:0,w:1,h:1,f:'wh',a:'a-copyIn a-fakeFill',k:'30%'},{x:7.9,y:1.2,w:1,h:1,f:'wh',a:'a-copyIn a-fakeFill',k:'38%'},{x:5.4,y:2.5,w:1,h:1.5,f:'wh',a:'a-copyIn a-fakeFill',k:'46%'},{x:6.7,y:2.5,w:2.2,h:1.5,f:'wh',a:'a-copyIn a-fakeFill',k:'54%'},
-   {x:5.4,y:0,w:2.2,h:2.2,f:'hzr',cut:'tl',a:'a-fakeLines'},{x:7.9,y:0,w:1,h:1,f:'hzr',a:'a-fakeLines'},{x:7.9,y:1.2,w:1,h:1,f:'hzr',a:'a-fakeLines'},{x:5.4,y:2.5,w:1,h:1.5,f:'hzr',a:'a-fakeLines'},{x:6.7,y:2.5,w:2.2,h:1.5,f:'hzr',a:'a-fakeLines'}]},
+   {x:5.4,y:0,w:2.2,h:2.2,f:'wh',cut:'tl',a:'a-copyIn a-turnRed',k:'22%'},{x:7.9,y:0,w:1,h:1,f:'wh',a:'a-copyIn a-turnRed',k:'30%'},{x:7.9,y:1.2,w:1,h:1,f:'wh',a:'a-copyIn a-turnRed',k:'38%'},{x:5.4,y:2.5,w:1,h:1.5,f:'wh',a:'a-copyIn a-turnRed',k:'46%'},{x:6.7,y:2.5,w:2.2,h:1.5,f:'wh',a:'a-copyIn a-turnRed',k:'54%'},
+   {x:5.4,y:0,w:2.2,h:2.2,f:'dtr',cut:'tl',a:'a-dotsIn'},{x:7.9,y:0,w:1,h:1,f:'dtr',a:'a-dotsIn'},{x:7.9,y:1.2,w:1,h:1,f:'dtr',a:'a-dotsIn'},{x:5.4,y:2.5,w:1,h:1.5,f:'dtr',a:'a-dotsIn'},{x:6.7,y:2.5,w:2.2,h:1.5,f:'dtr',a:'a-dotsIn'}]},
 
- {id:'outside',nm:'Permission granted outside policy',cat:'policy',sets:['policy'],how:'The dashed box is what policy allows, holding a cluster. One block is granted something that carries it out through the boundary; outside, it turns blue and the boundary flags.',
-  w:8.6,h:4.4,pol:[[0,0,5.6,4.4,'a-fence']],b:[{x:.5,y:.5,w:2,h:2,f:'wh',cut:'tl'},{x:2.8,y:.5,w:1,h:1,f:'wh'},{x:4.1,y:.5,w:1,h:2.3,f:'wh'},{x:.5,y:2.8,w:1,h:1.1,f:'wh'},{x:1.8,y:2.8,w:2,h:1.1,f:'wh'},{x:2.8,y:1.8,w:1,h:.8,f:'wh',a:'a-leave',to:4.6}]},
+ {id:'outside',nm:'Permission granted outside policy',cat:'policy',sets:['policy'],how:'The dashed box is what policy allows. One block is selected: it empties to black, its border turns violet, and then it carries out through the boundary. Outside, it turns blue and the boundary flags.',
+  w:11.4,h:5.6,pol:[[0,0,7.4,5.6,'a-fence']],b:[{x:.6,y:.6,w:2.6,h:2.6,f:'wh',cut:'tl'},{x:3.6,y:.6,w:1.4,h:1.4,f:'wh'},{x:5.4,y:.6,w:1.4,h:2.6,f:'wh'},{x:.6,y:3.6,w:1.4,h:1.4,f:'wh'},{x:2.4,y:3.6,w:2.6,h:1.4,f:'wh'},{x:3.6,y:2.4,w:1.4,h:.6,f:'wh',a:'a-select',to:5.8},{x:3.6,y:2.4,w:.6,h:1.4,f:'wh',a:'a-select',to:5.8}]},
 
- {id:'handoff',nm:'Agent to agent handoff',cat:'lineage',sets:['policy','core'],how:'Scope belongs to the first agent. It lifts off, travels, and docks into the second, which lights white. Both are the same colour afterwards. The scope never changes size.',
-  w:8,h:3.6,b:[{x:0,y:1.2,w:2.2,h:2.4,f:'wh',cut:'tl'},{x:5.8,y:1.2,w:2.2,h:2.4,f:'ou',a:'a-receiver'},{x:.6,y:0,w:1,h:1,f:'wh',a:'a-dock',to:5.8}]},
+ {id:'handoff',nm:'Agent to agent handoff',cat:'lineage',sets:['policy','core'],how:'The agent sits inside the first block. It lifts out, crosses, and settles inside the second, which lights. Both end the same colour. The agent never changes size.',
+  w:9.4,h:4,b:[{x:0,y:0,w:3.4,h:4,f:'wh',cut:'tl'},{x:6,y:0,w:3.4,h:4,f:'ou',a:'a-receiver'},{x:.7,y:2.4,w:1.1,h:1.1,f:'ink',a:'a-dock',to:6.0}]},
 
- {id:'check',nm:'Checking latest policy',cat:'policy',sets:['policy'],how:'Versions of the policy stacked oldest to newest, the newest still unlit. A reader climbs the stack, version by version, and stops on the latest. It lights; the older ones go quiet.',
-  w:5.6,h:5,b:[{x:0,y:4,w:3.4,h:.8,f:'wh',a:'a-older'},{x:0,y:3,w:3,h:.8,f:'wh',a:'a-older'},{x:0,y:2,w:3.6,h:.8,f:'wh',a:'a-older'},{x:0,y:1,w:3.2,h:.8,f:'ou',cut:'tr',a:'a-latest'},{x:4.2,y:4,w:.9,h:.8,f:'wh',a:'a-read',py:-3}]},
+ {id:'check',nm:'Checking latest policy',cat:'policy',sets:['policy'],how:'Each rule starts as an empty outline. The agent runs along the baseline beneath them and they fill white one at a time, like a graph loading. The new version fills teal at the end; the agent sweeps back and every rule flashes teal before returning to white.',
+  w:9.2,h:6.4,b:[{x:0,y:1.4,w:1.3,h:3.6,f:'ou',a:'a-fill',k:'14%'},{x:1.6,y:.6,w:1.3,h:4.4,f:'ou',a:'a-fill',k:'22%'},{x:3.2,y:2,w:1.3,h:3,f:'ou',a:'a-fill',k:'30%'},{x:4.8,y:1,w:1.3,h:4,f:'ou',a:'a-fill',k:'38%'},{x:6.8,y:.2,w:2.4,h:4.8,f:'ou',cut:'tl',a:'a-fillTeal',k:'48%'},{x:0,y:5.3,w:1.1,h:1.1,f:'wh',a:'a-run2',px:7.4}]},
 ];
 
 const root = document.getElementById('root');
@@ -356,7 +400,8 @@ function render() {
   if (set === 'all') {
     html += `<h2>Full sheet</h2><p class="sub">${STATES.length} states. Presence, policy, alert, enforcement, lineage.</p><div class="grid full">${STATES.map(s => cellHTML(s, 15, term)).join('')}</div>`;
   } else if (set === 'mini') {
-    html += `<h2>Mini set</h2><p class="sub">The ones that live in a sidebar, a favicon, a prompt.</p><div class="grid mini">${STATES.filter(s => s.sets.includes('mini')).map(s => cellHTML(s, 8.5, term)).join('')}</div>`;
+    const rows = STATES.filter(s => s.sets.includes('mini'));
+    html += `<h2>Mini set</h2><p class="sub">The ${rows.length} that live in a sidebar, a favicon, a prompt.</p><div class="grid mini">${rows.map(s => cellHTML(s, 8.5, term)).join('')}</div>`;
   } else {
     /* Counted rather than stated: a set that gains a state should not leave
        a caption behind claiming there are six of them. */
