@@ -1,11 +1,11 @@
 <svg class="lw {MODE} {TONE}" viewBox="-8 -10 199.24 61.73" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Linro">
   <defs>
-    <mask id="lw-threads-{ID}" maskUnits="userSpaceOnUse" x="-10" y="-10" width="220" height="70">
-      <path class="th th-L" d="M 2.5 1.2 L 2.5 39 L 29.7 39" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-      <path class="th th-I" d="M 44.3 1.2 L 44.3 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-      <path class="th th-N" d="M 61.2 41.6 L 61.2 2.2 L 84.6 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-      <path class="th th-N2" d="M 89 41.6 L 89 1.2" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-      <path class="th th-Rstem" d="M 104.4 0.6 L 104.4 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+    <mask id="lw-threads-{ID}" maskUnits="userSpaceOnUse" x="-10" y="-24" width="220" height="98">
+      <path class="th th-L" d="M 2.5 -10.8 L 2.5 39 L 29.7 39" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+      <path class="th th-I" d="M 44.3 -10.8 L 44.3 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+      <path class="th th-N" d="M 61.2 53.6 L 61.2 2.2 L 84.6 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+      <path class="th th-N2" d="M 89 53.6 L 89 1.2" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+      <path class="th th-Rstem" d="M 104.4 -11.4 L 104.4 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
       <path class="th th-Rbowl" d="M 104.4 4 L 121 4 Q 128 4 128 11 L 128 17 Q 128 19.6 124.3 20.2 L 106.2 28.9" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
       <path class="th th-Rleg" d="M 123.2 28.6 L 127.8 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
     </mask>

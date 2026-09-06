@@ -1397,11 +1397,26 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .lw { display: block; width: 100%; height: auto; color: var(--lw-ink, #1A1815); }
 .lw--ink { --lw-ink: #0D1013; }
 .lw--paper { --lw-ink: #E8E8E8; }
-.lw * { animation-duration: var(--lw-T, 7s); animation-iteration-count: var(--lw-loop, infinite); animation-fill-mode: both; }
+/* One period for the whole mark. The assembly is spent by 6.4s, and the rest
+   of the cycle is the mark simply standing there resolved — a period only a
+   little longer than the assembly makes the loop restless. Every keyframe
+   percentage below is a fraction of this, while the delays are absolute, so
+   the two have to be retuned together. */
+.lw * { animation-duration: var(--lw-T, 10s); animation-iteration-count: var(--lw-loop, infinite); animation-fill-mode: both; }
 
 .lw .bar { transform-box: view-box; }
 .lw .home { transform-box: view-box; }
-.lw .drawer { transform-box: view-box; transform-origin: 158.49px 21.50px; transform: rotate(-12deg); }
+/* The ring's mask circle needs a dash pattern of its own for its dashoffset
+   to mean anything. Without one it was a solid stroke and the mask was fully
+   open from the first frame: the O simply sat there, complete, while the
+   letters drew themselves beside it. */
+.lw .drawer {
+  transform-box: view-box;
+  transform-origin: 158.49px 21.50px;
+  transform: rotate(-12deg);
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
 .lw .th { stroke-dasharray: 1 2; stroke-dashoffset: 1.03; }
 .lw .lf { opacity: 0; }
 .lw .ring-solid { opacity: 0; }
@@ -1413,7 +1428,8 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 
 /* --- STILL / BARS: letters and ring are simply present --- */
-.lw--still .th, .lw--bars .th { stroke-dashoffset: 0; }
+.lw--still .th, .lw--bars .th,
+.lw--still .drawer, .lw--bars .drawer { stroke-dashoffset: 0; }
 .lw--still .lf, .lw--bars .lf { opacity: 1; }
 .lw--still .ltr, .lw--bars .ltr { opacity: 0; }
 .lw--still * { animation: none; }
@@ -1426,51 +1442,60 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 @keyframes lwBreathe {
   0%, 100% { opacity: .28; }
-  22% { opacity: 1; }
-  58% { opacity: .28; }
+  15.4% { opacity: 1; }
+  40.6% { opacity: .28; }
 }
 
-/* --- THREAD: line-led. Each letter is drawn along its own stroke. --- */
+/* --- THREAD: line-led. Each letter is drawn along its own stroke. ---
+   The draws are deliberately slower than the study's. At 280-630ms a pen
+   crossing a whole letterform covers ground faster than the eye can follow it
+   and the letter reads as appearing rather than being drawn; roughly doubling
+   each one is what makes the movement legible. The site's own ease carries
+   them at close to a constant speed: an eased curve puts most of the letter
+   on screen in the first third and then creeps through the tail, which is
+   exactly what reads as unsteady. Softened at both ends, even in between. */
 .lw--thread .ltr { opacity: 1; }
-.lw--thread .th { animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+.lw--thread .th { animation-timing-function: cubic-bezier(.45, .2, .5, .85); }
 .lw--thread .th-L      { animation-name: lwDraw9; animation-delay: 0s; }
-.lw--thread .th-I      { animation-name: lwDraw5; animation-delay: .55s; }
-.lw--thread .th-N      { animation-name: lwDraw9; animation-delay: .8s; }
-.lw--thread .th-N2     { animation-name: lwDraw5; animation-delay: 1.4s; }
-.lw--thread .th-Rstem  { animation-name: lwDraw5; animation-delay: 1.6s; }
-.lw--thread .th-Rbowl  { animation-name: lwDraw9; animation-delay: 1.9s; }
-.lw--thread .th-Rleg   { animation-name: lwDraw4; animation-delay: 2.5s; }
-@keyframes lwDraw4 { 0% { stroke-dashoffset: 1.03; } 4% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes lwDraw5 { 0% { stroke-dashoffset: 1.03; } 5% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes lwDraw9 { 0% { stroke-dashoffset: 1.03; } 9% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+.lw--thread .th-I      { animation-name: lwDraw5; animation-delay: .5s; }
+.lw--thread .th-N      { animation-name: lwDraw9; animation-delay: .75s; }
+.lw--thread .th-N2     { animation-name: lwDraw5; animation-delay: 1.3s; }
+.lw--thread .th-Rstem  { animation-name: lwDraw5; animation-delay: 1.55s; }
+.lw--thread .th-Rbowl  { animation-name: lwDraw9; animation-delay: 1.8s; }
+.lw--thread .th-Rleg   { animation-name: lwDraw4; animation-delay: 2.4s; }
+@keyframes lwDraw4 { 0% { stroke-dashoffset: 1.03; } 5.6% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+@keyframes lwDraw5 { 0% { stroke-dashoffset: 1.03; } 7%   { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+@keyframes lwDraw9 { 0% { stroke-dashoffset: 1.03; } 9.8% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
 
 /* Each letter swaps to exact geometry the instant its own draw completes, so
-   the stroked version is never left standing in for the drawn one. */
+   the stroked version is never left standing in for the drawn one. The delays
+   are the end of the draw that reveals that letter — `lf-I` carries both the
+   I and the N diagonal, so it waits for the later of the two. */
 .lw--thread .lf { animation-name: lwHold; animation-timing-function: steps(1, end); }
 @keyframes lwHold { 0% { opacity: 0; } 0.5%, 100% { opacity: 1; } }
-.lw--thread .lf-L { animation-delay: .66s; }
-.lw--thread .lf-I { animation-delay: 1.46s; }
-.lw--thread .lf-N { animation-delay: 1.78s; }
-.lw--thread .lf-R { animation-delay: 2.82s; }
+.lw--thread .lf-L { animation-delay: 1s; }
+.lw--thread .lf-I { animation-delay: 1.75s; }
+.lw--thread .lf-N { animation-delay: 2.02s; }
+.lw--thread .lf-R { animation-delay: 2.98s; }
 
 /* the O draws once as a thread around the ring */
-.lw--thread .drawer { animation-name: lwRing; animation-timing-function: cubic-bezier(.5, 0, .15, 1); animation-delay: 2.65s; }
-@keyframes lwRing { 0% { stroke-dashoffset: 1; } 18% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+.lw--thread .drawer { animation-name: lwRing; animation-timing-function: cubic-bezier(.5, 0, .15, 1); animation-delay: 2.85s; }
+@keyframes lwRing { 0% { stroke-dashoffset: 1; } 12.6% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
 
 /* then the hatch ticks on and settles into the wedge */
-.lw--thread .home { animation-name: lwTick; animation-timing-function: cubic-bezier(.4, 0, .2, 1); animation-delay: calc(3.45s + var(--i) * 70ms); }
+.lw--thread .home { animation-name: lwTick; animation-timing-function: cubic-bezier(.4, 0, .2, 1); animation-delay: calc(3.9s + var(--i) * 70ms); }
 @keyframes lwTick {
-  0%  { opacity: 0; transform: translate(var(--sx), var(--sy)) rotate(var(--phi)) scaleX(.35) rotate(calc(var(--phi) * -1)); }
-  1%  { opacity: 1; }
-  3%  { opacity: .25; }
-  5%  { opacity: 1; transform: translate(calc(var(--sx) * .6), calc(var(--sy) * .6)) rotate(var(--phi)) scaleX(1.25) rotate(calc(var(--phi) * -1)); }
-  8%  { opacity: .25; }
-  10% { opacity: 1; transform: translate(calc(var(--sx) * .3), calc(var(--sy) * .3)) rotate(var(--phi)) scaleX(.6) rotate(calc(var(--phi) * -1)); }
-  14% { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(1) rotate(calc(var(--phi) * -1)); }
-  15% { opacity: .25; }
-  17% { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(.8) rotate(calc(var(--phi) * -1)); }
-  21% { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(1) rotate(calc(var(--phi) * -1)); }
-  32%, 100% { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(var(--ex)) rotate(calc(var(--phi) * -1)); }
+  0%    { opacity: 0; transform: translate(var(--sx), var(--sy)) rotate(var(--phi)) scaleX(.35) rotate(calc(var(--phi) * -1)); }
+  0.7%  { opacity: 1; }
+  2.1%  { opacity: .25; }
+  3.5%  { opacity: 1; transform: translate(calc(var(--sx) * .6), calc(var(--sy) * .6)) rotate(var(--phi)) scaleX(1.25) rotate(calc(var(--phi) * -1)); }
+  5.6%  { opacity: .25; }
+  7%    { opacity: 1; transform: translate(calc(var(--sx) * .3), calc(var(--sy) * .3)) rotate(var(--phi)) scaleX(.6) rotate(calc(var(--phi) * -1)); }
+  9.8%  { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(1) rotate(calc(var(--phi) * -1)); }
+  10.5% { opacity: .25; }
+  11.9% { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(.8) rotate(calc(var(--phi) * -1)); }
+  14.7% { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(1) rotate(calc(var(--phi) * -1)); }
+  22.4%, 100% { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(var(--ex)) rotate(calc(var(--phi) * -1)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1479,11 +1504,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
 /* The wordmark replaces the title lockup at the top of the page. The text is
    still there for anything that isn't looking at pixels. */
-/* Held until the mark is on screen. Paused rather than unset, so removing
-   the class starts the sequence from its first frame instead of dropping the
-   reader into the middle of one that has been running unseen. */
-.lw--held * { animation-play-state: paused; }
-
 /* Sequence slots awaiting artwork. Linro's imagery is not in the repo yet, so
    each beat holds its place at its real proportion rather than collapsing the
    page — the rhythm is right and the pictures drop straight in. */
@@ -1514,6 +1534,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   justify-content: center;
   padding: clamp(64px, 13vw, 168px) clamp(24px, 6vw, 104px);
 }
+.t2-item--mark .lw-stage--light { background: var(--paper-50); }
 .t2-item--mark .lw { width: min(880px, 100%); }
 
 /* --- Arrival -------------------------------------------------------------
@@ -1766,6 +1787,13 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
            component the arrival uses, in its dark-ground treatment. -->
       <figure class="t2-item t2-item--mark">
         <div class="lw-stage" id="lw-slide" role="img" aria-label="The Linro wordmark drawing itself"></div>
+      </figure>
+
+      <!-- The same mark, inverted. Both treatments back to back is how the
+           mark is actually specified, and running rather than stilled because
+           the drawing is the point of it. -->
+      <figure class="t2-item t2-item--mark">
+        <div class="lw-stage lw-stage--light" id="lw-slide-2" role="img" aria-label="The Linro wordmark drawing itself, on a light ground"></div>
       </figure>
 
       <figure class="t2-item t2-reveal">
@@ -2895,12 +2923,12 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
 <template id="lw-tpl">
         <svg class="lw" viewBox="-8 -10 199.24 61.73" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Linro">
           <defs>
-            <mask id="lw-threads-__ID__" maskUnits="userSpaceOnUse" x="-10" y="-10" width="220" height="70">
-              <path class="th th-L" d="M 2.5 1.2 L 2.5 39 L 29.7 39" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-I" d="M 44.3 1.2 L 44.3 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-N" d="M 61.2 41.6 L 61.2 2.2 L 84.6 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-N2" d="M 89 41.6 L 89 1.2" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
-              <path class="th th-Rstem" d="M 104.4 0.6 L 104.4 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+            <mask id="lw-threads-__ID__" maskUnits="userSpaceOnUse" x="-10" y="-24" width="220" height="98">
+              <path class="th th-L" d="M 2.5 -10.8 L 2.5 39 L 29.7 39" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-I" d="M 44.3 -10.8 L 44.3 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-N" d="M 61.2 53.6 L 61.2 2.2 L 84.6 41.6" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-N2" d="M 89 53.6 L 89 1.2" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+              <path class="th th-Rstem" d="M 104.4 -11.4 L 104.4 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
               <path class="th th-Rbowl" d="M 104.4 4 L 121 4 Q 128 4 128 11 L 128 17 Q 128 19.6 124.3 20.2 L 106.2 28.9" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
               <path class="th th-Rleg" d="M 123.2 28.6 L 127.8 41.7" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
             </mask>
@@ -2938,23 +2966,29 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
   /* The arrival: black on the white panel. */
   mount(document.getElementById('lin-arrival-mark'), 'lw--thread lw--ink');
 
-  /* The first slide: white on black, and held until it is actually on screen
-     — a mark that has already finished assembling by the time the reader
-     reaches it has shown them nothing. */
-  var slide = mount(document.getElementById('lw-slide'), 'lw--thread lw--paper lw--held');
-  if (slide) {
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce || !('IntersectionObserver' in window)) {
-      slide.classList.remove('lw--held');
-    } else {
-      var io = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        slide.classList.remove('lw--held');
-        io.disconnect();
-      }, { threshold: 0.35 });
-      io.observe(slide);
-    }
-  }
+  /* The two slides: the mark in both treatments. Each runs from load and
+     rewinds to its first frame as it comes into view, so the reader watches
+     it assemble rather than arriving after it has finished.
+
+     Rewinding rather than holding it paused on purpose. A paused mark is a
+     blank slide, so anything that stops the observer firing — no support, a
+     backgrounded tab, a layout that never crosses the threshold — leaves an
+     empty black panel with no way back. Running by default fails to a mark
+     that is merely mid-cycle, which is the version worth failing to. */
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  [['lw-slide', 'lw--paper'], ['lw-slide-2', 'lw--ink']].forEach(function (pair) {
+    var slide = mount(document.getElementById(pair[0]), 'lw--thread ' + pair[1]);
+    if (!slide || reduce || !('IntersectionObserver' in window) || !slide.getAnimations) return;
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      io.disconnect();
+      try {
+        slide.getAnimations({ subtree: true }).forEach(function (a) { a.currentTime = 0; });
+      } catch (e) {}
+    }, { threshold: 0.35 });
+    io.observe(slide);
+  });
 })();
 </script>
 
