@@ -1537,6 +1537,66 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .t2-item--mark .lw-stage--light { background: var(--paper-50); }
 .t2-item--mark .lw { width: min(880px, 100%); }
 
+/* --- Live screens --------------------------------------------------------
+   The product screens and the interaction marks are working documents, not
+   exports: they run their own animation, and the marks in the interface are
+   the same marks as on the sheet. They are embedded rather than inlined
+   because their class names — .app, .row, .grid, .body, .main, .btn — would
+   collide with this page's on sight, and because keeping each one a separate
+   file is what makes them editable on their own.
+
+   Scaled rather than reflowed. An interface is a fixed composition; letting
+   it reflow into a narrow column would show a layout that does not exist. So
+   the frame is laid out at its own width and scaled down to fit, and below
+   the point where that would make 13px type unreadable it stops scaling and
+   the frame scrolls sideways instead — inside itself, never the page. */
+.t2-screens {
+  background: #07080A;
+  padding: clamp(32px, 5vw, 76px) clamp(16px, 4vw, 64px);
+}
+.t2-screens-inner { max-width: 1180px; margin: 0 auto; }
+/* The sequence sets its items 10px apart, which on the artwork is a hairline
+   of page ground doing useful work. Between two of these it is a white line
+   across a dark run, so consecutive screens sit flush and read as one
+   chapter — the numbered caption is what separates them. */
+.t2-screens + .t2-screens { margin-top: 0; }
+.t2-frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  overflow-x: auto;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  background: #0A0C0E;
+  /* Height is written by script once the document inside has been measured;
+     the ratio holds the space until then so nothing jumps on load. */
+  aspect-ratio: var(--fw, 1280) / var(--fh, 820);
+  -webkit-overflow-scrolling: touch;
+}
+.t2-frame iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  display: block;
+  transform-origin: top left;
+}
+.t2-frame.is-fit { aspect-ratio: auto; }
+.t2-screens-cap {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  margin-top: 14px;
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.42);
+}
+.t2-screens-cap b { font-weight: 400; color: rgba(248, 250, 252, 0.72); }
+.t2-screens-cap span { margin-left: auto; letter-spacing: 0; text-transform: none; font-size: 12.5px; }
+
 /* --- Arrival -------------------------------------------------------------
    Template One's opening, on a Template Two page. The case study does not
    land as a page: it arrives as an inset, rounded panel over a plain ground,
@@ -1772,6 +1832,11 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
         <p>Drawing on Bauhaus systems and modular graphic design, the wordmark, the graphic language and the motion all grow from one set of blocks — a mark that builds itself the way a change builds from its history.</p>
         <p>Everything around it is held back. Dark green, charcoal and off-white. Colour reserved for state and alert, so that when something is wrong it is the only thing on the screen. Typography that moves between brand, terminal and interface without changing voice.</p>
 
+        <h2>One set of blocks, doing all the work</h2>
+        <p>The wordmark is cut from a set of blocks, so the interface is built from the same ones. Every state in the product — an agent working, a file under suspicion, a policy boundary crossed — is a small composition of them, at whatever size and proportion the moment needs.</p>
+        <p>It became a language before it was a set of icons. White is something present and recorded. An outline is the same thing gone quiet. A ghost with lines moving over it is under suspicion. Colour is held back for the three things that need it: red for an alert, violet for drift, blue for a policy boundary.</p>
+        <p>Each state animates the process it names rather than decorating it. An agent travels the perimeter of its scope and drops to an outline when it rests. A privilege escalation acquires permissions left to right and turns red at the first one past the line policy allows. A commit lands in the record and the record re-forms around it. In a product about lineage, the movement is doing the explaining.</p>
+
         <h2>Where the brand stopped and the product started</h2>
         <p>While the identity developed I was getting closer to the product — talking to customers, watching how they actually used Linro, finding where the existing experience got in the way.</p>
         <p>The two stopped being separable. The system built to explain lineage on the outside was the system that could make lineage legible on the inside. That became the brief for redesigning the wider Linro experience.</p>
@@ -1833,6 +1898,81 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
         <span class="t2-note-label">System</span>
         <p>One set of parts builds everything. The wordmark, the graphic language and the motion are all assembled from the same blocks, so the identity behaves the way the product does — a thing that can be traced back to what it came from.</p>
       </div>
+
+      <div class="t2-note">
+        <span class="t2-note-label">Marks</span>
+        <p>The wordmark is cut from a set of blocks, so the interface uses the same ones. Every state in the product is a small composition of them — same corner, same 28° terminal, at whatever size and proportion the composition needs.</p>
+      </div>
+
+      <figure class="t2-item t2-screens">
+        <div class="t2-screens-inner">
+          <div class="t2-frame" style="--fw:1280; --fh:1560" data-w="1280" data-h="1560">
+            <iframe src="screens/marks.html?bare&set=all" title="The full sheet" loading="lazy" tabindex="-1"></iframe>
+          </div>
+          <figcaption class="t2-screens-cap"><b>01</b> The full sheet <span>Fifteen states. Presence, policy, alert, enforcement, lineage.</span></figcaption>
+        </div>
+      </figure>
+
+      <div class="t2-note">
+        <span class="t2-note-label">Grammar</span>
+        <p>It is a language before it is a set of icons. White is something present and recorded. An outline is the same thing gone quiet. A ghost with lines moving across it is under suspicion. Colour is held for the three things that need it: red for an alert, violet for drift, blue for a policy boundary.</p>
+      </div>
+
+      <figure class="t2-item t2-screens">
+        <div class="t2-screens-inner">
+          <div class="t2-frame" style="--fw:1280; --fh:900" data-w="1280" data-h="900">
+            <iframe src="screens/marks.html?bare&set=core" title="Core set" loading="lazy" tabindex="-1"></iframe>
+          </div>
+          <figcaption class="t2-screens-cap"><b>02</b> Core set <span>The grammar, in seven states.</span></figcaption>
+        </div>
+      </figure>
+      <figure class="t2-item t2-screens">
+        <div class="t2-screens-inner">
+          <div class="t2-frame" style="--fw:1280; --fh:1180" data-w="1280" data-h="1180">
+            <iframe src="screens/marks.html?bare&set=alerts" title="Alert set" loading="lazy" tabindex="-1"></iframe>
+          </div>
+          <figcaption class="t2-screens-cap"><b>03</b> Alert set <span>Watched, confirmed, spread, refused, faked.</span></figcaption>
+        </div>
+      </figure>
+      <figure class="t2-item t2-screens">
+        <div class="t2-screens-inner">
+          <div class="t2-frame" style="--fw:1280; --fh:1180" data-w="1280" data-h="1180">
+            <iframe src="screens/marks.html?bare&set=policy" title="Policy set" loading="lazy" tabindex="-1"></iframe>
+          </div>
+          <figcaption class="t2-screens-cap"><b>04</b> Policy set <span>Drift, raised, granted, handed off, checked.</span></figcaption>
+        </div>
+      </figure>
+
+      <div class="t2-note">
+        <span class="t2-note-label">Motion</span>
+        <p>Each one animates the process it names rather than decorating it. An agent travels the perimeter of its scope and drops to an outline when it rests. A privilege escalation acquires permissions left to right and turns red at the first one past the line policy allows. A commit drops into the record and the record re-forms around it. The motion is the explanation.</p>
+      </div>
+
+      <figure class="t2-item t2-screens">
+        <div class="t2-screens-inner">
+          <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
+            <iframe src="screens/violations.html?bare" title="Violations" loading="lazy" tabindex="-1"></iframe>
+          </div>
+          <figcaption class="t2-screens-cap"><b>05</b> Violations <span>Marks carry state; lineage reads as a ribbon.</span></figcaption>
+        </div>
+      </figure>
+      <figure class="t2-item t2-screens">
+        <div class="t2-screens-inner">
+          <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
+            <iframe src="screens/agent.html?bare" title="Agent" loading="lazy" tabindex="-1"></iframe>
+          </div>
+          <figcaption class="t2-screens-cap"><b>06</b> Agent <span>A run as a readable track, not a log.</span></figcaption>
+        </div>
+      </figure>
+      <figure class="t2-item t2-screens">
+        <div class="t2-screens-inner">
+          <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
+            <iframe src="screens/simulate.html?bare" title="Simulate" loading="lazy" tabindex="-1"></iframe>
+          </div>
+          <figcaption class="t2-screens-cap"><b>07</b> Simulate <span>Replay a policy against the record before it ships.</span></figcaption>
+        </div>
+      </figure>
+
 
       <figure class="t2-item t2-reveal">
         <div class="t2-media t2-slot" style="aspect-ratio: 3002 / 3424;" role="img" aria-label="Graphic language — artwork to follow">
@@ -3072,6 +3212,63 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;
     doc.classList.remove('lin-stage', 'lin-arriving', 'lin-full', 'lin-gone');
+  });
+})();
+</script>
+
+<script>
+/* Live screens ------------------------------------------------------------
+   Each embedded document is laid out at its own width and scaled down to the
+   column, rather than reflowed into it — an interface is a fixed composition,
+   and letting it reflow would show a layout that does not exist.
+
+   Height comes from the document itself once it has loaded, so the frame is
+   exactly as tall as its contents and never shows a scrollbar or a band of
+   empty ground. Same-origin, so it can simply be read; if that ever fails the
+   declared ratio stands in and nothing breaks.
+
+   Below the width where scaling would take 13px type under about 7px, the
+   scale is held and the frame scrolls sideways inside itself instead. */
+(function () {
+  var frames = document.querySelectorAll('.t2-frame');
+  if (!frames.length) return;
+  var MIN_SCALE = 0.42;
+
+  function fit(frame) {
+    var f = frame.querySelector('iframe');
+    if (!f) return;
+    var W = parseFloat(frame.getAttribute('data-w')) || 1280;
+    var scale = Math.max(frame.clientWidth / W, MIN_SCALE);
+
+    var H = parseFloat(frame.getAttribute('data-h')) || 820;
+    try {
+      var d = f.contentDocument;
+      /* Measure against the laid-out width, or the height read back belongs
+         to whatever width the frame happened to have a moment ago. */
+      if (d && d.body) {
+        f.style.width = W + 'px';
+        var m = Math.max(d.documentElement.scrollHeight, d.body.scrollHeight);
+        if (m > 40) H = m;
+      }
+    } catch (e) {}
+
+    f.style.width = W + 'px';
+    f.style.height = H + 'px';
+    f.style.transform = 'scale(' + scale + ')';
+    frame.style.height = Math.round(H * scale) + 'px';
+    frame.classList.add('is-fit');
+  }
+
+  Array.prototype.forEach.call(frames, function (frame) {
+    var f = frame.querySelector('iframe');
+    if (!f) return;
+    f.addEventListener('load', function () {
+      fit(frame);
+      /* Webfonts land after load and change the measured height. */
+      window.setTimeout(function () { fit(frame); }, 400);
+    });
+    if ('ResizeObserver' in window) new ResizeObserver(function () { fit(frame); }).observe(frame);
+    else window.addEventListener('resize', function () { fit(frame); });
   });
 })();
 </script>

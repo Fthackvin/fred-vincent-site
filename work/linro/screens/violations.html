@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linro — Violations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;510;590&family=JetBrains+Mono:wght@400;450&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui.css">
+<script>
+  /* Embedded in the case study the screen is the whole frame, so the
+     document's own padding and the panel's border come off. */
+  if (location.search.indexOf('bare') > -1) document.documentElement.className = 'bare';
+</script>
+<style>html.bare, html.bare body { overflow: hidden; } html.bare body { padding: 0; background: transparent; } html.bare .app { margin: 0; border-radius: 0; border: 0; }</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="win">
+    <div class="traf"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+    <div class="path">linro · prod</div>
+  </div>
+
+  <div class="grid">
+    <aside class="side">
+      <div class="brand">
+        <img src="../../general/linro-mark-still.svg" alt="Linro" width="49" height="11">
+        <div class="env"><i></i>prod</div>
+      </div>
+
+      <div class="gh">Security</div>
+      <div class="nv">
+        <span class="ic"><span class="mk" style="width:16px;height:16px">
+          <span class="mb" style="left:0;top:5px;width:5px;height:6px"></span>
+          <span class="mb a-work" style="left:6px;top:4px;width:10px;height:8px"></span>
+        </span></span>Agents<span class="n">12</span>
+      </div>
+      <div class="nv on">
+        <span class="ic"><span class="mk" style="width:16px;height:16px">
+          <span class="mb rd" style="left:0;top:3px;width:6px;height:10px"></span>
+          <span class="mb hz" style="left:8px;top:1px;width:7px;height:14px"></span>
+        </span></span>Violations<span class="n">18</span>
+      </div>
+      <div class="nv">
+        <span class="ic"><span class="mk" style="width:16px;height:16px">
+          <span class="mb" style="left:0;top:0;width:7px;height:7px"></span>
+          <span class="mb" style="left:9px;top:0;width:7px;height:7px"></span>
+          <span class="mb" style="left:0;top:9px;width:7px;height:7px"></span>
+          <span class="mb ou" style="left:9px;top:9px;width:7px;height:7px"></span>
+        </span></span>Checks<span class="n">6</span>
+      </div>
+
+      <div class="gh">Record</div>
+      <div class="nv">
+        <span class="ic"><span class="mk" style="width:16px;height:16px">
+          <span class="mb te" style="left:0;top:2px;width:4px;height:12px"></span>
+          <span class="mb" style="left:5px;top:5px;width:4px;height:6px"></span>
+          <span class="mb" style="left:10px;top:3px;width:6px;height:10px"></span>
+        </span></span>Lineage
+      </div>
+      <div class="nv">
+        <span class="ic"><span class="mk" style="width:16px;height:16px">
+          <span class="mb bl" style="left:0;top:0;width:7px;height:7px"></span>
+          <span class="mb vi" style="left:9px;top:9px;width:7px;height:7px"></span>
+        </span></span>Simulate
+      </div>
+      <div class="nv">
+        <span class="ic"><span class="mk" style="width:16px;height:16px">
+          <span class="mb ou" style="left:0;top:1px;width:16px;height:14px"></span>
+        </span></span>Policies
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="hd">
+        <div class="ti">Violations <span>· prod</span></div>
+        <div class="rt"><span class="pulse"><i></i>3 agents live</span><span style="color:var(--t3)">⌘K</span></div>
+      </div>
+
+      <div class="bar">
+        <div class="seg">
+          <span class="on">Open <em class="n">6</em></span>
+          <span>Stopped <em class="n">12</em></span>
+          <span>Resolved <em class="n">148</em></span>
+        </div>
+        <span class="chip" style="margin-left:auto">Last 24h <em class="c">▾</em></span>
+        <span class="chip">Group: severity <em class="c">▾</em></span>
+      </div>
+
+      <div class="body">
+        <div>
+          <div class="grp"><span class="sw" style="background:var(--rd-l)"></span>Denied<span class="n">2</span></div>
+
+          <div class="row sel">
+            <span class="ic"><span class="mk" style="width:18px;height:18px">
+              <span class="mb" style="left:0;top:11px;width:4px;height:7px"></span>
+              <span class="mb" style="left:5px;top:7px;width:4px;height:11px"></span>
+              <span class="mb" style="left:10px;top:3px;width:4px;height:15px"></span>
+              <span class="mb rd a-climb" style="left:15px;top:6px;width:3px;height:12px"></span>
+            </span></span>
+            <span class="t">test-agent acquired <em>admin</em> beyond granted scope</span>
+            <span>Privilege escalation</span>
+            <span><span class="pill rd"><i class="d"></i>Denied</span></span>
+            <span class="ag">2m</span>
+          </div>
+
+          <div class="row">
+            <span class="ic"><span class="mk" style="width:18px;height:18px">
+              <span class="mb" style="left:0;top:0;width:8px;height:8px"></span>
+              <span class="mb hzr" style="left:10px;top:5px;width:8px;height:13px"></span>
+            </span></span>
+            <span class="t">deploy-agent identity mismatch</span>
+            <span>Impersonation</span>
+            <span><span class="pill rd"><i class="d"></i>Denied</span></span>
+            <span class="ag">1h</span>
+          </div>
+
+          <div class="grp"><span class="sw" style="background:var(--t2)"></span>Stopped<span class="n">1</span></div>
+
+          <div class="row">
+            <span class="ic"><span class="mk" style="width:18px;height:18px">
+              <span class="mb" style="left:0;top:6px;width:5px;height:6px"></span>
+              <span class="mb hz" style="left:7px;top:0;width:5px;height:18px"></span>
+              <span class="mb gh" style="left:14px;top:6px;width:4px;height:6px"></span>
+            </span></span>
+            <span class="t">bill-agent write to <em>payments.db</em></span>
+            <span>Outside policy</span>
+            <span><span class="pill mu">Stopped</span></span>
+            <span class="ag">7m</span>
+          </div>
+
+          <div class="grp"><span class="sw" style="background:var(--am-t)"></span>Watching<span class="n">2</span></div>
+
+          <div class="row">
+            <span class="ic"><span class="mk" style="width:18px;height:18px">
+              <span class="mb gh" style="left:0;top:1px;width:7px;height:16px"></span>
+              <span class="mb a-blink" style="left:9px;top:1px;width:9px;height:16px"></span>
+            </span></span>
+            <span class="t">hooks.yaml touched by unknown pid</span>
+            <span>Suspected file</span>
+            <span><span class="pill am">Watching</span></span>
+            <span class="ag">41m</span>
+          </div>
+
+          <div class="row">
+            <span class="ic"><span class="mk" style="width:18px;height:18px">
+              <span class="mb" style="left:0;top:0;width:8px;height:9px"></span>
+              <span class="mb hz" style="left:10px;top:0;width:8px;height:5px"></span>
+              <span class="mb hz" style="left:10px;top:7px;width:6px;height:5px"></span>
+              <span class="mb" style="left:0;top:11px;width:12px;height:7px"></span>
+            </span></span>
+            <span class="t">suspected spread across 3 services</span>
+            <span>Spread</span>
+            <span><span class="pill am">Watching</span></span>
+            <span class="ag">54m</span>
+          </div>
+
+          <div class="grp"><span class="sw" style="background:var(--blue-t)"></span>Review<span class="n">1</span></div>
+
+          <div class="row">
+            <span class="ic"><span class="mk" style="width:18px;height:18px">
+              <span class="mb" style="left:0;top:5px;width:5px;height:8px"></span>
+              <span class="mb" style="left:6px;top:3px;width:4px;height:12px"></span>
+              <span class="mb bl" style="left:12px;top:5px;width:6px;height:8px"></span>
+            </span></span>
+            <span class="t">policy <em>v2.14</em> uncommitted for 19m</span>
+            <span>Policy drift</span>
+            <span><span class="pill bl">Review</span></span>
+            <span class="ag">19m</span>
+          </div>
+        </div>
+
+        <aside class="insp">
+          <h4>test-agent acquired admin beyond granted scope</h4>
+          <div class="sb">Denied · 2 min ago · <span class="mono">prod / us-east</span></div>
+
+          <div class="sl">Run · 1,204 events</div>
+          <div class="rib">
+            <i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i>
+            <i class="ok"></i><i></i><i class="ok"></i><i class="ok"></i><i></i>
+            <i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="now"></i><i class="st"></i>
+          </div>
+
+          <div class="sl">Lineage</div>
+          <div class="lin">
+            <div class="stp"><span class="nd te"></span><b>deploy-agent started</b><span>scope: deploy, read</span></div>
+            <div class="stp"><span class="nd"></span><b>1,163 events recorded</b><span>all within policy v2.12</span></div>
+            <div class="stp"><span class="nd ou"></span><b>handoff → test-agent</b><span>scope inherited, not widened</span></div>
+            <div class="stp"><span class="nd rd"></span><b>acquired admin</b><span>not in lineage · not in policy</span></div>
+            <div class="stp" style="padding-bottom:0"><span class="nd"></span><b>denied at control plane</b><span>agent paused · owner notified</span></div>
+          </div>
+
+          <div class="act">
+            <button class="btn p">Confirm denial</button>
+            <button class="btn">Allow once</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
