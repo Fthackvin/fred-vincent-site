@@ -42,6 +42,8 @@ header p{color:var(--text-2);max-width:70ch;margin:0;font-size:15px}
 h2{font-weight:400;font-size:20px;letter-spacing:-.02em;margin:44px clamp(20px,5vw,72px) 6px}
 .sub{color:var(--text-2);font-size:13.5px;margin:0 clamp(20px,5vw,72px) 18px;max-width:72ch}
 .legend{display:flex;flex-wrap:wrap;gap:14px 22px;margin:0 clamp(20px,5vw,72px) 22px;font-size:12px;color:var(--text-2)}
+/* An author display beats the UA rule for [hidden], so it has to be said. */
+.legend[hidden]{display:none}
 .legend b{display:inline-flex;align-items:center;gap:8px;font-weight:400}
 .legend i{width:14px;height:14px;border-radius:2px;background:var(--wh);display:inline-block}
 .legend i.ou{background:var(--ink);box-shadow:inset 0 0 0 1.4px var(--wh)}
@@ -198,7 +200,7 @@ body.term .f-ou{stroke-width:1}
   <div class="g"><label>Set</label><button data-set="all" aria-pressed="true">Full sheet</button><button data-set="core">Core</button><button data-set="alerts">Alerts</button><button data-set="policy">Policy</button><button data-set="mini">Mini</button></div>
 </div>
 
-<div class="legend">
+<div class="legend" id="legend">
   <b><i></i>Present, recorded</b>
   <b><i class="ou"></i>Quiet</b>
   <b><i class="gh"></i>Ghost</b>
@@ -384,6 +386,14 @@ let style = params.get('style') === 'term' ? 'term' : 'full';
 let set = params.get('set') || 'all';
 if (params.has('bare')) document.body.classList.add('bare');
 
+/* The key is the whole vocabulary, so it belongs with the whole sheet. On a
+   close-up of one set it would be a legend for colours half of which are not
+   on screen. */
+function syncLegend() {
+  var el = document.getElementById('legend');
+  if (el) el.hidden = (set !== 'all');
+}
+
 function mark(s, U, term) {
   const W = s.w * U, H = s.h * U, pad = U * .9;
   const thr = (s.thr || []).map(t => T(t[0], t[1], t[2], t[3], U, t[4])).join('');
@@ -411,6 +421,7 @@ function render() {
     html += `<h2>${n[0]}</h2><p class="sub">${rows.length} states — ${n[1]}.</p><div class="grid set">${rows.map(s => cellHTML(s, 20, term)).join('')}</div>`;
   }
   root.innerHTML = html;
+  syncLegend();
 }
 document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
   style = b.dataset.s;

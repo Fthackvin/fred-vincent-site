@@ -1537,6 +1537,25 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .t2-item--mark .lw-stage--light { background: var(--paper-50); }
 .t2-item--mark .lw { width: min(880px, 100%); }
 
+/* --- Deck slides ---------------------------------------------------------
+   The brand deck's own pages. They are white artwork, so a full-bleed white
+   slide on a white page would lose its edges entirely — they sit on the
+   paper-200 ground with a hairline instead, which is also what keeps three
+   of them in a row reading as a set rather than one long sheet. */
+.t2-item--slide {
+  background: var(--paper-200, #F3F3EF);
+  padding: clamp(28px, 4vw, 64px) clamp(16px, 4vw, 64px);
+}
+.t2-item--slide .t2-slide-inner { max-width: 1180px; margin: 0 auto; }
+.t2-item--slide img {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #FFFFFF;
+  border: 1px solid rgba(26, 24, 21, 0.09);
+  border-radius: 2px;
+}
+
 /* --- Live screens --------------------------------------------------------
    The product screens and the interaction marks are working documents, not
    exports: they run their own animation, and the marks in the interface are
@@ -1830,7 +1849,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 
         <h2>A mark that assembles itself</h2>
         <p>Drawing on Bauhaus systems and modular graphic design, the wordmark, the graphic language and the motion all grow from one set of blocks — a mark that builds itself the way a change builds from its history.</p>
-        <p>Everything around it is held back. Dark green, charcoal and off-white. Colour reserved for state and alert, so that when something is wrong it is the only thing on the screen. Typography that moves between brand, terminal and interface without changing voice.</p>
+        <p>Everything around it is held back. Near-black, deep green and off-white carry the brand; blues and reds sit in a secondary range and are only spent on state, so that when something is wrong it is the only thing on the screen. Aeonik sets the headlines — a geometric neo-grotesque with precise terminals, controlled enough to hold a technical brand — and League Spartan carries the body. Between brand, terminal and interface the voice does not change.</p>
 
         <h2>One set of blocks, doing all the work</h2>
         <p>The wordmark is cut from a set of blocks, so the interface is built from the same ones. Every state in the product — an agent working, a file under suspicion, a policy boundary crossed — is a small composition of them, at whatever size and proportion the moment needs.</p>
@@ -1878,9 +1897,19 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
         </div>
       </figure>
 
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 3024 / 2174;" role="img" aria-label="Typography — artwork to follow">
-          <span>Typography</span>
+      <figure class="t2-item t2-item--slide t2-reveal">
+        <div class="t2-slide-inner">
+          <img src="deck/slide-01.png" alt="Palette: a primary range of near-blacks, deep green and off-whites, and a secondary range of blues and reds held for state." width="1920" height="1386" loading="lazy" decoding="async">
+        </div>
+      </figure>
+      <figure class="t2-item t2-item--slide t2-reveal">
+        <div class="t2-slide-inner">
+          <img src="deck/slide-07.png" alt="Headline typeface: Aeonik, a geometric neo-grotesque with precise terminals and circular forms." width="1920" height="1386" loading="lazy" decoding="async">
+        </div>
+      </figure>
+      <figure class="t2-item t2-item--slide t2-reveal">
+        <div class="t2-slide-inner">
+          <img src="deck/slide-08.png" alt="Body typeface: League Spartan, a geometric sans taking its influence from ATF&rsquo;s Spartan family." width="1920" height="1386" loading="lazy" decoding="async">
         </div>
       </figure>
 
@@ -1888,11 +1917,6 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
         <blockquote>Advanced, but not sci‑fi. Premium, but not stuffy.</blockquote>
       </div>
 
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media t2-slot" style="aspect-ratio: 3036 / 2042;" role="img" aria-label="Colour and state — artwork to follow">
-          <span>Colour and state</span>
-        </div>
-      </figure>
 
       <div class="t2-note">
         <span class="t2-note-label">System</span>
@@ -1923,23 +1947,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:900" data-w="1280" data-h="900">
             <iframe src="screens/marks.html?bare&set=core" title="Core set" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>02</b> Core set <span>The grammar, in seven states.</span></figcaption>
-        </div>
-      </figure>
-      <figure class="t2-item t2-screens">
-        <div class="t2-screens-inner">
-          <div class="t2-frame" style="--fw:1280; --fh:1180" data-w="1280" data-h="1180">
-            <iframe src="screens/marks.html?bare&set=alerts" title="Alert set" loading="lazy" tabindex="-1"></iframe>
-          </div>
-          <figcaption class="t2-screens-cap"><b>03</b> Alert set <span>Watched, confirmed, spread, refused, faked.</span></figcaption>
-        </div>
-      </figure>
-      <figure class="t2-item t2-screens">
-        <div class="t2-screens-inner">
-          <div class="t2-frame" style="--fw:1280; --fh:1180" data-w="1280" data-h="1180">
-            <iframe src="screens/marks.html?bare&set=policy" title="Policy set" loading="lazy" tabindex="-1"></iframe>
-          </div>
-          <figcaption class="t2-screens-cap"><b>04</b> Policy set <span>Drift, raised, granted, handed off, checked.</span></figcaption>
+          <figcaption class="t2-screens-cap"><b>02</b> Core set <span>The grammar, seven states at size.</span></figcaption>
         </div>
       </figure>
 
@@ -1953,7 +1961,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
             <iframe src="screens/violations.html?bare" title="Violations" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>05</b> Violations <span>Marks carry state; lineage reads as a ribbon.</span></figcaption>
+          <figcaption class="t2-screens-cap"><b>03</b> Violations <span>Marks carry state; lineage reads as a ribbon.</span></figcaption>
         </div>
       </figure>
       <figure class="t2-item t2-screens">
@@ -1961,7 +1969,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
             <iframe src="screens/agent.html?bare" title="Agent" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>06</b> Agent <span>A run as a readable track, not a log.</span></figcaption>
+          <figcaption class="t2-screens-cap"><b>04</b> Agent <span>A run as a readable track, not a log.</span></figcaption>
         </div>
       </figure>
       <figure class="t2-item t2-screens">
@@ -1969,7 +1977,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
             <iframe src="screens/simulate.html?bare" title="Simulate" loading="lazy" tabindex="-1"></iframe>
           </div>
-          <figcaption class="t2-screens-cap"><b>07</b> Simulate <span>Replay a policy against the record before it ships.</span></figcaption>
+          <figcaption class="t2-screens-cap"><b>05</b> Simulate <span>Replay a policy against the record before it ships.</span></figcaption>
         </div>
       </figure>
 
@@ -1994,7 +2002,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 
       <div class="t2-note">
         <span class="t2-note-label">Restraint</span>
-        <p>Dark green, charcoal and off-white carry the brand. Colour is held back for state and alert, so that when something is wrong it is the only thing on the screen.</p>
+        <p>Near-black, deep green and off-white carry the brand. The blues and reds sit in a secondary range and are only spent on state, so that when something is wrong it is the only thing on the screen. Aeonik for headlines, League Spartan for body.</p>
       </div>
 
       <figure class="t2-item t2-item--screens t2-reveal">
