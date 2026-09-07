@@ -770,8 +770,30 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    in the frame: the far peaks barely move, the foreground moves most. Only
    transforms are touched, so this composites on the GPU and never causes
    layout. */
-.t2-item--pano .lz-svg { width: 100%; height: 100%; display: block; }
-.lz-l { transform: translate3d(calc(var(--d, 0) * var(--lz-p, 0) * 90px), 0, 0); will-change: transform; }
+/* Firewatch-style: the bands rise at different rates as the page descends, so
+   the scene opens up rather than sliding sideways. The SVG is drawn larger
+   than its frame — the overscan is what stops a moving layer exposing an edge
+   at the top or bottom. */
+.t2-item--pano .t2-media { overflow: hidden; }
+.t2-item--pano .lz-svg {
+  width: 100%;
+  /* Anchored to the top so the sky and the peaks are never cropped. The extra
+     height hangs BELOW the frame, which is where it is needed: the layers move
+     up, so the material that covers the vacated space has to come from under
+     the fold, not over it. */
+  height: 116%;
+  margin-top: 0;
+  display: block;
+}
+.lz-l {
+  transform: translate3d(0, calc(var(--d, 0) * var(--lz-p, 0) * -104px), 0);
+  will-change: transform;
+}
+/* The nearest bands carry a little lateral drift as well, which is what stops
+   a purely vertical move reading as a zoom. */
+.lz-l[style*="--d:0.9"], .lz-l[style*="--d:1.0"], .lz-l[style*="--d:1"] {
+  transform: translate3d(calc(var(--lz-p, 0) * 26px), calc(var(--d, 0) * var(--lz-p, 0) * -104px), 0);
+}
 @media (prefers-reduced-motion: reduce) {
   .lz-l { transform: none; }
 }
@@ -1668,7 +1690,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
            it is the one that has to land. -->
       <figure class="t2-item t2-item--pano" id="kz-pano">
         <div class="t2-media">
-<svg class="lz-svg" preserveAspectRatio="xMidYMid slice" width="6494" height="965" viewBox="0 0 6494 965" fill="none" xmlns="http://www.w3.org/2000/svg"><defs>
+<svg class="lz-svg" preserveAspectRatio="xMidYMin slice" width="6494" height="965" viewBox="0 0 6494 965" fill="none" xmlns="http://www.w3.org/2000/svg"><defs>
 <filter id="filter0_n_111_62430" x="-87.4082" y="122.389" width="6736.66" height="884.899" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
