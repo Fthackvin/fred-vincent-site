@@ -677,7 +677,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(56px, 9vh, 128px) 0;
+  /* Less room over the phones than under: the landscape's navy now sits higher
+     in its frame, so the pair sits up to meet it rather than floating clear of
+     it, and the space that was above moves below where it separates this from
+     what follows. */
+  padding: clamp(24px, 3.4vh, 52px) 0 clamp(56px, 9vh, 128px);
   /* The foot of the landscape above it, sampled, so the two meet with no
      change of colour and the seam disappears. */
   background: #080F1F;
@@ -807,8 +811,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   display: grid;
   gap: 2px;
   margin-top: clamp(34px, 5vh, 72px);
-  padding-top: clamp(24px, 3vh, 40px);
-  border-top: 1px solid rgba(244, 243, 239, 0.14);
 }
 .kz-spec-row { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
 .kz-spec-w { font-size: clamp(22px, 3.4vw, 46px); line-height: 1.42; }
@@ -879,6 +881,13 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   .t2-item--pano { --lz-travel: -84px; --lz-drift: 10px; --lz-lift: 26px; }
   .t2-item--pano .lz-svg { height: 152%; }
 }
+/* The dark blocks stack with zero margin, but at fractional scroll positions
+   the browser rounds their edges independently and the white page shows
+   through as a hairline. Overlapping by a pixel removes the possibility
+   rather than relying on the rounding to agree. */
+.t2-item--pano, .t2-item--film { margin-bottom: -1px; }
+.t2-item--pano + .t2-item--film,
+.t2-item--film + .t2-item--film { padding-top: 1px; }
 .t2-item--pano .t2-media { aspect-ratio: 21 / 9; border-radius: 0; background: #9EBAA7; }
 /* The landscape, the film and the screens are one continuous dark opening.
    The 10px every sequence item carries showed as a white line across them, so
@@ -2362,7 +2371,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
             <div class="kz-spec-row"><span class="kz-spec-w" style="font-weight:400">Regular</span><span class="kz-spec-lbl">400</span></div>
             <div class="kz-spec-row"><span class="kz-spec-w" style="font-weight:500">Medium</span><span class="kz-spec-lbl">500</span></div>
             <div class="kz-spec-row"><span class="kz-spec-w" style="font-weight:600">Semi Bold</span><span class="kz-spec-lbl">600</span></div>
-            <div class="kz-spec-row"><span class="kz-spec-w" style="font-weight:900">Black</span><span class="kz-spec-lbl">900</span></div>
           </div>
           <p class="kz-spec-note">Chosen for its simple, elegant sans serif, Quasimoda is designed by Botio Nikoltchev. Kaizen uses five different weights but predominantly uses semi bold and light.</p>
         </div>
@@ -3555,6 +3563,18 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
       else if (!e.isIntersecting) row.classList.remove('kz-run');
     });
   }, { threshold: [0, 0.45] }).observe(row);
+})();
+</script>
+<script>
+/* The feed capture runs faster than a thumb actually moves. Slowed so the
+   scroll reads as someone using it rather than a demo being fast-forwarded. */
+(function () {
+  var v = document.querySelector('.t2-item--film video');
+  if (!v) return;
+  function slow() { try { v.playbackRate = 0.6; } catch (e) {} }
+  slow();
+  v.addEventListener('loadedmetadata', slow);
+  v.addEventListener('play', slow);
 })();
 </script>
 </body>
