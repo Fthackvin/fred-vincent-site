@@ -695,10 +695,25 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    together. Split on the transparent gaps between them, they come in left to
    right — each one a beat behind the last, which reads as the flow being
    walked through rather than a picture appearing. */
-.kz-flow .t2-film--flow { display: flex; align-items: flex-end; justify-content: center; gap: clamp(10px, 1.6vw, 28px); }
+/* The film-pair rule below sets a 4.4vw gap and matches this row too on equal
+   specificity, winning on source order — which left ~280px of gap between five
+   screens that should sit close. The extra class pins this one ahead of it. */
+.kz-flow .t2-film.t2-film--flow { display: flex; align-items: flex-end; justify-content: center; gap: clamp(10px, 1.6vw, 28px); }
 .kz-flow .t2-film--flow img {
+  /* Sized by height with an auto width, five of these could add up to more
+     than the column when the story opens and the sequence drops to a third
+     of the page — which is what was pushing the document sideways. Driving
+     them off a shrinkable flex-basis instead (the ideal width for that
+     height, 436/1114 of it) lets the row give way when it has to, and the
+     aspect ratio follows from height:auto. */
+  flex: 0 1 calc(clamp(300px, 46vh, 560px) * 0.3914);
   width: auto;
-  height: clamp(300px, 46vh, 560px);
+  height: auto;
+  /* A flex item's automatic minimum size is its min-content width, which for
+     an image is its intrinsic 436px — so the basis above was set correctly and
+     then ignored. This is the line that actually lets them shrink. */
+  min-width: 0;
+  max-width: 100%;
   display: block;
   opacity: 0;
   transform: translateY(14px);
@@ -848,21 +863,24 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   .kz-train-row { flex-direction: column; align-items: flex-start; }
   .kz-train-screen { width: min(220px, 60%); align-self: center; }
 }
-.kz-spec { background: #0B0D0F; margin-top: 0; margin-bottom: -1px; }
+/* The specimen's type was sized in vw, so when the story opened and this
+   column dropped to a third of the page the letters kept their full-page size
+   and ran straight out of the black. Container units size it off the block it
+   actually sits in; the vw values stay first as the fallback. */
+.kz-spec { background: #0B0D0F; margin-top: 0; margin-bottom: -1px; container-type: inline-size; }
 .kz-spec-inner {
-  /* The specimen is live type, not a full-bleed image, so it reads as page
-     copy and has to sit on the page's own left rail. That rail is the nav's:
-     a 1136px centred box with 96px of padding inside it. Same box here, so
-     Quasimoda starts exactly under Studio Vincent and the nav above it. */
-  max-width: 1136px;
-  margin-inline: auto;
-  padding: clamp(48px, 8vh, 128px) clamp(24px, 8.5%, 96px);
+  /* Lines up with the lockup above it rather than the header. The mark's left
+     edge sits at 13.53% of that export's width, measured off the file, and the
+     lockup runs full-bleed — so the same percentage here puts the Q directly
+     under the circle at every width. */
+  padding: clamp(48px, 8vh, 128px) 13.53%;
   color: #F4F3EF;
   font-family: "Quasimoda", "Test Söhne", "Inter", system-ui, sans-serif;
 }
 .kz-spec-name {
   font-weight: 300;
   font-size: clamp(56px, 9.5vw, 148px);
+  font-size: clamp(44px, 9.5cqw, 148px);
   line-height: 1.02;
   letter-spacing: -0.02em;
   margin-bottom: clamp(24px, 3.6vh, 52px);
@@ -870,6 +888,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .kz-spec-alpha {
   font-weight: 300;
   font-size: clamp(19px, 2.9vw, 40px);
+  font-size: clamp(16px, 2.9cqw, 40px);
   line-height: 1.34;
   letter-spacing: 0.04em;
   color: #E4E2DC;
@@ -884,7 +903,8 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 /* The weights were pushed to the far right by space-between, stranding them
    a column away from the words they label. They belong alongside. */
 .kz-spec-row { display: flex; align-items: baseline; justify-content: flex-start; gap: clamp(14px, 1.6vw, 26px); }
-.kz-spec-w { font-size: clamp(22px, 3.4vw, 46px); line-height: 1.42; }
+.kz-spec-w { font-size: clamp(22px, 3.4vw, 46px);
+  font-size: clamp(19px, 3.4cqw, 46px); line-height: 1.42; }
 .kz-spec-lbl {
   align-self: center;
   font-family: var(--body);
@@ -906,12 +926,17 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 /* The strip carried a light grey ground of its own, which sat as a pale slab
    directly above the black outro. Its background is keyed out, and the figure
    takes the outro's colour so the two read as one dark close to the page. */
-.kz-onblack, .kz-onblack .t2-media { background: #1a1a1a; }
-/* Run full-bleed, the outer two phones sat hard against the frame and read as
-   cut off. The strip is held in from both sides so the row is complete, with
-   the black carrying on past it to the edges. */
-.kz-onblack { padding: clamp(28px, 4vh, 64px) 0 clamp(36px, 5vh, 80px); margin-bottom: -1px; }
-.kz-onblack .t2-media { width: min(92%, 1560px); margin-inline: auto; }
+/* Sits on the page ground, not a black panel of its own. The export was
+   re-padded so its phones span the same fraction of the frame as the doughnut
+   strip above it (3.80%..97.14%), which is why this runs full-bleed with no
+   inset: the alignment lives in the file, not in the CSS. */
+.kz-onblack { padding: clamp(28px, 4vh, 64px) 0 clamp(36px, 5vh, 80px); }
+/* The export is transparent, so the media box's default grey was showing
+   through behind the phones as a panel. It sits on the page ground instead. */
+.kz-onblack .t2-media { background: none; }
+/* Held back from the live page while the block work settles. The markup stays
+   so it can be switched back on by dropping this class. */
+.kz-draft { display: none !important; }
 .kz-pair { display: flex; flex-direction: column; gap: 20px; padding-inline: clamp(16px, 6%, 96px);
   margin-block: clamp(28px, 4vh, 60px); }
 .kz-pair-title {
@@ -2488,8 +2513,8 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       </figure>
 
       <figure class="t2-item t2-reveal kz-onblack">
-        <div class="t2-media" style="aspect-ratio: 2800 / 774;">
-          <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="2800" height="774" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2764 / 774;">
+          <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="2764" height="774" loading="lazy" decoding="async">
         </div>
       </figure>
 
@@ -2503,7 +2528,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         <p>Foundations, primitives, components, patterns, and more complicated things built out of those basic building blocks. All in Figma, all tokenised, ordered so an MCP could read it.</p>
       </div>
 
-      <figure class="t2-item t2-reveal kz-train">
+      <figure class="t2-item t2-reveal kz-train kz-draft">
         <figcaption class="kz-pair-title">Train like&hellip;</figcaption>
         <p class="kz-train-note">A week of training is a block. It fills as the runner does the work, and the blocks stack into a structure they have built themselves &mdash; lots of blocks, lots of patterns, a shape that is theirs by the end of a training cycle.</p>
         <div class="kz-train-row">
