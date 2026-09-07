@@ -792,6 +792,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .kz-lockup--dark, .kz-lockup--dark .t2-media { background: #0B0D0F; }
 .kz-lockup--dark { margin-bottom: -1px; }
 .kz-lockup--light, .kz-lockup--light .t2-media { background: #FFFFFF; }
+/* The construction sits after the specimen and the light lockup, on white, at
+   the width the sheets run at. */
+.kz-build, .kz-build .t2-media { background: #FFFFFF; }
+.kz-build .t2-media { width: min(86%, 1120px); margin-inline: auto; }
+.kz-build { padding-block: clamp(26px, 4vh, 60px); }
 .kz-spec { background: #0B0D0F; margin-top: 0; margin-bottom: -1px; }
 .kz-spec-inner {
   padding: clamp(48px, 8vh, 128px) clamp(24px, 7%, 116px);
@@ -1711,7 +1716,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   .t2-nav-links a[href$="#work"] { display: none; }
 }
 
-
 /* On a phone the 191px square is out of scale with the title and description
    beside it. Reduced by a third so the card reads as one block. */
 @media (max-width: 719px) {
@@ -2360,22 +2364,10 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         <p>It wasn&rsquo;t a plan. It was the opposite of a plan. It was a journey, made specifically for you, that adapted as you moved through it.</p>
       </div>
 
-
-
-
       <div class="t2-note">
         <span class="t2-note-label">Method</span>
         <p>Not the heroic session, but the sum of all of them. Small, granular changes that add up to something significant.</p>
       </div>
-
-      <figure class="t2-item t2-reveal kz-origin">
-        <div class="kz-origin-row">
-          <img class="kz-origin-mark" src="kaizen-jetset-logo.webp" alt="The original Jetset logo: a running figure inside a broken blue ring."
-               width="499" height="410" loading="lazy" decoding="async">
-          <img class="kz-origin-build" src="kaizen-doughnut-construction.webp" alt="How the doughnut is built: the filling ring, the concentric construction, and the finished mark."
-               width="1010" height="196" loading="lazy" decoding="async">
-        </div>
-      </figure>
 
       <figure class="t2-item t2-reveal kz-lockup kz-lockup--dark">
         <div class="t2-media" style="aspect-ratio: 2181 / 820;">
@@ -2383,7 +2375,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
                width="2181" height="820" loading="lazy" decoding="async">
         </div>
       </figure>
-
 
       <figure class="t2-item t2-reveal kz-spec">
         <div class="kz-spec-inner">
@@ -2406,6 +2397,13 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         <div class="t2-media" style="aspect-ratio: 2181 / 1010;">
           <img src="kaizen-lockup-light.webp" alt="The Kaizen lockup: mark and wordmark in black on white."
                width="2181" height="1010" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-reveal kz-build">
+        <div class="t2-media" style="aspect-ratio: 1010 / 196;">
+          <img src="kaizen-doughnut-construction.webp" alt="How the doughnut is built: the filling ring, the concentric construction, and the finished mark."
+               width="1010" height="196" loading="lazy" decoding="async">
         </div>
       </figure>
 
@@ -2459,7 +2457,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
                width="2200" height="1100" loading="lazy" decoding="async">
         </div>
       </figure>
-
 
       <figure class="t2-item t2-reveal kz-onblack">
         <div class="t2-media" style="aspect-ratio: 2800 / 774;">
