@@ -797,29 +797,52 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .kz-lockup--dark {
   margin-top: 0;
   margin-bottom: -1px;
-  padding-top: clamp(70px, 11vh, 170px);
-  background: linear-gradient(#080F1F 0%, #0A0F18 46%, #0B0D0F 100%);
+  /* The fade has to finish exactly where the opaque media begins, or the media
+     crops it mid-navy and the seam it was meant to dissolve comes back as a
+     hard line. Sizing the gradient to the padding run ties the two together. */
+  --kz-fade: clamp(190px, 28vh, 380px);
+  padding-top: var(--kz-fade);
+  background-color: #0B0D0F;
+  /* A straight two-stop ramp still read as a line: the colour arrives at black
+     and then stops dead, and the kink at that point is what the eye picks up.
+     These stops walk a smoothstep curve instead, so the fade eases out of the
+     navy and eases into the black with no corner at either end. */
+  background-image: linear-gradient(
+    #080F1F 0%,
+    #080F1E 12.5%,
+    #090F1D 25%,
+    #090E1A 37.5%,
+    #0A0E17 50%,
+    #0A0E14 62.5%,
+    #0A0D12 75%,
+    #0B0D10 87.5%,
+    #0B0D0F 100%);
+  background-size: 100% var(--kz-fade);
+  background-repeat: no-repeat;
 }
 .kz-lockup--dark .t2-media { background: #0B0D0F; }
-.kz-lockup--light, .kz-lockup--light .t2-media { background: #FFFFFF; }
 /* The construction sits after the specimen and the light lockup, on white, at
    the width the sheets run at. */
 .kz-build, .kz-build .t2-media { background: #FFFFFF; }
 .kz-build .t2-media { width: min(86%, 1120px); margin-inline: auto; }
-.kz-build { padding-block: clamp(26px, 4vh, 60px); }
+/* Follows the specimen's black directly now that the light lockup is gone, so
+   it opens with a decent run of white before the doughnuts start. */
+.kz-build { padding-block: clamp(72px, 11vh, 168px) clamp(40px, 6vh, 96px); margin-top: 0; }
 /* Train like — the block concept. Each SVG's faces were hard-coded white, so
    they now take currentColor and the colour is set per block from Kaizen's own
    range: white, the product blue, near-black. The black edges are left alone,
    which is what keeps them reading as drawn objects rather than flat shapes. */
-.kz-train { display: flex; flex-direction: column; gap: 16px; padding-inline: clamp(16px, 6%, 96px); margin-block: clamp(32px, 5vh, 72px); }
+/* Wider than the rest of the run — the mosaic wants the room. */
+.kz-train { display: flex; flex-direction: column; gap: 16px; padding-inline: clamp(12px, 2.4%, 44px); margin-block: clamp(40px, 6vh, 92px); }
 .kz-train-note {
   max-width: 66ch; margin: 0 0 clamp(14px, 2vh, 26px);
   font-family: var(--body); font-weight: 300; font-size: 16px; line-height: 26px; color: var(--ink-700);
 }
-.kz-train-row { display: flex; gap: clamp(24px, 4vw, 72px); align-items: center; }
+/* The screen sits top left, the mosaic runs beside it. */
+.kz-train-row { display: flex; gap: clamp(20px, 3.2vw, 56px); align-items: flex-start; }
 .kz-train-blocks { flex: 1 1 auto; min-width: 0; }
 .kz-train-blocks img { width: 100%; height: auto; display: block; }
-.kz-train-screen { flex: 0 0 auto; width: clamp(150px, 20vw, 260px); }
+.kz-train-screen { flex: 0 0 auto; width: clamp(132px, 15vw, 218px); }
 .kz-train-screen img { width: 100%; height: auto; display: block; }
 @media (max-width: 719px) {
   .kz-train-row { flex-direction: column; align-items: flex-start; }
@@ -827,7 +850,13 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 .kz-spec { background: #0B0D0F; margin-top: 0; margin-bottom: -1px; }
 .kz-spec-inner {
-  padding: clamp(48px, 8vh, 128px) clamp(24px, 7%, 116px);
+  /* The specimen is live type, not a full-bleed image, so it reads as page
+     copy and has to sit on the page's own left rail. That rail is the nav's:
+     a 1136px centred box with 96px of padding inside it. Same box here, so
+     Quasimoda starts exactly under Studio Vincent and the nav above it. */
+  max-width: 1136px;
+  margin-inline: auto;
+  padding: clamp(48px, 8vh, 128px) clamp(24px, 8.5%, 96px);
   color: #F4F3EF;
   font-family: "Quasimoda", "Test Söhne", "Inter", system-ui, sans-serif;
 }
@@ -878,7 +907,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    directly above the black outro. Its background is keyed out, and the figure
    takes the outro's colour so the two read as one dark close to the page. */
 .kz-onblack, .kz-onblack .t2-media { background: #1a1a1a; }
+/* Run full-bleed, the outer two phones sat hard against the frame and read as
+   cut off. The strip is held in from both sides so the row is complete, with
+   the black carrying on past it to the edges. */
 .kz-onblack { padding: clamp(28px, 4vh, 64px) 0 clamp(36px, 5vh, 80px); margin-bottom: -1px; }
+.kz-onblack .t2-media { width: min(92%, 1560px); margin-inline: auto; }
 .kz-pair { display: flex; flex-direction: column; gap: 20px; padding-inline: clamp(16px, 6%, 96px);
   margin-block: clamp(28px, 4vh, 60px); }
 .kz-pair-title {
@@ -940,6 +973,21 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    through as a hairline. Overlapping by a pixel removes the possibility
    rather than relying on the rounding to agree. */
 .t2-item--pano, .t2-item--film { margin-bottom: -1px; }
+/* The landscape ended on its own navy and the panel below started on the same
+   colour, but the join was still a straight horizontal edge across the frame.
+   A gradient over the foot of the scene sinks it into what follows instead of
+   stopping at it. It sits above the layers, so it holds still while they move
+   underneath — which is what makes the bottom read as depth rather than as a
+   cut. */
+.t2-item--pano .t2-media { position: relative; }
+.t2-item--pano .t2-media::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 38%;
+  background: linear-gradient(rgba(8, 15, 31, 0) 0%, rgba(8, 15, 31, 0.5) 52%, rgba(9, 13, 22, 0.88) 82%, #080F1F 100%);
+  pointer-events: none;
+}
 .t2-item--pano + .t2-item--film,
 .t2-item--film + .t2-item--film { padding-top: 1px; }
 /* The ground behind the SVG has to cover BOTH edges: sky at the top, where a
@@ -2328,9 +2376,9 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 <path d="M245.352 302.091C421.738 328.852 518.737 301.338 737.041 296.95C955.345 292.563 995.654 295.048 1025.71 296.954C1055.78 298.861 1085.06 298.531 1102.62 303.135C1120.19 307.74 1142.06 301.689 1158.51 302.104C1174.96 302.52 1208.23 307.213 1233.88 313.428C1259.52 319.643 1288.6 310.89 1316.43 313.429C1344.26 315.968 1367.51 322.387 1400.51 324.739C1433.52 327.091 1466.35 324.74 1496.39 324.74C1526.42 324.741 1543.25 324.222 1573.29 324.741C1603.33 325.261 1698.58 332.558 1752.23 335.035C1805.88 337.512 1836.05 342.029 1889.64 340.182C1943.23 338.335 1980.7 327.329 2030.64 324.748C2080.58 322.167 2108.76 322.581 2158.81 324.75C2208.87 326.918 2237.81 333.065 2288.55 336.081C2339.29 339.096 2377.49 342.481 2432.11 340.199C2486.73 337.917 2516.51 328.038 2571.06 324.756C2625.6 321.473 2636.43 332.901 2677.7 332.487C2718.97 332.072 2742.4 322.721 2782.77 322.806C2823.13 322.89 2884.84 317.042 2912.53 320.656C2940.21 324.269 2964.07 328.976 3008.41 328.375C3052.74 327.774 3054.94 320.972 3084.29 320.658C3113.63 320.345 3137.4 324.31 3171.45 324.764C3205.5 325.219 3226.32 318.356 3261.62 315.511C3296.91 312.665 3329.85 309.624 3362.11 309.852C3394.37 310.08 3420.31 317.474 3457.55 322.815C3494.79 328.157 3540.4 339.329 3587.19 342.758C3633.99 346.187 3676.7 345.438 3707.17 342.759C3737.64 340.081 3748.91 329.323 3775.88 327.84C3802.84 326.356 3835.86 320.669 3867.14 327.841C3898.42 335.013 3902.22 322.973 3927.13 324.24C3952.04 325.507 3959.94 311.892 4010.7 327.843C4061.46 343.794 4057.02 344.604 4109.66 344.824C4162.29 345.044 4183.49 324.244 4219.38 327.846C4255.27 331.448 4255.27 329.905 4311.16 337.109C4367.04 344.313 4383.61 370.479 4413.7 367.981C4443.79 365.484 4465.81 366.132 4495.74 362.323C4525.66 358.514 4565.98 393.71 4610.07 388.565C4654.17 383.421 4673.88 360.608 4697.75 362.326C4721.62 364.044 4762.99 355.289 4789.01 356.667C4815.03 358.045 4855.67 356.668 4855.67 356.668L4961.29 344.836L5075.62 344.838L5262.84 334.078C5262.84 334.078 5338.26 325.159 5386.92 324.057C5435.57 322.955 5519.71 324.059 5519.71 324.059L5734.03 334.085L6214.12 326.165C6278.82 325.098 6328.67 384.847 6315.76 447.992L6292.78 560.379C6291.06 568.828 6290.44 577.488 6290.95 586.14L6305.51 833.838C6308.85 890.731 6264.59 937.996 6207.64 937.751C5950.45 936.644 5271.52 934.091 4802.2 935.683C4212.78 937.682 3666.44 948.575 3186.02 949.949C2705.6 951.322 2392.04 948.613 1955.71 947.879C1519.38 947.145 1144.7 946.214 838.413 945.999C532.125 945.784 211.878 1136.71 54.1246 945.988C-103.629 755.266 -41.1217 349.18 34.624 317.524C110.37 285.869 68.9651 275.331 245.352 302.091Z" fill="url(#paint4_linear_111_62430)" fill-opacity="0.56"/>
 </g></g><g class="lz-l" style="--d:0.56"><g filter="url(#filter6_n_111_62430)">
 <path d="M471.457 338.109C562.208 318.559 618.438 319.465 669.88 318.561C721.322 317.657 762.197 322.452 813.442 318.563C864.686 314.674 906.758 318.564 906.758 318.564L985.204 315.994L1055.45 305.705L1123.64 300.046C1123.64 300.046 1221.78 296.544 1280.02 300.049C1338.26 303.553 1442.55 316.001 1442.55 316.001L1546.63 316.002L1638.92 324.75C1638.92 324.75 1876.31 363.888 1967.06 344.299C2057.81 324.71 2234.19 352.027 2234.19 352.027C2234.19 352.027 2269.57 360.26 2304.95 360.261C2340.33 360.261 2505.13 344.55 2522.34 344.307C2532.34 344.166 2550.45 341.934 2563.87 340.088C2575.09 338.545 2586.52 338.695 2597.72 340.788L2663.27 353.032C2663.27 353.032 2694.06 360.166 2714.03 360.236C2733.99 360.307 2765.81 353.034 2765.81 353.034L2831.39 336.918C2837.9 335.318 2844.55 334.38 2851.28 334.175C2870.43 333.59 2911.4 332.623 2925.78 334.514C2944.8 337.015 2971.93 337.601 2971.93 337.601L3032.94 344.314C3032.94 344.314 3073.96 353.038 3115.49 353.039C3157.02 353.04 3223.67 337.605 3223.67 337.605C3223.67 337.605 3298.53 329.888 3341.6 329.889C3384.67 329.889 3400.67 333.781 3425.68 338.123C3450.69 342.464 3470.8 352.561 3470.8 352.561C3470.8 352.561 3502.64 368.234 3529.77 369.509C3556.9 370.785 3567.59 363.565 3601.03 364.392C3634.48 365.218 3677.43 377.229 3718.96 369.512C3760.49 361.795 3779.97 338.382 3828.17 338.128C3876.37 337.874 3898.82 361.024 3923.54 361.283C3948.25 361.541 3972.69 356.042 3993.27 354.593C4013.84 353.144 4052.74 358.197 4052.74 358.197C4052.74 358.197 4090.04 371.176 4114.78 375.177C4139.53 379.178 4240.42 354.955 4270.65 354.597C4300.88 354.239 4321.9 351.774 4340.89 358.201C4359.88 364.628 4364.63 369.939 4383.96 375.181C4403.29 380.423 4410.34 379.004 4437.28 383.928C4464.23 388.852 4488.23 400.508 4511.12 402.966C4534.01 405.425 4572.39 404.326 4595.2 407.084C4618.02 409.842 4657.24 382.885 4704.41 383.932C4751.58 384.979 4824.9 375.187 4824.9 375.187L5015.12 354.608L5223.36 335.621L5388.46 327.392L5639.18 340.772C5639.18 340.772 5712.38 335.608 5758.64 335.629C5804.9 335.65 5877.08 340.776 5877.08 340.776L6029.36 335.633C6029.36 335.633 6119.37 319.759 6169.84 318.658C6220.31 317.557 6303.15 318.66 6303.15 318.66L6439.02 327.407C6439.02 327.407 6499.39 328.828 6537.98 327.408C6576.57 325.988 6649.24 318.665 6649.24 318.665L6649.24 340.787L6659 958.719L3227.13 895.884L-19.7144 929.275L-25.8836 331.412C-25.8836 331.412 84.3985 323.442 236.628 331.415C388.856 339.389 380.706 357.66 471.457 338.109Z" fill="url(#paint5_linear_111_62430)"/>
-</g></g><g class="lz-l" style="--d:0.63"><g filter="url(#filter7_n_111_62430)">
+</g></g><g class="lz-l" style="--d:0.54"><g filter="url(#filter7_n_111_62430)">
 <path d="M836.628 338.528C759.73 352.912 694.1 330.448 644.879 331.32C595.658 332.192 582.573 338.921 563.869 342.126C545.165 345.332 544.898 347.097 516.186 351.387C487.474 355.677 448.507 351.386 359.294 359.103C270.081 366.819 229.577 348.8 196.761 339.546C163.945 330.291 107.002 330.584 53.2013 345.715C-0.599828 360.845 -29.7529 723.048 40.398 949.763C110.549 1176.48 1314.61 949.105 1858.43 949.789C2402.24 950.473 2707.16 952.242 3250.97 952.868C3794.79 953.493 4160.32 952.881 4742.99 952.889C5325.66 952.897 6505.04 952.914 6505.04 952.914L6655.89 963.878L6655.87 483.318L6655.87 334.101L6549.74 341.561L6443.61 349.02L6340.55 334.098L6229.28 334.097L6098.02 349.015L5966.25 344.382C5966.25 344.382 5833.51 339.488 5791.41 339.235C5749.31 338.981 5684.25 349.009 5684.25 349.009L5392 339.229L5310.48 339.228L5229.47 353.633L5142.31 359.806L5067.07 384.411L4867.55 408.601C4867.55 408.601 4793.21 405.711 4765.52 408.599C4737.83 411.488 4722.15 440.325 4700.4 436.898C4678.66 433.472 4649.13 417.346 4613.75 417.345C4578.38 417.345 4556.84 443.685 4539.41 441.012C4521.98 438.34 4502.55 419.403 4482.5 411.168C4462.44 402.934 4407.13 397.276 4407.13 397.276C4407.13 397.276 4340.83 375.16 4295.87 384.4C4250.91 393.639 4230.93 370.447 4185.12 374.621C4139.32 378.796 4102.41 396.448 4053.35 393.143C4004.29 389.839 3950.74 382.969 3922.1 384.395C3893.47 385.82 3877.95 391.8 3849.3 393.14C3820.66 394.481 3768.9 382.085 3728.8 384.392C3688.71 386.698 3657.71 401.369 3627.64 401.63C3597.56 401.891 3578.75 396.393 3550.9 393.136C3523.05 389.88 3496.57 387.556 3479.63 384.388C3462.69 381.221 3461.17 375.458 3436.56 374.611C3411.95 373.763 3405.28 367.917 3381.18 364.832C3357.08 361.746 3353.9 361.454 3326.83 360.203C3299.76 358.951 3269.87 358.312 3233.52 360.201C3197.16 362.09 3140.88 376.61 3113.54 374.606C3086.2 372.602 3053.6 365.332 3015.1 360.198C2976.6 355.065 2903.82 345.611 2854.62 342.186C2805.42 338.761 2743.35 360.101 2670.55 365.851C2597.76 371.602 2336.34 361.645 2268.66 370.461C2200.99 379.278 2139.88 390.547 2046.56 390.545C1953.25 390.544 1854.38 350.392 1652.88 350.389C1451.39 350.386 1408.62 341.02 1373.96 338.535C1339.31 336.051 1301.88 332.873 1285.26 331.35C1268.63 329.827 1258.07 326.203 1242.7 327.235C1227.34 328.267 1212.68 331.174 1194 331.349C1175.31 331.524 1151.32 324.079 1123.75 322.087C1096.19 320.096 1057.06 319.794 1037.62 322.086C1018.17 324.379 999.964 330.548 988.394 331.346C976.824 332.145 970.266 331.213 958.656 331.346C947.046 331.479 913.527 324.144 836.628 338.528Z" fill="#03201B"/>
-</g></g><g class="lz-l" style="--d:0.72"><g filter="url(#filter8_n_111_62430)">
+</g></g><g class="lz-l" style="--d:0.58"><g filter="url(#filter8_n_111_62430)">
 <path d="M529.728 678.116C523.455 678.116 517.286 677.537 511.063 676.618C474.595 671.23 334.272 655.356 164.501 698.604C105.862 713.541 59.0137 722.66 22.1169 728.096C-39.4372 737.164 -99.6529 790.453 -102.521 852.699L-106.692 943.208L-99.4995 1133.54L1891.91 1133.57L3278.82 1147.49L4782.63 1147.51L6274.94 980.347L6660.51 980.355L6660.49 414.379L6482.58 432.796L6286.76 432.793L5997.55 442.667L5489.55 469.845L5199.87 432.778C5199.87 432.778 5087.42 396.524 5011.18 401.398C4934.95 406.272 4860.73 419.019 4817.38 426.094C4774.02 433.168 4772.6 419.444 4733.8 429.745C4695 440.045 4674.6 464.384 4634.34 469.833C4594.07 475.283 4515.31 469.831 4515.31 469.831C4515.31 469.831 4458.93 437.274 4419.43 426.088C4379.94 414.902 4339.52 427.114 4294.4 414.251C4249.28 401.387 4213.39 389.088 4150.33 397.319C4087.26 405.551 4046.76 414.861 4006.76 408.122C3966.77 401.383 3921.07 401.382 3921.07 401.382L3853.97 408.12L3735.98 401.38C3735.98 401.38 3690.36 398.855 3657.6 396.233C3624.84 393.612 3609.92 387.021 3564.8 387.02C3519.68 387.02 3443.21 396.23 3443.21 396.23C3443.21 396.23 3316.57 377.451 3255.05 379.763C3193.52 382.074 3159.17 389.537 3159.17 389.537L3100.72 389.537C3100.72 389.537 3037.66 384.386 2993.57 384.385C2949.47 384.385 2903.32 362.921 2846.93 360.715C2790.54 358.509 2733.62 374.091 2694.65 380.264C2655.69 386.438 2609.03 389.013 2609.03 389.013C2609.03 389.013 2497.24 389.009 2438.28 380.261C2379.33 371.513 2318.57 370.721 2266.01 383.345C2213.45 395.968 2136.04 493.438 2052.78 496.086C1969.52 498.735 1820.01 575.828 1719.01 575.826C1618 575.825 1536.52 555.549 1478.03 557.3C1426.96 558.829 1211.79 626.662 1158.03 643.845C1149.89 646.445 1141.48 648.004 1132.91 648.47L981.249 656.725L845.363 667.83L640.274 678.117L529.728 678.116Z" fill="#011511"/>
 </g></g><g class="lz-l" style="--d:1.0"><g filter="url(#filter9_n_111_62430)">
 <path d="M749.835 723.572C678.915 732.789 526.455 718.633 454.752 718.337C432.211 718.244 406.181 718.668 376.125 719.765C225.976 725.245 146.793 758.114 109.559 780.684C89.8138 792.654 81.3656 815.051 81.3663 838.335L81.3672 868.021L81.372 1018.25L2006.14 1062.63L3393.05 1076.54L4896.86 1076.57L6664.22 1121.35L6664.2 643.886L6546.16 643.885L6427.21 673.722L6310.31 653.73L6177 663.576L5949.33 647.991L5715.01 663.57L5384.31 700.462L5165.89 653.713L4927.99 643.861C4927.99 643.861 4691.71 663.263 4622.08 655.69C4552.46 648.117 4443.14 647.97 4443.14 647.97L3980.6 632.993C3980.6 632.993 3903.11 630.33 3761.67 611.378C3620.22 592.426 3524.8 641.219 3364.32 632.984C3203.83 624.75 3072.58 621.147 2926.45 632.978C2780.33 644.81 2701.37 660.243 2701.37 660.243L2511.51 674.134C2501.76 674.848 2491.95 674.11 2482.3 672.205C2460.18 667.834 2417.39 660.239 2387.08 660.238C2344.52 660.238 2286.59 660.237 2286.59 660.237L2132.69 629.029C2132.69 629.029 2038.99 620.129 1996.31 620.795C1953.63 621.461 1865.57 645.489 1865.57 645.489L1663.36 710.26C1651.97 713.911 1640.15 715.469 1628.11 714.882C1557.38 711.431 1299.04 699.587 1228.26 707.029C1145.99 715.679 1024.2 729.663 1024.2 729.663L819.589 716.399C813.13 715.98 806.658 716.187 800.264 717.018L749.835 723.572Z" fill="#0A0E22" fill-opacity="0.8"/>
@@ -2421,13 +2469,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         </div>
       </figure>
 
-      <figure class="t2-item t2-reveal kz-lockup kz-lockup--light">
-        <div class="t2-media" style="aspect-ratio: 2181 / 1010;">
-          <img src="kaizen-lockup-light.webp" alt="The Kaizen lockup: mark and wordmark in black on white."
-               width="2181" height="1010" loading="lazy" decoding="async">
-        </div>
-      </figure>
-
       <figure class="t2-item t2-reveal kz-build">
         <div class="t2-media" style="aspect-ratio: 1010 / 196;">
           <img src="kaizen-doughnut-construction.webp" alt="How the doughnut is built: the filling ring, the concentric construction, and the finished mark."
@@ -2446,16 +2487,16 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         </div>
       </figure>
 
+      <figure class="t2-item t2-reveal kz-onblack">
+        <div class="t2-media" style="aspect-ratio: 2800 / 774;">
+          <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="2800" height="774" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
       <div class="t2-note">
         <span class="t2-note-label">The feed</span>
         <p>What people were really after was clear orientation &ndash; signal in the noise that they could trust across time.</p>
       </div>
-
-      <figure class="t2-item t2-reveal">
-        <div class="t2-slot" style="aspect-ratio: 16 / 10;">
-          <span><b>Slot 05</b>The static dashboard, and the navigable timeline it became.</span>
-        </div>
-      </figure>
 
       <div class="t2-note">
         <span class="t2-note-label">How it was built</span>
@@ -2466,28 +2507,14 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         <figcaption class="kz-pair-title">Train like&hellip;</figcaption>
         <p class="kz-train-note">A week of training is a block. It fills as the runner does the work, and the blocks stack into a structure they have built themselves &mdash; lots of blocks, lots of patterns, a shape that is theirs by the end of a training cycle.</p>
         <div class="kz-train-row">
-          <div class="kz-train-blocks">
-            <img src="kaizen-blocks-mosaic.webp" alt="Twenty-four block structures, from a single cube to twenty-five, filling from white through to solid as they grow."
-                 width="2280" height="1200" loading="lazy" decoding="async">
-          </div>
           <div class="kz-train-screen">
             <img src="kaizen-train-like.webp" alt="The training-system chooser: an established system, a pro, a creator, a friend, or a coach."
                  width="450" height="920" loading="lazy" decoding="async">
           </div>
-        </div>
-      </figure>
-
-      <figure class="t2-item t2-reveal kz-type">
-        <figcaption class="kz-pair-title">The design system</figcaption>
-        <div class="kz-type-sheet">
-          <img src="kaizen-design-system.webp" alt="Six families from the Kaizen design system: the doughnut, cards, trays, inputs, actions and race durations."
-               width="2200" height="1100" loading="lazy" decoding="async">
-        </div>
-      </figure>
-
-      <figure class="t2-item t2-reveal kz-onblack">
-        <div class="t2-media" style="aspect-ratio: 2800 / 774;">
-          <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="2800" height="774" loading="lazy" decoding="async">
+          <div class="kz-train-blocks">
+            <img src="kaizen-blocks-mosaic.webp" alt="Twenty-four block structures, from a single cube to twenty-five, individual cubes filling blue as the work is done."
+                 width="2280" height="1320" loading="lazy" decoding="async">
+          </div>
         </div>
       </figure>
 
