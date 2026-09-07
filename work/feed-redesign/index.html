@@ -793,6 +793,21 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    scaling leaves shows at the TOP of the frame, above the horizon, where
    navy read as a hard blue line against the page. The foot of the scene is
    covered by the panel below it, which is navy already. */
+/* Travel scales with the frame: a phone's landscape is a third the height, so
+   the same pixel distance would throw the bands right out of it. */
+.t2-item--pano { --lz-travel: -230px; --lz-drift: 30px; }
+@media (max-width: 899px) {
+  .t2-item--pano { --lz-travel: -120px; --lz-drift: 16px; }
+  .t2-item--pano .lz-svg { height: 168%; }
+}
+@media (max-width: 599px) {
+  /* A 21:9 band is 167px tall on a phone — too short to read as a landscape,
+     and it left only 3px of overscan over the travel. A taller frame fixes
+     both at once. */
+  .t2-item--pano .t2-media { aspect-ratio: 3 / 2; }
+  .t2-item--pano { --lz-travel: -84px; --lz-drift: 10px; }
+  .t2-item--pano .lz-svg { height: 152%; }
+}
 .t2-item--pano .t2-media { aspect-ratio: 21 / 9; border-radius: 0; background: #9EBAA7; }
 /* The landscape, the film and the screens are one continuous dark opening.
    The 10px every sequence item carries showed as a white line across them, so
@@ -822,13 +837,13 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   display: block;
 }
 .lz-l {
-  transform: translate3d(0, calc(var(--d, 0) * var(--lz-p, 0) * -340px), 0);
+  transform: translate3d(0, calc(var(--d, 0) * var(--lz-p, 0) * var(--lz-travel, -230px)), 0);
   will-change: transform;
 }
 /* The nearest bands carry a little lateral drift as well, which is what stops
    a purely vertical move reading as a zoom. */
 .lz-l[style*="--d:0.9"], .lz-l[style*="--d:1.0"], .lz-l[style*="--d:1"] {
-  transform: translate3d(calc(var(--lz-p, 0) * 44px), calc(var(--d, 0) * var(--lz-p, 0) * -340px), 0);
+  transform: translate3d(calc(var(--lz-p, 0) * var(--lz-drift, 30px)), calc(var(--d, 0) * var(--lz-p, 0) * var(--lz-travel, -230px)), 0);
 }
 @media (prefers-reduced-motion: reduce) {
   .lz-l { transform: none; }
@@ -2240,14 +2255,14 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       </figure>
 
       <figure class="t2-item t2-reveal t2-item--small">
-        <div class="t2-media" style="aspect-ratio: 3620 / 1546;">
-          <img src="kaizen-logo-early.webp" alt="Early logo exploration: the Jetset ring and running figure, then loop and infinity studies and the first circular marks." width="3620" height="1546" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 1600 / 684;">
+          <img src="kaizen-logo-early.webp" alt="Early logo exploration: the Jetset ring and running figure, then loop and infinity studies and the first circular marks." width="1600" height="684" loading="lazy" decoding="async">
         </div>
       </figure>
 
       <figure class="t2-item t2-reveal t2-item--small">
-        <div class="t2-media" style="aspect-ratio: 3620 / 1546;">
-          <img src="kaizen-logo-resolving.webp" alt="The mark resolving: the stroke inside the circle, the solid wave arriving, colour states, and the doughnut built from it." width="3620" height="1546" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 1600 / 684;">
+          <img src="kaizen-logo-resolving.webp" alt="The mark resolving: the stroke inside the circle, the solid wave arriving, colour states, and the doughnut built from it." width="1600" height="684" loading="lazy" decoding="async">
         </div>
       </figure>
 
@@ -2306,12 +2321,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         <div class="kz-pair-row">
           <div class="kz-pair-cell">
             <img src="kaizen-freemium-flows.webp" alt="A freemium blueprint mapping six runner segments across sign-up, first use and first month."
-                 width="1816" height="1218" loading="lazy" decoding="async">
+                 width="1400" height="938" loading="lazy" decoding="async">
             <span class="kz-pair-cap">Freemium, first month &mdash; six runner segments</span>
           </div>
           <div class="kz-pair-cell">
             <img src="kaizen-notification-logic.webp" alt="The notification decision tree, branching from a runner&rsquo;s state through to what is sent and when."
-                 width="1529" height="900" loading="lazy" decoding="async">
+                 width="1400" height="824" loading="lazy" decoding="async">
             <span class="kz-pair-cap">Notification logic &mdash; extrinsic signals through to intrinsic</span>
           </div>
         </div>
@@ -2326,14 +2341,14 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         <figcaption class="kz-pair-title">The design system</figcaption>
         <div class="kz-type-sheet">
           <img src="kaizen-design-system.webp" alt="Six families from the Kaizen design system: the doughnut, cards, trays, inputs, actions and race durations."
-               width="2672" height="1336" loading="lazy" decoding="async">
+               width="2200" height="1100" loading="lazy" decoding="async">
         </div>
       </figure>
 
 
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 4264 / 1180;">
-          <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="4264" height="1180" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2800 / 774;">
+          <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="2800" height="774" loading="lazy" decoding="async">
         </div>
       </figure>
 
@@ -3391,30 +3406,46 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
 </script>
 
 <script>
-/* Parallax on the opening landscape. The SVG's depth bands each carry a --d
-   factor; this sets one custom property on the figure and the layers do the
-   rest in CSS. Read in the rAF, written in the rAF, nothing measured per
-   layer — the whole thing is one getBoundingClientRect per frame. */
+/* Parallax on the opening landscape. The bands each carry a --d depth factor;
+   this sets one custom property on the figure and CSS does the rest.
+
+   Locked to the scroll position — the value is written from where the figure
+   actually is, every frame, with no easing between the two. An eased version
+   trails the hand, and on a scrub or a flick that reads as the page lagging
+   rather than as weight. What makes it feel unhurried is the travel distance,
+   not a delay: --lz-travel, which is also what scales it down on a phone.
+
+   rAF-throttled and only while the figure is on screen, so it is one
+   getBoundingClientRect per painted frame and nothing at all otherwise. */
 (function () {
   'use strict';
   var fig = document.getElementById('kz-pano');
   if (!fig) return;
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var ticking = false;
+
+  var ticking = false, visible = true;
+
   function apply() {
     ticking = false;
     var r = fig.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > window.innerHeight) return;
-    /* -1 as it enters from below, 0 at centre, 1 as it leaves the top. */
     var mid = r.top + r.height / 2;
     var p = (window.innerHeight / 2 - mid) / (window.innerHeight / 2 + r.height / 2);
     fig.style.setProperty('--lz-p', Math.max(-1, Math.min(1, p)).toFixed(4));
   }
+
   function onScroll() {
-    if (ticking) return;
+    if (ticking || !visible) return;
     ticking = true;
     requestAnimationFrame(apply);
   }
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      visible = entries[0].isIntersecting;
+      if (visible) apply();
+    }, { rootMargin: '150px 0px' }).observe(fig);
+  }
+
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   apply();
