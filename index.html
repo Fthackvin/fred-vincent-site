@@ -2697,35 +2697,39 @@ section#contact.block { padding-bottom: var(--s4); }
   font-weight: 500;
   color: var(--ink-900);
 }
+/* The card sits on one scaling measure rather than fixed spacing steps: the
+   padding, the bleed the banner needs to escape it, and the space between the
+   lead and the button all derive from --ws-pad, so the whole thing grows and
+   shrinks with its proportions intact. The lead and the button had no gap at
+   all between them before — they were only separated by the button's own
+   margin. */
 .writing-subscribe {
+  --ws-pad: clamp(28px, 4.4vw, 46px);
   background: var(--ink-900);
   color: var(--paper-100);
   border-radius: 14px;
-  padding: var(--s6);
+  padding: var(--ws-pad);
   display: flex;
   flex-direction: column;
+  gap: clamp(20px, 2.8vw, 38px);
   overflow: hidden;
 }
 .writing-subscribe-banner {
   display: block;
-  width: calc(100% + var(--s6) * 2);
+  width: calc(100% + var(--ws-pad) * 2);
   height: auto;
-  margin: calc(-1 * var(--s6)) calc(-1 * var(--s6)) var(--s4);
+  margin: calc(-1 * var(--ws-pad)) calc(-1 * var(--ws-pad)) 0;
   border-radius: 14px 14px 0 0;
   object-fit: cover;
 }
 @media (min-width: 1024px) {
-  .writing-subscribe { padding: var(--s7); }
-  .writing-subscribe-banner {
-    width: calc(100% + var(--s7) * 2);
-    margin: calc(-1 * var(--s7)) calc(-1 * var(--s7)) var(--s5);
-  }
+  .writing-subscribe { --ws-pad: clamp(46px, 3.6vw, 66px); }
 }
 .writing-subscribe-lead {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(22px, 1.8vw + 0.5rem, 30px);
-  line-height: 1.15;
+  font-size: clamp(24px, 2.2vw + 0.5rem, 38px);
+  line-height: 1.14;
   letter-spacing: -0.015em;
   color: var(--paper-50);
   margin: 0;
@@ -2737,7 +2741,7 @@ section#contact.block { padding-bottom: var(--s4); }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 14px 22px;
+  padding: clamp(14px, 1.3vw, 19px) clamp(22px, 2.1vw, 32px);
   border-radius: 10px;
   border: 1px solid var(--paper-50);
   background: var(--paper-50);
@@ -3367,6 +3371,13 @@ main > hr,
   .sw-tab { font-size: 11px; }
 }
 
+
+/* Two of the seven are held back on a phone. Seven cards is a long scroll on a
+   narrow screen, and these are the two whose offer needs the most room to
+   explain — they read better on a wider screen. */
+@media (max-width: 640px) {
+  .tier--desktop-only { display: none; }
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 </head>
@@ -3378,7 +3389,7 @@ main > hr,
     <nav class="nav" aria-label="Primary">
       <a href="#how-this-works">Work together</a>
       <a href="#case-studies">Work</a>
-      <a href="#work">Writing</a>
+      <!-- Writing: hidden for the moment. Restore by uncommenting. <a href="#work">Writing</a> -->
       <a href="/about">About</a>
     </nav>
   </div>
@@ -3418,7 +3429,7 @@ main > hr,
       <ul class="work-row fade-up">
 
         <li class="work-card work-card--kaizen">
-          <button type="button" class="work-card-hit" aria-label="View Kaizen case study">
+          <button type="button" class="work-card-hit" aria-label="View Kaizen case study" data-cs-open="/work/feed-redesign/" data-cs-slug="kaizen-feed">
           <div class="work-card-media">
             <div class="work-card-media-frame">
             <div class="work-card-logo" aria-hidden="true">
@@ -3439,7 +3450,7 @@ main > hr,
           </div>
           <div class="work-card-body">
             <h3 class="work-card-title">Kaizen</h3>
-            <p class="work-card-desc">Building the brand and product for a radically different way to train for a marathon.</p>
+            <p class="work-card-desc">Building the brand, the product and the design system for a radically different way to train for a marathon.</p>
             <ul class="work-card-tags">
               <li>Creative direction</li>
               <li>Product design</li>
@@ -3475,7 +3486,7 @@ main > hr,
 
         <li class="work-card work-card--tag-tuition">
           <button type="button" class="work-card-hit" aria-label="View Tag Tuition case study" data-cs-open="/work/tag-tuition/" data-cs-slug="tag-tuition" data-cs-mode="modal" data-cs-mark="/work/tag-tuition/tag-logo.webp" data-cs-mark-w="730" data-cs-mark-h="516">
-          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-splash.jpg'); background-size:cover; background-position:50%;"></div>
+          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-splash.jpg'); background-size:134%; background-position:50% 42%;"></div>
           <div class="work-card-body">
             <h3 class="work-card-title">Tag Tuition</h3>
             <p class="work-card-desc">Turning a classroom curriculum into illustrated workbooks children could explore independently.</p>
@@ -3511,8 +3522,8 @@ main > hr,
         </li>
 
         <li class="work-card work-card--kaizen-conversion">
-          <button type="button" class="work-card-hit" aria-label="View Kaizen conversion case study">
-          <div class="work-card-media" style="background-color:#13C19C;">
+          <button type="button" class="work-card-hit" aria-label="View Kaizen conversion case study" data-cs-open="/work/onboarding-redesign/" data-cs-slug="kaizen-onboarding" data-cs-mode="modal" data-cs-tint="#13C19C">
+          <div class="work-card-media" style="background:linear-gradient(rgba(9,20,17,0.46), rgba(9,20,17,0.46)), url('/work/feed-redesign/kaizen-landscape.webp') center 58% / auto 165% no-repeat;">
             <div class="work-card-media-frame">
             <div aria-hidden="true" style="position:absolute; left:65px; top:12px; width:190px; height:383px; border-radius:19.6px; overflow:hidden;">
               <video class="work-card-video" autoplay muted loop playsinline preload="metadata" poster="/videos/allaboard.webp" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
@@ -3534,11 +3545,14 @@ main > hr,
         </li>
 
         <li class="work-card work-card--suitepad">
-          <button type="button" class="work-card-hit" aria-label="View Suitepad AI case study">
-          <div class="work-card-media" style="background-color:#A79BC3;">
+          <button type="button" class="work-card-hit" aria-label="View Suitepad AI case study" data-cs-open="/work/suitepad/" data-cs-slug="suitepad" data-cs-mode="modal" data-cs-tint="#3F3550" data-cs-mark="/work/general/suitepad-logo-ink.png" data-cs-mark-w="370" data-cs-mark-h="124">
+          <div class="work-card-media" style="background-color:#3F3550;">
             <div class="work-card-media-frame">
-            <div aria-hidden="true" style="position:absolute; left:39px; top:56px; width:240px; height:171px; background-image:url('/work/general/suitepad-tablet.png'); background-size:cover; background-position:50%;"></div>
-            <div aria-hidden="true" style="position:absolute; left:55px; top:112.8px; width:185px; height:62px; background-image:url('/work/general/suitepad-logo.png'); background-size:cover; background-position:50%;"></div>
+            <div aria-hidden="true" style="position:absolute; left:16px; top:54px; width:288px; height:176px; border-radius:8px; overflow:hidden;">
+              <video class="work-card-video" autoplay muted loop playsinline preload="metadata" poster="/work/suitepad/screens/suitepad-ai-device.webp" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+                <source src="/work/suitepad/screens/suitepad-ai-device.mp4" type="video/mp4">
+              </video>
+            </div>
             </div>
           </div>
           <div class="work-card-body">
@@ -3598,21 +3612,21 @@ main > hr,
 
       <div class="tiers fade-up">
         <article class="tier">
-          <h3 class="tier-title">Quick Win</h3>
-          <p class="tier-body">A sharp review of what you've built, ending in three or more concrete recommendations and the one bet with the most upside. And I can design and ship the fix too, not just hand you a list.</p>
-          <p class="tier-meta">2–6 weeks</p>
+          <h3 class="tier-title">MVP Brand</h3>
+          <p class="tier-body">A brand identity with just enough system that you can ship with it and not outgrow it in a year. Built to be used, not admired.</p>
+          <p class="tier-meta">3–5 weeks</p>
           <details class="tier-get">
             <summary>
               <span>What you get</span>
               <span class="tier-get-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
             </summary>
             <ul class="tier-deliverables">
-              <li>A measurable win on the metric you're targeting, set up to track and build on</li>
-              <li>Recommendations ranked by upside, with the one bet to make first</li>
-              <li>The key fix designed and shipped, if useful</li>
+              <li>Design tokens, a type scale and colour variables your developer can put into the codebase on day one</li>
+              <li>A visual language that still holds when the product grows, not just on a launch page</li>
+              <li>Nothing that gets thrown away when you scale</li>
             </ul>
             <p class="deliverables-label">Typical deliverables</p>
-            <p class="deliverables-note">Heuristic analysis of key flows · UX audit · annotated screen recommendations · priority-ranked backlog input · competitive benchmarking · one redesigned flow or screen · microcopy review · and more</p>
+            <p class="deliverables-note">Logo and wordmark · design tokens · type scale · colour variables · core component set · usage guidance · deck and social templates · positioning language · and more</p>
           </details>
           <details class="tier-process">
             <summary>
@@ -3620,9 +3634,73 @@ main > hr,
               <span class="tier-process-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
             </summary>
             <ol class="tier-steps">
-              <li><b>Use it for real.</b> I use the product as a real user would, while checking your flows, backlog, analytics, existing designs, and the competitors you're measured against.</li>
-              <li><b>Find the real gaps.</b> Where it's over- and under-delivering on what it's trying to do.</li>
-              <li><b>Hand you the bet.</b> Three or more concrete recommendations, ranked, plus the one I'd put real money on. And I can design and ship it, not just name it.</li>
+              <li><b>Two ways in.</b> A short first call, then either a longer conversation about the company, the product, the goals and you, or a facilitated workshop in its place. Conversations if you already know what you're building. Workshop if you're still deciding, or there's more than one of you and you don't yet agree.</li>
+              <li><b>Build the system, not the artwork.</b> Type, colour, spacing and components defined as tokens from the start, so the identity arrives in the form your codebase wants it.</li>
+              <li><b>Hand it over ready to use.</b> Everything in a format a developer can pick up without translating it first.</li>
+            </ol>
+            <div class="tier-process-cta">
+              <a class="tier-cta-btn" data-mail-user="hello" data-mail-host="studiovincent.co" data-mail-subject="Engagements" data-mail-body="Hi Fred,&#10;&#10;I'd like to learn more about working together.&#10;&#10;" href="#" rel="nofollow"><span>Learn more</span><span class="tier-cta-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
+            </div>
+          </details>
+        </article>
+        <article class="tier tier--desktop-only">
+          <h3 class="tier-title">Workshop</h3>
+          <p class="tier-body">A day, or half a day, to get a founding team to agreement about what the company is. It produces something usable on its own, and the fee comes off the MVP Brand price if you carry on.</p>
+          <p class="tier-meta">Half a day, or a day</p>
+          <details class="tier-get">
+            <summary>
+              <span>What you get</span>
+              <span class="tier-get-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ul class="tier-deliverables">
+              <li>Agreement on what the company is, written down while everyone's still in the room</li>
+              <li>A short written summary you can use straight away</li>
+              <li>The fee taken off the MVP Brand price if you carry on</li>
+            </ul>
+            <p class="deliverables-label">Typical deliverables</p>
+            <p class="deliverables-note">Facilitated session · positioning and audience framing · category and competitor mapping · naming and tone exploration · written summary · agreed next steps · and more</p>
+          </details>
+          <details class="tier-process">
+            <summary>
+              <span>The process</span>
+              <span class="tier-process-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ol class="tier-steps">
+              <li><b>Before the day.</b> A short call and some reading, so the session starts from something rather than a blank page.</li>
+              <li><b>The session.</b> Half a day or a full day, facilitated, with everyone who needs to agree in the room.</li>
+              <li><b>Written up after.</b> What was agreed, in your words, within a few days.</li>
+            </ol>
+            <div class="tier-process-cta">
+              <a class="tier-cta-btn" data-mail-user="hello" data-mail-host="studiovincent.co" data-mail-subject="Engagements" data-mail-body="Hi Fred,&#10;&#10;I'd like to learn more about working together.&#10;&#10;" href="#" rel="nofollow"><span>Learn more</span><span class="tier-cta-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
+            </div>
+          </details>
+        </article>
+        <article class="tier">
+          <h3 class="tier-title">Make It Yours</h3>
+          <p class="tier-body">You built something with ai and it works. It also looks like everything else built with ai, because it inherited the same defaults. I take what's there and make it feel like yours.</p>
+          <p class="tier-meta">2–4 weeks</p>
+          <details class="tier-get">
+            <summary>
+              <span>What you get</span>
+              <span class="tier-get-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ul class="tier-deliverables">
+              <li>A product that looks like your company, not like its toolchain</li>
+              <li>Brand and interface craft applied to the flows you already have</li>
+              <li>Tokens that carry straight over if you do the MVP Brand too</li>
+            </ul>
+            <p class="deliverables-label">Typical deliverables</p>
+            <p class="deliverables-note">Visual language applied to existing flows · type and colour system · component restyling · motion and interaction detail · empty and loading states · iconography · tokens ready for the codebase · and more</p>
+          </details>
+          <details class="tier-process">
+            <summary>
+              <span>The process</span>
+              <span class="tier-process-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span>
+            </summary>
+            <ol class="tier-steps">
+              <li><b>Look at what's there.</b> I go through the product as it stands and find where the defaults are showing.</li>
+              <li><b>Design the character, not the structure.</b> The flows stay as they are. What changes is how it looks, moves and reads. That's why it's faster and cheaper than a product engagement.</li>
+              <li><b>Hand it over in tokens.</b> The same format as the MVP Brand, so the two fit together if you do both.</li>
             </ol>
             <div class="tier-process-cta">
               <a class="tier-cta-btn" data-mail-user="hello" data-mail-host="studiovincent.co" data-mail-subject="Engagements" data-mail-body="Hi Fred,&#10;&#10;I'd like to learn more about working together.&#10;&#10;" href="#" rel="nofollow"><span>Learn more</span><span class="tier-cta-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg></span></a>
@@ -3700,7 +3778,7 @@ main > hr,
           </details>
         </article>
 
-        <article class="tier">
+        <article class="tier tier--desktop-only">
           <h3 class="tier-title">Embed Direction</h3>
           <p class="tier-body">After one of the engagements above, I stay close to your team so the direction we found survives the build instead of quietly eroding. A few teams at a time, so the attention is real.</p>
           <p class="tier-meta">3 months minimum</p>
@@ -3846,27 +3924,7 @@ main > hr,
           </div>
         </a>
       </li>
-      <li class="rw-item fade-up rw-anim-pulse">
-        <a class="rw-link" href="https://studiovincent.substack.com/p/liquid-glass-six-hundred-years-of" target="_blank" rel="noopener noreferrer">
-          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%205.svg" alt="" loading="lazy"></span>
-          <div class="rw-content">
-            <h3 class="rw-title">Liquid Glass, six hundred years of secret glassmaking, and where it might go next. <span class="rw-arrow" aria-hidden="true">→</span></h3>
-            <p class="rw-desc">Apple’s unified design language (Liquid Glass) has been with us now for almost a year, receiving ongoing and mixed revi…</p>
-            <p class="rw-meta">JUN 2026</p>
-          </div>
-        </a>
-      </li>
-      <li class="rw-item fade-up rw-anim-spin">
-        <a class="rw-link" href="https://studiovincent.substack.com/p/the-aura-design-never-had" target="_blank" rel="noopener noreferrer">
-          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%206.svg" alt="" loading="lazy"></span>
-          <div class="rw-content">
-            <h3 class="rw-title">The aura design never had <span class="rw-arrow" aria-hidden="true">→</span></h3>
-            <p class="rw-desc">Reading Walter Benjamin in the age of generative design</p>
-            <p class="rw-meta">MAY 2026</p>
-          </div>
-        </a>
-      </li>
-      <!-- RSS:writing:end -->
+          <!-- RSS:writing:end -->
         </ul>
       </div>
     </div>
@@ -4693,7 +4751,14 @@ main > hr,
          the centre of the viewport — the same sum measure() runs there. */
       var mw = parseFloat(hit.getAttribute('data-cs-mark-w')) || 730;
       var mh = parseFloat(hit.getAttribute('data-cs-mark-h')) || 516;
-      var coverW = Math.min(mw, vw * 0.62, (vh - 200) * (mw / mh));
+      /* The destination lays its cover logo out at --cs-logo-big (620) and
+         contains the artwork inside that box — it does NOT draw the artwork at
+         its own intrinsic width. Flying the mark to `mw` therefore landed it
+         17.7% too big for Tag Tuition and it snapped down on the first frame
+         the real logo painted: the flicker. Same box, same multiplier as
+         measure() on the far side, so the two agree and nothing moves. */
+      var logoBig = parseFloat(hit.getAttribute('data-cs-logo-big')) || 620;
+      var coverW = Math.min(logoBig, vw * 0.58, (vh - 200) * (mw / mh));
       var coverH = coverW * (mh / mw);
 
       /* Start: sized to sit inside the card the way the artwork reads there. */

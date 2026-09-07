@@ -20,32 +20,32 @@
     document.documentElement.classList.add('cs-modal');
   }
 </script>
-<title>Kaizen · All aboard · Studio Vincent</title>
-<meta name="description" content="How we redesigned onboarding for Kaizen, and how the design itself made the team commit to building something operationally hard.">
+<title>SuitePad AI · Studio Vincent</title>
+<meta name="description" content="Designing how conversational AI could live within SuitePad&rsquo;s in-room devices, helping guests discover information, access services and act on recommendations through voice, text and touch.">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
 <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
 <link rel="manifest" href="/favicons/site.webmanifest">
 <meta name="theme-color" content="#1F1F1F">
-<link rel="canonical" href="https://studiovincent.co/work/onboarding-redesign/">
+<link rel="canonical" href="https://studiovincent.co/work/suitepad/">
 <meta name="author" content="Fred Vincent">
 <meta name="robots" content="index, follow, max-image-preview:large">
 
 <!-- Open Graph -->
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Studio Vincent">
-<meta property="og:url" content="https://studiovincent.co/work/onboarding-redesign/">
-<meta property="og:title" content="Kaizen — All aboard">
-<meta property="og:description" content="How we redesigned onboarding for Kaizen, and how the design itself made the team commit to building something operationally hard.">
-<meta property="og:image" content="https://studiovincent.co/work/onboarding-redesign/740ad6a7-67a8-4b09-a170-f36a1665014d_2292x704.webp">
-<meta property="og:image:alt" content="Six screens of the Kaizen onboarding flow on an illustrated green landscape.">
+<meta property="og:url" content="https://studiovincent.co/work/suitepad/">
+<meta property="og:title" content="SuitePad — bringing AI into the hotel room">
+<meta property="og:description" content="Designing how conversational AI could live within SuitePad&rsquo;s in-room devices, helping guests discover information, access services and act on recommendations through voice, text and touch.">
+<meta property="og:image" content="https://studiovincent.co/work/general/suitepad-tablet.png">
+<meta property="og:image:alt" content="A SuitePad in-room tablet.">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Kaizen — All aboard">
-<meta name="twitter:description" content="How we redesigned onboarding for Kaizen, and how the design itself made the team commit to building something operationally hard.">
-<meta name="twitter:image" content="https://studiovincent.co/work/onboarding-redesign/740ad6a7-67a8-4b09-a170-f36a1665014d_2292x704.webp">
+<meta name="twitter:title" content="SuitePad — bringing AI into the hotel room">
+<meta name="twitter:description" content="Designing how conversational AI could live within SuitePad&rsquo;s in-room devices, helping guests discover information, access services and act on recommendations through voice, text and touch.">
+<meta name="twitter:image" content="https://studiovincent.co/work/general/suitepad-tablet.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -583,9 +583,6 @@ html.cs-expanded .cs-cover .cs-cue {
 /* Paper draws the tick at 30px and the leaf at 59px; both are set a little
    larger here so they actually read next to the label. */
 .cs-cue-icon { width: 40px; height: 40px; flex-shrink: 0; }
-/* The Kaizen product icons are bitmaps at assorted proportions, so each
-   one is fitted inside the same 40px box rather than stretched to it. */
-.cs-cue-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .cs-cue-icon--leaf { width: 58px; height: 56px; margin: -8px 0; }
 .cs-section .cs-cue { margin-top: clamp(40px, 7vh, 72px); }
 .cs-cue-row { grid-column: 1 / -1; align-self: end; display: flex; justify-content: center; }
@@ -1448,6 +1445,143 @@ html.cs-leaving body { transition: opacity 300ms var(--ease); opacity: 0; }
    of one screen, not two separate covers. */
 .cs-section--closing .cs-spread { align-items: center; }
 
+/* --- SuitePad ------------------------------------------------------------- */
+/* The logo is a wide horizontal lockup, so the slot is re-proportioned to it
+   exactly as the Kaizen one was. 370x124 is the asset's own ratio. */
+:root { --cs-logo-w: 93px; --cs-logo-h: 31px; }
+.cs-logo { height: calc(var(--cs-logo-big) * 124 / 370); }
+@media (max-width: 899px) { :root { --cs-logo-w: 74px; --cs-logo-h: 25px; } }
+
+/* The result. 32% is the number the whole story is walking towards, so it is
+   set at display scale rather than dropped into a paragraph. */
+/* The film now leads this column, and an image's box is its ink, so the
+   column aligns to the heading on its own. (The pad that used to sit here
+   compensated for 32% overflowing its 0.86 line-height box when the number
+   was the first element — with the film above it that pad only pushed the
+   whole column out of the lane.) */
+.sp-lead { display: grid; gap: clamp(34px, 5vh, 58px); }
+.sp-result { display: grid; gap: clamp(28px, 4vh, 46px); }
+/* Second showing. Same numbers, recalled rather than announced, so the top of
+   the page keeps the emphasis. */
+.sp-result--reprise .sp-stat-figure { font-size: clamp(56px, 8vw, 104px); }
+.sp-result--reprise .sp-stat--minor .sp-stat-figure { font-size: clamp(34px, 4.4vw, 54px); }
+.sp-film { margin: 0; }
+.sp-film video {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* Reserve the box before metadata loads, otherwise the slot starts collapsed
+     and the whole section jumps once the first frame arrives. */
+  aspect-ratio: 16 / 9;
+  background: #FFFFFF;
+}
+.sp-film { min-height: 0; }
+/* The opening film carries the section on its own, so it runs to the full
+   width of the media column with no frame around it. */
+.sp-lead--film .sp-film video { border-radius: 0; box-shadow: none; }
+.sp-stat { display: block; }
+.sp-stat-figure {
+  display: block;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(90px, 17vw, 220px);
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+  color: #000;
+}
+.sp-stat--minor .sp-stat-figure { font-size: clamp(48px, 7vw, 88px); }
+.sp-stat-label {
+  display: block;
+  margin-top: clamp(12px, 1.6vh, 20px);
+  max-width: 30ch;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.45;
+  color: #333;
+}
+.sp-services { margin-top: clamp(26px, 3.2vh, 38px); }
+/* Set exactly as the tag row under a card in the homepage carousel, so the
+   services read as the same kind of label rather than as controls. */
+.sp-services ul {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 14px;
+}
+.sp-services li {
+  font-family: "TestSohne-Leicht", "Test Söhne", var(--body), sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5C5C5C;
+  white-space: nowrap;
+}
+
+/* The cross-fade between panels was quick enough to feel like a flicker when
+   moving down the list. Slowed, with a short delay before a hover takes, so
+   passing the cursor over the list does not strobe the image. */
+.cs-media--swap > .cs-swap-panel {
+  transition: opacity 700ms var(--ease), transform 700ms var(--ease);
+}
+
+/* The state list sat far enough below the copy that it ran past the foot of
+   the screenshot beside it. Tightened so the column closes level with the
+   image rather than hanging below it. */
+.cs-list { margin-top: clamp(16px, 2vh, 24px); }
+
+/* The result, sitting under the film that shows it. Two figures side by side
+   so the pair reads as one line rather than a stacked list. */
+.sp-topstats {
+  display: flex;
+  flex-wrap: wrap;
+  /* Centred as a pair under the film rather than hung off its left edge, so
+     the two figures read as one caption to the image above them. */
+  justify-content: center;
+  gap: clamp(28px, 3.6vw, 56px);
+  margin-top: clamp(14px, 1.8vh, 22px);
+}
+.sp-topstat { display: block; flex: 0 1 auto; max-width: 46%; text-align: center; }
+.sp-topstat-figure {
+  display: block;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(44px, 5vw, 68px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: #000;
+}
+/* Held to roughly half the film's width so each label breaks over two lines
+   and the pair stays inside the frame above rather than running past it. */
+.sp-topstat-label {
+  display: block;
+  max-width: 24ch;
+  margin-top: 8px;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #55514A;
+}
+
+/* Every interaction state still needs artwork out of Figma. An empty media
+   slot would read as a broken page, so the slot says what belongs in it. */
+.sp-slot {
+  display: flex; align-items: center; justify-content: center;
+  min-height: clamp(240px, 34vh, 420px);
+  padding: clamp(24px, 4vw, 48px);
+  border: 1px dashed rgba(20, 18, 14, 0.28);
+  border-radius: 3px;
+  background: rgba(167, 155, 195, 0.07);
+  text-align: center;
+}
+.sp-slot p {
+  margin: 0; max-width: 34ch;
+  font-family: var(--body); font-weight: 300; font-size: 14px; line-height: 1.5;
+  color: #6E6A62;
+}
+.sp-slot strong { display: block; color: #1A1A1A; font-weight: 400; margin-bottom: 6px; }
+
 /* On a phone the 191px square is out of scale with the title and description
    beside it. Reduced by a third so the card reads as one block. */
 @media (max-width: 719px) {
@@ -1527,10 +1661,7 @@ html.cs-scrolled .cs-cover .cs-cue {
 <div class="cs-logo-rail" aria-hidden="true">
   <div class="cs-logo-rail-inner">
     <div class="cs-logo" id="cs-logo">
-      <svg viewBox="5.3 3 140.9 31.4" role="img" aria-label="Kaizen" preserveAspectRatio="xMidYMid meet">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.847 8.648C4.233 13.665 3.747 22.282 8.763 27.898 13.78 33.512 22.398 33.998 28.013 28.981 33.628 23.965 34.113 15.347 29.097 9.732 24.08 4.117 15.463 3.632 9.847 8.648ZM13.719 13.076C10.54 15.916 10.264 20.796 13.105 23.976 15.946 27.156 20.826 27.431 24.006 24.59 27.186 21.749 27.461 16.869 24.62 13.69 21.779 10.51 16.899 10.234 13.719 13.076Z" fill="rgba(1,1,1,0.81)"/><path d="M32.396 18.789C32.396 26.226 26.367 32.254 18.93 32.254 11.494 32.254 5.465 26.226 5.465 18.789 5.465 11.353 11.494 5.324 18.93 5.324 26.367 5.324 32.396 11.353 32.396 18.789Z" fill="#FFFFFF"/><path d="M8.61 27.695C8.776 27.897 8.948 28.094 9.127 28.288 14.171 33.754 22.689 34.095 28.155 29.05 31.23 26.211 32.683 22.271 32.466 18.394L23.675 25.196 23.643 25.189C20.613 27.557 16.25 27.296 13.524 24.528L8.61 27.695Z" fill="rgba(1,1,1,0.81)"/>
-        <text x="42.1" y="28" textLength="104.1" lengthAdjust="spacing" font-size="35" font-weight="600" letter-spacing="0.02em" fill="#000000" font-family="Quasimoda-Medium, Quasimoda, system-ui, -apple-system, sans-serif">kaizen</text>
-      </svg>
+      <img src="/work/general/suitepad-logo-ink.png" alt="SuitePad" width="370" height="124" fetchpriority="high">
     </div>
   </div>
 </div>
@@ -1540,7 +1671,7 @@ html.cs-scrolled .cs-cover .cs-cue {
 
   <!-- ===== Cover ====================================================== -->
   <section class="cs-cover" aria-labelledby="cs-heading">
-    <h1 class="cs-sr-only" id="cs-heading">Kaizen — All aboard</h1>
+    <h1 class="cs-sr-only" id="cs-heading">SuitePad — bringing AI into the hotel room</h1>
     <button type="button" class="cs-cue" data-cs-advance>
           <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
           <span>Scroll to read more</span>
@@ -1550,56 +1681,75 @@ html.cs-scrolled .cs-cover .cs-cue {
   <section class="cs-section cs-section--opening" id="cs-s1" aria-labelledby="cs-s1-title">
     <div class="cs-section-inner">
       <div class="cs-section-logo" id="cs-s1-logo" aria-hidden="true">
-        <svg viewBox="5.3 3 140.9 31.4" role="img" aria-label="Kaizen" preserveAspectRatio="xMidYMid meet">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.847 8.648C4.233 13.665 3.747 22.282 8.763 27.898 13.78 33.512 22.398 33.998 28.013 28.981 33.628 23.965 34.113 15.347 29.097 9.732 24.08 4.117 15.463 3.632 9.847 8.648ZM13.719 13.076C10.54 15.916 10.264 20.796 13.105 23.976 15.946 27.156 20.826 27.431 24.006 24.59 27.186 21.749 27.461 16.869 24.62 13.69 21.779 10.51 16.899 10.234 13.719 13.076Z" fill="rgba(1,1,1,0.81)"/><path d="M32.396 18.789C32.396 26.226 26.367 32.254 18.93 32.254 11.494 32.254 5.465 26.226 5.465 18.789 5.465 11.353 11.494 5.324 18.93 5.324 26.367 5.324 32.396 11.353 32.396 18.789Z" fill="#FFFFFF"/><path d="M8.61 27.695C8.776 27.897 8.948 28.094 9.127 28.288 14.171 33.754 22.689 34.095 28.155 29.05 31.23 26.211 32.683 22.271 32.466 18.394L23.675 25.196 23.643 25.189C20.613 27.557 16.25 27.296 13.524 24.528L8.61 27.695Z" fill="rgba(1,1,1,0.81)"/>
-        <text x="42.1" y="28" textLength="104.1" lengthAdjust="spacing" font-size="35" font-weight="600" letter-spacing="0.02em" fill="#000000" font-family="Quasimoda-Medium, Quasimoda, system-ui, -apple-system, sans-serif">kaizen</text>
-      </svg>
+        <img src="/work/general/suitepad-logo-ink.png" alt="SuitePad" width="370" height="124" fetchpriority="high">
       </div>
       <div class="cs-media cs-reveal">
-        <figure class="cs-figure cs-single cs-flat">
-            <img src="8d7ff78b-e63b-4772-8bc3-5515617c6935_split.webp" alt="Ten early wireframe screens of the Kaizen onboarding flow, set in blue and white." width="728" height="566" loading="lazy" decoding="async">
-            <figcaption class="cs-caption">Very earliest versions of the flow, no assets and only a hint of what was to come</figcaption>
+        <div class="sp-lead sp-lead--film">
+          <figure class="cs-figure sp-film">
+            <video autoplay muted loop playsinline preload="metadata" poster="screens/suitepad-ai-in-room.webp">
+              <source src="screens/suitepad-ai-in-room.mp4" type="video/mp4">
+            </video>
           </figure>
+          <div class="sp-topstats">
+          <span class="sp-topstat">
+            <span class="sp-topstat-figure">32%</span>
+            <span class="sp-topstat-label">of guests used SuitePad AI during their stay.</span>
+          </span>
+          <span class="sp-topstat">
+            <span class="sp-topstat-figure">3:59</span>
+            <span class="sp-topstat-label">average session time, above SuitePad&rsquo;s benchmark for city hotels.</span>
+          </span>
+        </div>
+        </div>
       </div>
       <div class="cs-body cs-reveal">
-        <h2 class="cs-title" id="cs-s1-title">A redesign of onboarding that meant committing to something operationally hard.</h2>
-        <p>As a founder I helped build Kaizen from scratch, zero customers, no design, developers learning on the job. Within 6 months we&rsquo;d hit over 10,000 downloads and nothing spent on marketing.</p>
-        <p>So the onboarding was, to put it nicely, functional. What mattered most in those first months was that the app actually worked &mdash; stable, fast, and reliably got someone from A to B.</p>
-        <p>But we soon needed to step that up.</p>
+        <h2 class="cs-title" id="cs-s1-title">Bringing AI into the hotel room</h2>
+        <p>Designing how conversational AI could live within SuitePad&rsquo;s in-room devices, helping guests discover information, access services and act on recommendations through voice, text and touch.</p>
+        <p>I explored how AI could become part of the existing hotel experience rather than a separate chatbot, from how guests first encounter it to how conversations turn into actions.</p>
+        <p>The work combined interaction research, prototyping and customer testing across voice, text and touch.</p>
+        <div class="sp-services">
+          <ul><li>Product design</li><li>UX strategy</li><li>Interaction design</li><li>AI prototyping</li></ul>
+        </div>
       </div>
       <div class="cs-cue-row cs-reveal">
         <button type="button" class="cs-cue" data-cs-advance>
           <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
           <span>Scroll to read more</span>
-          <span class="cs-cue-icon" aria-hidden="true" data-icon="B15"><img src="/work/general/kaizen-icons/B15.png" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
         </button>
       </div>
     </div>
   </section>
 
-  <section class="cs-section cs-section--tightmedia" id="cs-s2" aria-labelledby="cs-s2-title">
+  <section class="cs-section" id="cs-s2" aria-labelledby="cs-s2-title">
     <div class="cs-section-inner">
       <div class="cs-section-logo" id="cs-s2-logo" aria-hidden="true">
-        <svg viewBox="5.3 3 140.9 31.4" role="img" aria-label="Kaizen" preserveAspectRatio="xMidYMid meet">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.847 8.648C4.233 13.665 3.747 22.282 8.763 27.898 13.78 33.512 22.398 33.998 28.013 28.981 33.628 23.965 34.113 15.347 29.097 9.732 24.08 4.117 15.463 3.632 9.847 8.648ZM13.719 13.076C10.54 15.916 10.264 20.796 13.105 23.976 15.946 27.156 20.826 27.431 24.006 24.59 27.186 21.749 27.461 16.869 24.62 13.69 21.779 10.51 16.899 10.234 13.719 13.076Z" fill="rgba(1,1,1,0.81)"/><path d="M32.396 18.789C32.396 26.226 26.367 32.254 18.93 32.254 11.494 32.254 5.465 26.226 5.465 18.789 5.465 11.353 11.494 5.324 18.93 5.324 26.367 5.324 32.396 11.353 32.396 18.789Z" fill="#FFFFFF"/><path d="M8.61 27.695C8.776 27.897 8.948 28.094 9.127 28.288 14.171 33.754 22.689 34.095 28.155 29.05 31.23 26.211 32.683 22.271 32.466 18.394L23.675 25.196 23.643 25.189C20.613 27.557 16.25 27.296 13.524 24.528L8.61 27.695Z" fill="rgba(1,1,1,0.81)"/>
-        <text x="42.1" y="28" textLength="104.1" lengthAdjust="spacing" font-size="35" font-weight="600" letter-spacing="0.02em" fill="#000000" font-family="Quasimoda-Medium, Quasimoda, system-ui, -apple-system, sans-serif">kaizen</text>
-      </svg>
+        <img src="/work/general/suitepad-logo-ink.png" alt="SuitePad" width="370" height="124" fetchpriority="high">
       </div>
-      <div class="cs-media cs-reveal">
-        <div class="cs-single cs-flat">
-            <img src="f08a3843-87b8-4702-a801-35ae020f1e1c_split.webp" alt="The onboarding Kaizen already had: six black and white screens asking for goal, distance, race date and target time, ending on race predictions." width="728" height="874" loading="lazy" decoding="async">
+      <div class="cs-media cs-media--swap cs-reveal" id="cs-s2-media">
+        <div class="cs-swap-panel is-active" data-panel="standby">
+          <div class="cs-single cs-flat">
+            <img src="screens/homepage-first-load.webp" alt="The home screen with the AI prompt bar sitting above the hotel&rsquo;s existing content, offering voice and text without explaining itself." width="1104" height="720" loading="lazy" decoding="async">
           </div>
+        </div>
+        <div class="cs-swap-panel" data-panel="input">
+          <div class="cs-single cs-flat">
+            <img src="screens/keyboard-text-entry.webp" alt="A typed question &mdash; &ldquo;What can i do whilst staying in Berlin for 2 days?&rdquo; &mdash; with the keyboard open and the answer building above it." width="1104" height="722" loading="lazy" decoding="async">
+          </div>
+        </div>
       </div>
       <div class="cs-body cs-reveal">
-        <h2 class="cs-title" id="cs-s2-title">Kaizen had a unique approach to training</h2>
-        <p>Kaizen had a unique approach to training, the catch: this didn&rsquo;t match the mental model most runners have of training. People expect &ldquo;here&rsquo;s your plan, follow it.&rdquo; Kaizen was offering something better, but stranger. Which meant onboarding had to do two things at once:</p>
-        <p>Precisely communicate the main differentiation on offer, and in doing so give the user an early win that would encourage them to complete onboarding and start the free trial.</p>
+        <h2 class="cs-title" id="cs-s2-title">Inviting interactions</h2>
+        <p>I explored the device&rsquo;s standby and home states, testing different ways to introduce AI without requiring guests to already understand what it could do in a way that worked with every hotel design.</p>
+        <p>This included voice activation, text entry, suggested questions and contextual prompts designed to make the possibility immediately understandable.</p>
+        <div class="cs-list" role="tablist" aria-label="Inviting interaction" id="cs-s2-list">
+          <button type="button" class="cs-list-item" role="tab" aria-current="true" aria-selected="true" aria-controls="cs-s2-media" data-target="standby">Standby</button>
+          <button type="button" class="cs-list-item" role="tab" aria-current="false" aria-selected="false" aria-controls="cs-s2-media" data-target="input">Input</button>
+        </div>
       </div>
       <div class="cs-cue-row cs-reveal">
         <button type="button" class="cs-cue" data-cs-advance>
           <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
           <span>Scroll to read more</span>
-          <span class="cs-cue-icon" aria-hidden="true" data-icon="TheWall"><img src="/work/general/kaizen-icons/TheWall.png" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
         </button>
       </div>
     </div>
@@ -1608,156 +1758,62 @@ html.cs-scrolled .cs-cover .cs-cue {
   <section class="cs-section" id="cs-s3" aria-labelledby="cs-s3-title">
     <div class="cs-section-inner">
       <div class="cs-section-logo" id="cs-s3-logo" aria-hidden="true">
-        <svg viewBox="5.3 3 140.9 31.4" role="img" aria-label="Kaizen" preserveAspectRatio="xMidYMid meet">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.847 8.648C4.233 13.665 3.747 22.282 8.763 27.898 13.78 33.512 22.398 33.998 28.013 28.981 33.628 23.965 34.113 15.347 29.097 9.732 24.08 4.117 15.463 3.632 9.847 8.648ZM13.719 13.076C10.54 15.916 10.264 20.796 13.105 23.976 15.946 27.156 20.826 27.431 24.006 24.59 27.186 21.749 27.461 16.869 24.62 13.69 21.779 10.51 16.899 10.234 13.719 13.076Z" fill="rgba(1,1,1,0.81)"/><path d="M32.396 18.789C32.396 26.226 26.367 32.254 18.93 32.254 11.494 32.254 5.465 26.226 5.465 18.789 5.465 11.353 11.494 5.324 18.93 5.324 26.367 5.324 32.396 11.353 32.396 18.789Z" fill="#FFFFFF"/><path d="M8.61 27.695C8.776 27.897 8.948 28.094 9.127 28.288 14.171 33.754 22.689 34.095 28.155 29.05 31.23 26.211 32.683 22.271 32.466 18.394L23.675 25.196 23.643 25.189C20.613 27.557 16.25 27.296 13.524 24.528L8.61 27.695Z" fill="rgba(1,1,1,0.81)"/>
-        <text x="42.1" y="28" textLength="104.1" lengthAdjust="spacing" font-size="35" font-weight="600" letter-spacing="0.02em" fill="#000000" font-family="Quasimoda-Medium, Quasimoda, system-ui, -apple-system, sans-serif">kaizen</text>
-      </svg>
+        <img src="/work/general/suitepad-logo-ink.png" alt="SuitePad" width="370" height="124" fetchpriority="high">
       </div>
-      <div class="cs-media cs-reveal">
-        <figure class="cs-figure cs-single cs-flat">
-            <img src="266511a0-56df-45d6-b6d0-78c8f6e20057_split.webp" alt="A heuristic walkthrough of the existing flow, screen by screen, annotated with questions including a large &ldquo;so what!&rdquo;" width="578" height="542" loading="lazy" decoding="async">
-            <figcaption class="cs-caption">Heuristic analysis of flow</figcaption>
-          </figure>
+      <div class="cs-media cs-media--swap cs-reveal" id="cs-s3-media">
+        <div class="cs-swap-panel is-active" data-panel="conversation">
+          <div class="cs-single cs-flat">
+            <img src="screens/answer-weather-cards.webp" alt="A contextual weather answer &mdash; six degrees and very windy in Berlin &mdash; resolving into a row of nearby indoor places to go." width="1104" height="722" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="cs-swap-panel" data-panel="edge">
+          <div class="cs-single cs-flat">
+            <img src="screens/edge-cases.webp" alt="Three edge cases: a request still processing, a slow response answered with &ldquo;Hang tight, this won&rsquo;t take much longer&rdquo;, and a dropped connection answered with &ldquo;No connection. Please check your WiFi&rdquo;." width="1096" height="856" loading="lazy" decoding="async">
+          </div>
+        </div>
       </div>
       <div class="cs-body cs-reveal">
-        <h2 class="cs-title" id="cs-s3-title">What I knew going in</h2>
-        <p>For Kaizen&rsquo;s first year I did all of the customer support and tracked down and talked to a wider cohort: people who&rsquo;d onboarded successfully but churned, so by the time we came to redesign onboarding I knew exactly what confused people, what they expected, and what really felt valuable. We realised Kaizen wasn&rsquo;t for beginners but for &lsquo;the thinking runner&rsquo;: someone who knew training and was tired of the noise.</p>
-        <p>All of this gave clear signals about the eureka moment we needed to reach early. People needed to understand the principle at the core of Kaizen and how actionable that was, i.e. a super accurate fitness prediction, and the start of a responsive training schedule.</p>
+        <h2 class="cs-title" id="cs-s3-title">Making it (actually) work</h2>
+        <p>I designed the conversational interface across voice and text, including the chat ribbon, keyboard behaviour, suggested follow-up questions and contextual responses for things like weather, transport and local recommendations.</p>
+        <p>The flows also accounted edge cases like what happens between asking and answering: loading, slow responses, Wi-Fi issues, incomplete requests and other edge cases.</p>
+        <div class="cs-list" role="tablist" aria-label="Making conversation work" id="cs-s3-list">
+          <button type="button" class="cs-list-item" role="tab" aria-current="true" aria-selected="true" aria-controls="cs-s3-media" data-target="conversation">Conversations</button>
+          <button type="button" class="cs-list-item" role="tab" aria-current="false" aria-selected="false" aria-controls="cs-s3-media" data-target="edge">Edge cases</button>
+        </div>
       </div>
       <div class="cs-cue-row cs-reveal">
         <button type="button" class="cs-cue" data-cs-advance>
           <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
           <span>Scroll to read more</span>
-          <span class="cs-cue-icon" aria-hidden="true" data-icon="LongHardIcon"><img src="/work/general/kaizen-icons/LongHardIcon.png" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
         </button>
       </div>
     </div>
   </section>
 
-  <section class="cs-section" id="cs-s4" aria-labelledby="cs-s4-title">
+  <section class="cs-section cs-section--closing" id="cs-s4" aria-labelledby="cs-s4-title">
     <div class="cs-section-inner">
-      <div class="cs-section-logo" id="cs-s4-logo" aria-hidden="true">
-        <svg viewBox="5.3 3 140.9 31.4" role="img" aria-label="Kaizen" preserveAspectRatio="xMidYMid meet">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.847 8.648C4.233 13.665 3.747 22.282 8.763 27.898 13.78 33.512 22.398 33.998 28.013 28.981 33.628 23.965 34.113 15.347 29.097 9.732 24.08 4.117 15.463 3.632 9.847 8.648ZM13.719 13.076C10.54 15.916 10.264 20.796 13.105 23.976 15.946 27.156 20.826 27.431 24.006 24.59 27.186 21.749 27.461 16.869 24.62 13.69 21.779 10.51 16.899 10.234 13.719 13.076Z" fill="rgba(1,1,1,0.81)"/><path d="M32.396 18.789C32.396 26.226 26.367 32.254 18.93 32.254 11.494 32.254 5.465 26.226 5.465 18.789 5.465 11.353 11.494 5.324 18.93 5.324 26.367 5.324 32.396 11.353 32.396 18.789Z" fill="#FFFFFF"/><path d="M8.61 27.695C8.776 27.897 8.948 28.094 9.127 28.288 14.171 33.754 22.689 34.095 28.155 29.05 31.23 26.211 32.683 22.271 32.466 18.394L23.675 25.196 23.643 25.189C20.613 27.557 16.25 27.296 13.524 24.528L8.61 27.695Z" fill="rgba(1,1,1,0.81)"/>
-        <text x="42.1" y="28" textLength="104.1" lengthAdjust="spacing" font-size="35" font-weight="600" letter-spacing="0.02em" fill="#000000" font-family="Quasimoda-Medium, Quasimoda, system-ui, -apple-system, sans-serif">kaizen</text>
-      </svg>
-      </div>
-      <div class="cs-media cs-reveal">
-        <div class="cs-single cs-flat">
-            <img src="7856d4c5-4291-4462-beae-9150f553331b_split.webp" alt="The worked-up flow: kaizen is different, connect your device with Polar, Coros, Garmin or Strava, analysing your past runs, and your fitness summarised." width="798" height="794" loading="lazy" decoding="async">
-          </div>
-      </div>
-      <div class="cs-body cs-reveal">
-        <h2 class="cs-title" id="cs-s4-title">Building consensus and a mediocre flow as a result</h2>
-        <p>As founders we rarely agreed on what to do next, and onboarding was no exception. One camp: don&rsquo;t waste anyone&rsquo;s time, get them through fast, save the high-value moments for the trial. The other: take the time to explain the product properly.</p>
-        <p>We worked through it the way you&rsquo;d expect. Low-fidelity iterations, high-performing onboarding from our sector and well outside it, short user interviews, prototypes shared with current and new users.</p>
-        <p>By the end, one thing was clear to me. We were still proposing something essentially functional. It didn&rsquo;t connect to the aspiration a person has when they decide to run a race.</p>
-      </div>
-      <div class="cs-cue-row cs-reveal">
-        <button type="button" class="cs-cue" data-cs-advance>
-          <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
-          <span>Scroll to read more</span>
-          <span class="cs-cue-icon" aria-hidden="true" data-icon="B15"><img src="/work/general/kaizen-icons/B15.png" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <section class="cs-section" id="cs-s5" aria-labelledby="cs-s5-title">
-    <div class="cs-section-inner">
-      <div class="cs-section-logo" id="cs-s5-logo" aria-hidden="true">
-        <svg viewBox="5.3 3 140.9 31.4" role="img" aria-label="Kaizen" preserveAspectRatio="xMidYMid meet">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.847 8.648C4.233 13.665 3.747 22.282 8.763 27.898 13.78 33.512 22.398 33.998 28.013 28.981 33.628 23.965 34.113 15.347 29.097 9.732 24.08 4.117 15.463 3.632 9.847 8.648ZM13.719 13.076C10.54 15.916 10.264 20.796 13.105 23.976 15.946 27.156 20.826 27.431 24.006 24.59 27.186 21.749 27.461 16.869 24.62 13.69 21.779 10.51 16.899 10.234 13.719 13.076Z" fill="rgba(1,1,1,0.81)"/><path d="M32.396 18.789C32.396 26.226 26.367 32.254 18.93 32.254 11.494 32.254 5.465 26.226 5.465 18.789 5.465 11.353 11.494 5.324 18.93 5.324 26.367 5.324 32.396 11.353 32.396 18.789Z" fill="#FFFFFF"/><path d="M8.61 27.695C8.776 27.897 8.948 28.094 9.127 28.288 14.171 33.754 22.689 34.095 28.155 29.05 31.23 26.211 32.683 22.271 32.466 18.394L23.675 25.196 23.643 25.189C20.613 27.557 16.25 27.296 13.524 24.528L8.61 27.695Z" fill="rgba(1,1,1,0.81)"/>
-        <text x="42.1" y="28" textLength="104.1" lengthAdjust="spacing" font-size="35" font-weight="600" letter-spacing="0.02em" fill="#000000" font-family="Quasimoda-Medium, Quasimoda, system-ui, -apple-system, sans-serif">kaizen</text>
-      </svg>
-      </div>
-      <div class="cs-media cs-reveal">
-        <div class="cs-stack cs-flat">
-          <div class="cs-figure-inner">
-            <img src="47ef0253-panorama-detail.webp" alt="A section of the panorama at full scale: ridgelines receding into haze with a river threading through the foreground." width="1380" height="636" loading="lazy" decoding="async">
-          </div>
-          <figure class="cs-figure cs-figure-inner">
-            <img src="47ef0253-f4af-477d-adf3-eae127686c53_6509x1001.webp" alt="The whole panorama end to end." width="1456" height="224" loading="lazy" decoding="async">
-            <figcaption class="cs-caption">Reworked hero landscape to help runners on their fitness journey</figcaption>
-          </figure>
-          <figure class="cs-figure cs-figure-inner">
-            <img src="44a1dba5-0a9f-4153-b544-94744509c76d_1812x232.webp" alt="The same panorama sliced across a row of phone screens, notches cut along the top." width="1456" height="186" loading="lazy" decoding="async">
-            <figcaption class="cs-caption">Split up to dynamically respond across screens</figcaption>
+      <div class="cs-media cs-media--swap cs-reveal" id="cs-s4-media">
+        <div class="cs-swap-panel is-active" data-panel="actions">
+          <figure class="cs-figure sp-film">
+            <video autoplay muted loop playsinline preload="metadata" poster="screens/suitepad-clickthrough.webp">
+              <source src="screens/suitepad-clickthrough.mp4" type="video/mp4">
+            </video>
           </figure>
         </div>
-      </div>
-      <div class="cs-body cs-reveal">
-        <h2 class="cs-title" id="cs-s5-title">One reason we struggled to build something decent</h2>
-        <p>One reason we struggled to build something decent was the competing ideas about what mattered most to prospective customers. As the designer, and the person closest to the customer, I had to do a better job of communicating the thing people really cared about: is this non-intuitive, slightly weird app actually going to get me to the start line of a marathon, ready to race, ready to hit my time?</p>
-        <p>So why not lean into that doubt? Acknowledge that the user was already on a running journey, and show that it could move forward with Kaizen.</p>
-        <p>As they progressed use a landscape to change and adapt to different moments: how fit they were, how much they&rsquo;d need to run each week to stay on track, and have a sense of progress as they moved through the app.</p>
-      </div>
-      <div class="cs-cue-row cs-reveal">
-        <button type="button" class="cs-cue" data-cs-advance>
-          <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
-          <span>Scroll to read more</span>
-          <span class="cs-cue-icon" aria-hidden="true" data-icon="StreakDetailed"><img src="/work/general/kaizen-icons/StreakDetailed.png" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <section class="cs-section" id="cs-s6" aria-labelledby="cs-s6-title">
-    <div class="cs-section-inner">
-      <div class="cs-section-logo" id="cs-s6-logo" aria-hidden="true">
-        <svg viewBox="5.3 3 140.9 31.4" role="img" aria-label="Kaizen" preserveAspectRatio="xMidYMid meet">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.847 8.648C4.233 13.665 3.747 22.282 8.763 27.898 13.78 33.512 22.398 33.998 28.013 28.981 33.628 23.965 34.113 15.347 29.097 9.732 24.08 4.117 15.463 3.632 9.847 8.648ZM13.719 13.076C10.54 15.916 10.264 20.796 13.105 23.976 15.946 27.156 20.826 27.431 24.006 24.59 27.186 21.749 27.461 16.869 24.62 13.69 21.779 10.51 16.899 10.234 13.719 13.076Z" fill="rgba(1,1,1,0.81)"/><path d="M32.396 18.789C32.396 26.226 26.367 32.254 18.93 32.254 11.494 32.254 5.465 26.226 5.465 18.789 5.465 11.353 11.494 5.324 18.93 5.324 26.367 5.324 32.396 11.353 32.396 18.789Z" fill="#FFFFFF"/><path d="M8.61 27.695C8.776 27.897 8.948 28.094 9.127 28.288 14.171 33.754 22.689 34.095 28.155 29.05 31.23 26.211 32.683 22.271 32.466 18.394L23.675 25.196 23.643 25.189C20.613 27.557 16.25 27.296 13.524 24.528L8.61 27.695Z" fill="rgba(1,1,1,0.81)"/>
-        <text x="42.1" y="28" textLength="104.1" lengthAdjust="spacing" font-size="35" font-weight="600" letter-spacing="0.02em" fill="#000000" font-family="Quasimoda-Medium, Quasimoda, system-ui, -apple-system, sans-serif">kaizen</text>
-      </svg>
-      </div>
-      <div class="cs-media cs-media--swap cs-reveal" id="cs-s6-media">
-        <div class="cs-swap-panel is-active" data-panel="integrations">
+        <div class="cs-swap-panel" data-panel="future">
           <div class="cs-single cs-flat">
-            <img src="740ad6a7-67a8-4b09-a170-f36a1665014d_2292x704.webp" alt="Six screens of the finished onboarding on the green landscape: become a better runner, what we analyse, connect with Strava, connect with Garmin, analysing your training data, and a first prediction." width="2292" height="704" loading="lazy" decoding="async">
-          </div>
-        </div>
-        <div class="cs-swap-panel" data-panel="sso">
-          <div class="cs-single cs-flat">
-            <img src="b592ca52-972d-4bf9-8e09-eac0fbdaacd0_1502x984.webp" alt="Three screens: the shape of a marathon week, the sign-in sheet offered afterwards, and a card explaining flexibility to hit your weekly target." width="1502" height="984" loading="lazy" decoding="async">
-          </div>
-        </div>
-        <div class="cs-swap-panel" data-panel="reward">
-          <div class="cs-single cs-flat">
-            <img src="e049b162-876d-4b54-a79f-65aeac8fe8a2_1522x978.webp" alt="Three screens: Kaizen is flexible, the seven-day trial explained as a timeline, and arriving in the app to confetti and a first weekly target." width="1522" height="978" loading="lazy" decoding="async">
+            <img src="screens/answer-weather-cards.webp" alt="Recommendation cards inside the answer, each one a route into the hotel&rsquo;s existing content and offers." width="1104" height="722" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
       <div class="cs-body cs-reveal">
-        <h2 class="cs-title" id="cs-s6-title">Why this design was worth the work</h2>
-        <p>This was going to be a heavy lift. We could have done something simpler, moved on, and got into the detail of improving trial-to-subscription. But a few things were non-negotiable for me, and I made the case for each. All of them worked better inside the landscape.</p>
-        <div class="cs-list" role="tablist" aria-label="Non-negotiables" id="cs-s6-list">
-          <button type="button" class="cs-list-item" role="tab" aria-current="true" aria-selected="true" aria-controls="cs-s6-media" data-target="integrations">Add a wider set of API integrations, Garmin especially. We knew this was a big drop-off point.</button>
-          <button type="button" class="cs-list-item" role="tab" aria-current="false" aria-selected="false" aria-controls="cs-s6-media" data-target="sso">Add robust SSO, placed later and strategically, so account creation got out of the way and fed into the user&rsquo;s growing sense of progress.</button>
-          <button type="button" class="cs-list-item" role="tab" aria-current="false" aria-selected="false" aria-controls="cs-s6-media" data-target="reward">Have the app actually build something for the user as a reward for completing onboarding, setting them up for the paywall.</button>
+        <h2 class="cs-title" id="cs-s4-title">Reusable components</h2>
+        <p>We baked in how AI responses could connect with existing hotel content, services and offers building out ui template the team could use and adapt such as contextual cards, object-page integration, relevant upsell opportunities, room-specific offers and confirmation flows.</p>
+        <p>The concepts were trialled with an existing SuitePad customer and developed into an interaction model that could extend across the wider product.</p>
+        <div class="cs-list" role="tablist" aria-label="What the components carried" id="cs-s4-list">
+          <button type="button" class="cs-list-item" role="tab" aria-current="true" aria-selected="true" aria-controls="cs-s4-media" data-target="actions">Actions</button>
+          <button type="button" class="cs-list-item" role="tab" aria-current="false" aria-selected="false" aria-controls="cs-s4-media" data-target="future">Future</button>
         </div>
-      </div>
-      <div class="cs-cue-row cs-reveal">
-        <button type="button" class="cs-cue" data-cs-advance>
-          <svg class="chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
-          <span>Scroll to read more</span>
-          <span class="cs-cue-icon" aria-hidden="true" data-icon="NewRedFinishingLine"><img src="/work/general/kaizen-icons/NewRedFinishingLine.png" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <section class="cs-section cs-section--closing" id="cs-s7" aria-labelledby="cs-s7-title">
-    <div class="cs-section-inner">
-      <div class="cs-media cs-reveal">
-        <div class="cs-single">
-          <img src="39853f81-bb55-4529-bbc9-439f8748efb4_1076x1082.webp" alt="Now we know your starting point: current fitness plotted as a curve towards a goal, beside the training week it produces." width="1076" height="1082" loading="lazy" decoding="async">
-        </div>
-      </div>
-      <div class="cs-body cs-reveal">
-        <h2 class="cs-title" id="cs-s7-title">What this opened up</h2>
-        <p>The decision didn&rsquo;t just evolve onboarding. It started to guide what came next &mdash; clarify what could move out of onboarding and live elsewhere in the app. Notification permissions, for example, could happen after the user&rsquo;s first run rather than upfront.</p>
-        <p>The arc was about moving people from extrinsic triggers (the app pinging them) to intrinsic signals (their own motivation). Onboarding was the starting point.</p>
-        <p>Those were incremental improvements. They came later. What this work had done was set the direction and the standard for everything that followed.</p>
       </div>
     </div>
   </section>
@@ -1781,7 +1837,7 @@ html.cs-scrolled .cs-cover .cs-cue {
     <a class="cs-next" id="cs-next" href="#" data-placeholder="true">
       <!-- Thumbnail mirrors the project's own card in the homepage
            carousel. Swap this block when the next project changes. -->
-      <span class="cs-next-thumb" id="cs-next-thumb" style="background:#A79BC3; position:relative;"><video autoplay muted loop playsinline preload="metadata" poster="/work/suitepad/screens/suitepad-ai-in-room.webp" style="width:86%;height:auto;display:block;border-radius:5px;background:#A79BC3"><source src="/work/suitepad/screens/suitepad-ai-in-room.mp4" type="video/mp4"></video></span>
+      <span class="cs-next-thumb" id="cs-next-thumb" style="background:#0B0B0B; position:relative;"><span style="position:absolute;top:16px;left:50%;transform:translateX(-50%);width:112px;bottom:0;border-radius:11px 11px 0 0;overflow:hidden;display:block"><video autoplay muted loop playsinline preload="metadata" poster="/videos/feedscroll.webp" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"><source src="/videos/feedscroll.webm" type="video/webm"><source src="/videos/feedscroll.mp4" type="video/mp4"></video></span></span>
       <span>
         <span class="cs-next-eyebrow">Next project</span>
             <span class="cs-next-title" id="cs-next-title">Next project title</span>
@@ -1812,7 +1868,7 @@ html.cs-scrolled .cs-cover .cs-cue {
      real card further down; this one only exists in the window between the
      player leaving and that card arriving. -->
 <a class="cs-nextfloat" id="cs-nextfloat" href="#" aria-hidden="true" tabindex="-1">
-  <span class="cs-nextfloat-thumb" id="cs-nextfloat-thumb" style="position:relative;"><video autoplay muted loop playsinline preload="metadata" poster="/work/suitepad/screens/suitepad-ai-in-room.webp" style="width:86%;height:auto;display:block;border-radius:5px;background:#A79BC3"><source src="/work/suitepad/screens/suitepad-ai-in-room.mp4" type="video/mp4"></video></span>
+  <span class="cs-nextfloat-thumb" id="cs-nextfloat-thumb" style="position:relative;"><span style="position:absolute;top:16px;left:50%;transform:translateX(-50%);width:38px;bottom:0;border-radius:11px 11px 0 0;overflow:hidden;display:block"><video autoplay muted loop playsinline preload="metadata" poster="/videos/feedscroll.webp" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"><source src="/videos/feedscroll.webm" type="video/webm"><source src="/videos/feedscroll.mp4" type="video/mp4"></video></span></span>
   <span>
     <span class="cs-nextfloat-eyebrow">Next project</span>
     <span class="cs-nextfloat-title" id="cs-nextfloat-title">Next project title</span>
@@ -1857,7 +1913,7 @@ html.cs-scrolled .cs-cover .cs-cue {
    attributes in the markup.
    ========================================================================== */
 var CS_CONFIG = {
-  slug: 'kaizen-onboarding',
+  slug: 'suitepad',
 
   /* No explainer film for this one yet. */
   video: {
@@ -1872,9 +1928,9 @@ var CS_CONFIG = {
      homepage Work carousel, wrapping at the end. */
   nextProject: {
     placeholder: false,
-    href: '/#case-studies',
-    title: 'Suitepad AI',
-    description: 'Designing how conversational AI could live naturally inside the hotel room.',
+    href: '/work/feed-redesign/',
+    title: 'Kaizen',
+    description: 'Building the brand, the product and the design system for a radically different way to train for a marathon.',
     /* null keeps the mark already in the markup. */
     thumb: null
   },

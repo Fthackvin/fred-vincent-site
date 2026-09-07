@@ -67,8 +67,8 @@
      third-party connection, so the page showed nothing at all and then
      appeared complete — the "blank then it refreshes" arrival. Loaded as
      print media it is fetched without blocking, then promoted on load. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400&family=League+Spartan:wght@300;400&family=EB+Garamond:wght@400&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400&family=League+Spartan:wght@300;400&family=EB+Garamond:wght@400&display=swap"></noscript>
 
 <style>
 /* ==========================================================================
@@ -124,8 +124,8 @@
      barely perceptible, so the easing must not draw attention either. */
   --ease-reveal: cubic-bezier(0.33, 1, 0.68, 1);
 
-  --t2-container: 1120px;
-  --t2-pad: 24px;
+  --t2-container: 1040px;
+  --t2-pad: 30px;
   --t2-nav-h: 76px;
   /* Where both columns begin once the story is open. */
   --t2-story-top: 28px;
@@ -169,13 +169,19 @@ h1, h2 { margin: 0; font-weight: 400; }
   margin: 0 auto;
   padding: 0 var(--t2-pad);
 }
-@media (min-width: 640px) { .t2-wrap { padding: 0 48px; } }
+/* More ground either side of the head, so the title and description sit
+   further into the middle of the page rather than reaching for the edges. */
+@media (min-width: 640px) { .t2-wrap { padding: 0 72px; } }
 /* The gutter is never zeroed. Widening the box by twice the gutter puts the
    content on exactly the same edge as before at desktop width, while a
    narrow window keeps its margin instead of running the copy into the
    glass. Same arithmetic as .t2-body's max() below, so the open story
    column and everything around it share one left edge at every size. */
-@media (min-width: 1024px) { .t2-wrap { max-width: calc(var(--t2-container) + 96px); padding: 0 48px; } }
+/* Nav, head, outro and footer all sit on this one box. They must stay
+   identical or the brand, the title and the footer drift apart — most
+   visible at tablet width. Padding raised from 48 to 96 so the content
+   sits further into the middle. */
+@media (min-width: 1024px) { .t2-wrap { max-width: calc(var(--t2-container) + 96px); padding: 0 96px; } }
 
 /* --- Entrance ------------------------------------------------------------
    Arriving from the carousel's box expansion, the page previously just
@@ -298,13 +304,16 @@ html.t2-scrolled .t2-nav::after { opacity: 1; }
   justify-content: space-between;
   gap: 16px;
 }
-@media (min-width: 640px) { .t2-nav-inner { padding: 0 48px; } }
+@media (min-width: 640px) { .t2-nav-inner { padding: 0 72px; } }
 /* The gutter is never zeroed. Widening the box by twice the gutter puts the
    content on exactly the same edge as before at desktop width, while a
    narrow window keeps its margin instead of running the copy into the
    glass. Same arithmetic as .t2-body's max() below, so the open story
    column and everything around it share one left edge at every size. */
-@media (min-width: 1024px) { .t2-nav-inner { max-width: calc(var(--t2-container) + 96px); padding: 0 48px; } }
+/* The nav sat on a box 144px wider than .t2-wrap, so the brand and the links
+   could never share a left edge with the title beneath them — most obvious
+   at tablet width. Same container, same padding, one lane. */
+@media (min-width: 1024px) { .t2-nav-inner { max-width: calc(var(--t2-container) + 96px); padding: 0 96px; } }
 .t2-brand { display: inline-flex; align-items: center; gap: 8px; line-height: 1; text-decoration: none; }
 .t2-brand .studio {
   font-family: var(--brand);
@@ -421,6 +430,13 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    Every media container reserves its aspect ratio up front, so nothing shifts
    as assets arrive. Widths vary per item rather than repeating one column, so
    the page reads as an authored sequence rather than a CMS list. */
+/* The last item used to be a screens iframe carrying its own space. With
+   the built type block ending the run, a zero pad let the League Spartan
+   note finish 6px BELOW the top of the dark outro — the band cut across
+   it. The sequence closes with its own space now. */
+/* The run ends on the dark mark sheet, which meets the dark outro. Any pad
+   here shows as a white band between the two. The type block that needed
+   the space is no longer last. */
 .t2-sequence { padding-bottom: 0; }
 /* Items own their own width. Full-bleed is simply "no max-width" rather than
    a 100vw trick — 100vw includes the scrollbar gutter and would push the page
@@ -628,7 +644,9 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    own comfortable padding. */
 @media (min-width: 1000px) {
   .t2-body.is-open {
-    padding-left: max(48px, calc((100% - var(--t2-container)) / 2));
+    /* The same lane the nav, title and tags sit on, so the story text opens
+       flush with them instead of 24px inside. */
+    padding-left: max(96px, calc((100% - (var(--t2-container) + 96px)) / 2 + 96px));
   }
   .t2-body.is-open .t2-story-inner { padding-left: 0; }
 }
@@ -636,6 +654,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   overflow: hidden;
   min-width: 0;
 }
+/* A zero-width grid column still lays its text out — every word wrapping to
+   its own line — and that column still sets the height of the row. Closed,
+   this story was 14,000px tall behind a 0px-wide gate, stretching the row far
+   past the last image and leaving that much white space above the outro.
+   Clipped to nothing while it is shut; the row is the imagery's height alone. */
+.t2-body:not(.is-open) .t2-story { max-height: 0; }
 .t2-story-inner {
   /* Flows with the page rather than scrolling inside its own box — an inner
      scrollbar in a reading column is its own small annoyance. */
@@ -1272,7 +1296,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    narrow window keeps its margin instead of running the copy into the
    glass. Same arithmetic as .t2-body's max() below, so the open story
    column and everything around it share one left edge at every size. */
-@media (min-width: 1024px) { .t2-outro-inner { max-width: calc(var(--t2-container) + 96px); padding: 0 48px; } }
+@media (min-width: 1024px) { .t2-outro-inner { max-width: calc(var(--t2-container) + 96px); padding: 0 96px; } }
 /* With the story open, the work above is inset from the left by the same
    clamp the body takes on. Between 1024px and the container width the outro
    still had no padding at all, so the ending sat hard against the window edge
@@ -1353,7 +1377,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    narrow window keeps its margin instead of running the copy into the
    glass. Same arithmetic as .t2-body's max() below, so the open story
    column and everything around it share one left edge at every size. */
-@media (min-width: 1024px) { .t2-footer .row { max-width: calc(var(--t2-container) + 96px); padding: 0 48px; } }
+@media (min-width: 1024px) { .t2-footer .row { max-width: calc(var(--t2-container) + 96px); padding: 0 96px; } }
 .t2-footer .links { display: inline-flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
 .t2-footer .links a {
   font-family: inherit; font-size: 11px; letter-spacing: 0.06em;
@@ -1397,7 +1421,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .lw { display: block; width: 100%; height: auto; color: var(--lw-ink, #1A1815); }
 .lw--ink { --lw-ink: #0D1013; }
 .lw--paper { --lw-ink: #E8E8E8; }
-/* One period for the whole mark. The assembly is spent by 6.4s, and the rest
+/* One period for the whole mark. The assembly is spent by 4.6s, and the rest
    of the cycle is the mark simply standing there resolved — a period only a
    little longer than the assembly makes the loop restless. Every keyframe
    percentage below is a fraction of this, while the delays are absolute, so
@@ -1434,6 +1458,22 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .lw--still .ltr, .lw--bars .ltr { opacity: 0; }
 .lw--still * { animation: none; }
 
+/* --- HATCH: the wordmark is simply there, and only the bars inside the O
+   move — the same lwTick the thread mode runs, so the movement is exactly
+   what it always was. What is gone is the letters drawing themselves in;
+   that belongs to the arrival panel, where the full animation stays. --- */
+.lw--hatch .th, .lw--hatch .drawer { stroke-dashoffset: 0; }
+.lw--hatch .lf { opacity: 1; }
+.lw--hatch .ltr { opacity: 0; }
+.lw--hatch .home {
+  animation-name: lwTick;
+  animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+  /* Early, not at 3.3s: with the letters already present there is nothing to
+     wait for, and lwTick starts from opacity 0 — a long delay would leave the
+     O empty for three seconds. */
+  animation-delay: calc(0.4s + var(--i) * 60ms);
+}
+
 /* --- BARS: the five blocks breathe. Nothing else moves. --- */
 .lw--bars .home {
   animation-name: lwBreathe;
@@ -1447,25 +1487,27 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 
 /* --- THREAD: line-led. Each letter is drawn along its own stroke. ---
-   The draws are deliberately slower than the study's. At 280-630ms a pen
-   crossing a whole letterform covers ground faster than the eye can follow it
-   and the letter reads as appearing rather than being drawn; roughly doubling
-   each one is what makes the movement legible. The site's own ease carries
-   them at close to a constant speed: an eased curve puts most of the letter
-   on screen in the first third and then creeps through the tail, which is
-   exactly what reads as unsteady. Softened at both ends, even in between. */
+   One continuous gesture rather than seven separate ones. Each stroke starts
+   before the one ahead of it has landed, so the pen never stops moving and
+   the line flows through the whole word in 2.4s; drawn as discrete moves with
+   a beat between them, the same sequence reads as slow no matter how short
+   each move is, because what is felt is the waiting rather than the drawing.
+   The site's own ease carries them at close to a constant speed: an eased
+   curve puts most of the letter on screen in the first third and then creeps
+   through the tail, which is exactly what reads as unsteady. Softened at both
+   ends, even in between. */
 .lw--thread .ltr { opacity: 1; }
 .lw--thread .th { animation-timing-function: cubic-bezier(.45, .2, .5, .85); }
 .lw--thread .th-L      { animation-name: lwDraw9; animation-delay: 0s; }
-.lw--thread .th-I      { animation-name: lwDraw5; animation-delay: .5s; }
-.lw--thread .th-N      { animation-name: lwDraw9; animation-delay: .75s; }
-.lw--thread .th-N2     { animation-name: lwDraw5; animation-delay: 1.3s; }
-.lw--thread .th-Rstem  { animation-name: lwDraw5; animation-delay: 1.55s; }
-.lw--thread .th-Rbowl  { animation-name: lwDraw9; animation-delay: 1.8s; }
-.lw--thread .th-Rleg   { animation-name: lwDraw4; animation-delay: 2.4s; }
-@keyframes lwDraw4 { 0% { stroke-dashoffset: 1.03; } 5.6% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes lwDraw5 { 0% { stroke-dashoffset: 1.03; } 7%   { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes lwDraw9 { 0% { stroke-dashoffset: 1.03; } 9.8% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+.lw--thread .th-I      { animation-name: lwDraw5; animation-delay: .46s; }
+.lw--thread .th-N      { animation-name: lwDraw9; animation-delay: .72s; }
+.lw--thread .th-N2     { animation-name: lwDraw5; animation-delay: 1.14s; }
+.lw--thread .th-Rstem  { animation-name: lwDraw5; animation-delay: 1.38s; }
+.lw--thread .th-Rbowl  { animation-name: lwDraw9; animation-delay: 1.62s; }
+.lw--thread .th-Rleg   { animation-name: lwDraw4; animation-delay: 2.06s; }
+@keyframes lwDraw4 { 0% { stroke-dashoffset: 1.03; } 3.4% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+@keyframes lwDraw5 { 0% { stroke-dashoffset: 1.03; } 4.4% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+@keyframes lwDraw9 { 0% { stroke-dashoffset: 1.03; } 6.2% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
 
 /* Each letter swaps to exact geometry the instant its own draw completes, so
    the stroked version is never left standing in for the drawn one. The delays
@@ -1473,17 +1515,17 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    I and the N diagonal, so it waits for the later of the two. */
 .lw--thread .lf { animation-name: lwHold; animation-timing-function: steps(1, end); }
 @keyframes lwHold { 0% { opacity: 0; } 0.5%, 100% { opacity: 1; } }
-.lw--thread .lf-L { animation-delay: 1s; }
-.lw--thread .lf-I { animation-delay: 1.75s; }
-.lw--thread .lf-N { animation-delay: 2.02s; }
-.lw--thread .lf-R { animation-delay: 2.98s; }
+.lw--thread .lf-L { animation-delay: .62s; }
+.lw--thread .lf-I { animation-delay: 1.34s; }
+.lw--thread .lf-N { animation-delay: 1.58s; }
+.lw--thread .lf-R { animation-delay: 2.4s; }
 
 /* the O draws once as a thread around the ring */
-.lw--thread .drawer { animation-name: lwRing; animation-timing-function: cubic-bezier(.5, 0, .15, 1); animation-delay: 2.85s; }
-@keyframes lwRing { 0% { stroke-dashoffset: 1; } 12.6% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+.lw--thread .drawer { animation-name: lwRing; animation-timing-function: cubic-bezier(.5, 0, .15, 1); animation-delay: 2.3s; }
+@keyframes lwRing { 0% { stroke-dashoffset: 1; } 10% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
 
 /* then the hatch ticks on and settles into the wedge */
-.lw--thread .home { animation-name: lwTick; animation-timing-function: cubic-bezier(.4, 0, .2, 1); animation-delay: calc(3.9s + var(--i) * 70ms); }
+.lw--thread .home { animation-name: lwTick; animation-timing-function: cubic-bezier(.4, 0, .2, 1); animation-delay: calc(3.3s + var(--i) * 60ms); }
 @keyframes lwTick {
   0%    { opacity: 0; transform: translate(var(--sx), var(--sy)) rotate(var(--phi)) scaleX(.35) rotate(calc(var(--phi) * -1)); }
   0.7%  { opacity: 1; }
@@ -1682,6 +1724,109 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
   .lin-cue { animation: none; }
 }
 
+/* --- Colour and type, from the board -------------------------------------
+   These two were flat exports out of the deck. They are now built, so they
+   set at whatever width the column has and stay sharp. Every value below is
+   the board's: swatch widths carried as flex proportions, band heights as the
+   board's own ratios, type at the board's sizes and tracking. */
+/* On the board these two sit on the 1120 container inside a 1440 artboard —
+   160px of ground either side. Full-bleed they read as zoomed in, so the
+   same inset is kept as a proportion of whatever width the column has. */
+.lin-colour, .lin-type { padding-inline: clamp(20px, 11.1%, 160px); }
+/* Every sequence item sits 10px from the last, which is right for a run of
+   imagery but reads as continuous where the brand material stops and the
+   product screens begin. The type block closes that group. */
+.lin-type { margin-bottom: clamp(60px, 8vh, 120px); }
+/* Palette and type belong together, so they keep a smaller step. */
+.lin-colour { margin-bottom: clamp(24px, 3vh, 44px); }
+.lin-colour { display: flex; flex-direction: column; gap: clamp(40px, 5vw, 68px); }
+.lin-swatch-block { display: flex; flex-direction: column; gap: 22px; }
+.lin-swatch-row { display: flex; width: 100%; }
+.lin-swatch-row > span { display: block; }
+/* 1120 x 230 and 875 x 180 on the board. */
+.lin-swatch-row--primary { aspect-ratio: 1120 / 230; }
+/* The secondary band is narrower than the primary by the board's own measure. */
+.lin-swatch-row--secondary { width: 78.125%; aspect-ratio: 875 / 180; }
+.lin-swatch-label {
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.lin-type { display: flex; flex-direction: column; gap: clamp(64px, 8vw, 118px); }
+.lin-face { display: flex; flex-direction: column; gap: 34px; }
+.lin-face-name { color: #0D1013; }
+/* Aeonik is not a webfont here, and it is not on the board either — Paper
+   falls back to Inter, so the specimen is set the same way rather than
+   claiming a face the page cannot actually load. */
+.lin-face-name--aeonik {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(64px, 11.8vw, 132px);
+  line-height: 1.136;
+  letter-spacing: -0.03em;
+}
+.lin-face-name--spartan {
+  font-family: "League Spartan", "Inter", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(58px, 10.7vw, 120px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.lin-face-alpha { display: flex; flex-direction: column; gap: 10px; color: #0D1013; }
+.lin-face-alpha--aeonik {
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(19px, 2.9vw, 32px);
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+}
+.lin-face-alpha--spartan {
+  font-family: "League Spartan", "Inter", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(18px, 2.7vw, 30px);
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+}
+.lin-face-rule { width: min(620px, 100%); height: 1px; margin-top: 30px; background: var(--paper-300, #E8E8E3); }
+.lin-face-note { max-width: 700px; margin: 0; font-size: 17px; line-height: 26px; color: var(--ink-700); }
+.lin-face-note--serif { font-family: "EB Garamond", Georgia, serif; }
+.lin-face-note--spartan { font-family: "League Spartan", "Inter", system-ui, sans-serif; }
+@media (max-width: 719px) {
+  .lin-swatch-row--secondary { width: 100%; }
+  .lin-face-rule { margin-top: 18px; }
+}
+
+
+/* The three interface screens and the mark sheet are one dark block. The
+   ground is the sheet's own background, so the run closes into the animations
+   with no seam; the 10px every item carries was showing as a white band
+   between them, and the screens ran edge to edge with nothing either side. */
+.lin-screen, .lin-anim { background: #08090B; margin-top: 0; }
+.lin-screen { padding: clamp(14px, 1.8vw, 30px) clamp(18px, 3.2vw, 64px); }
+.lin-screen:first-of-type { padding-top: clamp(26px, 3.6vw, 56px); }
+.lin-anim { padding: clamp(14px, 1.8vw, 30px) clamp(18px, 3.2vw, 64px) 0; }
+/* The screens keep their own ground inside that padding. */
+.lin-screen .t2-media { background: none; }
+
+/* On a phone the 191px square is out of scale with the title and description
+   beside it. Reduced by a third so the card reads as one block. */
+@media (max-width: 719px) {
+  .t2-next-thumb, .cs-next-thumb { width: 127px; height: 127px; }
+}
+
+/* On a phone the poster block is the largest thing on the cover and it lands
+   on top of the scroll cue. The control still needs to be there, so the frame
+   goes and the label row stays — the same component, just the part of it that
+   earns its space at this width. */
+@media (max-width: 719px) {
+  .cs-video-frame { display: none; }
+  .cs-video.is-expanded .cs-video-frame { display: none; }
+  .t2-video-frame { display: none; }
+}
 </style>
 </head>
 <body>
@@ -1709,7 +1854,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
     <nav class="t2-nav-links" aria-label="Primary">
       <a href="/#how-this-works">Work together</a>
       <a href="/#case-studies">Work</a>
-      <a href="/#work">Writing</a>
+      <!-- Writing: hidden for the moment. Restore by uncommenting. <a href="/#work">Writing</a> -->
       <a href="/about/">About</a>
     </nav>
   </div>
@@ -1791,33 +1936,21 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
   <div class="t2-body" id="t2-body">
     <aside class="t2-story" id="t2-story" aria-label="Project story">
       <div class="t2-story-inner">
-        <p>Linro secures an increasingly autonomous cloud. It traces the lineage behind every change — where it came from, how it moved through a system, and whether it should have been allowed to happen at all.</p>
+        <p>Linro traces the lineage behind every change in cloud security, where it came from, how it moved through a system, and whether it should have been allowed to happen at all. But Linro doesn&rsquo;t only report that something changed; it judges whether it should have been permitted and actively takes action in real time if something seems out of place, in the age of agents and unseen threats.</p>
 
-        <p>The product was already sophisticated when Daniel and Florian brought me in. The identity was not. It had been assembled in pieces, and it read either as anonymous enterprise security or as nothing in particular. They wanted Linro to feel engineered and serious without disappearing into a category where every competitor reaches for the same shield, the same gradient, the same navy — and they wanted it to mean something to the developers who would actually use it.</p>
+        <p>The product was already sophisticated when I started working with Daniel and Florian, but the identity had been assembled in pieces - mostly sandboxed assets - and didn&rsquo;t stand out. They wanted Linro to feel engineered and serious without disappearing into a category where every competitor reaches for the same tropes. They wanted to build a community around the developers using it.</p>
 
-        <p>We audited the category, then ran a workshop on the ideas already sitting inside the product. The founders were unusually aligned:</p>
+        <p>We audited the category, then ran several workshops on the ideas already sitting inside the product. The founders were unusually aligned:</p>
         <ul>
           <li>Protection, prevention, control, enforcement.</li>
           <li>Space and clarity over density.</li>
           <li>Texture, but only where it earns its place.</li>
-          <li>Confident enough to be trusted with the whole estate.</li>
         </ul>
 
         <h2>The idea was already in the product</h2>
-        <p>Lineage. Linro doesn&#39;t only report that something changed; it follows a change back to its origin, watches how it moved, and judges whether it should have been permitted. That is the thing the rest of the category doesn&#39;t do, and it turned out to be the thing the brand should be about.</p>
+        <p>Lineage. Drawing on Bauhaus systems and modular graphic design, the wordmark and interface design expand from a single, distinct graphic language.</p>
 
-        <h2>A mark that assembles itself</h2>
-        <p>Drawing on Bauhaus systems and modular graphic design, the wordmark, the graphic language and the motion all grow from one set of blocks — a mark that builds itself the way a change builds from its history.</p>
-        <p>Everything around it is held back. Near-black, deep green and off-white carry the brand; blues and reds sit in a secondary range and are only spent on state, so that when something is wrong it is the only thing on the screen. Aeonik sets the headlines — a geometric neo-grotesque with precise terminals, controlled enough to hold a technical brand — and League Spartan carries the body. Between brand, terminal and interface the voice does not change.</p>
-
-        <h2>One set of blocks, doing all the work</h2>
-        <p>The wordmark is cut from a set of blocks, so the interface is built from the same ones. Every state in the product — an agent working, a file under suspicion, a policy boundary crossed — is a small composition of them, at whatever size and proportion the moment needs.</p>
-        <p>It became a language before it was a set of icons. White is something present and recorded. An outline is the same thing gone quiet. A ghost with lines moving over it is under suspicion. Colour is held back for the three things that need it: red for an alert, violet for drift, blue for a policy boundary.</p>
-        <p>Each state animates the process it names rather than decorating it. An agent travels the perimeter of its scope and drops to an outline when it rests. A privilege escalation acquires permissions left to right and turns red at the first one past the line policy allows. A commit lands in the record and the record re-forms around it. In a product about lineage, the movement is doing the explaining.</p>
-
-        <h2>Where the brand stopped and the product started</h2>
-        <p>While the identity developed I was getting closer to the product — talking to customers, watching how they actually used Linro, finding where the existing experience got in the way.</p>
-        <p>The two stopped being separable. The system built to explain lineage on the outside was the system that could make lineage legible on the inside. That became the brief for redesigning the wider Linro experience.</p>
+        <p>While the identity developed, I ran product discovery, talking to customers, watching how they actually used Linro, finding where the existing experience got in the way.</p>
       </div>
     </aside>
 
@@ -1839,98 +1972,84 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
         <div class="lw-stage lw-stage--light" id="lw-slide-2" role="img" aria-label="The Linro wordmark drawing itself, on a light ground"></div>
       </figure>
 
-
-      <div class="t2-note">
-        <span class="t2-note-label">Direction</span>
-        <p>The identity moves away from the shields, gradients and navy the rest of the category shares. It borrows from Bauhaus systems and modular graphic design instead: a fixed set of blocks, generous space, and restraint everywhere the work does not need to speak.</p>
-      </div>
-
-
-      <figure class="t2-item t2-item--slide t2-reveal">
-        <div class="t2-slide-inner">
-          <img src="deck/slide-01.png" alt="Palette: a primary range of near-blacks, deep green and off-whites, and a secondary range of blues and reds held for state." width="1920" height="1090" loading="lazy" decoding="async">
+      <!-- Colour. Built from the board rather than exported from the deck, so
+           the bands are real swatches: the widths are the board's, carried as
+           flex proportions so the row fills whatever width the column has. -->
+      <figure class="t2-item t2-reveal lin-colour">
+        <div class="lin-swatch-block">
+          <div class="lin-swatch-row lin-swatch-row--primary">
+            <span style="flex:243;background:#0D1013"></span>
+            <span style="flex:138;background:#164642"></span>
+            <span style="flex:230;background:#181818"></span>
+            <span style="flex:81;background:#202124"></span>
+            <span style="flex:59;background:#464654"></span>
+            <span style="flex:68;background:#F8F5F2"></span>
+            <span style="flex:96;background:#FAFAFA"></span>
+            <span style="flex:205;background:#FEFEFE;box-shadow:inset 0 0 0 1px #EFEFEA"></span>
+          </div>
+          <span class="lin-swatch-label">Primary</span>
+        </div>
+        <div class="lin-swatch-block">
+          <div class="lin-swatch-row lin-swatch-row--secondary">
+            <span style="flex:150;background:#010006"></span>
+            <span style="flex:142;background:#17173B"></span>
+            <span style="flex:107;background:#222D5B"></span>
+            <span style="flex:64;background:#3956AD"></span>
+            <span style="flex:125;background:#35101B"></span>
+            <span style="flex:177;background:#931224"></span>
+            <span style="flex:110;background:#C71625"></span>
+          </div>
+          <span class="lin-swatch-label">Secondary</span>
         </div>
       </figure>
-      <figure class="t2-item t2-item--slide t2-reveal">
-        <div class="t2-slide-inner">
-          <img src="deck/slide-07.png" alt="Headline typeface: Aeonik, a geometric neo-grotesque with precise terminals and circular forms." width="1920" height="1090" loading="lazy" decoding="async">
+
+      <!-- Type. The two faces as they are specified on the board. -->
+      <figure class="t2-item t2-reveal lin-type">
+        <div class="lin-face">
+          <div class="lin-face-name lin-face-name--aeonik">Aeonik</div>
+          <div class="lin-face-alpha lin-face-alpha--aeonik">
+            <div>ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+            <div>abcdefghijklmnopqrstuvwxyz</div>
+          </div>
+          <div class="lin-face-rule"></div>
+          <p class="lin-face-note lin-face-note--serif">Aeonik is a geometric neo-grotesque with precise terminals, circular forms and mechanical construction to give it a controlled, modern character suited to technical brands, interfaces and identity systems.</p>
+        </div>
+        <div class="lin-face">
+          <div class="lin-face-name lin-face-name--spartan">League<br>Spartan</div>
+          <div class="lin-face-alpha lin-face-alpha--spartan">
+            <div>ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+            <div>abcdefghijklmnopqrstuvwxyz</div>
+          </div>
+          <div class="lin-face-rule"></div>
+          <p class="lin-face-note lin-face-note--spartan">A bold, modern, geometric sans-serif taking strong influence from ATF&rsquo;s classic Spartan family.</p>
         </div>
       </figure>
-      <figure class="t2-item t2-item--slide t2-reveal">
-        <div class="t2-slide-inner">
-          <img src="deck/slide-08.png" alt="Body typeface: League Spartan, a geometric sans taking its influence from ATF&rsquo;s Spartan family." width="1920" height="1090" loading="lazy" decoding="async">
+
+      <figure class="t2-item t2-reveal lin-screen">
+        <div class="t2-media" style="aspect-ratio: 2800 / 1334;">
+          <img src="screens/linro-violations.webp" alt="The Linro Violations view: open, stopped and watching items, with the lineage of the selected denial on the right." width="2800" height="1334" loading="lazy" decoding="async">
         </div>
       </figure>
 
-      <div class="t2-quote">
-        <blockquote>Nothing ships until it is in the lineage.</blockquote>
-      </div>
+      <figure class="t2-item t2-reveal lin-screen">
+        <div class="t2-media" style="aspect-ratio: 2800 / 1300;">
+          <img src="screens/linro-agents.webp" alt="The Agents view: one agent&rsquo;s run, its scope and children, and the events it recorded." width="2800" height="1300" loading="lazy" decoding="async">
+        </div>
+      </figure>
 
+      <figure class="t2-item t2-reveal lin-screen">
+        <div class="t2-media" style="aspect-ratio: 2800 / 1420;">
+          <img src="screens/linro-simulate.webp" alt="The Simulate view: a policy diff replayed against the record, showing what would have changed." width="2800" height="1420" loading="lazy" decoding="async">
+        </div>
+      </figure>
 
-      <div class="t2-note">
-        <span class="t2-note-label">Restraint</span>
-        <p>Near-black, deep green and off-white carry the brand. The blues and reds sit in a secondary range and are only spent on state, so that when something is wrong it is the only thing on the screen. Aeonik for headlines, League Spartan for body.</p>
-      </div>
-
-      <div class="t2-note">
-        <span class="t2-note-label">Marks</span>
-        <p>One set of parts builds everything. The wordmark is cut from a set of blocks, so the graphic language, the motion and the interface all use the same ones — and every state in the product is a small composition of them, same corner, same 28° terminal, at whatever size the moment needs. The identity behaves the way the product does: a thing that can be traced back to what it came from.</p>
-      </div>
-
-      <figure class="t2-item t2-screens">
+      <figure class="t2-item t2-screens lin-anim">
         <div class="t2-screens-inner">
           <div class="t2-frame" style="--fw:1280; --fh:1560" data-w="1280" data-h="1560">
             <iframe src="screens/marks.html?bare&set=all" title="The full sheet" loading="lazy" tabindex="-1"></iframe>
           </div>
         </div>
       </figure>
-
-      <div class="t2-note">
-        <span class="t2-note-label">Grammar</span>
-        <p>It is a language before it is a set of icons. White is something present and recorded. An outline is the same thing gone quiet. A ghost with lines moving across it is under suspicion. Colour is held for the three things that need it: red for an alert, violet for drift, blue for a policy boundary.</p>
-      </div>
-
-      <figure class="t2-item t2-screens">
-        <div class="t2-screens-inner">
-          <div class="t2-frame" style="--fw:1280; --fh:900" data-w="1280" data-h="900">
-            <iframe src="screens/marks.html?bare&set=core" title="Core set" loading="lazy" tabindex="-1"></iframe>
-          </div>
-        </div>
-      </figure>
-
-      <div class="t2-note">
-        <span class="t2-note-label">Motion</span>
-        <p>Each one animates the process it names rather than decorating it. An agent travels the perimeter of its scope and drops to an outline when it rests. A privilege escalation acquires permissions left to right and turns red at the first one past the line policy allows. A commit drops into the record and the record re-forms around it. The motion is the explanation.</p>
-      </div>
-
-      <figure class="t2-item t2-screens">
-        <div class="t2-screens-inner">
-          <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
-            <iframe src="screens/violations.html?bare" title="Violations" loading="lazy" tabindex="-1"></iframe>
-          </div>
-        </div>
-      </figure>
-      <figure class="t2-item t2-screens">
-        <div class="t2-screens-inner">
-          <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
-            <iframe src="screens/agent.html?bare" title="Agent" loading="lazy" tabindex="-1"></iframe>
-          </div>
-        </div>
-      </figure>
-      <figure class="t2-item t2-screens">
-        <div class="t2-screens-inner">
-          <div class="t2-frame" style="--fw:1280; --fh:820" data-w="1280" data-h="820">
-            <iframe src="screens/simulate.html?bare" title="Simulate" loading="lazy" tabindex="-1"></iframe>
-          </div>
-        </div>
-      </figure>
-
-
-
-
-
-
-
     </div>
   </div>
 
@@ -1977,7 +2096,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
     <span class="copy">© Coded by Fred 2026</span>
     <span class="links">
       <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener noreferrer"><span class="lt">LinkedIn</span><span class="arrow" aria-hidden="true"><svg width="10" height="8" viewBox="0 0 9.55 7.99" xmlns="http://www.w3.org/2000/svg" style="transform:rotate(180deg)"><g transform="translate(0 7.99) scale(1 -1)"><path fill="currentColor" d="M3.33 0C3.088 0 2.886 0.202 2.886 0.444L2.886 1.11L1.221 1.11C0.548 1.11 0 1.658 0 2.331L0 6.771C0 7.444 0.548 7.992 1.221 7.992L8.325 7.992C8.998 7.992 9.546 7.444 9.546 6.771L9.546 2.331C9.546 1.658 8.998 1.11 8.325 1.11L6.66 1.11L6.66 0.444C6.66 0.202 6.458 0 6.216 0L3.33 0ZM3.33 0.444L6.216 0.444L6.216 1.11L3.33 1.11L3.33 0.444ZM1.221 1.554L8.325 1.554C8.759 1.554 9.102 1.897 9.102 2.331L9.102 3.313C8.192 3.829 6.979 4.184 5.619 4.291C5.507 3.929 5.17 3.663 4.773 3.663C4.375 3.663 4.039 3.929 3.927 4.291C2.566 4.184 1.354 3.83 0.444 3.313L0.444 2.331C0.444 1.897 0.787 1.554 1.221 1.554ZM0.444 3.819C1.394 4.311 2.588 4.637 3.906 4.738C3.993 5.136 4.35 5.439 4.773 5.439C5.196 5.439 5.553 5.136 5.64 4.738C6.959 4.637 8.152 4.311 9.102 3.819L9.102 6.771C9.102 7.205 8.759 7.548 8.325 7.548L1.221 7.548C0.787 7.548 0.444 7.205 0.444 6.771L0.444 3.819ZM4.773 4.107C5.021 4.107 5.217 4.303 5.217 4.551C5.217 4.799 5.021 4.995 4.773 4.995C4.525 4.995 4.329 4.799 4.329 4.551C4.329 4.303 4.525 4.107 4.773 4.107Z"/></g></svg></span></a>
-      <a class="cv-download" href="Frederick%20Vincent%2020262.pdf" download><span class="lt">Download CV</span><span class="dl-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span></a>
+      <a class="cv-download" href="/Frederick%20Vincent%2020262.pdf" download><span class="lt">Download CV</span><span class="dl-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span></a>
       <a href="https://studiovincent.substack.com" target="_blank" rel="noopener noreferrer"><span class="lt">Substack</span><span class="arrow" aria-hidden="true"><svg width="12" height="13" viewBox="0 0 12.5 13.02" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g transform="translate(4.197 0)"><path d="M8.237 0.802L6.865 0.018C6.835 0 6.798 -0.005 6.764 0.004C6.73 0.013 6.701 0.035 6.684 0.065L0.019 11.273C0.011 11.286 0.007 11.301 0.004 11.316C0.004 11.32 0.003 11.324 0.003 11.328C0.002 11.331 0.001 11.335 0.001 11.338L0 12.886C0 12.932 0.025 12.975 0.066 12.998C0.087 13.01 0.11 13.016 0.133 13.016C0.155 13.016 0.178 13.011 0.198 12.999L1.571 12.236C1.574 12.234 1.577 12.231 1.581 12.229C1.584 12.227 1.587 12.225 1.59 12.222C1.602 12.212 1.612 12.201 1.62 12.188L8.284 0.98C8.321 0.918 8.3 0.838 8.237 0.802ZM6.846 0.308L7.302 0.569L0.772 11.553L0.315 11.291L6.846 0.308ZM0.266 11.565L0.753 11.843L1.239 12.121L0.266 12.662L0.266 11.565ZM1.458 11.945L1.001 11.684L7.532 0.7L7.988 0.961L1.458 11.945Z"/></g><g transform="translate(0 12.747)"><path d="M3.552 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26L3.552 0.26C3.626 0.26 3.685 0.202 3.685 0.13C3.685 0.058 3.626 0 3.552 0Z"/></g><g transform="translate(0 11.331)"><path d="M0.133 0.26L3.41 0.26C3.483 0.26 3.543 0.202 3.543 0.13C3.543 0.058 3.483 0 3.41 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 9.915)"><path d="M3.675 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26L3.675 0.26C3.748 0.26 3.807 0.202 3.807 0.13C3.807 0.058 3.748 0 3.675 0Z"/></g><g transform="translate(0 8.498)"><path d="M0.133 0.26L4.774 0.26C4.847 0.26 4.906 0.202 4.906 0.13C4.906 0.058 4.847 0 4.774 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 7.082)"><path d="M0.133 0.26L5.14 0.26C5.213 0.26 5.273 0.202 5.273 0.13C5.273 0.058 5.213 0 5.14 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 5.665)"><path d="M0.133 0.26L6.239 0.26C6.312 0.26 6.372 0.202 6.372 0.13C6.372 0.058 6.312 0 6.239 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 4.249)"><path d="M0.133 0.26L7.298 0.26C7.371 0.26 7.43 0.202 7.43 0.13C7.43 0.058 7.371 0 7.298 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 2.833)"><path d="M0.133 0.26L7.786 0.26C7.86 0.26 7.919 0.202 7.919 0.13C7.919 0.058 7.86 0 7.786 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g transform="translate(0 1.416)"><path d="M0.133 0.26L8.458 0.26C8.531 0.26 8.591 0.202 8.591 0.13C8.591 0.058 8.531 0 8.458 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g><g><path d="M0.133 0.26L9.679 0.26C9.753 0.26 9.812 0.202 9.812 0.13C9.812 0.058 9.753 0 9.679 0L0.133 0C0.059 0 0 0.058 0 0.13C0 0.202 0.059 0.26 0.133 0.26Z"/></g></svg></span></a>
     </span>
   </div>
@@ -3040,7 +3159,10 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   [['lw-slide', 'lw--paper'], ['lw-slide-2', 'lw--ink']].forEach(function (pair) {
-    var slide = mount(document.getElementById(pair[0]), 'lw--thread ' + pair[1]);
+    /* Bars only. The full line draw belongs to the arrival panel — running it
+       again on both slides repeats the same trick three times in one page.
+       Here the mark is already resolved and only the five bars breathe. */
+    var slide = mount(document.getElementById(pair[0]), 'lw--hatch ' + pair[1]);
     if (!slide || reduce || !('IntersectionObserver' in window) || !slide.getAnimations) return;
     var io = new IntersectionObserver(function (entries) {
       if (!entries[0].isIntersecting) return;

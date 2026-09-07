@@ -313,22 +313,22 @@ const POL = (x, y, w, h, U, a = '') =>
 
 /* ---------------- STATES (units; U px per unit) ---------------- */
 const STATES = [
- {id:'ambient',nm:'Ambient agent',cat:'presence',sets:['core','mini'],how:'The agent goes right along the top, down the side, left along the bottom, and stays at the bottom-left as an outline. Solid while it moves, quiet when it rests.',
+ {id:'ambient',nm:'Ambient agent',cat:'presence',sets:['core','mini'],how:'The agent travels the edge and settles bottom-left. Solid while it moves, an outline when it rests.',
   w:5.2,h:5.2,b:[{x:1.1,y:1.1,w:3,h:3,f:'wh',cut:'tl'},{x:0,y:0,w:.9,h:.9,f:'wh',a:'a-perim',px:4.3,py:4.3}]},
 
- {id:'multi',nm:'Multi agent',cat:'presence',sets:['core','mini'],how:'Three agents appear white around the parent. Then one keeps working, pulsing, while the other two go quiet as outlines.',
+ {id:'multi',nm:'Multi agent',cat:'presence',sets:['core','mini'],how:'Three agents around the parent. One keeps working and pulses, while the other two go quiet as outlines.',
   w:5.4,h:5.2,b:[{x:1.2,y:1.1,w:3,h:3,f:'wh',cut:'tl'},{x:4.5,y:.4,w:.9,h:.9,f:'wh',a:'a-quiet'},{x:4.5,y:4,w:.9,h:.9,f:'wh',a:'a-working',dl:.15},{x:0,y:4,w:.9,h:.9,f:'wh',a:'a-quiet',dl:.3}]},
 
- {id:'drift',nm:'Policy drift',cat:'policy',sets:['core','policy','mini'],how:'Rules stack in quickly from the left. The last one empties to an outline, its border turns violet, then it fills violet and drifts off along the line.',
+ {id:'drift',nm:'Policy drift',cat:'policy',sets:['core','policy','mini'],how:'Rules stack in from the left. The last one turns violet and drifts off along the line.',
   w:10.6,h:3,b:[{x:0,y:0,w:2,h:3,f:'wh',a:'a-stack',k:'2%'},{x:2.3,y:.4,w:1.1,h:2.6,f:'wh',a:'a-stack',k:'8%'},{x:3.7,y:0,w:2.6,h:3,f:'wh',a:'a-stack',k:'14%',cut:'tl'},{x:6.6,y:.7,w:1.2,h:2.3,f:'wh',a:'a-stack',k:'20%'},{x:8.1,y:0,w:1.6,h:3,f:'wh',a:'a-driftseq'}]},
 
- {id:'pr',nm:'PR flag',cat:'policy',sets:['policy'],how:'Bars stack in and fade on an even beat. Then the violet one slides out to the right, its end cut on a sharp diagonal. A flag.',
+ {id:'pr',nm:'PR flag',cat:'policy',sets:['policy'],how:'Bars stack in on an even beat. The violet one slides out to the right, cut on a diagonal. A flag.',
   w:6.4,h:5.6,b:[{x:0,y:0,w:4,h:1.1,f:'wh',a:'a-bump',k:'8%'},{x:0,y:1.5,w:4,h:1.1,f:'wh',a:'a-bump',k:'20%'},{x:0,y:3,w:4,h:1.1,f:'wh',a:'a-bump',k:'32%'},{x:0,y:4.5,w:4,h:1.1,f:'vi',cut:'tri',a:'a-flagslide'}]},
 
- {id:'suspect',nm:'Suspected file',cat:'alert',sets:['alerts','mini'],how:'The file appears white. A ghost of it slides out to the left, and lines start moving across the ghost.',
+ {id:'suspect',nm:'Suspected file',cat:'alert',sets:['alerts','mini'],how:'The file appears white. A ghost of it slides out to the left, with lines moving across it.',
   w:6.4,h:3.6,b:[{x:3.7,y:0,w:2.7,h:3.6,f:'gh',doc:true,a:'a-ghostL'},{x:3.7,y:0,w:2.7,h:3.6,f:'hz',doc:true,a:'a-linesL'},{x:3.7,y:0,w:2.7,h:3.6,f:'wh',doc:true}]},
 
- {id:'alertfile',nm:'Alert file',cat:'alert',sets:['alerts','mini'],how:'Three files load in white. Dots scan across all three in turn. On the second, the dots turn red — and then that file fills solid red. The others stay white.',
+ {id:'alertfile',nm:'Alert file',cat:'alert',sets:['alerts','mini'],how:'Dots scan three white files in turn. On the second they turn red, and that file fills red.',
   w:9.7,h:3.6,b:[
    {x:0,y:0,w:2.7,h:3.6,f:'wh',doc:true,a:'a-fileIn',k:'6%'},
    {x:3.5,y:0,w:2.7,h:3.6,f:'wh',doc:true,a:'a-fileInRed',k:'14%'},
@@ -338,19 +338,19 @@ const STATES = [
    {x:7,y:0,w:2.7,h:3.6,f:'dt',doc:true,a:'a-scanC'},
    {x:3.5,y:0,w:2.7,h:3.6,f:'dtr',doc:true,a:'a-scanRed'}]},
 
- {id:'blocked',nm:'What would have been blocked',cat:'enforcement',sets:['core','alerts','mini'],how:'Two ends, with ghosts of the steps between. A signal runs the thread. When it hits the middle one, that one comes alive with moving lines and the signal is absorbed.',
+ {id:'blocked',nm:'What would have been blocked',cat:'enforcement',sets:['core','alerts','mini'],how:'A signal runs the thread between two ends. It reaches the ghosted middle step, which comes alive, and stops there.',
   w:8.4,h:3,thr:[[1.4,1.5,7,1.5,'']],b:[{x:0,y:.4,w:1.4,h:2.2,f:'wh',cut:'tl'},{x:7,y:.4,w:1.4,h:2.2,f:'wh'},{x:2.3,y:.8,w:.9,h:1.4,f:'gh'},{x:3.8,y:.5,w:1,h:2,f:'gh'},{x:5.4,y:.8,w:.9,h:1.4,f:'gh'},{x:3.8,y:.5,w:1,h:2,f:'hz',a:'a-hit'},{x:1.5,y:1.1,w:.8,h:.8,f:'wh',a:'a-signal',to:2.35}]},
 
- {id:'spread',nm:'Suspected spread',cat:'alert',sets:['alerts'],how:'A clump in different sizes. On the right, blocks go ghost one after another, lines run through them, and they start to pulse. It spreads.',
+ {id:'spread',nm:'Suspected spread',cat:'alert',sets:['alerts'],how:'Blocks on the right go ghost one after another, lines running through them. It spreads.',
   w:7,h:4.6,b:[{x:0,y:0,w:2.2,h:2.8,f:'wh',cut:'tl'},{x:2.5,y:0,w:1.2,h:1.5,f:'wh'},{x:2.5,y:1.8,w:1.2,h:1,f:'wh'},{x:0,y:3.1,w:3.7,h:1.5,f:'wh'},
    {x:4,y:0,w:3,h:1.5,f:'wh',a:'a-infect',k:'26%'},{x:4,y:0,w:3,h:1.5,f:'hz',a:'a-infectLines',k:'30%'},
    {x:4,y:1.8,w:1.5,h:2.8,f:'wh',a:'a-infect',k:'44%'},{x:4,y:1.8,w:1.5,h:2.8,f:'hz',a:'a-infectLines',k:'48%'},
    {x:5.8,y:1.8,w:1.2,h:1.2,f:'wh',a:'a-infect',k:'62%'},{x:5.8,y:1.8,w:1.2,h:1.2,f:'hz',a:'a-infectLines',k:'66%'}]},
 
- {id:'escalate',nm:'Privilege escalation',cat:'alert',sets:['core','alerts','mini'],how:'Permissions in a row, the dashed line marking what this agent is allowed. It acquires them left to right, one lighting after another. The first one past the line lights red.',
+ {id:'escalate',nm:'Privilege escalation',cat:'alert',sets:['core','alerts','mini'],how:'The dashed line marks what the agent is allowed. Permissions light left to right. The first one past the line lights red.',
   w:9.2,h:2.6,pol:[[5.55,-.4,0,3.4]],b:[{x:0,y:.3,w:1.6,h:2,f:'ou',a:'a-acq',k:'14%'},{x:1.9,y:0,w:1.2,h:2.6,f:'ou',a:'a-acq',k:'26%'},{x:3.4,y:.5,w:1.9,h:1.6,f:'ou',cut:'tl',a:'a-acq',k:'38%'},{x:5.8,y:.2,w:1.4,h:2.2,f:'ou',a:'a-acqRed',k:'56%'},{x:7.5,y:.6,w:1.7,h:1.4,f:'ou'}]},
 
- {id:'commit',nm:'Commit change to lineage',cat:'lineage',sets:['core','policy','mini'],how:'A mosaic of different weights with one empty cell. A change arrives as an outline and locks solid. Then the mosaic solves itself: block after block slides into the gap, never overlapping, until it has re-formed.',
+ {id:'commit',nm:'Commit change to lineage',cat:'lineage',sets:['core','policy','mini'],how:'A change arrives as an outline and locks solid. The mosaic then solves itself, block sliding into gap until it has re-formed.',
   w:8,h:5,b:[
    {x:0,y:0,w:3,h:2,f:'wh',cut:'tl',g:5,a:'a-slide',px:0,py:3,k:'86%'},
    {x:3,y:0,w:2,h:1,f:'wh',g:5,a:'a-slide',px:-3,py:0,k:'78%'},
@@ -362,21 +362,21 @@ const STATES = [
    {x:0,y:3,w:2,h:2,f:'wh',g:5,a:'a-slide',px:3,py:0,k:'46%'},
    {x:2,y:3,w:3,h:2,f:'ou',g:5,a:'a-lockSlide',px:3,py:0}]},
 
- {id:'unrec',nm:'Unrecognised process',cat:'alert',sets:['alerts'],how:'A clear block crosses the thread to the file. It is refused. It comes back red, spinning, and is gone.',
+ {id:'unrec',nm:'Unrecognised process',cat:'alert',sets:['alerts'],how:'A clear block crosses to the file and is refused. It comes back red, spinning, and is gone.',
   w:8.2,h:2.4,thr:[[1.4,1.2,6.8,1.2,'']],b:[{x:0,y:.2,w:1.4,h:2,f:'wh'},{x:6.8,y:0,w:1.4,h:2.4,f:'wh',doc:true},{x:1.6,y:.75,w:.9,h:.9,f:'ou',a:'a-cross',to:4.3}]},
 
- {id:'imperson',nm:'Impersonation',cat:'alert',sets:['alerts'],how:'A shape with character. Beside it the same shape is rebuilt piece by piece, white, convincingly. Then red dots begin pulsing across the copy, and it turns red.',
+ {id:'imperson',nm:'Impersonation',cat:'alert',sets:['alerts'],how:'The shape is rebuilt beside itself, piece by piece, convincingly. Then red dots pulse across the copy and it turns red.',
   w:9.6,h:4,b:[{x:0,y:0,w:2.2,h:2.2,f:'wh',cut:'tl'},{x:2.5,y:0,w:1,h:1,f:'wh'},{x:2.5,y:1.2,w:1,h:1,f:'wh'},{x:0,y:2.5,w:1,h:1.5,f:'wh'},{x:1.3,y:2.5,w:2.2,h:1.5,f:'wh'},
    {x:5.4,y:0,w:2.2,h:2.2,f:'wh',cut:'tl',a:'a-copyIn a-turnRed',k:'22%'},{x:7.9,y:0,w:1,h:1,f:'wh',a:'a-copyIn a-turnRed',k:'30%'},{x:7.9,y:1.2,w:1,h:1,f:'wh',a:'a-copyIn a-turnRed',k:'38%'},{x:5.4,y:2.5,w:1,h:1.5,f:'wh',a:'a-copyIn a-turnRed',k:'46%'},{x:6.7,y:2.5,w:2.2,h:1.5,f:'wh',a:'a-copyIn a-turnRed',k:'54%'},
    {x:5.4,y:0,w:2.2,h:2.2,f:'dtr',cut:'tl',a:'a-dotsIn'},{x:7.9,y:0,w:1,h:1,f:'dtr',a:'a-dotsIn'},{x:7.9,y:1.2,w:1,h:1,f:'dtr',a:'a-dotsIn'},{x:5.4,y:2.5,w:1,h:1.5,f:'dtr',a:'a-dotsIn'},{x:6.7,y:2.5,w:2.2,h:1.5,f:'dtr',a:'a-dotsIn'}]},
 
- {id:'outside',nm:'Permission granted outside policy',cat:'policy',sets:['policy'],how:'The dashed box is what policy allows. One block is selected: it empties to black, its border turns violet, and then it carries out through the boundary. Outside, it turns blue and the boundary flags.',
+ {id:'outside',nm:'Permission granted outside policy',cat:'policy',sets:['policy'],how:'The dashed box is what policy allows. A selected block carries out through the boundary, turns blue outside it, and the boundary flags.',
   w:11.4,h:5.6,pol:[[0,0,7.4,5.6,'a-fence']],b:[{x:.6,y:.6,w:2.6,h:2.6,f:'wh',cut:'tl'},{x:3.6,y:.6,w:1.4,h:1.4,f:'wh'},{x:5.4,y:.6,w:1.4,h:2.6,f:'wh'},{x:.6,y:3.6,w:1.4,h:1.4,f:'wh'},{x:2.4,y:3.6,w:2.6,h:1.4,f:'wh'},{x:3.6,y:2.4,w:1.4,h:.6,f:'wh',a:'a-select',to:5.8},{x:3.6,y:2.4,w:.6,h:1.4,f:'wh',a:'a-select',to:5.8}]},
 
- {id:'handoff',nm:'Agent to agent handoff',cat:'lineage',sets:['policy','core'],how:'The agent sits inside the first block. It lifts out, crosses, and settles inside the second, which lights. Both end the same colour. The agent never changes size.',
+ {id:'handoff',nm:'Agent to agent handoff',cat:'lineage',sets:['policy','core'],how:'The agent lifts out of the first block, crosses, and settles in the second, which lights. It never changes size.',
   w:9.4,h:4,b:[{x:0,y:0,w:3.4,h:4,f:'wh',cut:'tl'},{x:6,y:0,w:3.4,h:4,f:'ou',a:'a-receiver'},{x:.7,y:2.4,w:1.1,h:1.1,f:'ink',a:'a-dock',to:6.0}]},
 
- {id:'check',nm:'Checking latest policy',cat:'policy',sets:['policy'],how:'Each rule starts as an empty outline. The agent runs along the baseline beneath them and they fill white one at a time, like a graph loading. The new version fills teal at the end; the agent sweeps back and every rule flashes teal before returning to white.',
+ {id:'check',nm:'Checking latest policy',cat:'policy',sets:['policy'],how:'The agent runs the baseline and the rules fill white one at a time. The newest fills teal, then every rule flashes teal on the sweep back.',
   w:9.2,h:6.4,b:[{x:0,y:1.4,w:1.3,h:3.6,f:'ou',a:'a-fill',k:'14%'},{x:1.6,y:.6,w:1.3,h:4.4,f:'ou',a:'a-fill',k:'22%'},{x:3.2,y:2,w:1.3,h:3,f:'ou',a:'a-fill',k:'30%'},{x:4.8,y:1,w:1.3,h:4,f:'ou',a:'a-fill',k:'38%'},{x:6.8,y:.2,w:2.4,h:4.8,f:'ou',cut:'tl',a:'a-fillTeal',k:'48%'},{x:0,y:5.3,w:1.1,h:1.1,f:'wh',a:'a-run2',px:7.4}]},
 ];
 

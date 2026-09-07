@@ -1310,7 +1310,7 @@ img { max-width: 100%; height: auto; display: block; }
     <nav class="nav" aria-label="Primary">
       <a href="/#how-this-works">Work together</a>
       <a href="#case-studies">Work</a>
-      <a href="#work">Writing</a>
+      <!-- Writing: hidden for the moment. Restore by uncommenting. <a href="#work">Writing</a> -->
       <a href="/about">About</a>
     </nav>
   </div>
@@ -1411,7 +1411,7 @@ img { max-width: 100%; height: auto; display: block; }
       <ul class="work-row fade-up">
 
         <li class="work-card work-card--kaizen">
-          <button type="button" class="work-card-hit" aria-label="View Kaizen case study">
+          <button type="button" class="work-card-hit" aria-label="View Kaizen case study" data-cs-open="/work/feed-redesign/" data-cs-slug="kaizen-feed">
           <div class="work-card-media">
             <div class="work-card-media-frame">
             <div class="work-card-logo" aria-hidden="true">
@@ -1432,9 +1432,9 @@ img { max-width: 100%; height: auto; display: block; }
           </div>
           <div class="work-card-body">
             <h3 class="work-card-title">Kaizen</h3>
-            <p class="work-card-desc">Building the brand and product for a radically different way to train for a marathon.</p>
+            <p class="work-card-desc">Building the brand, the product and the design system for a radically different way to train for a marathon.</p>
             <ul class="work-card-tags">
-              <li>Creative direction</li>
+              <li>Creative direction
               <li>Product design</li>
               <li>Design system</li>
             </ul>
@@ -1444,7 +1444,7 @@ img { max-width: 100%; height: auto; display: block; }
         </li>
 
         <li class="work-card work-card--linro">
-          <button type="button" class="work-card-hit" aria-label="View Linro case study">
+          <button type="button" class="work-card-hit" aria-label="View Linro case study" data-cs-open="/work/linro/" data-cs-slug="linro" data-cs-mode="modal" data-cs-tint="#000000">
           <div class="work-card-media" style="background-color:#000000;">
             <div class="work-card-media-frame">
             <div aria-hidden="true" style="position:absolute; left:52px; top:112.8px; width:229px; height:68px; background-image:url('/work/general/linro-logo.png'); background-size:231.5% 254.35%; background-position:4.89% 79.58%; background-repeat:no-repeat;"></div>
@@ -1454,7 +1454,7 @@ img { max-width: 100%; height: auto; display: block; }
             <h3 class="work-card-title">Linro</h3>
             <p class="work-card-desc">Giving invisible security infrastructure a visual language built around lineage.</p>
             <ul class="work-card-tags">
-              <li>Brand identity &amp; strategy</li>
+              <li>Brand identity &amp; strategy
             </ul>
           </div>
           </button>
@@ -1463,12 +1463,12 @@ img { max-width: 100%; height: auto; display: block; }
 
         <li class="work-card work-card--tag-tuition">
           <button type="button" class="work-card-hit" aria-label="View Tag Tuition case study" data-cs-open="/work/tag-tuition/" data-cs-slug="tag-tuition" data-cs-mode="modal" data-cs-mark="/work/tag-tuition/tag-logo.webp" data-cs-mark-w="730" data-cs-mark-h="516">
-          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-splash.jpg'); background-size:cover; background-position:50%;"></div>
+          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-splash.jpg'); background-size:134%; background-position:50% 42%;"></div>
           <div class="work-card-body">
             <h3 class="work-card-title">Tag Tuition</h3>
             <p class="work-card-desc">Turning a classroom curriculum into illustrated workbooks children could explore independently.</p>
             <ul class="work-card-tags">
-              <li>Creative direction</li>
+              <li>Creative direction
               <li>Editorial design</li>
               <li>Illustration</li>
             </ul>
@@ -1490,7 +1490,7 @@ img { max-width: 100%; height: auto; display: block; }
             <h3 class="work-card-title">Monet</h3>
             <p class="work-card-desc">Creating a desirable consumer brand for neuro tech people would actually want to wear.</p>
             <ul class="work-card-tags">
-              <li>Brand identity</li>
+              <li>Brand identity
               <li>Product design</li>
             </ul>
           </div>
@@ -1499,8 +1499,8 @@ img { max-width: 100%; height: auto; display: block; }
         </li>
 
         <li class="work-card work-card--kaizen-conversion">
-          <button type="button" class="work-card-hit" aria-label="View Kaizen conversion case study">
-          <div class="work-card-media" style="background-color:#13C19C;">
+          <button type="button" class="work-card-hit" aria-label="View Kaizen conversion case study" data-cs-open="/work/onboarding-redesign/" data-cs-slug="kaizen-onboarding" data-cs-mode="modal" data-cs-tint="#13C19C">
+          <div class="work-card-media" style="background:linear-gradient(rgba(9,20,17,0.46), rgba(9,20,17,0.46)), url('/work/feed-redesign/kaizen-landscape.webp') center 58% / auto 165% no-repeat;">
             <div class="work-card-media-frame">
             <div aria-hidden="true" style="position:absolute; left:65px; top:12px; width:190px; height:383px; border-radius:19.6px; overflow:hidden;">
               <video class="work-card-video" autoplay muted loop playsinline preload="metadata" poster="/videos/allaboard.webp" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
@@ -1514,7 +1514,7 @@ img { max-width: 100%; height: auto; display: block; }
             <h3 class="work-card-title">Kaizen</h3>
             <p class="work-card-desc">Finding the problem underneath what users were asking for, and increasing conversion by 10.9%.</p>
             <ul class="work-card-tags">
-              <li>Product design | Optimising conversion</li>
+              <li>Product design | Optimising conversion
             </ul>
           </div>
           </button>
@@ -1522,18 +1522,21 @@ img { max-width: 100%; height: auto; display: block; }
         </li>
 
         <li class="work-card work-card--suitepad">
-          <button type="button" class="work-card-hit" aria-label="View Suitepad AI case study">
-          <div class="work-card-media" style="background-color:#A79BC3;">
+          <button type="button" class="work-card-hit" aria-label="View Suitepad AI case study" data-cs-open="/work/suitepad/" data-cs-slug="suitepad" data-cs-mode="modal" data-cs-tint="#3F3550" data-cs-mark="/work/general/suitepad-logo-ink.png" data-cs-mark-w="370" data-cs-mark-h="124">
+          <div class="work-card-media" style="background-color:#3F3550;">
             <div class="work-card-media-frame">
-            <div aria-hidden="true" style="position:absolute; left:39px; top:56px; width:240px; height:171px; background-image:url('/work/general/suitepad-tablet.png'); background-size:cover; background-position:50%;"></div>
-            <div aria-hidden="true" style="position:absolute; left:55px; top:112.8px; width:185px; height:62px; background-image:url('/work/general/suitepad-logo.png'); background-size:cover; background-position:50%;"></div>
+            <div aria-hidden="true" style="position:absolute; left:16px; top:54px; width:288px; height:176px; border-radius:8px; overflow:hidden;">
+              <video class="work-card-video" autoplay muted loop playsinline preload="metadata" poster="/work/suitepad/screens/suitepad-ai-device.webp" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+                <source src="/work/suitepad/screens/suitepad-ai-device.mp4" type="video/mp4">
+              </video>
+            </div>
             </div>
           </div>
           <div class="work-card-body">
             <h3 class="work-card-title">Suitepad AI</h3>
             <p class="work-card-desc">Designing how conversational AI could live naturally inside the hotel room.</p>
             <ul class="work-card-tags">
-              <li>Product design | Prototyping AI interactions</li>
+              <li>Product design | Prototyping AI interactions
             </ul>
           </div>
           </button>
@@ -1921,7 +1924,8 @@ img { max-width: 100%; height: auto; display: block; }
          the centre of the viewport — the same sum measure() runs there. */
       var mw = parseFloat(hit.getAttribute('data-cs-mark-w')) || 730;
       var mh = parseFloat(hit.getAttribute('data-cs-mark-h')) || 516;
-      var coverW = Math.min(mw, vw * 0.62, (vh - 200) * (mw / mh));
+      var logoBig = parseFloat(hit.getAttribute('data-cs-logo-big')) || 620;
+      var coverW = Math.min(logoBig, vw * 0.58, (vh - 200) * (mw / mh));
       var coverH = coverW * (mh / mw);
 
       /* Start: sized to sit inside the card the way the artwork reads there. */
