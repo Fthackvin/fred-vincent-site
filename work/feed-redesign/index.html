@@ -785,7 +785,9 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    of the page is the range the family covers, and a picture of it cannot be
    read at any size. Quasimoda is named first; the stack behind it is there so
    the block still holds its shape for anyone without the family installed. */
-.kz-spec { background: #0B0D0F; }
+/* Follows the lockups, whose lower half is black, so the two dark blocks meet
+   directly rather than with the sequence's white gap between them. */
+.kz-spec { background: #0B0D0F; margin-top: 0; margin-bottom: -1px; }
 .kz-spec-inner {
   padding: clamp(48px, 8vh, 128px) clamp(24px, 7%, 116px);
   color: #F4F3EF;
@@ -812,9 +814,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   gap: 2px;
   margin-top: clamp(34px, 5vh, 72px);
 }
-.kz-spec-row { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
+/* The weights were pushed to the far right by space-between, stranding them
+   a column away from the words they label. They belong alongside. */
+.kz-spec-row { display: flex; align-items: baseline; justify-content: flex-start; gap: clamp(14px, 1.6vw, 26px); }
 .kz-spec-w { font-size: clamp(22px, 3.4vw, 46px); line-height: 1.42; }
 .kz-spec-lbl {
+  align-self: center;
   font-family: var(--body);
   font-weight: 300;
   font-size: 12px;
@@ -831,6 +836,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   line-height: 26px;
   color: rgba(244, 243, 239, 0.62);
 }
+/* The strip carried a light grey ground of its own, which sat as a pale slab
+   directly above the black outro. Its background is keyed out, and the figure
+   takes the outro's colour so the two read as one dark close to the page. */
+.kz-onblack, .kz-onblack .t2-media { background: #1a1a1a; }
+.kz-onblack { padding: clamp(28px, 4vh, 64px) 0 clamp(36px, 5vh, 80px); margin-bottom: -1px; }
 .kz-pair { display: flex; flex-direction: column; gap: 20px; padding-inline: clamp(16px, 6%, 96px);
   margin-block: clamp(28px, 4vh, 60px); }
 .kz-pair-title {
@@ -844,8 +854,14 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 /* One height governs both, so the pair reads as a set rather than two
    unrelated exports; each keeps its own proportions inside that. */
-.kz-pair-cell { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-.kz-pair-cell img { height: clamp(240px, 32vh, 430px); width: auto; max-width: 100%; object-fit: contain; object-position: left top; }
+/* Each cell is sized in proportion to its image's aspect, so both images fill
+   their column completely and still finish at exactly the same height. Fixed
+   heights with auto widths left them floating in cells far wider than they
+   were, which is where the gap between them came from. */
+.kz-pair-cell { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; min-width: 0; }
+.kz-pair-cell:nth-child(1) { flex: 1.493 1 0; }
+.kz-pair-cell:nth-child(2) { flex: 1.699 1 0; }
+.kz-pair-cell img { width: 100%; height: auto; display: block; }
 .kz-pair-cap {
   font-family: var(--body);
   font-weight: 300;
@@ -2428,7 +2444,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       </figure>
 
 
-      <figure class="t2-item t2-reveal">
+      <figure class="t2-item t2-reveal kz-onblack">
         <div class="t2-media" style="aspect-ratio: 2800 / 774;">
           <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="2800" height="774" loading="lazy" decoding="async">
         </div>
