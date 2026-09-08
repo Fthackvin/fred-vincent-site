@@ -1070,7 +1070,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    thing you can watch travel: the box collapses around it and it slides across
    to the middle. Fading it through the change means the size difference is all
    you see — it is simply in a different place when it comes back. */
-.t2-story-pin .chev { transition: opacity 150ms var(--t2-ease-min); }
+/* Rotated to point left, not down. Down reads as "there is more page below",
+   which is what the whole scroll already says; left points at the edge the
+   story actually comes in from, so the control describes what it does. */
+.t2-story-pin .chev { transform: rotate(90deg); }
+.t2-story-pin .chev { transition: opacity 150ms var(--t2-ease-min), transform 260ms var(--ease); }
 .t2-story-pin.is-swapping .chev { opacity: 0; }
 
 /* Open, it grows back to the labelled control even while minimised. In its
@@ -1821,6 +1825,30 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 .lin-screen { padding: clamp(14px, 1.8vw, 30px) clamp(18px, 3.2vw, 64px); }
 .lin-screen:first-of-type { padding-top: clamp(26px, 3.6vw, 56px); }
 .lin-anim { padding: clamp(14px, 1.8vw, 30px) clamp(18px, 3.2vw, 64px) 0; }
+/* Opens the mark sheet. Same ground as the screens so the dark run stays one
+   block, and set in the Aeonik treatment the specimen above uses — same face,
+   same tracking, a step down in size so it reads as a heading rather than as
+   a second specimen. */
+.lin-lede { background: #08090B; margin-top: 0;
+  padding: clamp(56px, 8vw, 128px) clamp(18px, 3.2vw, 64px) clamp(8px, 1.4vw, 22px); }
+.lin-lede-inner { max-width: 1180px; margin: 0 auto; }
+.lin-lede-title {
+  margin: 0 0 clamp(14px, 1.6vw, 26px);
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(38px, 5.6vw, 72px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: #E8E8E8;
+}
+.lin-lede-note {
+  max-width: 620px; margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 1.62;
+  color: rgba(232, 232, 232, 0.6);
+}
 /* The screens keep their own ground inside that padding. */
 .lin-screen .t2-media { background: none; }
 
@@ -2052,6 +2080,13 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
       <figure class="t2-item t2-reveal lin-screen">
         <div class="t2-media" style="aspect-ratio: 2800 / 1420;">
           <img src="screens/linro-simulate.webp" alt="The Simulate view: a policy diff replayed against the record, showing what would have changed." width="2800" height="1420" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-reveal lin-lede">
+        <div class="lin-lede-inner">
+          <h2 class="lin-lede-title">Distributed interactions</h2>
+          <p class="lin-lede-note">The way developers work is changing, and a lot of them now reach Linro through ai clients rather than through the product itself. Having the brand present in those interactions mattered as much as having it in the interface. These are some of them.</p>
         </div>
       </figure>
 
@@ -2711,7 +2746,10 @@ var T2_CONFIG = {
         close.classList.toggle('is-shown', next);
         if (pin) pin.classList.toggle('is-shown', next);
       }
-      var small = minned ? y > vh * 0.95 - 64 : y > vh * 0.95;
+      /* Held at full width well past the first screen. Collapsing at 0.95vh
+         took the label away while the reader was still arriving at the work,
+         so the control shrank before it had been read. */
+      var small = minned ? y > vh * 1.75 - 64 : y > vh * 1.75;
       if (small !== minned) {
         minned = small;
         if (pin) {

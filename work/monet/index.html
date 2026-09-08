@@ -1041,7 +1041,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    thing you can watch travel: the box collapses around it and it slides across
    to the middle. Fading it through the change means the size difference is all
    you see — it is simply in a different place when it comes back. */
-.t2-story-pin .chev { transition: opacity 150ms var(--t2-ease-min); }
+/* Rotated to point left, not down. Down reads as "there is more page below",
+   which is what the whole scroll already says; left points at the edge the
+   story actually comes in from, so the control describes what it does. */
+.t2-story-pin .chev { transform: rotate(90deg); }
+.t2-story-pin .chev { transition: opacity 150ms var(--t2-ease-min), transform 260ms var(--ease); }
 .t2-story-pin.is-swapping .chev { opacity: 0; }
 
 /* Open, it grows back to the labelled control even while minimised. In its
@@ -1611,7 +1615,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
      outro; it only exists in the window between the player leaving and that
      band arriving. -->
 <a class="t2-nextfloat" id="t2-nextfloat" href="/work/tag-tuition/" data-t2-exit="/work/tag-tuition/" aria-label="Next project: Tag Tuition" tabindex="-1">
-  <span class="t2-nextfloat-thumb" style="background:#13C19C; position:relative;"><span style="position:absolute; top:6px; left:50%; transform:translateX(-50%); width:38px; bottom:0; border-radius:5px 5px 0 0; overflow:hidden; display:block;"><video autoplay muted loop playsinline preload="metadata" poster="/videos/allaboard.webp" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;"><source src="/videos/allaboard.webm" type="video/webm"><source src="/videos/allaboard.mp4" type="video/mp4"></video></span></span></span>
+  <span class="t2-nextfloat-thumb" style="background-image:url('/work/general/tag-tuition-splash.jpg');"></span></span>
   <span>
     <span class="t2-nextfloat-eyebrow">Next project</span>
     <span class="t2-nextfloat-title">Tag Tuition</span>
@@ -2229,7 +2233,10 @@ var T2_CONFIG = {
         close.classList.toggle('is-shown', next);
         if (pin) pin.classList.toggle('is-shown', next);
       }
-      var small = minned ? y > vh * 0.95 - 64 : y > vh * 0.95;
+      /* Held at full width well past the first screen. Collapsing at 0.95vh
+         took the label away while the reader was still arriving at the work,
+         so the control shrank before it had been read. */
+      var small = minned ? y > vh * 1.75 - 64 : y > vh * 1.75;
       if (small !== minned) {
         minned = small;
         if (pin) {

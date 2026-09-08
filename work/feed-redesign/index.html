@@ -980,18 +980,18 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    covered by the panel below it, which is navy already. */
 /* Travel scales with the frame: a phone's landscape is a third the height, so
    the same pixel distance would throw the bands right out of it. */
-.t2-item--pano { --lz-travel: -190px; --lz-drift: 30px; --lz-lift: 76px; }
+.t2-item--pano { --lz-travel: -245px; --lz-drift: 38px; --lz-lift: 76px; }
 @media (max-width: 899px) {
-  .t2-item--pano { --lz-travel: -120px; --lz-drift: 16px; --lz-lift: 40px; }
-  .t2-item--pano .lz-svg { height: 168%; }
+  .t2-item--pano { --lz-travel: -155px; --lz-drift: 20px; --lz-lift: 40px; }
+  .t2-item--pano .lz-svg { height: 176%; }
 }
 @media (max-width: 599px) {
   /* A 21:9 band is 167px tall on a phone — too short to read as a landscape,
      and it left only 3px of overscan over the travel. A taller frame fixes
      both at once. */
   .t2-item--pano .t2-media { aspect-ratio: 3 / 2; }
-  .t2-item--pano { --lz-travel: -84px; --lz-drift: 10px; --lz-lift: 26px; }
-  .t2-item--pano .lz-svg { height: 152%; }
+  .t2-item--pano { --lz-travel: -108px; --lz-drift: 13px; --lz-lift: 26px; }
+  .t2-item--pano .lz-svg { height: 160%; }
 }
 /* The dark blocks stack with zero margin, but at fractional scroll positions
    the browser rounds their edges independently and the white page shows
@@ -1048,7 +1048,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
      below the frame, so the landscape met the panel underneath on a dead
      straight cut. 150% still clears the travel with room to spare and brings
      that curve back into shot. */
-  height: 134%;
+  height: 144%;
   margin-top: 0;
   display: block;
 }
@@ -1489,7 +1489,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    thing you can watch travel: the box collapses around it and it slides across
    to the middle. Fading it through the change means the size difference is all
    you see — it is simply in a different place when it comes back. */
-.t2-story-pin .chev { transition: opacity 150ms var(--t2-ease-min); }
+/* Rotated to point left, not down. Down reads as "there is more page below",
+   which is what the whole scroll already says; left points at the edge the
+   story actually comes in from, so the control describes what it does. */
+.t2-story-pin .chev { transform: rotate(90deg); }
+.t2-story-pin .chev { transition: opacity 150ms var(--t2-ease-min), transform 260ms var(--ease); }
 .t2-story-pin.is-swapping .chev { opacity: 0; }
 
 /* Open, it grows back to the labelled control even while minimised. In its
@@ -3189,7 +3193,10 @@ var T2_CONFIG = {
         close.classList.toggle('is-shown', next);
         if (pin) pin.classList.toggle('is-shown', next);
       }
-      var small = minned ? y > vh * 0.95 - 64 : y > vh * 0.95;
+      /* Held at full width well past the first screen. Collapsing at 0.95vh
+         took the label away while the reader was still arriving at the work,
+         so the control shrank before it had been read. */
+      var small = minned ? y > vh * 1.75 - 64 : y > vh * 1.75;
       if (small !== minned) {
         minned = small;
         if (pin) {

@@ -1872,7 +1872,10 @@ var CS_CONFIG = {
      homepage Work carousel, wrapping at the end. */
   nextProject: {
     placeholder: false,
-    href: '/#case-studies',
+    /* Straight into the case study. This pointed at '/#case-studies', which
+       loaded the homepage and snapped to the carousel instead of opening the
+       project the card names — the same fault already fixed on Tag Tuition. */
+    href: '/work/suitepad/',
     title: 'Suitepad AI',
     description: 'Designing how conversational AI could live naturally inside the hotel room.',
     /* null keeps the mark already in the markup. */
