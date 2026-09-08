@@ -50,5 +50,37 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/work/feed-redesign",
+      "destination": "/work/kaizen-brand-and-product",
+      "permanent": true
+    },
+    {
+      "source": "/work/feed-redesign/",
+      "destination": "/work/kaizen-brand-and-product/",
+      "permanent": true
+    },
+    {
+      "source": "/work/feed-redesign/:path*",
+      "destination": "/work/kaizen-brand-and-product/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/work/onboarding-redesign",
+      "destination": "/work/kaizen-onboarding",
+      "permanent": true
+    },
+    {
+      "source": "/work/onboarding-redesign/",
+      "destination": "/work/kaizen-onboarding/",
+      "permanent": true
+    },
+    {
+      "source": "/work/onboarding-redesign/:path*",
+      "destination": "/work/kaizen-onboarding/:path*",
+      "permanent": true
+    }
   ]
 }

@@ -125,8 +125,8 @@ function iconImg(idx) {
    this site. When they appear in the feed we link to the local page
    instead of Substack so readers land on the full version. */
 const LOCAL_OVERRIDES = {
-  'all-aboard': '/work/onboarding-redesign/',
-  'answering-the-wrong-question': '/work/feed-redesign/',
+  'all-aboard': '/work/kaizen-onboarding/',
+  'answering-the-wrong-question': '/work/kaizen-brand-and-product/',
 };
 
 function resolveLink(originalLink) {
