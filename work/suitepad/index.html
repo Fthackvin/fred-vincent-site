@@ -929,7 +929,12 @@ html.cs-entered .cs-video.is-away,
      controls centre their glyphs, so a flush box still reads as inset; pulling
      each out by half its own padding puts the glyph itself on the film's edge,
      which is the line the eye actually follows. */
-  width: 100%;
+  /* align-self, not width:100%. The player is a fixed, shrink-to-fit box, so a
+     percentage width here is circular: the wrapper collapsed to the frame's
+     resting size and then squeezed the frame — which is a flex item that can
+     shrink — back down, so expanding to 220px silently did nothing. Stretch
+     matches the wrapper without asking it how wide it is. */
+  align-self: stretch;
   justify-content: space-between;
   gap: 8px;
   font-family: "Test Söhne", "Inter", system-ui, sans-serif;
@@ -2713,6 +2718,10 @@ var CS_CONFIG = {
         e.stopPropagation();
         media.muted = !media.muted;
         chosenSilent = media.muted;
+        /* Turning the sound on means settling in to watch, so the player goes
+           to its full size with it. Muting again leaves it there — shrinking
+           the thing you are watching because you silenced it would be odd. */
+        if (!expanded) { expanded = true; render(); }
         paintMute();
       });
       media.addEventListener('volumechange', paintMute);
