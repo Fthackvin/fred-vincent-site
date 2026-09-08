@@ -1288,7 +1288,10 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    way the homepage does. Colours are the homepage's dark-active values rather
    than new ones. */
 .t2-outro {
-  background: #1a1a1a;
+  /* Matched to the interactions sheet above rather than the site's usual
+     #1a1a1a, so the foot of this page reads as one continuous dark block
+     instead of stepping to a lighter grey under the mark sheet. */
+  background: #08090B;
   color: #F8FAFC;
   padding: clamp(64px, 12vh, 150px) 0 clamp(40px, 6vh, 72px);
   margin-top: 0;
@@ -1357,7 +1360,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 .t2-cta:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 4px; }
 
 .t2-footer {
-  background: #1a1a1a;
+  background: #08090B;
   border-top: 1px solid rgba(248, 250, 252, 0.14);
   padding: 24px 0 32px;
 }
@@ -1501,17 +1504,29 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    through the tail, which is exactly what reads as unsteady. Softened at both
    ends, even in between. */
 .lw--thread .ltr { opacity: 1; }
-.lw--thread .th { animation-timing-function: cubic-bezier(.45, .2, .5, .85); }
-.lw--thread .th-L      { animation-name: lwDraw9; animation-delay: 0s; }
-.lw--thread .th-I      { animation-name: lwDraw5; animation-delay: .46s; }
-.lw--thread .th-N      { animation-name: lwDraw9; animation-delay: .72s; }
-.lw--thread .th-N2     { animation-name: lwDraw5; animation-delay: 1.14s; }
-.lw--thread .th-Rstem  { animation-name: lwDraw5; animation-delay: 1.38s; }
-.lw--thread .th-Rbowl  { animation-name: lwDraw9; animation-delay: 1.62s; }
-.lw--thread .th-Rleg   { animation-name: lwDraw4; animation-delay: 2.06s; }
-@keyframes lwDraw4 { 0% { stroke-dashoffset: 1.03; } 3.4% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes lwDraw5 { 0% { stroke-dashoffset: 1.03; } 4.4% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes lwDraw9 { 0% { stroke-dashoffset: 1.03; } 6.2% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+/* One shared curve made every stroke move at the same rate, which is what read
+   as mechanical. A hand does not: it drives hard out of a corner, eases through
+   a curve, and flicks a short tail. Each stroke gets its own easing and its own
+   duration, and the whole sequence is pulled in from ~4.3s to ~2.5s. */
+.lw--thread .th-L      { animation-name: lwDraw9; animation-delay: 0s;
+                         animation-timing-function: cubic-bezier(.36, .16, .34, 1); }
+.lw--thread .th-I      { animation-name: lwDraw5; animation-delay: .34s;
+                         animation-timing-function: cubic-bezier(.62, .04, .26, 1); }
+.lw--thread .th-N      { animation-name: lwDraw9; animation-delay: .54s;
+                         animation-timing-function: cubic-bezier(.3, .2, .4, .95); }
+.lw--thread .th-N2     { animation-name: lwDraw5; animation-delay: .90s;
+                         animation-timing-function: cubic-bezier(.56, .08, .3, 1); }
+.lw--thread .th-Rstem  { animation-name: lwDraw5; animation-delay: 1.06s;
+                         animation-timing-function: cubic-bezier(.5, .1, .3, 1); }
+/* The bowl is the one place the hand slows — it is the only real curve in the
+   word, so it holds a fraction longer through the turn. */
+.lw--thread .th-Rbowl  { animation-name: lwDraw9; animation-delay: 1.24s;
+                         animation-timing-function: cubic-bezier(.26, .2, .44, .9); }
+.lw--thread .th-Rleg   { animation-name: lwDraw4; animation-delay: 1.58s;
+                         animation-timing-function: cubic-bezier(.64, .04, .28, 1); }
+@keyframes lwDraw4 { 0% { stroke-dashoffset: 1.03; } 2.6% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+@keyframes lwDraw5 { 0% { stroke-dashoffset: 1.03; } 3.3% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+@keyframes lwDraw9 { 0% { stroke-dashoffset: 1.03; } 5.2% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
 
 /* Each letter swaps to exact geometry the instant its own draw completes, so
    the stroked version is never left standing in for the drawn one. The delays
@@ -1519,17 +1534,21 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    I and the N diagonal, so it waits for the later of the two. */
 .lw--thread .lf { animation-name: lwHold; animation-timing-function: steps(1, end); }
 @keyframes lwHold { 0% { opacity: 0; } 0.5%, 100% { opacity: 1; } }
-.lw--thread .lf-L { animation-delay: .62s; }
-.lw--thread .lf-I { animation-delay: 1.34s; }
-.lw--thread .lf-N { animation-delay: 1.58s; }
-.lw--thread .lf-R { animation-delay: 2.4s; }
+.lw--thread .lf-L { animation-delay: .52s; }
+.lw--thread .lf-I { animation-delay: 1.06s; }
+.lw--thread .lf-N { animation-delay: 1.24s; }
+.lw--thread .lf-R { animation-delay: 1.88s; }
 
 /* the O draws once as a thread around the ring */
-.lw--thread .drawer { animation-name: lwRing; animation-timing-function: cubic-bezier(.5, 0, .15, 1); animation-delay: 2.3s; }
-@keyframes lwRing { 0% { stroke-dashoffset: 1; } 10% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+/* The ring used to wait for the R to finish and then take a full second on its
+   own, which is the gap that read as the O lagging. It now starts while the
+   R's leg is still travelling and draws faster, so the word closes as one
+   movement instead of a word followed by a circle. */
+.lw--thread .drawer { animation-name: lwRing; animation-timing-function: cubic-bezier(.42, .04, .2, 1); animation-delay: 1.42s; }
+@keyframes lwRing { 0% { stroke-dashoffset: 1; } 6.6% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
 
 /* then the hatch ticks on and settles into the wedge */
-.lw--thread .home { animation-name: lwTick; animation-timing-function: cubic-bezier(.4, 0, .2, 1); animation-delay: calc(3.3s + var(--i) * 60ms); }
+.lw--thread .home { animation-name: lwTick; animation-timing-function: cubic-bezier(.4, 0, .2, 1); animation-delay: calc(2.16s + var(--i) * 44ms); }
 @keyframes lwTick {
   0%    { opacity: 0; transform: translate(var(--sx), var(--sy)) rotate(var(--phi)) scaleX(.35) rotate(calc(var(--phi) * -1)); }
   0.7%  { opacity: 1; }
@@ -1824,7 +1843,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 .lin-screen, .lin-anim { background: #08090B; margin-top: 0; }
 .lin-screen { padding: clamp(14px, 1.8vw, 30px) clamp(18px, 3.2vw, 64px); }
 .lin-screen:first-of-type { padding-top: clamp(26px, 3.6vw, 56px); }
-.lin-anim { padding: clamp(14px, 1.8vw, 30px) clamp(18px, 3.2vw, 64px) 0; }
+.lin-anim { padding: clamp(14px, 1.8vw, 30px) clamp(18px, 3.2vw, 64px) clamp(64px, 9vh, 150px); }
 /* Opens the mark sheet. Same ground as the screens so the dark run stays one
    block, and set in the Aeonik treatment the specimen above uses — same face,
    same tracking, a step down in size so it reads as a heading rather than as
