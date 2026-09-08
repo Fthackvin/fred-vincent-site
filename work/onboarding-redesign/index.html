@@ -913,11 +913,27 @@ html.cs-entered .cs-video.is-away,
   .cs-video-frame:hover .cs-video-overlay,
   .cs-video-frame:focus-visible .cs-video-overlay { opacity: 1; }
 }
-.cs-video-overlay .glyph { width: 30px; height: 36px; color: #FFFFFF; }
+/* Stopped, the play mark stays up: a still frame with no control on it reads as
+   an image rather than something you can start. Running, the pause mark is only
+   there when the pointer is, so it is not sitting over the film throughout.
+   `is-expanded` tracks playback, so :not() is the stopped state. */
+.cs-video:not(.is-expanded) .cs-video-overlay { opacity: 1; }
+/* No pointer means no hover, and the overlay is then the only way to stop it. */
+@media (hover: none) {
+  .cs-video-overlay { opacity: 1; }
+}
+.cs-video-overlay .glyph { width: 34px; height: 40px; color: #FFFFFF; }
+.cs-video-toggle[hidden] { display: none; }
 /* Persistent black control below the frame — always present, mirrors state. */
 .cs-video-meta {
   display: flex;
   align-items: center;
+  /* Spans the film rather than huddling under its right corner. The two round
+     controls centre their glyphs, so a flush box still reads as inset; pulling
+     each out by half its own padding puts the glyph itself on the film's edge,
+     which is the line the eye actually follows. */
+  width: 100%;
+  justify-content: space-between;
   gap: 8px;
   font-family: "Test Söhne", "Inter", system-ui, sans-serif;
   font-size: 13px;
@@ -932,12 +948,26 @@ html.cs-entered .cs-video.is-away,
 .cs-video-toggle:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; border-radius: 3px; }
 /* A real target rather than a 13px character — this is the control that takes
    the player away, so it needs to be findable and hittable. */
+/* Autoplay has to start silent to be allowed at all, so there has to be an
+   obvious way to turn the sound on. Sized with the dismiss beside it: at 22px
+   these were small targets for the two things a reader most wants to do. */
+.cs-video-mute {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  margin-left: -6px;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #5C5C5C;
+  transition: color 160ms var(--ease), background-color 160ms var(--ease);
+}
+.cs-video-mute:hover { color: #1A1815; background: rgba(0, 0, 0, 0.06); }
+.cs-video-mute:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 2px; }
 .cs-video-dismiss {
   border: 0; background: none; padding: 0; cursor: pointer;
-  width: 22px; height: 22px; border-radius: 50%;
+  margin-right: -6px;
+  width: 28px; height: 28px; border-radius: 50%;
   display: inline-flex; align-items: center; justify-content: center;
   font-family: "Test Söhne", "Inter", system-ui, sans-serif;
-  font-size: 19px; line-height: 1; color: #5C5C5C;
+  font-size: 24px; line-height: 1; color: #5C5C5C;
   transition: color 160ms var(--ease), background-color 160ms var(--ease);
 }
 .cs-video-dismiss:hover { color: #1A1815; background: rgba(0, 0, 0, 0.06); }
@@ -1845,8 +1875,15 @@ html.cs-scrolled .cs-cover .cs-cue {
     </span>
   </button>
   <div class="cs-video-meta">
-    <button type="button" class="cs-video-toggle" id="cs-video-toggle" aria-label="Play video">
+    <button type="button" class="cs-video-toggle" id="cs-video-toggle" aria-label="Play video" hidden>
       <svg viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" width="10" height="12" id="cs-video-toggle-glyph"><path d="M0 0l10 6-10 6z"/></svg>
+    </button>
+    <button type="button" class="cs-video-mute" id="cs-video-mute" data-no-drag aria-label="Unmute video">
+      <svg id="cs-video-mute-glyph" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/>
+        <g id="cs-video-mute-off"><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></g>
+        <g id="cs-video-mute-on" style="display:none"><path d="M16.2 8.4a5 5 0 0 1 0 7.2"/><path d="M19 5.8a9 9 0 0 1 0 12.4"/></g>
+      </svg>
     </button>
     <span id="cs-video-label">Fred 0:52</span>
     <button type="button" class="cs-video-dismiss" id="cs-video-dismiss" data-no-drag aria-label="Hide video">×</button>
@@ -2509,8 +2546,21 @@ var CS_CONFIG = {
       media.playsInline = true;
       media.preload = 'metadata';
       if (vcfg.poster) media.poster = vcfg.poster;
+      /* Muted is what makes autoplay legal; the mute control turns it on. */
+      media.muted = true;
       vFrame.insertBefore(media, vFrame.firstChild);
       vPoster.hidden = true;
+
+      /* The label shows the real length rather than a number typed into the
+         config, so it cannot disagree with the file that is actually there. */
+      media.addEventListener('loadedmetadata', function () {
+        var d = media.duration;
+        if (!isFinite(d) || d <= 0) return;
+        var m = Math.floor(d / 60);
+        var sec = String(Math.round(d % 60)).padStart(2, '0');
+        if (sec === '60') { m += 1; sec = '00'; }
+        vLabel.textContent = ((vcfg.label || '') + ' ' + m + ':' + sec).trim();
+      });
     }
 
     function render() {
@@ -2524,14 +2574,12 @@ var CS_CONFIG = {
     /* Reaching the end returns it to the start and stops. Playback position is
        otherwise never touched, so pausing and playing again continues from
        exactly where the reader left off. */
-    var resetTimer = null;
+    /* Held, not flashed. At 1.6 seconds this was gone before the reader had
+       finished registering that the film had ended, which left a still frame
+       and no obvious way to run it again. It stays until they act on it —
+       setPlaying(true) clears it, and the frame under it is the button. */
     function markReset() {
-      if (resetTimer) clearTimeout(resetTimer);
       vWrap.classList.add('is-reset');
-      resetTimer = setTimeout(function () {
-        vWrap.classList.remove('is-reset');
-        resetTimer = null;
-      }, 1600);
     }
 
     function setPlaying(next) {
@@ -2560,6 +2608,7 @@ var CS_CONFIG = {
       /* Commit the expanded size with the size transition switched off, so the
          player appears at full size rather than growing into it. */
       vWrap.classList.add('is-instant');
+      unmute();
       setPlaying(true);
       void vWrap.offsetWidth;
       setTimeout(function () { vWrap.classList.remove('is-instant'); }, 60);
@@ -2578,10 +2627,46 @@ var CS_CONFIG = {
       });
     }
 
-    vFrame.addEventListener('click', function () { setPlaying(!playing); });
-    vToggle.addEventListener('click', function () { setPlaying(!playing); });
+    /* Sound. Autoplay is only legal muted, so a film starts silent and any
+       deliberate press is taken as asking for it — the restore tab included.
+       An explicit press of the mute control is remembered and not overridden. */
+    var vMute = document.getElementById('cs-video-mute');
+    var vMuteOff = document.getElementById('cs-video-mute-off');
+    var vMuteOn = document.getElementById('cs-video-mute-on');
+    var chosenSilent = false;
+    function paintMute() {
+      if (!vMute || !media) return;
+      var m = media.muted;
+      if (vMuteOff) vMuteOff.style.display = m ? '' : 'none';
+      if (vMuteOn) vMuteOn.style.display = m ? 'none' : '';
+      vMute.setAttribute('aria-label', m ? 'Unmute video' : 'Mute video');
+      vMute.setAttribute('aria-pressed', m ? 'false' : 'true');
+    }
+    function unmute() {
+      if (media && media.muted && !chosenSilent) media.muted = false;
+      paintMute();
+    }
+    if (vMute && media) {
+      vMute.addEventListener('click', function (e) {
+        e.stopPropagation();
+        media.muted = !media.muted;
+        chosenSilent = media.muted;
+        paintMute();
+      });
+      media.addEventListener('volumechange', paintMute);
+      paintMute();
+    } else if (vMute) {
+      vMute.remove();
+    }
+
+    vFrame.addEventListener('click', function () { unmute(); setPlaying(!playing); });
+    vToggle.addEventListener('click', function () { unmute(); setPlaying(!playing); });
     vDismiss.addEventListener('click', function () {
       setPlaying(false);
+      /* Put away means put away: bringing it back starts the film rather than
+         resuming a middle the reader has probably lost the thread of. */
+      if (media) media.currentTime = 0;
+      vWrap.classList.remove('is-reset');
       vWrap.hidden = true;
       vRestore.classList.add('is-shown');
       csVideoState.dismissed = true;
@@ -2598,6 +2683,7 @@ var CS_CONFIG = {
       csVideoState.dismissed = false;
       csVideoState.held = true;
       vWrap.classList.remove('is-collapsed');
+      unmute();
       setPlaying(true);
     });
     render();
