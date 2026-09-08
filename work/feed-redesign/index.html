@@ -2681,7 +2681,7 @@ var T2_CONFIG = {
      element, no placeholder, no reserved space. `src` stays null until a real
      file exists; the component shows an obvious placeholder meanwhile and no
      URL is invented. */
-  video: { enabled: true, src: null, poster: null, label: 'Fred', duration: '0:52' },
+  video: { enabled: false, src: null, poster: null, label: 'Fred', duration: '0:52' },
   exitHref: '/#case-studies',
   returnSection: 'case-studies'
 };
@@ -2703,7 +2703,17 @@ var T2_CONFIG = {
   var wrap = document.getElementById('t2-video');
   var slot = document.getElementById('t2-video-slot');
   if (!wrap || !slot) return;
-  if (!cfg || !cfg.enabled) { slot.remove(); return; }
+  if (!cfg || !cfg.enabled) {
+    /* No video configured: take the whole apparatus out, not just the slot.
+       The restore tab lives outside this block in the body and is shown by the
+       scroll handler, so leaving it behind put a "Project video" tab in the
+       corner of a page that has no video to restore. */
+    slot.remove();
+    var orphanTab = document.getElementById('t2-video-restore');
+    if (orphanTab) orphanTab.remove();
+    wrap.remove();
+    return;
+  }
 
   wrap.hidden = false;
 
