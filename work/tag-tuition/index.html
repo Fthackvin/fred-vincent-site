@@ -2478,9 +2478,31 @@ var CS_CONFIG = {
        Nothing touches currentTime, so coming back resumes exactly where the
        reader left it. */
     var wasPlayingBeforeAway = false;
+    var LEVEL = 0.38;
+    var fadeTimer = null;
+    /* Cutting the sound dead as the player fades out is heard as a glitch — the
+       picture is still dissolving while the voice has already gone. The level
+       rides down with it over the same beat, and back up on return. */
+    function rampVolume(to, ms, done) {
+      if (!media) { if (done) done(); return; }
+      if (fadeTimer) clearInterval(fadeTimer);
+      var from = media.volume, t0 = Date.now();
+      fadeTimer = setInterval(function () {
+        var k = Math.min(1, (Date.now() - t0) / ms);
+        media.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+        if (k >= 1) { clearInterval(fadeTimer); fadeTimer = null; if (done) done(); }
+      }, 25);
+    }
     vWrap.addEventListener('cs:away', function (e) {
-      if (e.detail) { wasPlayingBeforeAway = playing; if (playing) setPlaying(false); }
-      else if (wasPlayingBeforeAway) { wasPlayingBeforeAway = false; setPlaying(true); }
+      if (e.detail) {
+        wasPlayingBeforeAway = playing;
+        if (playing) rampVolume(0, 260, function () { setPlaying(false); media.volume = LEVEL; });
+      } else if (wasPlayingBeforeAway) {
+        wasPlayingBeforeAway = false;
+        media.volume = 0;
+        setPlaying(true);
+        rampVolume(LEVEL, 320);
+      }
     });
 
     /* ---------------------------------------------------------------------
