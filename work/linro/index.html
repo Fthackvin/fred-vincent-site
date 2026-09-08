@@ -1758,7 +1758,10 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 }
 
 .lin-type { display: flex; flex-direction: column; gap: clamp(64px, 8vw, 118px); }
-.lin-face { display: flex; flex-direction: column; gap: 34px; }
+/* The specimens have to size off this block, not the viewport: when the story
+   opens, the sequence drops to two-thirds of the page and vw stops describing
+   the column the letters actually sit in. */
+.lin-face { display: flex; flex-direction: column; gap: 34px; container-type: inline-size; }
 .lin-face-name { color: #0D1013; }
 /* Aeonik is not a webfont here, and it is not on the board either — Paper
    falls back to Inter, so the specimen is set the same way rather than
@@ -1780,7 +1783,14 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 .lin-face-alpha--aeonik {
   font-family: "Inter", system-ui, sans-serif;
   font-weight: 300;
+  /* The 19px floor is wider than the column below ~445px: the column is
+     77.8vw (the padding is a percentage), and 26 letters at this tracking
+     need about 18.2em, so anything over 4.2vw runs out of the page. The
+     second value is a fit-ceiling — it only bites once the viewport is
+     narrow enough for the floor to overflow. */
   font-size: clamp(19px, 2.9vw, 32px);
+  font-size: min(clamp(19px, 2.9vw, 32px), 4.2vw);
+  font-size: min(clamp(19px, 2.9vw, 32px), 5.2cqw);
   line-height: 1.25;
   letter-spacing: 0.04em;
 }
@@ -1788,6 +1798,8 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
   font-family: "League Spartan", "Inter", system-ui, sans-serif;
   font-weight: 300;
   font-size: clamp(18px, 2.7vw, 30px);
+  font-size: min(clamp(18px, 2.7vw, 30px), 4.2vw);
+  font-size: min(clamp(18px, 2.7vw, 30px), 4.9cqw);
   line-height: 1.2;
   letter-spacing: 0.05em;
 }
@@ -3317,5 +3329,26 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
 })();
 </script>
 
+<style>
+/* Deterrence, not protection. This stops the casual right-click-save, the
+   drag-to-desktop and the iOS long-press on artwork. It cannot stop devtools,
+   the network panel or a screenshot, and nothing client-side can. Text stays
+   selectable, and anything inside a download link (the CV) is exempt. */
+img, video, picture { -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
+a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: auto; user-drag: auto; }
+</style>
+<script>
+(function () {
+  var GUARD = 'img, video, picture, .t2-media, .cs-media, .t2-film, .work-card-media';
+  function guarded(e) {
+    var t = e.target;
+    if (!(t instanceof Element)) return false;
+    if (t.closest('a[download]')) return false;   /* the CV must still download */
+    return !!t.closest(GUARD);
+  }
+  document.addEventListener('contextmenu', function (e) { if (guarded(e)) e.preventDefault(); });
+  document.addEventListener('dragstart',  function (e) { if (guarded(e)) e.preventDefault(); });
+})();
+</script>
 </body>
 </html>

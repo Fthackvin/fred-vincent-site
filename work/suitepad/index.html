@@ -3201,5 +3201,26 @@ function csMakeManipulable(wrap, isFloating, atHome) {
 })();
 </script>
 
+<style>
+/* Deterrence, not protection. This stops the casual right-click-save, the
+   drag-to-desktop and the iOS long-press on artwork. It cannot stop devtools,
+   the network panel or a screenshot, and nothing client-side can. Text stays
+   selectable, and anything inside a download link (the CV) is exempt. */
+img, video, picture { -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
+a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: auto; user-drag: auto; }
+</style>
+<script>
+(function () {
+  var GUARD = 'img, video, picture, .t2-media, .cs-media, .t2-film, .work-card-media';
+  function guarded(e) {
+    var t = e.target;
+    if (!(t instanceof Element)) return false;
+    if (t.closest('a[download]')) return false;   /* the CV must still download */
+    return !!t.closest(GUARD);
+  }
+  document.addEventListener('contextmenu', function (e) { if (guarded(e)) e.preventDefault(); });
+  document.addEventListener('dragstart',  function (e) { if (guarded(e)) e.preventDefault(); });
+})();
+</script>
 </body>
 </html>
