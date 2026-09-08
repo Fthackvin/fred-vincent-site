@@ -2279,6 +2279,10 @@ var CS_CONFIG = {
          so the first deliberate press of the control unmutes it — that click
          is a user gesture, which is the thing browsers actually require. */
       media.muted = true;
+      /* The recording is hot; full scale out of a small player in the corner of
+         a page is startling. Set once here rather than baked into the file, so
+         it stays adjustable. */
+      media.volume = 0.55;
       vFrame.insertBefore(media, vFrame.firstChild);
       vPoster.hidden = true;
 
@@ -2294,8 +2298,12 @@ var CS_CONFIG = {
       });
     }
 
+    /* Size is its own state, not a symptom of playback. The film starts itself
+       quietly at the resting size; growing to 220px is something the reader
+       asks for by clicking it, not something autoplay does to the page. */
+    var expanded = false;
     function render() {
-      vWrap.classList.toggle('is-expanded', playing);
+      vWrap.classList.toggle('is-expanded', expanded);
       vToggleGlyph.querySelector('path').setAttribute('d', playing ? PAUSE : PLAY);
       vOverlayGlyph.querySelector('path').setAttribute('d', playing ? PAUSE_LG : PLAY_LG);
       vToggle.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
@@ -2340,6 +2348,7 @@ var CS_CONFIG = {
          player appears at full size rather than growing into it. */
       vWrap.classList.add('is-instant');
       unmute();
+      expanded = true;
       setPlaying(true);
       void vWrap.offsetWidth;
       setTimeout(function () { vWrap.classList.remove('is-instant'); }, 60);
@@ -2375,10 +2384,10 @@ var CS_CONFIG = {
       vMute.setAttribute('aria-label', m ? 'Unmute video' : 'Mute video');
       vMute.setAttribute('aria-pressed', m ? 'false' : 'true');
     }
-    function unmute() {
-      if (media && media.muted && !chosenSilent) media.muted = false;
-      paintMute();
-    }
+    /* Deliberately does nothing to the mute state any more. Sound is the
+       reader's call and the speaker control is the only thing that makes it,
+       so pressing play never puts audio into a room uninvited. */
+    function unmute() { paintMute(); }
     if (vMute && media) {
       vMute.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -2392,7 +2401,17 @@ var CS_CONFIG = {
       vMute.remove();                 /* no film, nothing to unmute */
     }
 
-    vFrame.addEventListener('click', function () { unmute(); setPlaying(!playing); });
+    /* First click on the film is "show me this properly": it grows, and starts
+       if it was not already running. After that a click is play/pause. */
+    vFrame.addEventListener('click', function () {
+      unmute();
+      if (!expanded) {
+        expanded = true;
+        if (!playing) setPlaying(true); else render();
+        return;
+      }
+      setPlaying(!playing);
+    });
     vToggle.addEventListener('click', function () { unmute(); setPlaying(!playing); });
     vDismiss.addEventListener('click', function () {
       setPlaying(false);
@@ -2417,6 +2436,7 @@ var CS_CONFIG = {
       csVideoState.held = true;
       vWrap.classList.remove('is-collapsed');
       unmute();
+      expanded = true;
       setPlaying(true);
     });
     render();
