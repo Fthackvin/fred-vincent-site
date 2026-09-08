@@ -998,6 +998,16 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    through as a hairline. Overlapping by a pixel removes the possibility
    rather than relying on the rounding to agree. */
 .t2-item--pano, .t2-item--film { margin-bottom: -1px; }
+/* ...and nothing in that sealed run may move. The reveal lifts an item 6px and
+   settles it over 520ms, which is a geometry change: against a -1px overlap it
+   opens the seal to +5px while the panel is already opaque, so the page ground
+   shows through the join as a pale line that travels down the page as you
+   scroll. These panels fade without moving; the seal holds throughout. */
+.t2-item--pano.t2-reveal,
+.t2-item--film.t2-reveal,
+.kz-lockup.t2-reveal,
+.kz-spec.t2-reveal,
+.kz-build.t2-reveal { transform: none; }
 /* The landscape ended on its own navy and the panel below started on the same
    colour, but the join was still a straight horizontal edge across the frame.
    A gradient over the foot of the scene sinks it into what follows instead of
@@ -1110,6 +1120,9 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   color: var(--ink-700);
 }
 .t2-story p + p { margin-top: 1em; }
+/* The list closes with margin-bottom 0 and `p + p` cannot see across it, so the
+   paragraph after a list had nothing between them. Same rhythm as p to p. */
+.t2-story ul + p { margin-top: 1em; }
 .t2-story ul { margin: 1em 0 0; padding-left: 1.1em; }
 .t2-story li + li { margin-top: 6px; }
 
@@ -2463,17 +2476,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         </div>
       </figure>
 
-      <div class="t2-note">
-        <span class="t2-note-label">Why they kept asking</span>
-        <p>People weren&rsquo;t asking for a prescriptive plan because they wanted to follow a template. They were asking for one because running a marathon is genuinely uncertain. A plan, in that context, isn&rsquo;t really a plan. It&rsquo;s a hedge against uncertainty. Stick to the template, and I&rsquo;ll make it. Even though that&rsquo;s not actually true, the feeling of certainty is what they&rsquo;re buying.</p>
-        <p>It wasn&rsquo;t a plan. It was the opposite of a plan. It was a journey, made specifically for you, that adapted as you moved through it.</p>
-      </div>
-
-      <div class="t2-note">
-        <span class="t2-note-label">Method</span>
-        <p>Not the heroic session, but the sum of all of them. Small, granular changes that add up to something significant.</p>
-      </div>
-
       <figure class="t2-item t2-reveal kz-lockup kz-lockup--dark">
         <div class="t2-media" style="aspect-ratio: 2181 / 820;">
           <img src="kaizen-lockup-dark.webp" alt="The Kaizen lockup reversed out: mark and wordmark in white on near-black."
@@ -2521,11 +2523,6 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
           <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="2764" height="774" loading="lazy" decoding="async">
         </div>
       </figure>
-
-      <div class="t2-note">
-        <span class="t2-note-label">The feed</span>
-        <p>What people were really after was clear orientation &ndash; signal in the noise that they could trust across time.</p>
-      </div>
 
       <figure class="t2-item t2-reveal kz-train kz-draft">
         <figcaption class="kz-pair-title">Train like&hellip;</figcaption>
