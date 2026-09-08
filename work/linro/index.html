@@ -1504,29 +1504,56 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    through the tail, which is exactly what reads as unsteady. Softened at both
    ends, even in between. */
 .lw--thread .ltr { opacity: 1; }
-/* One shared curve made every stroke move at the same rate, which is what read
-   as mechanical. A hand does not: it drives hard out of a corner, eases through
-   a curve, and flicks a short tail. Each stroke gets its own easing and its own
-   duration, and the whole sequence is pulled in from ~4.3s to ~2.5s. */
-.lw--thread .th-L      { animation-name: lwDraw9; animation-delay: 0s;
-                         animation-timing-function: cubic-bezier(.36, .16, .34, 1); }
-.lw--thread .th-I      { animation-name: lwDraw5; animation-delay: .34s;
-                         animation-timing-function: cubic-bezier(.62, .04, .26, 1); }
-.lw--thread .th-N      { animation-name: lwDraw9; animation-delay: .54s;
-                         animation-timing-function: cubic-bezier(.3, .2, .4, .95); }
-.lw--thread .th-N2     { animation-name: lwDraw5; animation-delay: .90s;
-                         animation-timing-function: cubic-bezier(.56, .08, .3, 1); }
-.lw--thread .th-Rstem  { animation-name: lwDraw5; animation-delay: 1.06s;
+
+/* L and I arrive; N, R and O are drawn.
+   The L is not traced at all — its finished letterform simply fades up. The I
+   fades too, but through its stroke, because the exact letterform for the I is
+   bundled in one path with the N's diagonal and fading that in would bring
+   half the N with it. The stroke stands in until both the I and the N have
+   finished, at which point the exact pair swaps in underneath. */
+.lw--thread .th-L { display: none; }
+
+/* Doubled class deliberately: the generic `.lw--thread .lf` rule below sets
+   lwHold with steps(1,end) at the same specificity and later in the file, so
+   it was winning and the L was hard-swapping rather than fading. */
+.lw--thread .lf.lf-L {
+  animation-name: lwFade;
+  /* Eased both ends. The previous curve was front-loaded, so most of the
+     opacity arrived in the first fifth of the fade and it read as a switch. */
+  animation-timing-function: cubic-bezier(.37, .01, .28, 1);
+  animation-delay: .10s;
+}
+@keyframes lwFade { 0% { opacity: 0; } 8.4% { opacity: 1; } 100% { opacity: 1; } }
+
+/* Fades rather than draws: dashoffset sits at 0 the whole way, only opacity
+   moves. */
+.lw--thread .th.th-I {
+  animation-name: lwFadeStroke;
+  animation-timing-function: cubic-bezier(.37, .01, .28, 1);
+  animation-delay: .34s;
+}
+@keyframes lwFadeStroke { 0% { stroke-dashoffset: 0; opacity: 0; } 8.4% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+
+/* The N is the first thing that actually draws: the diagonal, then the right
+   upright behind it. */
+.lw--thread .th-N  { animation-name: lwDraw9; animation-delay: .62s;
+                     animation-timing-function: cubic-bezier(.3, .2, .4, .95); }
+.lw--thread .th-N2 { animation-name: lwDraw5; animation-delay: .96s;
+                     animation-timing-function: cubic-bezier(.56, .08, .3, 1); }
+
+/* The R's stem and bowl are one continuous movement — the question-mark shape
+   drawn round in a single pass — and the leg pops in behind it rather than
+   being drawn, because at that length a draw only reads as a slow line. */
+.lw--thread .th-Rstem  { animation-name: lwDraw5; animation-delay: 1.24s;
                          animation-timing-function: cubic-bezier(.5, .1, .3, 1); }
-/* The bowl is the one place the hand slows — it is the only real curve in the
-   word, so it holds a fraction longer through the turn. */
-.lw--thread .th-Rbowl  { animation-name: lwDraw9; animation-delay: 1.24s;
+.lw--thread .th-Rbowl  { animation-name: lwDraw9; animation-delay: 1.42s;
                          animation-timing-function: cubic-bezier(.26, .2, .44, .9); }
-.lw--thread .th-Rleg   { animation-name: lwDraw4; animation-delay: 1.58s;
-                         animation-timing-function: cubic-bezier(.64, .04, .28, 1); }
-@keyframes lwDraw4 { 0% { stroke-dashoffset: 1.03; } 2.6% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes lwDraw5 { 0% { stroke-dashoffset: 1.03; } 3.3% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes lwDraw9 { 0% { stroke-dashoffset: 1.03; } 5.2% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+.lw--thread .th-Rleg   { animation-name: lwPop;   animation-delay: 1.94s;
+                         animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+
+@keyframes lwDraw5 { 0% { stroke-dashoffset: 1.03; opacity: 0; } 1.4% { opacity: 1; } 4.0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes lwDraw9 { 0% { stroke-dashoffset: 1.03; opacity: 0; } 2.1% { opacity: 1; } 6.2% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes lwPop   { 0% { stroke-dashoffset: 1.03; opacity: 0; } 0.5% { opacity: 1; } 1.4% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 1; } }
 
 /* Each letter swaps to exact geometry the instant its own draw completes, so
    the stroked version is never left standing in for the drawn one. The delays
@@ -1534,21 +1561,20 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    I and the N diagonal, so it waits for the later of the two. */
 .lw--thread .lf { animation-name: lwHold; animation-timing-function: steps(1, end); }
 @keyframes lwHold { 0% { opacity: 0; } 0.5%, 100% { opacity: 1; } }
-.lw--thread .lf-L { animation-delay: .52s; }
-.lw--thread .lf-I { animation-delay: 1.06s; }
-.lw--thread .lf-N { animation-delay: 1.24s; }
-.lw--thread .lf-R { animation-delay: 1.88s; }
+.lw--thread .lf-I { animation-delay: 1.30s; }
+.lw--thread .lf-N { animation-delay: 1.30s; }
+.lw--thread .lf-R { animation-delay: 2.12s; }
 
 /* the O draws once as a thread around the ring */
 /* The ring used to wait for the R to finish and then take a full second on its
    own, which is the gap that read as the O lagging. It now starts while the
    R's leg is still travelling and draws faster, so the word closes as one
    movement instead of a word followed by a circle. */
-.lw--thread .drawer { animation-name: lwRing; animation-timing-function: cubic-bezier(.42, .04, .2, 1); animation-delay: 1.42s; }
-@keyframes lwRing { 0% { stroke-dashoffset: 1; } 6.6% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+.lw--thread .drawer { animation-name: lwRing; animation-timing-function: cubic-bezier(.42, .04, .2, 1); animation-delay: 1.76s; }
+@keyframes lwRing { 0% { stroke-dashoffset: 1; opacity: 0; } 2.6% { opacity: 1; } 8.0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 1; } }
 
 /* then the hatch ticks on and settles into the wedge */
-.lw--thread .home { animation-name: lwTick; animation-timing-function: cubic-bezier(.4, 0, .2, 1); animation-delay: calc(2.16s + var(--i) * 44ms); }
+.lw--thread .home { animation-name: lwTick; animation-timing-function: cubic-bezier(.4, 0, .2, 1); animation-delay: calc(2.62s + var(--i) * 52ms); }
 @keyframes lwTick {
   0%    { opacity: 0; transform: translate(var(--sx), var(--sy)) rotate(var(--phi)) scaleX(.35) rotate(calc(var(--phi) * -1)); }
   0.7%  { opacity: 1; }
