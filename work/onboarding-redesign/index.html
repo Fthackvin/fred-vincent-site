@@ -855,7 +855,7 @@ html.cs-entered .cs-video.is-away,
   position: relative;
   width: 116px;
   height: 116px;
-  border-radius: 6px;
+  border-radius: 11px;
   overflow: hidden;
   background: #2A2A27;
   border: 0;
@@ -870,7 +870,10 @@ html.cs-entered .cs-video.is-away,
    fade remains, so it comes in with the rest of the section rather than
    performing a resize the reader never asked to watch. */
 .cs-video.is-instant .cs-video-frame { transition: none; }
-.cs-video-frame:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+/* The white ring read as a selection box sitting around the player. Keyboard
+   focus still needs to be visible, so it keeps a ring — just the page's own ink
+   rather than a white halo, and tight to the corner radius. */
+.cs-video-frame:focus-visible { outline: 2px solid rgba(26, 24, 21, 0.55); outline-offset: 2px; border-radius: 11px; }
 .cs-video-frame video,
 .cs-video-frame .cs-video-poster {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
@@ -2533,7 +2536,13 @@ var CS_CONFIG = {
       if (next) vWrap.classList.remove('is-reset');
       playing = next;
       if (media) {
-        if (playing) { var p = media.play(); if (p && p.catch) p.catch(function () {}); }
+        if (playing) {
+          var p = media.play();
+          /* A rejected play must not leave the control showing pause on a video
+             that never started — autoplay policies refuse this routinely. The
+             state follows what the element actually did. */
+          if (p && p.catch) p.catch(function () { playing = false; render(); });
+        }
         else media.pause();
       }
       render();
@@ -2552,6 +2561,11 @@ var CS_CONFIG = {
     });
 
     if (media) {
+      /* The element can start and stop without us: autoplay policy, buffering,
+         the tab going to the background. Sync from what it actually did, or the
+         control ends up showing pause on a video that is not running. */
+      media.addEventListener('play',  function () { if (!playing) { playing = true;  render(); } });
+      media.addEventListener('pause', function () { if (playing)  { playing = false; render(); } });
       media.addEventListener('ended', function () {
         media.currentTime = 0;
         setPlaying(false);          /* shrinks back to its resting size */

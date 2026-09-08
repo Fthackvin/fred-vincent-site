@@ -852,7 +852,7 @@ html.cs-entered .cs-video.is-away,
   position: relative;
   width: 116px;
   height: 116px;
-  border-radius: 6px;
+  border-radius: 11px;
   overflow: hidden;
   background: #2A2A27;
   border: 0;
@@ -867,7 +867,10 @@ html.cs-entered .cs-video.is-away,
    fade remains, so it comes in with the rest of the section rather than
    performing a resize the reader never asked to watch. */
 .cs-video.is-instant .cs-video-frame { transition: none; }
-.cs-video-frame:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+/* The white ring read as a selection box sitting around the player. Keyboard
+   focus still needs to be visible, so it keeps a ring — just the page's own ink
+   rather than a white halo, and tight to the corner radius. */
+.cs-video-frame:focus-visible { outline: 2px solid rgba(26, 24, 21, 0.55); outline-offset: 2px; border-radius: 11px; }
 .cs-video-frame video,
 .cs-video-frame .cs-video-poster {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
@@ -1591,10 +1594,12 @@ var CS_CONFIG = {
      exists — the component renders an obvious placeholder in the meantime. */
   video: {
     enabled: true,
-    src: null,          /* e.g. '/videos/tag-tuition-explainer.mp4' */
-    poster: null,       /* e.g. 'explainer-poster.webp' */
+    src: '/videos/tag.mp4',
+    poster: '/videos/tag.webp',
     label: 'Fred',
-    duration: '0:52'
+    /* Left null on purpose: the runtime reads the real length off the file
+       once its metadata lands, so this can never drift from what is uploaded. */
+    duration: null
   },
 
   /* Next case study — the card that follows this one in the homepage Work
@@ -2228,8 +2233,23 @@ var CS_CONFIG = {
       media.playsInline = true;
       media.preload = 'metadata';
       if (vcfg.poster) media.poster = vcfg.poster;
+      /* Muted is what makes the autoplay below legal. The film carries sound,
+         so the first deliberate press of the control unmutes it — that click
+         is a user gesture, which is the thing browsers actually require. */
+      media.muted = true;
       vFrame.insertBefore(media, vFrame.firstChild);
       vPoster.hidden = true;
+
+      /* The label shows the real length rather than a number typed into the
+         config, so it cannot disagree with the file that is actually there. */
+      media.addEventListener('loadedmetadata', function () {
+        var d = media.duration;
+        if (!isFinite(d) || d <= 0) return;
+        var m = Math.floor(d / 60);
+        var sec = String(Math.round(d % 60)).padStart(2, '0');
+        if (sec === '60') { m += 1; sec = '00'; }
+        vLabel.textContent = ((vcfg.label || '') + ' ' + m + ':' + sec).trim();
+      });
     }
 
     function render() {
@@ -2260,7 +2280,13 @@ var CS_CONFIG = {
       if (next) vWrap.classList.remove('is-reset');
       playing = next;
       if (media) {
-        if (playing) { var p = media.play(); if (p && p.catch) p.catch(function () {}); }
+        if (playing) {
+          var p = media.play();
+          /* A rejected play must not leave the control showing pause on a video
+             that never started — autoplay policies refuse this routinely. The
+             state follows what the element actually did. */
+          if (p && p.catch) p.catch(function () { playing = false; render(); });
+        }
         else media.pause();
       }
       render();
@@ -2279,6 +2305,11 @@ var CS_CONFIG = {
     });
 
     if (media) {
+      /* The element can start and stop without us: autoplay policy, buffering,
+         the tab going to the background. Sync from what it actually did, or the
+         control ends up showing pause on a video that is not running. */
+      media.addEventListener('play',  function () { if (!playing) { playing = true;  render(); } });
+      media.addEventListener('pause', function () { if (playing)  { playing = false; render(); } });
       media.addEventListener('ended', function () {
         media.currentTime = 0;
         setPlaying(false);          /* shrinks back to its resting size */
@@ -2286,8 +2317,11 @@ var CS_CONFIG = {
       });
     }
 
-    vFrame.addEventListener('click', function () { setPlaying(!playing); });
-    vToggle.addEventListener('click', function () { setPlaying(!playing); });
+    /* Autoplay starts it silent; a press is the point at which the reader has
+       actually asked for it, so that is where the sound comes back. */
+    function unmute() { if (media && media.muted) media.muted = false; }
+    vFrame.addEventListener('click', function () { unmute(); setPlaying(!playing); });
+    vToggle.addEventListener('click', function () { unmute(); setPlaying(!playing); });
     vDismiss.addEventListener('click', function () {
       setPlaying(false);
       vWrap.hidden = true;
@@ -2309,6 +2343,39 @@ var CS_CONFIG = {
       setPlaying(true);
     });
     render();
+
+    /* Starts itself once the player is genuinely visible — after the entrance
+       has run, and not while it is dismissed, collapsed into the tab, or gone
+       for the ending. Muted, so the browser allows it. */
+    var autoStarted = false;
+    function autoStart() {
+      if (autoStarted || !media) return;
+      if (csVideoState.dismissed || csVideoState.collapsed) return;
+      if (vWrap.hidden || vWrap.classList.contains('is-away')) return;
+      if (!document.documentElement.classList.contains('cs-entered')) return;
+      autoStarted = true;
+      setPlaying(true);
+    }
+    window.addEventListener('scroll', autoStart, { passive: true });
+    document.addEventListener('cs:entered', autoStart);
+    /* A single timeout was too brittle: if the entrance had not finished by
+       the time it fired, the only thing left to retry was a scroll the reader
+       may never make. This keeps checking across the first few seconds and
+       stops the moment it succeeds. */
+    var autoTries = 0;
+    var autoPoll = setInterval(function () {
+      autoStart();
+      if (autoStarted || ++autoTries > 24) clearInterval(autoPoll);
+    }, 250);
+
+    /* Leaving the work pauses it rather than letting it play on to nobody.
+       Nothing touches currentTime, so coming back resumes exactly where the
+       reader left it. */
+    var wasPlayingBeforeAway = false;
+    vWrap.addEventListener('cs:away', function (e) {
+      if (e.detail) { wasPlayingBeforeAway = playing; if (playing) setPlaying(false); }
+      else if (wasPlayingBeforeAway) { wasPlayingBeforeAway = false; setPlaying(true); }
+    });
 
     /* ---------------------------------------------------------------------
        Phone: the square becomes the edge tab. A fixed square is a lot of a
@@ -2830,6 +2897,7 @@ function csMakeManipulable(wrap, isFloating, atHome) {
       away = next;
       if (wrap) {
         wrap.classList.toggle('is-away', away);
+        wrap.dispatchEvent(new CustomEvent('cs:away', { detail: away }));
         /* Put a moved player back while nobody can see it happen. */
         if (away) wrap.dispatchEvent(new Event('cs:reset-position'));
       }

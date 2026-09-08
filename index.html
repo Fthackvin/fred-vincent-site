@@ -2525,31 +2525,6 @@ section#contact.block { padding-bottom: var(--s4); }
    a short delay or immediately on hover/focus, whichever comes first.
    Once triggered the video keeps playing/looping; it never fades back. */
 .work-card-logo { position: absolute; inset: 0; opacity: 1; transition: opacity 500ms var(--ease); }
-/* Tag Tuition's card carries the film itself rather than a still. It plays
-   muted on arrival; the control exists so it can be stopped, which anything
-   looping in the corner of the eye needs. The splash stays underneath as the
-   fallback if the video will not decode.
-   The control is a sibling of the card's hit button, not a child of it — a
-   button nested inside a button is invalid and never receives the click. */
-.work-card--tag-tuition { position: relative; }
-.tt-card-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.tt-play {
-  position: absolute; z-index: 3;
-  width: 34px; height: 34px; padding: 0; border: 0; border-radius: 999px;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(12, 12, 12, 0.5); color: #FFFFFF; cursor: pointer;
-  -webkit-backdrop-filter: blur(10px) saturate(1.4);
-  backdrop-filter: blur(10px) saturate(1.4);
-  opacity: 0.62;
-  transition: opacity 200ms var(--ease), background-color 200ms var(--ease);
-}
-.tt-play:hover { opacity: 1; background: rgba(12, 12, 12, 0.72); }
-.tt-play:focus-visible { opacity: 1; outline: 2px solid #FFFFFF; outline-offset: 3px; }
-/* Paused is a state worth showing without hover — otherwise a stopped film
-   looks like a still that failed to load. */
-.tt-play.is-paused { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .tt-play { transition: none; } }
-
 .work-card-video-wrap {
   position: absolute; left: 75px; top: 45px; width: 170px; height: 342px;
   border-radius: 17px; overflow: hidden; opacity: 0;
@@ -3511,12 +3486,7 @@ main > hr,
 
         <li class="work-card work-card--tag-tuition">
           <button type="button" class="work-card-hit" aria-label="View Tag Tuition case study" data-cs-open="/work/tag-tuition/" data-cs-slug="tag-tuition" data-cs-mode="modal" data-cs-mark="/work/tag-tuition/tag-logo.webp" data-cs-mark-w="730" data-cs-mark-h="516">
-          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-splash.jpg'); background-size:134%; background-position:50% 42%;">
-            <video class="tt-card-video" id="tt-card-video" autoplay muted loop playsinline preload="metadata" poster="/videos/tag.webp" aria-hidden="true">
-              <source src="/videos/tag.webm" type="video/webm">
-              <source src="/videos/tag.mp4" type="video/mp4">
-            </video>
-          </div>
+          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-splash.jpg'); background-size:134%; background-position:50% 42%;"></div>
           <div class="work-card-body">
             <h3 class="work-card-title">Tag Tuition</h3>
             <p class="work-card-desc">Turning a classroom curriculum into illustrated workbooks children could explore independently.</p>
@@ -3526,9 +3496,6 @@ main > hr,
               <li>Illustration</li>
             </ul>
           </div>
-          </button>
-          <button type="button" class="tt-play" id="tt-play" aria-label="Pause the Tag Tuition film">
-            <svg class="tt-play-glyph" width="10" height="12" viewBox="0 0 10 12" aria-hidden="true"><path fill="currentColor" d="M0 0h3.6v12H0zM6.4 0H10v12H6.4z"/></svg>
           </button>
 
         </li>
@@ -4936,50 +4903,6 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
   }
   document.addEventListener('contextmenu', function (e) { if (guarded(e)) e.preventDefault(); });
   document.addEventListener('dragstart',  function (e) { if (guarded(e)) e.preventDefault(); });
-})();
-</script>
-<script>
-/* Tag Tuition card film. Autoplay is muted so it is allowed to start; if the
-   browser refuses anyway (low power mode, data saver), the control is left
-   showing play rather than claiming it is running. */
-(function () {
-  var v = document.getElementById('tt-card-video');
-  var btn = document.getElementById('tt-play');
-  if (!v || !btn) return;
-  var glyph = btn.querySelector('path');
-  var PLAY = 'M0 0l10 6-10 6z';
-  var PAUSE = 'M0 0h3.6v12H0zM6.4 0H10v12H6.4z';
-
-  function paint() {
-    var playing = !v.paused && !v.ended;
-    glyph.setAttribute('d', playing ? PAUSE : PLAY);
-    btn.classList.toggle('is-paused', !playing);
-    btn.setAttribute('aria-label', playing ? 'Pause the Tag Tuition film' : 'Play the Tag Tuition film');
-  }
-
-  btn.addEventListener('click', function (e) {
-    /* The card behind this is a link into the case study. */
-    e.preventDefault();
-    e.stopPropagation();
-    if (v.paused) { v.play().catch(function () {}); } else { v.pause(); }
-  });
-  ['play', 'pause', 'ended'].forEach(function (t) { v.addEventListener(t, paint); });
-
-  /* Position the control over the media, measured rather than guessed, so it
-     stays put if the card's proportions change. */
-  function place() {
-    var media = v.closest('.work-card-media');
-    var card = btn.closest('.work-card');
-    if (!media || !card) return;
-    var m = media.getBoundingClientRect(), c = card.getBoundingClientRect();
-    btn.style.left = Math.round(m.left - c.left + 14) + 'px';
-    btn.style.top = Math.round(m.bottom - c.top - 34 - 14) + 'px';
-  }
-  place();
-  window.addEventListener('resize', place);
-  if ('ResizeObserver' in window) new ResizeObserver(place).observe(v.closest('.work-card-media'));
-  v.play().then(paint).catch(paint);
-  paint();
 })();
 </script>
 </body></html>
