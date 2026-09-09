@@ -418,14 +418,20 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 /* Items own their own width. Full-bleed is simply "no max-width" rather than
    a 100vw trick — 100vw includes the scrollbar gutter and would push the page
    into horizontal overflow. */
-/* Paper stacks the sections 10px apart — each composition already carries its
-   own generous internal whitespace, so adding a large page gap on top of that
-   just pushes the work apart. */
+/* Each composition already carries its own generous internal whitespace, so
+   the page adds none of its own. The 10px that used to sit here was invisible
+   on a wide screen with a paper ground, but the media runs edge to edge and
+   most of these compositions are dark — so on a phone it read as a white bar
+   ruled between every block. The rhythm comes from inside the artwork.
+
+   The -1px pulls the next block up over any sub-pixel remainder: at fractional
+   zoom or device ratios two blocks that merely touch can still leave a hairline
+   of page showing between them. */
 .t2-item {
   width: 100%;
-  margin: 10px auto 0;
+  margin: 0 auto -1px;
 }
-.t2-item:first-child { margin-top: 0; }
+.t2-item:last-child { margin-bottom: 0; }
 .t2-media {
   width: 100%;
   display: block;
@@ -565,10 +571,14 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    Media becomes active as it approaches, once. Deliberately close to
    imperceptible: a fade with a few pixels of travel, on a gentle curve. The
    work is what should be noticed, not the transition. */
+/* Opacity only, deliberately. Every reveal in this sequence is a full-bleed
+   block sitting directly on the one above it, so a 6px lift does not read as
+   a lift — it opens a 6px slot of page between two touching blocks and closes
+   it again, which is the white line that appeared to travel down the story as
+   each block came in. There is no gap for the movement to happen in. */
 .t2-reveal {
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 520ms var(--ease-reveal), transform 520ms var(--ease-reveal);
+  transition: opacity 520ms var(--ease-reveal);
 }
 .t2-reveal.is-in { opacity: 1; transform: none; }
 /* Deliberately no `will-change`. Nine panels, each holding a 3000px image,

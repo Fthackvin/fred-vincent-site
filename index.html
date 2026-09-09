@@ -2449,9 +2449,9 @@ section#contact.block { padding-bottom: var(--s4); }
   color: #5C5C5C;
   white-space: nowrap;
 }
-/* Work heading — hidden while the carousel is only teasing below the hero,
-   then fades in once the reader actually arrives at the section (by scrolling
-   or via the nav's "Work" link). Same treatment as the About page's. */
+/* Work heading — present from the start. It used to hold back until the
+   reader arrived at the section, but a section label that animates in reads
+   as a slower page, not a calmer one. */
 .work-head {
   display: flex;
   align-items: center;
@@ -2469,13 +2469,10 @@ section#contact.block { padding-bottom: var(--s4); }
   letter-spacing: -0.01em;
   color: var(--ink-900);
   margin: 0;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 600ms var(--ease), transform 600ms var(--ease), color 1000ms ease-in-out;
-}
-.work-head.is-shown .work-heading { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) {
-  .work-heading { transition: none; }
+  /* Deliberately not revealed on scroll: the section label is the one thing
+     that should already be there when the work section comes into view. Only
+     the colour still transitions, so it can cross the dark zone. */
+  transition: color 1000ms ease-in-out;
 }
 
 .work-nav {
@@ -3412,7 +3409,7 @@ main > hr,
 
   <section id="case-studies" class="block dark-zone">
     <div class="wrap">
-      <div class="work-head fade-up" id="work-head">
+      <div class="work-head" id="work-head">
         <h2 class="work-heading">Work</h2>
         <div class="work-nav">
       <button type="button" class="work-nav-btn work-nav-prev" aria-label="Previous project" disabled>
@@ -4543,41 +4540,6 @@ main > hr,
   if (!reduce) {
     setTimeout(trigger, 3000);
   }
-})();
-</script>
-
-<script>
-/* The Work heading stays out of the way while the carousel is only teasing
-   below the hero, and fades in once the reader has actually come to the
-   section — whether by scrolling or by using the nav's "Work" link.
-
-   It is a one-way latch: once shown it stays shown. Hiding it again on the way
-   back up made the heading flicker in and out every time the reader moved
-   between the hero and the work. The point is only to keep the first load
-   clean, and that job is done the moment it has appeared — so the listener
-   unbinds itself too, rather than recomputing for the rest of the session. */
-(function () {
-  var head = document.getElementById('work-head');
-  var section = document.getElementById('case-studies');
-  if (!head || !section) return;
-  var ticking = false;
-
-  function apply() {
-    ticking = false;
-    if (section.getBoundingClientRect().top > window.innerHeight * 0.34) return;
-    head.classList.add('is-shown');
-    window.removeEventListener('scroll', onScroll);
-  }
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(apply);
-  }
-
-  apply();
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  window.addEventListener('load', apply);
 })();
 </script>
 

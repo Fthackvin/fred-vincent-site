@@ -2160,10 +2160,15 @@ var CS_CONFIG = {
   var cues = [];
   Array.prototype.forEach.call(document.querySelectorAll('.cs-cue'), function (el) {
     var owner = el.closest('.cs-cover, .cs-section');
-    if (owner) cues.push({ el: el, owner: owner });
+    if (owner) cues.push({
+      el: el,
+      owner: owner,
+      isCover: owner.classList.contains('cs-cover')
+    });
   });
 
   var cuesLive = false;
+  var coverCueSpent = false;
   function applyCues() {
     if (!cuesLive) return;
     var vh = window.innerHeight;
@@ -2176,11 +2181,31 @@ var CS_CONFIG = {
          into view it had already faded to nothing. It was never visible while
          it was on screen. Measuring the element means the window can't drift
          out of step with section height again. */
-      var r = c.el.getBoundingClientRect();
-      var mid = r.top + r.height / 2;
-      var arriving = Math.min(1, Math.max(0, (vh - mid) / 60));
-      var leaving = Math.min(1, Math.max(0, mid / 200));
-      var v = arriving * leaving;
+      var v;
+      if (c.isCover) {
+        /* The cover cue answers to the scroll itself, not to where it happens
+           to sit in the viewport. It is an invitation to begin, so the moment
+           the reader begins it has done its job.
+
+           The position curve below is right for a section cue but wrong here:
+           a phone cover is tall enough that the cue sat in the middle of the
+           window and stayed at full strength for hundreds of pixels, so the
+           reader watched the logo shrink with "Scroll to read more" still
+           sitting under it — two states of the same screen at once.
+
+           One-way, like the `cs-scrolled` class it used to share this job
+           with: coming back to the top is not an invitation to start again,
+           and a cue that reappears under the thumb reads as a glitch. */
+        var y = window.scrollY || window.pageYOffset || 0;
+        if (y > 40) coverCueSpent = true;
+        v = coverCueSpent ? 0 : 1 - Math.min(1, Math.max(0, y / 40));
+      } else {
+        var r = c.el.getBoundingClientRect();
+        var mid = r.top + r.height / 2;
+        var arriving = Math.min(1, Math.max(0, (vh - mid) / 60));
+        var leaving = Math.min(1, Math.max(0, mid / 200));
+        v = arriving * leaving;
+      }
       c.el.style.opacity = v;
       c.el.style.pointerEvents = v < 0.12 ? 'none' : '';
     }
