@@ -1513,8 +1513,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    sections and the dark ones. Saturation is pushed a little because blurring
    averages colour towards grey. */
 .t2-close,
-.t2-story-pin,
-.t2-video-restore {
+.t2-story-pin {
   -webkit-backdrop-filter: blur(18px) saturate(1.7);
   backdrop-filter: blur(18px) saturate(1.7);
 }
@@ -1574,13 +1573,16 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   color: #FFFFFF;
 }
 
-/* Dark glass, so it stays the emphatic one of the three without going opaque. */
+/* Solid, not glass. It is a button offering a film rather than a piece of
+   pinned chrome washing over the work, and at 0.55 over a light head it read
+   as a grey plate rather than something to press. The × and the story pin keep
+   the translucency — they sit over the artwork and should. */
 .t2-video-restore {
-  background: rgba(18, 17, 15, 0.55);
+  background: #1F1F1F;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
   border-radius: 16px;
 }
-.t2-video-restore:hover { background: rgba(18, 17, 15, 0.72); }
+.t2-video-restore:hover { background: #000000; }
 
 /* Safari on older versions, and Firefox with the feature off, get the solid
    treatment rather than a barely-there wash over the artwork. */
@@ -4008,13 +4010,14 @@ body::after {
 }
 .t2-head-controls .t2-story-toggle { margin-top: 0; }
 .t2-video-restore {
+  /* Position only. Setting opacity here as well is what put the tab on screen
+     next to a film that was already playing: this control is gated on OPACITY,
+     not display, so an unconditional `opacity: 1` quietly overrode .is-shown
+     and it was visible in every state. The gate stays where it was. */
   position: static;
   right: auto;
   top: auto;
   bottom: auto;
-  opacity: 1;
-  transform: none;
-  transition: opacity 260ms var(--ease);
 }
 /* Sized to the control it now sits beside, so the two read as one pair rather
    than as a button and a smaller badge that happen to be adjacent. It keeps
