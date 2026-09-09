@@ -2212,6 +2212,7 @@ var CS_CONFIG = {
     requestAnimationFrame(function () { applyLogo(); applyCues(); ticking = false; });
   }
 
+  var csResettle = null;
   if (logo && cover) {
     if (reduce) {
       /* No scroll-linked movement: the logo simply rests small, and the cover
@@ -2246,6 +2247,14 @@ var CS_CONFIG = {
        glide across the cover on its own, seconds after the page had settled —
        the drift the reader sees as it "shifting around by itself". Transitions
        are cut for the correction and restored immediately after. */
+    /* Assigned to the outer-scope handle as well. The declaration sits inside
+       `if (logo && cover)`, which in strict mode is a block — so the entrance's
+       own late correction, which lives in a different closure further down,
+       could not see it and threw "resettle is not defined" on every load. The
+       whole point of that correction is to catch a late webfont or a scrollbar
+       appearing, so what it was failing to fix is exactly the drift it exists
+       to remove. */
+    csResettle = resettle;
     function resettle() {
       if (!logo) return;
       logo.style.transition = 'none';
@@ -2335,7 +2344,7 @@ var CS_CONFIG = {
              260ms, which is fine when the correction is a few pixels and very
              visible when it is not — and it waits on webfonts, so it can land
              long after the page looks settled. That late glide is the drift. */
-          var settle = resettle;
+          var settle = csResettle || function () {};
           /* Wait for the webfonts so the correction is measured once, against
              final metrics, rather than fighting a reflow that is still coming. */
           if (document.fonts && document.fonts.ready) {
