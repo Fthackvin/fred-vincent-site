@@ -346,8 +346,10 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
    control. Nothing here waits on anything below it. */
 .t2-head {
   padding-top: calc(var(--t2-nav-h) + clamp(64px, 12vh, 132px));
-  /* Room between the Project story control and the first composition, so the
-     opening block reads as its own thing rather than sitting on the work. */
+  /* Room between the head controls and the first composition, so the opening
+     block reads as its own thing rather than sitting on the work. Eased off
+     on a phone: 13vh of a tall, narrow screen is a lot of nothing to scroll
+     past, and the controls ended up marooned well above the work. */
   padding-bottom: clamp(88px, 13vh, 168px);
 }
 .t2-head-inner {
@@ -1908,8 +1910,22 @@ var T2_CONFIG = {
   /* Pinning is driven by whether the slot is still on screen. Reserving the
      slot's height first means detaching the player cannot reflow the page. */
   var slotVisible = true;
+  var narrowPin = window.matchMedia('(max-width: 899px)');
   function syncPinned() {
-    var shouldPin = activated && !slotVisible && !wrap.hidden;
+    /* On a phone the player is ALWAYS pinned once it is running.
+
+       The slot sits in the opening block, so un-collapsing into it put the
+       film in the middle of the page: it scrolled with the copy, jittered as
+       the layout settled around it, and — because the head carries a filling
+       entrance animation, and that makes a stacking context a fixed child
+       cannot escape — it went behind every composition that followed. Tapping
+       "Project video" should put the film in the corner and leave it there.
+
+       On a wide screen the slot is a real part of the composition and the
+       player belongs in it until it scrolls away, which is the original
+       behaviour and is kept. */
+    var shouldPin = activated && !wrap.hidden &&
+                    (narrowPin.matches || !slotVisible);
     if (shouldPin === wrap.classList.contains('is-pinned')) return;
     if (shouldPin) {
       slot.style.minHeight = slot.getBoundingClientRect().height + 'px';
@@ -2898,6 +2914,10 @@ body::after {
     gap: 12px;
   }
   .t2-head-controls .t2-video-restore { height: 52px; padding: 0 22px; }
+}
+
+@media (max-width: 719px) {
+  .t2-head { padding-bottom: clamp(40px, 6vh, 72px); }
 }
 </style>
 <script>
