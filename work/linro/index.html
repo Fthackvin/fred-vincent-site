@@ -1918,10 +1918,55 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
    on top of the scroll cue. The control still needs to be there, so the frame
    goes and the label row stays — the same component, just the part of it that
    earns its space at this width. */
+/* The frame used to be dropped entirely at this width. What that shipped was a
+   film you could hear and could not see: a bare control row floating over the
+   page. It stays, resting small and doubling when the reader asks for it by
+   playing or unmuting.
+
+   Sized on the WRAP, never on the frame. The frame is width:100% of the wrap
+   with a square aspect ratio, so pinning a width on the frame instead made it
+   wider than the box holding it and the whole player hung off the right of the
+   screen. (.cs-* below is Template One's and unused here; the two templates
+   share this block.) */
 @media (max-width: 719px) {
-  .cs-video-frame { display: none; }
-  .cs-video.is-expanded .cs-video-frame { display: none; }
-  .t2-video-frame { display: none; }
+  .t2-video-frame { display: block; }
+  .t2-video.is-pinned { width: 84px; }
+  .t2-video.is-pinned.is-playing,
+  .t2-video.is-pinned.is-expanded { width: 168px; }
+
+  /* The row carries three controls and the label, which will never fit inside
+     84px of film — nor inside the 132px slot it sits in before it is pinned,
+     where it was wrapping the label onto two lines. It is a pill in its own
+     right, so it sizes to its content in both states. Pinned, it hangs to the
+     LEFT of the frame's right edge, the direction with room, instead of being
+     pushed off the screen. */
+  .t2-video .t2-video-meta {
+    width: max-content;
+    max-width: calc(100vw - 2 * clamp(16px, 3vw, 46px));
+    gap: 10px;
+    font-size: 14px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    background: #FFFFFF;
+    box-shadow: 0 8px 22px rgba(20, 18, 14, 0.28);
+  }
+  /* Pinned, the wrap is only as wide as the film and the row is wider than it.
+     A margin cannot pull back a box that already overflows its container, so
+     the wrap becomes a column aligned to its end: the row's RIGHT edge lines up
+     with the film's, and the extra width hangs to the left, which is the side
+     with screen on it. Left in flow, so the wrap's height still counts it. */
+  .t2-video.is-pinned { display: flex; flex-direction: column; align-items: flex-end; }
+  .t2-video-toggle { width: 30px; height: 30px; }
+  .t2-video-toggle svg { width: 13px; height: 15px; }
+  .t2-video-mute { width: 30px; height: 30px; }
+  .t2-video-mute svg { width: 20px; height: 20px; }
+  .t2-video-dismiss { width: 30px; height: 30px; font-size: 25px; color: var(--ink-900); margin-left: 0; }
+}
+
+@media (max-width: 430px) {
+  .t2-video.is-pinned { width: 78px; }
+  .t2-video.is-pinned.is-playing,
+  .t2-video.is-pinned.is-expanded { width: 146px; }
 }
 </style>
 </head>
