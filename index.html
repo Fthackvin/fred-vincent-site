@@ -2,7 +2,13 @@
 
 
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- viewport-fit=cover so the page reaches into the safe area. Without it iOS
+     keeps the document inside the safe area and fills what is left — the strip
+     behind the bottom toolbar and home indicator — with the BODY background,
+     which is paper here. That is the white band that appeared under the black
+     footer. Covered, the strip takes the html canvas colour instead, which is
+     the footer's own. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no, email=no, address=no">
 <script>
@@ -4638,6 +4644,17 @@ main > hr,
     } catch (err) {}
 
     if (reduce) { window.location.href = href; return; }
+
+    /* Phones go straight to the page. The expanding panel is one half of a
+       movement whose other half is the case study arriving as that same panel —
+       and the case study only does that at 900px and up. Below it the box grew
+       to fill the screen and then handed over to an ordinary page that had
+       never been a box, so the reader watched an animation that resolved into
+       something unrelated. Nothing to tie it to, so it does not play. */
+    if (window.matchMedia && !window.matchMedia('(min-width: 900px)').matches) {
+      window.location.href = href;
+      return;
+    }
 
     /* Only Template One opens with the expanding panel, because only Template
        One arrives as that panel — the two halves are one movement. Template Two

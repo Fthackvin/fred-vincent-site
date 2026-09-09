@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- viewport-fit=cover so the page reaches into the safe area. Without it iOS
+     keeps the document inside the safe area and fills what is left — the strip
+     behind the bottom toolbar and home indicator — with the BODY background,
+     which is paper here. That is the white band that appeared under the black
+     footer. Covered, the strip takes the html canvas colour instead, which is
+     the footer's own. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no, email=no, address=no">
 <script>
@@ -920,12 +926,14 @@ html.cs-entered .cs-video.is-away,
    there when the pointer is, so it is not sitting over the film throughout.
    `is-expanded` tracks playback, so :not() is the stopped state. */
 .cs-video:not(.is-expanded) .cs-video-overlay { opacity: 1; }
-/* No pointer means no hover, and the overlay is then the only way to stop it. */
-@media (hover: none) {
-  .cs-video-overlay { opacity: 1; }
-}
+/* Deliberately no `@media (hover: none)` rule here. Pinning the overlay on for
+   touch put a permanent pause mark over the middle of the film — on a phone the
+   control you could see was the one thing stopping you seeing the video. Touch
+   gets a real button under the frame instead; see .cs-video-toggle below. */
 .cs-video-overlay .glyph { width: 34px; height: 40px; color: #FFFFFF; }
-.cs-video-toggle[hidden] { display: none; }
+/* Hidden on a desktop, where the hover overlay already does this job, and the
+   meta row is a label rather than a control strip. */
+.cs-video-toggle { display: none; }
 /* Persistent black control below the frame — always present, mirrors state. */
 .cs-video-meta {
   display: flex;
@@ -1364,6 +1372,28 @@ html.cs-scrolled .cs-cover .cs-cue {
   .cs-video.is-expanded .cs-video-frame { width: 168px; height: 168px; }
   .t2-video-frame { width: 84px; height: 84px; }
   .t2-video.is-expanded .t2-video-frame { width: 168px; height: 168px; }
+
+  /* Touch has no hover, so the pause control comes out of the middle of the
+     film and sits in the row underneath with the other two. That row is the
+     whole control surface on a phone, so its targets are bigger than the
+     desktop ones — 18px glyphs in 28px buttons are fine under a mouse and
+     far too small under a thumb. */
+  .cs-video-overlay { display: none; }
+  .cs-video-meta .cs-video-toggle { display: inline-flex; width: 34px; height: 34px; margin-left: -7px; }
+  .cs-video-meta .cs-video-toggle svg { width: 13px; height: 16px; }
+  .cs-video-mute { width: 34px; height: 34px; margin-left: 0; }
+  .cs-video-mute svg { width: 22px; height: 22px; }
+  .cs-video-dismiss { width: 34px; height: 34px; margin-right: -7px; font-size: 28px; }
+  .cs-video-meta { gap: 6px; font-size: 14px; }
+}
+
+/* The smallest phones. 168px of film plus the row under it is a big share of a
+   360px screen, and the reader is trying to read the page it is sitting on. */
+@media (max-width: 430px) {
+  .cs-video-frame { width: 78px; height: 78px; }
+  .cs-video.is-expanded .cs-video-frame { width: 146px; height: 146px; }
+  .t2-video-frame { width: 78px; height: 78px; }
+  .t2-video.is-expanded .t2-video-frame { width: 146px; height: 146px; }
 }
 </style>
 <noscript>
@@ -1616,7 +1646,7 @@ html.cs-scrolled .cs-cover .cs-cue {
     </span>
   </button>
   <div class="cs-video-meta">
-    <button type="button" class="cs-video-toggle" id="cs-video-toggle" aria-label="Play video" hidden>
+    <button type="button" class="cs-video-toggle" id="cs-video-toggle" aria-label="Play video">
       <svg viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" width="10" height="12" id="cs-video-toggle-glyph"><path d="M0 0l10 6-10 6z"/></svg>
     </button>
     <button type="button" class="cs-video-mute" id="cs-video-mute" data-no-drag aria-label="Unmute video">
@@ -3150,6 +3180,21 @@ function csMakeManipulable(wrap, isFloating, atHome) {
    selectable, and anything inside a download link (the CV) is exempt. */
 img, video, picture { -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
 a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: auto; user-drag: auto; }
+
+
+/* Safe area. The page now reaches under iOS's status bar and bottom bar
+   (viewport-fit=cover), which is what lets the strip behind the bottom bar
+   take the footer's colour instead of paper. Anything pinned to an edge has to
+   step back out of the inset or the system chrome sits on top of it. env() is
+   0 on every device without insets, so all of this is inert elsewhere. Only
+   bottom-anchored chrome is listed: the rest of the pinned controls hang from
+   the nav, which carries its own inset below. */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .cs-nav { padding-top: env(safe-area-inset-top); }
+  .cs-video { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
+  .cs-video-restore { bottom: calc(clamp(24px, 12vh, 96px) + env(safe-area-inset-bottom)); }
+  .cs-nextfloat { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
+}
 </style>
 <script>
 (function () {
@@ -3164,5 +3209,109 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
   document.addEventListener('dragstart',  function (e) { if (guarded(e)) e.preventDefault(); });
 })();
 </script>
+
+<script>
+/* --------------------------------------------------------------------------
+   Swipe between case studies.
+
+   A horizontal drag anywhere on the page moves to the next or previous case
+   study, in the same order as the work carousel, wrapping at both ends.
+
+   The awkward part is not detecting the swipe, it is knowing when NOT to.
+
+   - Touch only. A mouse drag across a page is a text selection, and a trackpad
+     two-finger swipe is already the browser's own back gesture.
+   - Nothing from the screen edges. Safari's back/forward gesture owns the
+     first stretch of either side, and competing with it means the reader gets
+     one of the two at random.
+   - Nothing that starts on a control or inside anything that scrolls
+     sideways of its own accord — the floating player is dragged and flung by
+     hand, and taking its gestures would break it.
+   - Clearly horizontal, and quick. Requiring the movement to be well wider
+     than it is tall keeps it out of the way of ordinary scrolling, which on a
+     phone is never perfectly vertical.
+
+   Pointer Events throughout, so Safari and Chrome run the same path.
+   -------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+
+  var ORDER = [
+    '/work/kaizen-brand-and-product/',
+    '/work/linro/',
+    '/work/tag-tuition/',
+    '/work/monet/',
+    '/work/kaizen-onboarding/',
+    '/work/suitepad/'
+  ];
+
+  var here = location.pathname.replace(/index\.html$/, '');
+  if (here.charAt(here.length - 1) !== '/') here += '/';
+  var at = ORDER.indexOf(here);
+
+  function target(dir) {
+    /* A page outside the carousel (the article template) still swipes into it,
+       from either end, rather than being a dead end. */
+    if (at < 0) return dir > 0 ? ORDER[0] : ORDER[ORDER.length - 1];
+    return ORDER[(at + dir + ORDER.length) % ORDER.length];
+  }
+
+  var EDGE = 32;          /* Safari's own gesture lives here */
+  var DIST = 72;          /* far enough to be meant */
+  var RATIO = 1.7;        /* and clearly sideways */
+  var TIME = 800;
+
+  var sx = 0, sy = 0, t0 = 0, tracking = false;
+
+  function scrollsSideways(node) {
+    for (var el = node; el && el !== document.body; el = el.parentElement) {
+      if (el.scrollWidth > el.clientWidth + 4) {
+        var ov = getComputedStyle(el).overflowX;
+        if (ov === 'auto' || ov === 'scroll') return true;
+      }
+    }
+    return false;
+  }
+
+  document.addEventListener('pointerdown', function (e) {
+    tracking = false;
+    if (e.pointerType !== 'touch' || !e.isPrimary) return;
+    if (e.clientX < EDGE || e.clientX > window.innerWidth - EDGE) return;
+    var t = e.target;
+    if (t.closest && (t.closest('#cs-video, #t2-video, .cs-video, .t2-video') ||
+                      t.closest('a, button, input, textarea, select, [role="button"]'))) return;
+    if (scrollsSideways(t)) return;
+    sx = e.clientX; sy = e.clientY; t0 = e.timeStamp; tracking = true;
+  }, { passive: true });
+
+  document.addEventListener('pointerup', function (e) {
+    if (!tracking) return;
+    tracking = false;
+    if (e.pointerType !== 'touch') return;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    if (e.timeStamp - t0 > TIME) return;
+    if (Math.abs(dx) < DIST) return;
+    if (Math.abs(dx) < Math.abs(dy) * RATIO) return;
+
+    /* Dragging the page leftwards brings the next one in from the right, which
+       is the direction the carousel runs. */
+    var href = target(dx < 0 ? 1 : -1);
+    if (!href || href === here) return;
+
+    /* Use the page's own exit fade where it has one, so a swipe leaves the way
+       the × does rather than cutting to white. */
+    var doc = document.documentElement;
+    if (doc.classList.contains('cs-entered') || doc.classList.contains('t2-entered')) {
+      doc.classList.add('cs-leaving', 't2-leaving');
+      setTimeout(function () { location.href = href; }, 220);
+    } else {
+      location.href = href;
+    }
+  }, { passive: true });
+
+  document.addEventListener('pointercancel', function () { tracking = false; }, { passive: true });
+})();
+</script>
+
 </body>
 </html>

@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- viewport-fit=cover so the page reaches into the safe area. Without it iOS
+     keeps the document inside the safe area and fills what is left — the strip
+     behind the bottom toolbar and home indicator — with the BODY background,
+     which is paper here. That is the white band that appeared under the black
+     footer. Covered, the strip takes the html canvas colour instead, which is
+     the footer's own. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no, email=no, address=no">
 <script>
@@ -548,6 +554,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
 @media (max-width: 899px) {
   .t2-note, .t2-quote { margin-top: clamp(40px, 7vh, 72px); margin-bottom: clamp(40px, 7vh, 72px); }
+/* A note's space is its own. Where the block above already carries bottom
+   padding the two simply added up, so the gap above the note came out at very
+   nearly twice the gap below it — on a phone about 101px against 55px, which
+   read as the note having drifted away from the work it belongs to. Padding
+   and margin never collapse together, so the margin stands down instead. */
+.kz-build + .t2-note { margin-top: clamp(6px, 1vh, 14px); }
 }
 
 /* The interface work sits on its own dark ground, inset and a little smaller,
@@ -1385,6 +1397,16 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   display: inline-flex; align-items: center; justify-content: center;
 }
 .t2-video-toggle { width: 14px; height: 16px; }
+.t2-video-mute {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ink-500);
+  transition: color 160ms var(--ease), background-color 160ms var(--ease);
+}
+.t2-video-mute svg { width: 16px; height: 16px; }
+.t2-video-mute:hover { color: var(--ink-900); background: rgba(0, 0, 0, 0.06); }
+.t2-video-mute:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
 /* A real target rather than a 14px character — this is the control that takes
    the player away, so it needs to be findable and hittable. */
 .t2-video-dismiss {
@@ -2021,6 +2043,13 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
             <button type="button" class="t2-video-toggle" id="t2-video-toggle" aria-label="Play video">
               <svg width="12" height="14" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" id="t2-video-toggle-glyph"><path d="M0 0l10 6-10 6z"/></svg>
             </button>
+        <button type="button" class="t2-video-mute" id="t2-video-mute" data-no-drag aria-label="Unmute video">
+          <svg id="t2-video-mute-glyph" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/>
+            <g id="t2-video-mute-off"><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></g>
+            <g id="t2-video-mute-on" style="display:none"><path d="M16.2 8.4a5 5 0 0 1 0 7.2"/><path d="M19 5.8a9 9 0 0 1 0 12.4"/></g>
+          </svg>
+        </button>
             <span id="t2-video-label">Fred 0:52</span>
             <button type="button" class="t2-video-dismiss" id="t2-video-dismiss" data-no-drag aria-label="Hide video">×</button>
           </div>
@@ -2045,15 +2074,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
         <p>Underneath all of this is a design system I built from scratch and have evolved slowly since. Every colour, spacing value and type style is tokenised, and it&rsquo;s now in a state where an ai can read it and build against it. Slow evolution was deliberate. A system that changes with every release isn&rsquo;t a system.</p>
 
-        <p>This was the approach to how we built it:</p>
-        <ul>
-          <li>setting out the foundations</li>
-          <li>having primitives</li>
-          <li>components</li>
-          <li>patterns</li>
-          <li>more complicated things built out of those basic building blocks</li>
-        </ul>
-        <p>All done in Figma, all tokenised with variables (including text, numbers, booleans, and colours), and ordered in a way that an MCP could understand. We utilised that in testing different varieties of pages that we tracked. For example, in onboarding.</p>
+        <p>Foundations, then primitives, components, patterns and the more complicated things built out of those basic building blocks: all done in Figma, all tokenised with variables including text, numbers, booleans and colours, and ordered in a way an MCP could understand, which is what let us test different varieties of page and track them, onboarding among them.</p>
 
         <p>Kaizen was never going to be the loudest app in the category. It was built for what we came to call the thinking runner, someone who knows training and is tired of the noise. The identity had one job: feel like that runner. Calm, consistent, quietly getting on with it. Three years and several rebuilds later, it still does.</p>
       </div>
@@ -2580,7 +2601,15 @@ var T2_CONFIG = {
      element, no placeholder, no reserved space. `src` stays null until a real
      file exists; the component shows an obvious placeholder meanwhile and no
      URL is invented. */
-  video: { enabled: false, src: null, poster: null, label: 'Fred', duration: '0:52' },
+  video: {
+    enabled: true,
+    src: '/videos/kaizen.mp4',
+    poster: '/videos/kaizen.webp',
+    label: 'Fred',
+    /* Left null on purpose: the runtime reads the real length off the file
+       once its metadata lands, so this can never drift from what is uploaded. */
+    duration: null
+  },
   exitHref: '/#case-studies',
   returnSection: 'case-studies'
 };
@@ -2643,6 +2672,16 @@ var T2_CONFIG = {
 
   label.textContent = (cfg.label || '') + (cfg.duration ? ' ' + cfg.duration : '');
 
+  /* Audio, as on Template One. It starts silent and stays silent until the
+     reader asks for it: a film that speaks on its own while someone is reading
+     is an ambush. 0.38 because at 1.0 the level sits well above the rest of the
+     page and the reader reaches for the phone's volume rather than the film's. */
+  var LEVEL = 0.38;
+  var chosenSilent = false;
+  var vMute = document.getElementById('t2-video-mute');
+  var vMuteOff = document.getElementById('t2-video-mute-off');
+  var vMuteOn = document.getElementById('t2-video-mute-on');
+
   if (cfg.src) {
     media = document.createElement('video');
     media.src = cfg.src;
@@ -2651,9 +2690,56 @@ var T2_CONFIG = {
     media.loop = false;
     media.playsInline = true;
     media.preload = 'metadata';
+    media.muted = true;
+    media.volume = LEVEL;
     if (cfg.poster) media.poster = cfg.poster;
     frame.insertBefore(media, frame.firstChild);
     poster.hidden = true;
+
+    /* The length is read off the file rather than carried in the config, so the
+       label can never drift from whatever has actually been uploaded. */
+    media.addEventListener('loadedmetadata', function () {
+      var d = media.duration;
+      if (!isFinite(d) || d <= 0) return;
+      var mins = Math.floor(d / 60);
+      var secs = String(Math.round(d % 60)).padStart(2, '0');
+      if (secs === '60') { mins += 1; secs = '00'; }
+      label.textContent = ((cfg.label || '') + ' ' + mins + ':' + secs).trim();
+    });
+
+    /* State follows the element, not our assumptions about it: a rejected
+       play() or a stall would otherwise leave the pause glyph showing. */
+    media.addEventListener('play',  function () { if (!playing) { playing = true;  render(); syncPinned(); } });
+    media.addEventListener('pause', function () { if (playing)  { playing = false; render(); syncPinned(); } });
+  }
+
+  function paintMute() {
+    if (!vMute || !media) return;
+    var silent = media.muted;
+    if (vMuteOff) vMuteOff.style.display = silent ? '' : 'none';
+    if (vMuteOn)  vMuteOn.style.display  = silent ? 'none' : '';
+    vMute.setAttribute('aria-label', silent ? 'Unmute video' : 'Mute video');
+  }
+
+  /* Pressing play is a deliberate act, so it brings the sound with it. Only
+     autoplay is silent — and a reader who has explicitly pressed mute keeps
+     the silence they asked for. */
+  function soundOnDeliberatePlay() {
+    if (!media || chosenSilent) return;
+    if (media.muted) { media.muted = false; media.volume = LEVEL; paintMute(); }
+  }
+
+  if (vMute && media) {
+    vMute.addEventListener('click', function (e) {
+      e.stopPropagation();
+      media.muted = !media.muted;
+      chosenSilent = media.muted;
+      if (!media.muted) media.volume = LEVEL;
+      paintMute();
+    });
+    paintMute();
+  } else if (vMute) {
+    vMute.remove();
   }
 
   function render() {
@@ -2734,6 +2820,22 @@ var T2_CONFIG = {
       slotVisible = entries[0].isIntersecting;
       syncPinned();
     }, { threshold: 0 }).observe(slot);
+
+    /* Starts itself, silently, the first time it is properly on screen — the
+       same as Template One. Once only: after that, playing and pausing belong
+       to the reader, and a film that restarted every time it scrolled back
+       into view would fight them. A blocked autoplay is not an error worth
+       reporting; the controls are right there either way. */
+    var started = false;
+    new IntersectionObserver(function (entries) {
+      if (started || !entries[0].isIntersecting) return;
+      started = true;
+      if (media) {
+        media.muted = true;
+        paintMute();
+        setPlaying(true);
+      }
+    }, { threshold: 0.55 }).observe(slot);
   }
 
   /* Asked for by the drag handler: the reader has started moving the player
@@ -2747,8 +2849,15 @@ var T2_CONFIG = {
     if (wrap.parentNode !== document.body) document.body.appendChild(wrap);
   });
 
-  frame.addEventListener('click', function () { setPlaying(!playing); });
-  toggle.addEventListener('click', function () { setPlaying(!playing); });
+  /* Both routes into playback carry the sound with them. */
+  frame.addEventListener('click', function () {
+    if (!playing) soundOnDeliberatePlay();
+    setPlaying(!playing);
+  });
+  toggle.addEventListener('click', function () {
+    if (!playing) soundOnDeliberatePlay();
+    setPlaying(!playing);
+  });
 
   /* Nothing plays while it cannot be seen. Leaving the tab pauses; coming back
      resumes only what was actually playing when the reader left, so returning
@@ -3601,6 +3710,19 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
    selectable, and anything inside a download link (the CV) is exempt. */
 img, video, picture { -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
 a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: auto; user-drag: auto; }
+
+
+/* Safe area. The page now reaches under iOS's status bar and bottom bar
+   (viewport-fit=cover), which is what lets the strip behind the bottom bar
+   take the footer's colour instead of paper. Anything pinned to an edge has to
+   step back out of the inset or the system chrome sits on top of it. env() is
+   0 on every device without insets, so all of this is inert elsewhere. Only
+   bottom-anchored chrome is listed: the rest of the pinned controls hang from
+   the nav, which carries its own inset below. */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .t2-nav { padding-top: env(safe-area-inset-top); }
+  .t2-video.is-pinned { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
+}
 </style>
 <script>
 (function () {
@@ -3615,5 +3737,109 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
   document.addEventListener('dragstart',  function (e) { if (guarded(e)) e.preventDefault(); });
 })();
 </script>
+
+<script>
+/* --------------------------------------------------------------------------
+   Swipe between case studies.
+
+   A horizontal drag anywhere on the page moves to the next or previous case
+   study, in the same order as the work carousel, wrapping at both ends.
+
+   The awkward part is not detecting the swipe, it is knowing when NOT to.
+
+   - Touch only. A mouse drag across a page is a text selection, and a trackpad
+     two-finger swipe is already the browser's own back gesture.
+   - Nothing from the screen edges. Safari's back/forward gesture owns the
+     first stretch of either side, and competing with it means the reader gets
+     one of the two at random.
+   - Nothing that starts on a control or inside anything that scrolls
+     sideways of its own accord — the floating player is dragged and flung by
+     hand, and taking its gestures would break it.
+   - Clearly horizontal, and quick. Requiring the movement to be well wider
+     than it is tall keeps it out of the way of ordinary scrolling, which on a
+     phone is never perfectly vertical.
+
+   Pointer Events throughout, so Safari and Chrome run the same path.
+   -------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+
+  var ORDER = [
+    '/work/kaizen-brand-and-product/',
+    '/work/linro/',
+    '/work/tag-tuition/',
+    '/work/monet/',
+    '/work/kaizen-onboarding/',
+    '/work/suitepad/'
+  ];
+
+  var here = location.pathname.replace(/index\.html$/, '');
+  if (here.charAt(here.length - 1) !== '/') here += '/';
+  var at = ORDER.indexOf(here);
+
+  function target(dir) {
+    /* A page outside the carousel (the article template) still swipes into it,
+       from either end, rather than being a dead end. */
+    if (at < 0) return dir > 0 ? ORDER[0] : ORDER[ORDER.length - 1];
+    return ORDER[(at + dir + ORDER.length) % ORDER.length];
+  }
+
+  var EDGE = 32;          /* Safari's own gesture lives here */
+  var DIST = 72;          /* far enough to be meant */
+  var RATIO = 1.7;        /* and clearly sideways */
+  var TIME = 800;
+
+  var sx = 0, sy = 0, t0 = 0, tracking = false;
+
+  function scrollsSideways(node) {
+    for (var el = node; el && el !== document.body; el = el.parentElement) {
+      if (el.scrollWidth > el.clientWidth + 4) {
+        var ov = getComputedStyle(el).overflowX;
+        if (ov === 'auto' || ov === 'scroll') return true;
+      }
+    }
+    return false;
+  }
+
+  document.addEventListener('pointerdown', function (e) {
+    tracking = false;
+    if (e.pointerType !== 'touch' || !e.isPrimary) return;
+    if (e.clientX < EDGE || e.clientX > window.innerWidth - EDGE) return;
+    var t = e.target;
+    if (t.closest && (t.closest('#cs-video, #t2-video, .cs-video, .t2-video') ||
+                      t.closest('a, button, input, textarea, select, [role="button"]'))) return;
+    if (scrollsSideways(t)) return;
+    sx = e.clientX; sy = e.clientY; t0 = e.timeStamp; tracking = true;
+  }, { passive: true });
+
+  document.addEventListener('pointerup', function (e) {
+    if (!tracking) return;
+    tracking = false;
+    if (e.pointerType !== 'touch') return;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    if (e.timeStamp - t0 > TIME) return;
+    if (Math.abs(dx) < DIST) return;
+    if (Math.abs(dx) < Math.abs(dy) * RATIO) return;
+
+    /* Dragging the page leftwards brings the next one in from the right, which
+       is the direction the carousel runs. */
+    var href = target(dx < 0 ? 1 : -1);
+    if (!href || href === here) return;
+
+    /* Use the page's own exit fade where it has one, so a swipe leaves the way
+       the × does rather than cutting to white. */
+    var doc = document.documentElement;
+    if (doc.classList.contains('cs-entered') || doc.classList.contains('t2-entered')) {
+      doc.classList.add('cs-leaving', 't2-leaving');
+      setTimeout(function () { location.href = href; }, 220);
+    } else {
+      location.href = href;
+    }
+  }, { passive: true });
+
+  document.addEventListener('pointercancel', function () { tracking = false; }, { passive: true });
+})();
+</script>
+
 </body>
 </html>

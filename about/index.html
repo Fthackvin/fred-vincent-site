@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- viewport-fit=cover so the page reaches into the safe area. Without it iOS
+     keeps the document inside the safe area and fills what is left — the strip
+     behind the bottom toolbar and home indicator — with the BODY background,
+     which is paper here. That is the white band that appeared under the black
+     footer. Covered, the strip takes the html canvas colour instead, which is
+     the footer's own. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no, email=no, address=no">
 
