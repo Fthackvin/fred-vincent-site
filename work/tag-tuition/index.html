@@ -2476,7 +2476,16 @@ var CS_CONFIG = {
     /* Pressing play is a deliberate act, so it carries the sound — unless the
        reader has explicitly silenced it, which is a choice we keep. */
     function unmute() {
-      if (media && !chosenSilent && media.muted) { media.muted = false; media.volume = LEVEL; }
+      if (media && !chosenSilent && media.muted) {
+        var wasPlaying = playing;
+        media.muted = false;
+        media.volume = LEVEL;
+        /* Same exemption, same repair: see the mute handler. */
+        if (wasPlaying && media.paused) {
+          var p = media.play();
+          if (p && p.catch) p.catch(function () { playing = false; render(); });
+        }
+      }
       paintMute();
       syncSize();
     }
@@ -2484,9 +2493,20 @@ var CS_CONFIG = {
     if (vMute && media) {
       vMute.addEventListener('click', function (e) {
         e.stopPropagation();
+        var wasPlaying = playing;
         media.muted = !media.muted;
         chosenSilent = media.muted;   /* a deliberate choice, so respect it */
         if (!media.muted) media.volume = LEVEL;
+        /* iOS allows the silent autoplay under an exemption, and taking the
+           mute off revokes it — the system pauses the element out from under
+           us. So the film stopped and no sound arrived, which is the opposite
+           of what pressing unmute asks for. Re-asserting play inside the same
+           gesture is what keeps it running, and being inside the gesture is
+           what makes it allowed. */
+        if (wasPlaying && media.paused) {
+          var p = media.play();
+          if (p && p.catch) p.catch(function () { playing = false; render(); });
+        }
         paintMute();
         syncSize();
       });

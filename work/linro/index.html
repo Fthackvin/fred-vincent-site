@@ -2536,16 +2536,26 @@ var T2_CONFIG = {
   /* Brought back from the tab: the player expands and plays where the reader
      already is, rather than only reappearing at its resting size. */
   restore.addEventListener('click', function () {
+    /* On the page FIRST, then play. This used to call setPlaying(true) while
+       the wrap was still collapsed — and collapsed is display:none, from which
+       a video cannot reliably start. The play() was rejected, the pause event
+       put the state straight back, and the tab vanished into a player showing
+       a film that had never begun. */
     wrap.hidden = false;
     restore.classList.remove('is-shown');
-    /* setPlaying first: pinning keys off `activated`, which only becomes true
-       once it has been played, so pinning before that would do nothing. */
-    setPlaying(true);
     /* Asked for back by hand, so the scroll position must not collapse it
        again underneath them. Scrolling up past the line releases it. */
     t2VideoState.dismissed = false;
     t2VideoState.held = true;
     wrap.classList.remove('is-collapsed');
+
+    /* Tapping the tab is as deliberate as pressing play, so it carries the
+       sound, and the size follows from that. */
+    soundOnDeliberatePlay();
+    syncSize();
+    setPlaying(true);
+    /* After setPlaying, because pinning keys off `activated`, which only
+       becomes true once it has actually been played. */
     syncPinned();
   });
 
@@ -2836,12 +2846,20 @@ var T2_CONFIG = {
        same control visible at once. Cached, and re-measured on resize/load. */
     var firstItem = document.querySelector('.t2-item');
     var showAt = 0;
+    var videoPinAt = 0;
+    var vPinned = false;
     function measureShowAt() {
       var nav = document.querySelector('.t2-nav');
       var navH = nav ? nav.getBoundingClientRect().height : 76;
       showAt = firstItem
         ? firstItem.getBoundingClientRect().top + window.scrollY - navH
         : window.innerHeight * 0.4;
+      /* The video tab goes to the corner on its own, earlier line: as soon as
+         its place in the head is passing under the nav. */
+      var ctrls = document.querySelector('.t2-head-controls');
+      videoPinAt = ctrls
+        ? ctrls.getBoundingClientRect().bottom + window.scrollY - navH - 16
+        : showAt;
       sync();
     }
     function sync() {
@@ -2892,7 +2910,11 @@ var T2_CONFIG = {
            tab up at the top while the player was still sitting in its slot
            further down: the same thing offered twice. */
         vtab.classList.toggle('is-shown', vwrap.hidden || vwrap.classList.contains('is-collapsed'));
-        vtab.classList.toggle('is-pinned', next);
+        var wantPinned = vPinned ? y >= videoPinAt - 64 : y >= videoPinAt;
+        if (wantPinned !== vPinned) {
+          vPinned = wantPinned;
+          vtab.classList.toggle('is-pinned', wantPinned);
+        }
       }
     }
     /* Reads only scrollY against a cached threshold — no layout, so it runs
@@ -3628,9 +3650,18 @@ body::after {
   z-index: 70;
 }
 @media (max-width: 899px) {
-  /* On a phone the tab is the player's own resting state, so it keeps the
-     corner it has always had and never joins the head row. */
-  .t2-video-restore { position: fixed; }
+  /* Stacked, not side by side. There is no room for the pair across a phone,
+     and `position: fixed` with no offsets — which is what this rule used to
+     say — resolves to the element's static position, so the tab simply landed
+     on top of the story control. It sits under it instead, and still pins to
+     the corner on scroll exactly as it does on a wide screen, so it stays
+     reachable once the opening block has gone. */
+  .t2-head-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .t2-head-controls .t2-video-restore { height: 52px; padding: 0 22px; }
 }
 </style>
 <script>
