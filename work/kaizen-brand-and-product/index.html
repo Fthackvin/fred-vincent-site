@@ -2729,6 +2729,35 @@ var T2_CONFIG = {
     if (media.muted) { media.muted = false; media.volume = LEVEL; paintMute(); }
   }
 
+  /* Leaving and coming back. The level rides down over the same beat as the
+     fade rather than cutting, because a voice that stops mid-word is more
+     noticeable than one that recedes — and it comes back up on return, but
+     only if it was actually playing when it left. */
+  var fadeTimer = null;
+  var wasPlayingBeforeAway = false;
+  function rampVolume(to, ms, done) {
+    if (!media) { if (done) done(); return; }
+    if (fadeTimer) clearInterval(fadeTimer);
+    var from = media.volume, t0 = Date.now();
+    fadeTimer = setInterval(function () {
+      var k = Math.min(1, (Date.now() - t0) / ms);
+      media.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+      if (k >= 1) { clearInterval(fadeTimer); fadeTimer = null; if (done) done(); }
+    }, 25);
+  }
+  wrap.addEventListener('t2:away', function (e) {
+    if (!media) return;
+    if (e.detail) {
+      wasPlayingBeforeAway = playing;
+      if (playing) rampVolume(0, 260, function () { setPlaying(false); media.volume = LEVEL; });
+    } else if (wasPlayingBeforeAway) {
+      wasPlayingBeforeAway = false;
+      media.volume = 0;
+      setPlaying(true);
+      rampVolume(LEVEL, 320);
+    }
+  });
+
   if (vMute && media) {
     vMute.addEventListener('click', function (e) {
       e.stopPropagation();
@@ -3320,6 +3349,10 @@ var T2_CONFIG = {
       away = next;
       if (wrap) {
         wrap.classList.toggle('is-away', away);
+        /* The player is about to be invisible, so the film has to be told —
+           fading a talking head to opacity 0 and leaving it talking is worse
+           than leaving it on screen. */
+        wrap.dispatchEvent(new CustomEvent('t2:away', { detail: away }));
         /* Put a moved player back while nobody can see it happen. */
         if (away) wrap.dispatchEvent(new Event('t2:reset-position'));
       }
