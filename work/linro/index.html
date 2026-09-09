@@ -140,7 +140,12 @@
 html {
   -webkit-text-size-adjust: 100%;
   scrollbar-gutter: stable;
-  background: var(--paper-50);
+  /* The canvas — what iOS paints in the overscroll past the end of the
+     document. It was paper, so rubber-banding at the bottom showed a white
+     band under the footer. It carries the footer's own colour instead, so
+     the last band simply continues. The nav at the other end is dark too,
+     so the top overscroll matches as well. */
+  background: #08090B;
 }
 
 body {

@@ -1594,6 +1594,34 @@ section#contact.block { padding-bottom: var(--s4); }
   .hero-fade { opacity: 1; transform: none; transition: none; }
 }
 
+/* Nothing above the fold waits to become visible.
+
+   The hero heading, lead and buttons all started at opacity 0 and were only
+   revealed by a class the scroll observer adds — so between first paint and
+   the moment 47KB of inline script had parsed and run, the homepage was a
+   blank white screen. On a phone coming back from a case study that is long
+   enough to read as a page that has not loaded.
+
+   An entrance animation was the first attempt at a fix and it is the same bug
+   wearing a different hat: with the animation filling backwards, anything that
+   stops it starting — a throttled tab, a restored background tab — leaves the
+   hero at opacity 0 with nothing to bring it back. Measured at 0 here twice.
+
+   So the first screen simply is not hidden. It is the first thing on the page;
+   it should already be there, the same as the Work heading below it. Motion on
+   this page belongs to the things you scroll to, which still fade in. */
+.hero .hero-fade,
+.hero .fade-up {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+/* No will-change on the reveals. It buys nothing here — these animate once and
+   never again — and it costs a promoted layer per element for the life of the
+   page, which is real memory on a phone. */
+.fade-up { will-change: auto; }
+
 /* How this works */
 .how-wrap { max-width: var(--narrow); }
 .how-eyebrow { color: var(--ink-500); margin-bottom: var(--s4); }

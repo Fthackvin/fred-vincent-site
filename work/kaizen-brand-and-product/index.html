@@ -120,7 +120,12 @@
 html {
   -webkit-text-size-adjust: 100%;
   scrollbar-gutter: stable;
-  background: var(--paper-50);
+  /* The canvas — what iOS paints in the overscroll past the end of the
+     document. It was paper, so rubber-banding at the bottom showed a white
+     band under the footer. It carries the footer's own colour instead, so
+     the last band simply continues. The nav at the other end is dark too,
+     so the top overscroll matches as well. */
+  background: #1a1a1a;
 }
 
 body {
@@ -755,8 +760,85 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   box-shadow: 0 20px 46px rgba(0, 0, 0, 0.38);
 }
 .t2-item--film .t2-film-still { border-radius: 20px; }
+/* The doughnut strip is two crops of one original, so it can be one row on a
+   wide page and two on a phone without shipping a second copy of the artwork.
+
+   On desktop they sit back together and reproduce the original strip exactly:
+   the padding replaces the outer margin the crops trimmed, so the screens land
+   at the size and position they had as a single image — which matters, because
+   the even-spread strip below is aligned to these phone edges. */
+.kz-dough-strip { display: flex; align-items: flex-start; padding: 0 1.505% 0 2.446%; }
+/* Written against .t2-media, which sets `img { width: 100% }` — a bare class
+   here loses to it on specificity and both crops came out the same width.
+   flex: none as well, so the row cannot shrink them back to equal either. */
+.t2-media.kz-dough-strip img { height: auto; display: block; flex: none; }
+.t2-media.kz-dough-strip .kz-dough-a { width: 60.031%; }
+.t2-media.kz-dough-strip .kz-dough-b { width: 39.969%; }
+
+@media (max-width: 899px) {
+  /* Three above and two below, which makes each screen two-thirds bigger than
+     it was strung across a phone — at five abreast they were about 70px wide
+     and nothing on them could be read. The second row is 66.58% because that
+     is the width at which its two screens are exactly the size of the three
+     above; anything else and the rows are visibly different scales. */
+  .t2-media.kz-dough-strip { display: block; padding: 0; }
+  .t2-media.kz-dough-strip .kz-dough-a { width: 100%; }
+  .t2-media.kz-dough-strip .kz-dough-b { width: 66.58%; margin: clamp(10px, 2.4vw, 22px) auto 0; }
+}
+
+/* The five flow screens run as one row on a wide page. On a phone that row
+   turned into a 4,600px column — five 886px screens stacked, which is six
+   screenfuls of scroll for a single beat of the story, and the reason the
+   section felt like it went on for ever. They wrap into a grid instead: three
+   and then two, big enough to read and short enough to pass through. */
+@media (max-width: 899px) {
+  /* Six columns, every screen spanning two. A three-column grid would have
+     left the last two hard against the left edge, and nudging them across with
+     spans and percentages made them a different size from the three above.
+     Six columns lets the second row start half a column in, so the two sit
+     centred under the three and every screen is still exactly the same width. */
+  .kz-flow .t2-film.t2-film--flow {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: end;
+    gap: clamp(8px, 2vw, 18px);
+  }
+  .kz-flow .t2-film--flow img {
+    flex: none;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    grid-column: span 2;
+  }
+  .kz-flow .t2-film--flow img:nth-child(4) { grid-column: 2 / span 2; }
+  .kz-flow .t2-film--flow img:nth-child(5) { grid-column: 4 / span 2; }
+  .kz-flow .t2-film--flow { padding: clamp(28px, 5vh, 56px) clamp(14px, 4vw, 28px) clamp(36px, 7vh, 72px); }
+}
+
 @media (max-width: 719px) {
-  .t2-item--film .t2-film { flex-direction: column; align-items: center; }
+  /* The pair stays side by side on a phone. Stacking them turned two 450px
+     screens into a 1,000px column of navy — on a 780px screen that reads as a
+     long empty gap with a phone at either end, not as a pair. They are a video
+     of the feed and a still of the result, and the whole point is reading one
+     against the other, which cannot happen when they are a screen apart.
+
+     Height-driven sizing is what stacked them: at 58vh each screen was taller
+     than half the viewport, so two could never share a row. Here they are
+     sized off the column instead, and the height follows. */
+  .t2-item--film .t2-film {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(10px, 3vw, 20px);
+    padding-inline: clamp(14px, 4vw, 28px);
+  }
+  .t2-item--film video,
+  .t2-item--film .t2-film-still {
+    height: auto;
+    width: 100%;
+    min-width: 0;
+    max-width: 196px;
+    border-radius: 14px;
+  }
 }
 /* The whiteboard sheets and the construction studies are working material, not
    hero imagery — held well in from the column so they read as evidence rather
@@ -2329,11 +2411,14 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
         <p>An interface that told each user how much to run this week, filling as the number ticked down and they made progress.</p>
       </div>
 
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 2658 / 1102;">
-          <img src="kaizen-doughnut.webp" alt="Five screens of the Kaizen doughnut: the week&rsquo;s distance left to run, the ring filling as the number comes down." width="2658" height="1102" loading="lazy" decoding="async">
-        </div>
-      </figure>
+      <figure class="t2-item t2-reveal kz-dough">
+      <div class="t2-media kz-dough-strip">
+        <img class="kz-dough-a" src="kaizen-doughnut-a.webp" alt="Five screens of the Kaizen doughnut: the week&rsquo;s distance left to run, the ring filling as the number comes down."
+             width="1532" height="1102" loading="lazy" decoding="async">
+        <img class="kz-dough-b" src="kaizen-doughnut-b.webp" alt=""
+             width="1020" height="1102" loading="lazy" decoding="async">
+      </div>
+    </figure>
 
       <figure class="t2-item t2-reveal kz-onblack">
         <div class="t2-media" style="aspect-ratio: 2764 / 774;">

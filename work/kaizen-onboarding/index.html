@@ -144,7 +144,12 @@
 html {
   -webkit-text-size-adjust: 100%;
   scrollbar-gutter: stable both-edges;
-  background: var(--paper-50);
+  /* The canvas — what iOS paints in the overscroll past the end of the
+     document. It was paper, so rubber-banding at the bottom showed a white
+     band under the footer. It carries the footer's own colour instead, so
+     the last band simply continues. The nav at the other end is dark too,
+     so the top overscroll matches as well. */
+  background: #1a1a1a;
 }
 
 body {
@@ -1285,8 +1290,8 @@ html.cs-leaving body { transition: opacity 300ms var(--ease); opacity: 0; }
   /* The band keeps its full 191px thumbnail down to 720px; the single-column
      rule below takes over from there. The 64px chip that used to live here
      outranked it and left phones with the old small card. */
-  .cs-video-frame { width: 76px; height: 76px; }
-  .cs-video.is-expanded .cs-video-frame { width: 148px; height: 148px; }
+  .cs-video-frame { width: 92px; height: 92px; }
+  .cs-video.is-expanded .cs-video-frame { width: 184px; height: 184px; }
 }
 @media (max-width: 719px) {
   /* Collapsed into the edge tab once the reader is properly into the story.
@@ -1515,14 +1520,17 @@ html.cs-scrolled .cs-cover .cs-cue {
   .cs-section-logo { margin-bottom: 0; }
 }
 
-/* On a phone the poster block is the largest thing on the cover and it lands
-   on top of the scroll cue. The control still needs to be there, so the frame
-   goes and the label row stays — the same component, just the part of it that
-   earns its space at this width. */
+/* The frame used to be dropped entirely at this width, on the grounds that it
+   was the largest thing on the cover and landed on the scroll cue. What that
+   actually shipped was a film you could hear and could not see: a naked label
+   row floating over the page. The frame stays; it rests small enough to sit
+   beside the cue rather than on it, and doubles when the reader asks for it by
+   playing or unmuting. On the cover the ribbon stands in for it instead. */
 @media (max-width: 719px) {
-  .cs-video-frame { display: none; }
-  .cs-video.is-expanded .cs-video-frame { display: none; }
-  .t2-video-frame { display: none; }
+  .cs-video-frame { width: 84px; height: 84px; }
+  .cs-video.is-expanded .cs-video-frame { width: 168px; height: 168px; }
+  .t2-video-frame { width: 84px; height: 84px; }
+  .t2-video.is-expanded .t2-video-frame { width: 168px; height: 168px; }
 }
 </style>
 <noscript>
@@ -2729,6 +2737,19 @@ var CS_CONFIG = {
        carrying them to the opening section — belongs only to the tab on the
        first screen, and that handler unbinds itself once the page has expanded. */
     vRestore.addEventListener('click', function () {
+      /* From the cover the ribbon is a way into the story, not just a way to
+         un-hide the player: it carries the reader to the opening section and
+         the film expands there. That is the same move the modal makes with
+         this control on a desktop, and without it a tap on the phone left the
+         player expanded over the title with the whole case study still below.
+
+         Smooth rather than instant, because nothing is covering the movement
+         here — on the desktop the page is mid-expansion when it jumps. */
+      var firstSection = document.getElementById('cs-s1');
+      if (firstSection &&
+          window.scrollY < firstSection.offsetTop - window.innerHeight * 0.5) {
+        firstSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       vWrap.hidden = false;
       vRestore.classList.remove('is-shown');
       /* Asked for back by hand, so stop the scroll position collapsing it
@@ -2760,10 +2781,22 @@ var CS_CONFIG = {
         return;
       }
       if (csVideoState.dismissed) return;
-      var d = document.documentElement;
-      var max = d.scrollHeight - window.innerHeight;
-      var p = max > 0 ? window.scrollY / max : 0;
-      var next = csVideoState.collapsed ? p > 0.28 : p > 0.33;
+      /* On a phone the COVER shows the ribbon and the story shows the player.
+
+         This used to run the other way round — a player on the opening screen
+         that collapsed to a ribbon once the reader was properly reading. Two
+         things were wrong with it. The frame is hidden on the cover at this
+         width, so what sat over the title was a bare control row: a film you
+         could hear and could not see. And it took the player away at exactly
+         the point there was finally room for it. The ribbon is the right thing
+         on the cover because there the film is an offer, not something to
+         watch over the title; past the cover it becomes the player proper. */
+      var firstSection = document.getElementById('cs-s1');
+      var line = firstSection
+        ? Math.max(0, firstSection.offsetTop - window.innerHeight * 0.5)
+        : window.innerHeight * 0.5;
+      var y = window.scrollY;
+      var next = csVideoState.collapsed ? y < line + 60 : y < line;
       if (!next) csVideoState.held = false;
       if (csVideoState.held && next) return;
       if (next === csVideoState.collapsed) return;
@@ -3008,13 +3041,18 @@ function csMakeManipulable(wrap, isFloating, atHome) {
     if (!isFloating()) return;
     wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
     var r = wrap.getBoundingClientRect();
-    /* Enough to stay grabbable, but not so much that the player can never be
-       dragged far enough to trigger the swipe-away threshold above. */
-    var keep = 28;
-    var minX = -(r.left + r.width - keep);
-    var maxX = window.innerWidth - r.left - keep;
-    var minY = -(r.top + r.height - keep);
-    var maxY = window.innerHeight - r.top - keep;
+    /* Boundaries. This runs on release, after the swipe-away test has already
+       had its chance, so there is no longer any reason to allow the player to
+       rest mostly off screen — left in the middle of the page it stays wholly
+       within the window, using its own resting inset as the margin. */
+    var insetX = Math.max(8, Math.round(window.innerWidth - r.right - dx));
+    var insetY = Math.max(8, Math.round(window.innerHeight - r.bottom - dy));
+    var minX = insetX - r.left;
+    var maxX = (window.innerWidth - insetX) - r.right;
+    var minY = insetY - r.top;
+    var maxY = (window.innerHeight - insetY) - r.bottom;
+    if (minX > maxX) { minX = maxX = (minX + maxX) / 2; }
+    if (minY > maxY) { minY = maxY = (minY + maxY) / 2; }
     dx = Math.min(maxX, Math.max(minX, dx));
     dy = Math.min(maxY, Math.max(minY, dy));
     apply();
@@ -3101,18 +3139,23 @@ function csMakeManipulable(wrap, isFloating, atHome) {
         if (away) { away.click(); return; }
       }
       clamp();
-      snapToCorner();
+      snapToEdges();
       scheduleHome();
     }
     if (count < 2) pinchStart = 0;
   }
 
-  /* Corner snapping. Let go anywhere near a corner and the player settles into
+  /* Edge snapping. Let go anywhere near an edge and the player settles onto
      it rather than sitting at whatever arbitrary offset the hand stopped at.
-     The corners are derived from the player's own resting inset, so it keeps
-     the margin it was designed with instead of a hardcoded one, and the same
-     four targets hold whatever size a pinch has left it. */
-  function snapToCorner() {
+
+     Each axis is decided on its own, which is the whole point: near one edge
+     it snaps flush to that edge and keeps the position the reader chose on
+     the other axis, and near two it lands in the corner for free. Snapping
+     only to the four corners meant a player left halfway down the right-hand
+     side either flew to a corner it was never near or stayed floating off the
+     edge. The insets come from the player's own resting position, so it keeps
+     the margin it was designed with whatever size a pinch has left it. */
+  function snapToEdges() {
     var prev = wrap.style.transform;
     wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
     var home = wrap.getBoundingClientRect();
@@ -3121,9 +3164,9 @@ function csMakeManipulable(wrap, isFloating, atHome) {
     var insetX = Math.round(window.innerWidth - home.right);
     var insetY = Math.round(window.innerHeight - home.bottom);
 
-    /* The top corners are not the top of the window — the navigation bar and
-       the pinned controls already live there, and a player snapping into that
-       space lands underneath them. The floor is whatever the lowest of those
+    /* The top edge is not the top of the window — the navigation bar and the
+       pinned controls already live there, and a player snapping into that
+       space lands underneath them. The ceiling is whatever the lowest of those
        currently reaches, so it settles below the chrome rather than behind it,
        and it moves with them as they appear and go. */
     var topY = insetY;
@@ -3138,27 +3181,31 @@ function csMakeManipulable(wrap, isFloating, atHome) {
       topY = Math.max(topY, Math.round(gr.bottom) + 14);
     }
 
-    var corners = [
-      { x: 0, y: 0 },                                              /* home */
-      { x: insetX - home.left, y: 0 },                             /* bottom-left */
-      { x: 0, y: topY - home.top },                                /* top-right */
-      { x: insetX - home.left, y: topY - home.top }                /* top-left */
-    ];
+    var SNAP = 116;
+    var left = home.left + dx, top = home.top + dy;
+    var right = home.right + dx, bottom = home.bottom + dy;
 
-    var best = null, bestD = Infinity;
-    for (var i = 0; i < corners.length; i++) {
-      var d = Math.hypot(corners[i].x - dx, corners[i].y - dy);
-      if (d < bestD) { bestD = d; best = corners[i]; }
+    /* Distance this axis would have to move to sit flush against each edge. */
+    var toLeft   = insetX - left;
+    var toRight  = (window.innerWidth - insetX) - right;
+    var toTop    = topY - top;
+    var toBottom = (window.innerHeight - insetY) - bottom;
+
+    var ndx = dx, ndy = dy;
+    if (Math.abs(toLeft) <= SNAP || Math.abs(toRight) <= SNAP) {
+      ndx += (Math.abs(toLeft) <= Math.abs(toRight)) ? toLeft : toRight;
     }
-    if (!best || bestD > 130) return;
-    if (best.x === dx && best.y === dy) return;
+    if (Math.abs(toTop) <= SNAP || Math.abs(toBottom) <= SNAP) {
+      ndy += (Math.abs(toTop) <= Math.abs(toBottom)) ? toTop : toBottom;
+    }
+    if (ndx === dx && ndy === dy) return;
+    dx = ndx; dy = ndy;
 
-    /* Lands, rather than travels. Animating the snap meant letting go near one
-       corner sent the player gliding across the screen to it — a movement the
-       reader did not ask for and cannot stop. It simply arrives in the corner
+    /* Lands, rather than travels. Animating the snap meant letting go near an
+       edge sent the player gliding across the screen to it — a movement the
+       reader did not ask for and cannot stop. It simply arrives at the edge
        and stays there until they move it again. (The one-minute return home is
        different: nothing is being held, so that one is worth seeing.) */
-    dx = best.x; dy = best.y;
     apply();
   }
 
