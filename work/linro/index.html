@@ -821,6 +821,11 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 }
 .t2-video.is-playing .t2-video-frame { box-shadow: 0 14px 40px rgba(20, 18, 14, 0.26); }
 .t2-video-frame:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
+/* The placeholder is display:flex, which outranks the browser's own
+   [hidden] { display: none } — so hiding it in JS did nothing and the
+   "project video to follow" panel sat on top of the film. Same trap as
+   Template One's poster; same fix. */
+.t2-video-poster[hidden] { display: none; }
 .t2-video-frame video, .t2-video-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Obvious placeholder while no video file has been supplied. */
 .t2-video-poster {
@@ -1931,8 +1936,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 @media (max-width: 719px) {
   .t2-video-frame { display: block; }
   .t2-video.is-pinned { width: 84px; }
-  .t2-video.is-pinned.is-playing,
-  .t2-video.is-pinned.is-expanded { width: 168px; }
+  .t2-video.is-pinned.is-playing { width: 168px; }
 
   /* The row carries three controls and the label, which will never fit inside
      84px of film — nor inside the 132px slot it sits in before it is pinned,
@@ -1965,8 +1969,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 
 @media (max-width: 430px) {
   .t2-video.is-pinned { width: 78px; }
-  .t2-video.is-pinned.is-playing,
-  .t2-video.is-pinned.is-expanded { width: 146px; }
+  .t2-video.is-pinned.is-playing { width: 146px; }
 }
 </style>
 </head>
@@ -3013,13 +3016,18 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
     if (!isFloating()) return;
     wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
     var r = wrap.getBoundingClientRect();
-    /* Enough to stay grabbable, but not so much that the player can never be
-       dragged far enough to trigger the swipe-away threshold above. */
-    var keep = 28;
-    var minX = -(r.left + r.width - keep);
-    var maxX = window.innerWidth - r.left - keep;
-    var minY = -(r.top + r.height - keep);
-    var maxY = window.innerHeight - r.top - keep;
+    /* Boundaries. This runs on release, after the swipe-away test has had its
+       chance, so there is no longer any reason to let the player rest mostly
+       off screen — left anywhere it stays wholly within the window, keeping
+       its own resting inset as the margin. It never sits against the glass. */
+    var insetX = Math.max(12, Math.round(window.innerWidth - r.right - dx));
+    var insetY = Math.max(12, Math.round(window.innerHeight - r.bottom - dy));
+    var minX = insetX - r.left;
+    var maxX = (window.innerWidth - insetX) - r.right;
+    var minY = insetY - r.top;
+    var maxY = (window.innerHeight - insetY) - r.bottom;
+    if (minX > maxX) { minX = maxX = (minX + maxX) / 2; }
+    if (minY > maxY) { minY = maxY = (minY + maxY) / 2; }
     dx = Math.min(maxX, Math.max(minX, dx));
     dy = Math.min(maxY, Math.max(minY, dy));
     apply();
@@ -3107,29 +3115,32 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
         if (away) { away.click(); return; }
       }
       clamp();
-      snapToCorner();
+      snapToEdges();
       scheduleHome();
     }
     if (count < 2) pinchStart = 0;
   }
 
-  /* Corner snapping. Let go anywhere near a corner and the player settles into
-     it rather than sitting at whatever arbitrary offset the hand stopped at.
-     The corners are derived from the player's own resting inset, so it keeps
-     the margin it was designed with instead of a hardcoded one, and the same
-     four targets hold whatever size a pinch has left it. */
-  function snapToCorner() {
+  /* Edge snapping. Let go near an edge and the player settles onto it rather
+     than sitting at whatever arbitrary offset the hand stopped at.
+
+     Onto it, not against it: the target is the player's own resting inset from
+     that edge, so there is always a margin of page between the film and the
+     side of the screen. Each axis is decided on its own, so near one edge it
+     keeps the position the reader chose on the other, and near two it lands in
+     the corner for free. */
+  function snapToEdges() {
     var prev = wrap.style.transform;
     wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
     var home = wrap.getBoundingClientRect();
     wrap.style.transform = prev;
 
-    var insetX = Math.round(window.innerWidth - home.right);
-    var insetY = Math.round(window.innerHeight - home.bottom);
+    var insetX = Math.max(12, Math.round(window.innerWidth - home.right));
+    var insetY = Math.max(12, Math.round(window.innerHeight - home.bottom));
 
-    /* The top corners are not the top of the window — the navigation bar and
-       the pinned controls already live there, and a player snapping into that
-       space lands underneath them. The floor is whatever the lowest of those
+    /* The top edge is not the top of the window — the navigation bar and the
+       pinned controls already live there, and a player snapping into that
+       space lands underneath them. The ceiling is whatever the lowest of those
        currently reaches, so it settles below the chrome rather than behind it,
        and it moves with them as they appear and go. */
     var topY = insetY;
@@ -3144,27 +3155,28 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
       topY = Math.max(topY, Math.round(gr.bottom) + 14);
     }
 
-    var corners = [
-      { x: 0, y: 0 },                                              /* home */
-      { x: insetX - home.left, y: 0 },                             /* bottom-left */
-      { x: 0, y: topY - home.top },                                /* top-right */
-      { x: insetX - home.left, y: topY - home.top }                /* top-left */
-    ];
+    var SNAP = 116;
+    var left = home.left + dx, top = home.top + dy;
+    var right = home.right + dx, bottom = home.bottom + dy;
 
-    var best = null, bestD = Infinity;
-    for (var i = 0; i < corners.length; i++) {
-      var d = Math.hypot(corners[i].x - dx, corners[i].y - dy);
-      if (d < bestD) { bestD = d; best = corners[i]; }
+    var toLeft   = insetX - left;
+    var toRight  = (window.innerWidth - insetX) - right;
+    var toTop    = topY - top;
+    var toBottom = (window.innerHeight - insetY) - bottom;
+
+    var ndx = dx, ndy = dy;
+    if (Math.abs(toLeft) <= SNAP || Math.abs(toRight) <= SNAP) {
+      ndx += (Math.abs(toLeft) <= Math.abs(toRight)) ? toLeft : toRight;
     }
-    if (!best || bestD > 130) return;
-    if (best.x === dx && best.y === dy) return;
+    if (Math.abs(toTop) <= SNAP || Math.abs(toBottom) <= SNAP) {
+      ndy += (Math.abs(toTop) <= Math.abs(toBottom)) ? toTop : toBottom;
+    }
+    if (ndx === dx && ndy === dy) return;
+    dx = ndx; dy = ndy;
 
-    /* Lands, rather than travels. Animating the snap meant letting go near one
-       corner sent the player gliding across the screen to it — a movement the
-       reader did not ask for and cannot stop. It simply arrives in the corner
-       and stays there until they move it again. (The one-minute return home is
-       different: nothing is being held, so that one is worth seeing.) */
-    dx = best.x; dy = best.y;
+    /* Lands, rather than travels. Animating the snap meant letting go near an
+       edge sent the player gliding across the screen to it — a movement the
+       reader did not ask for and cannot stop. */
     apply();
   }
 
@@ -3497,6 +3509,42 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
 @supports (padding: env(safe-area-inset-bottom)) {
   .t2-nav { padding-top: env(safe-area-inset-top); }
   .t2-video.is-pinned { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
+}
+
+/* The control row as glass, on a phone — the same treatment as the × and the
+   story pin on a desktop, and the same as Template One's player, so the two
+   templates present one control language. Touch has no hover, so this row is
+   the entire control surface and has to read over any composition behind it. */
+@media (max-width: 719px) {
+  .t2-video .t2-video-meta,
+  .t2-video.is-pinned .t2-video-meta {
+    padding: 6px 8px;
+    border-radius: 16px;
+    background: rgba(18, 17, 15, 0.44);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    backdrop-filter: blur(18px) saturate(1.7);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+    color: #FFFFFF;
+    gap: 8px;
+  }
+  .t2-video-toggle,
+  .t2-video-mute,
+  .t2-video-dismiss {
+    width: 34px; height: 34px;
+    margin: 0;
+    border-radius: 50%;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .t2-video-mute svg { width: 19px; height: 19px; }
+  .t2-video-toggle svg { width: 12px; height: 14px; }
+  .t2-video-dismiss { font-size: 22px; margin-left: 0; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (max-width: 719px) {
+    .t2-video .t2-video-meta { background: rgba(18, 17, 15, 0.9); }
+  }
 }
 </style>
 <script>

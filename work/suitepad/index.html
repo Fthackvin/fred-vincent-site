@@ -2760,6 +2760,9 @@ var CS_CONFIG = {
     var vMuteOff = document.getElementById('cs-video-mute-off');
     var vMuteOn = document.getElementById('cs-video-mute-on');
     var chosenSilent = false;
+    /* Matches Tag Tuition. These pages carry no film yet, so nothing reads it
+       today, but the module stays identical across the three. */
+    var LEVEL = 0.38;
     function paintMute() {
       if (!vMute || !media) return;
       var m = media.muted;
@@ -2768,39 +2771,55 @@ var CS_CONFIG = {
       vMute.setAttribute('aria-label', m ? 'Unmute video' : 'Mute video');
       vMute.setAttribute('aria-pressed', m ? 'false' : 'true');
     }
-    /* Deliberately does nothing to the mute state any more. Sound is the
-       reader's call and the speaker control is the only thing that makes it,
-       so pressing play never puts audio into a room uninvited. */
-    function unmute() { paintMute(); }
+    /* Size is the mute state, made visible. Silent is a thumbnail sitting
+       quietly beside the page; with the sound on it is something you are
+       actually watching, so it takes the room to be watched. One rule, so the
+       two can never disagree: expanded is simply "not muted".
+
+       It also means every route lands somewhere consistent. Autoplay is muted,
+       so it arrives small. Pressing play brings the sound with it, so it grows.
+       Muting again puts it back to a thumbnail, which is what someone silencing
+       a video is asking for. */
+    function syncSize() {
+      var next = !!(media && !media.muted);
+      if (next === expanded) return;
+      expanded = next;
+      render();
+    }
+
+    /* Pressing play is a deliberate act, so it carries the sound — unless the
+       reader has explicitly silenced it, which is a choice we keep. */
+    function unmute() {
+      if (media && !chosenSilent && media.muted) { media.muted = false; media.volume = LEVEL; }
+      paintMute();
+      syncSize();
+    }
+
     if (vMute && media) {
       vMute.addEventListener('click', function (e) {
         e.stopPropagation();
         media.muted = !media.muted;
-        chosenSilent = media.muted;
-        /* Turning the sound on means settling in to watch, so the player goes
-           to its full size with it. Muting again leaves it there — shrinking
-           the thing you are watching because you silenced it would be odd. */
-        if (!expanded) { expanded = true; render(); }
+        chosenSilent = media.muted;   /* a deliberate choice, so respect it */
+        if (!media.muted) media.volume = LEVEL;
         paintMute();
+        syncSize();
       });
-      media.addEventListener('volumechange', paintMute);
+      media.addEventListener('volumechange', function () { paintMute(); syncSize(); });
       paintMute();
     } else if (vMute) {
       vMute.remove();
     }
 
-    /* First click on the film is "show me this properly": it grows, and starts
-       if it was not already running. After that a click is play/pause. */
+    /* A click on the film plays or pauses it; starting brings the sound, and
+       the size follows from that rather than being decided here. */
     vFrame.addEventListener('click', function () {
-      unmute();
-      if (!expanded) {
-        expanded = true;
-        if (!playing) setPlaying(true); else render();
-        return;
-      }
-      setPlaying(!playing);
+      if (!playing) { unmute(); setPlaying(true); }
+      else setPlaying(false);
     });
-    vToggle.addEventListener('click', function () { unmute(); setPlaying(!playing); });
+    vToggle.addEventListener('click', function () {
+      if (!playing) { unmute(); setPlaying(true); }
+      else setPlaying(false);
+    });
     vDismiss.addEventListener('click', function () {
       setPlaying(false);
       /* Put away means put away: bringing it back starts the film rather than
@@ -3124,8 +3143,8 @@ function csMakeManipulable(wrap, isFloating, atHome) {
        had its chance, so there is no longer any reason to allow the player to
        rest mostly off screen — left in the middle of the page it stays wholly
        within the window, using its own resting inset as the margin. */
-    var insetX = Math.max(8, Math.round(window.innerWidth - r.right - dx));
-    var insetY = Math.max(8, Math.round(window.innerHeight - r.bottom - dy));
+    var insetX = Math.max(12, Math.round(window.innerWidth - r.right - dx));
+    var insetY = Math.max(12, Math.round(window.innerHeight - r.bottom - dy));
     var minX = insetX - r.left;
     var maxX = (window.innerWidth - insetX) - r.right;
     var minY = insetY - r.top;
@@ -3240,8 +3259,11 @@ function csMakeManipulable(wrap, isFloating, atHome) {
     var home = wrap.getBoundingClientRect();
     wrap.style.transform = prev;
 
-    var insetX = Math.round(window.innerWidth - home.right);
-    var insetY = Math.round(window.innerHeight - home.bottom);
+    /* Never zero: the target is the player's own resting inset, so a snapped
+       player keeps a margin of page between it and the side of the screen
+       rather than sitting against the glass. */
+    var insetX = Math.max(12, Math.round(window.innerWidth - home.right));
+    var insetY = Math.max(12, Math.round(window.innerHeight - home.bottom));
 
     /* The top edge is not the top of the window — the navigation bar and the
        pinned controls already live there, and a player snapping into that
@@ -3454,6 +3476,45 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
   .cs-video { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
   .cs-video-restore { bottom: calc(clamp(24px, 12vh, 96px) + env(safe-area-inset-bottom)); }
   .cs-nextfloat { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
+}
+
+/* The control row as glass, on a phone.
+
+   Touch has no hover, so this row is the entire control surface — and floating
+   dark-on-white text over an arbitrary composition was never going to be
+   reliably legible. It takes the same treatment as the × and the story pin on
+   a desktop: a translucent dark ground with a blur behind it, white glyphs, and
+   each control a real target with a visible edge rather than a bare icon.
+   Where backdrop-filter is unavailable the ground goes solid instead. */
+@media (max-width: 719px) {
+  .cs-video-meta {
+    padding: 6px 8px;
+    border-radius: 16px;
+    background: rgba(18, 17, 15, 0.44);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    backdrop-filter: blur(18px) saturate(1.7);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+    color: #FFFFFF;
+    gap: 8px;
+  }
+  .cs-video-meta .cs-video-toggle,
+  .cs-video-mute,
+  .cs-video-dismiss {
+    width: 34px; height: 34px;
+    margin: 0;
+    border-radius: 50%;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .cs-video-mute svg { width: 19px; height: 19px; }
+  .cs-video-meta .cs-video-toggle svg { width: 12px; height: 14px; }
+  .cs-video-dismiss { font-size: 22px; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (max-width: 719px) {
+    .cs-video-meta { background: rgba(18, 17, 15, 0.9); }
+  }
 }
 </style>
 <script>
