@@ -3419,7 +3419,10 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
    bottom-anchored chrome is listed: the rest of the pinned controls hang from
    the nav, which carries its own inset below. */
 @supports (padding: env(safe-area-inset-bottom)) {
-  .cs-nav { padding-top: env(safe-area-inset-top); }
+  /* ADDS to the nav's own 22px. Written as a bare env() it replaced it, and
+     since the inset is 0 on anything without a notch that meant every desktop
+     lost the padding above the wordmark. */
+  .cs-nav { padding-top: calc(22px + env(safe-area-inset-top)); }
   .cs-video { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
   .cs-video-restore { bottom: calc(clamp(24px, 12vh, 96px) + env(safe-area-inset-bottom)); }
   .cs-nextfloat { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
@@ -3462,6 +3465,29 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
   @media (max-width: 719px) {
     .cs-video-meta { background: rgba(18, 17, 15, 0.9); }
   }
+}
+
+/* The strip below the footer, behind iOS's bottom bar.
+
+   Setting the html canvas to the footer's colour fixed the overscroll — the
+   rubber band past the end of the document — but not this. The safe-area strip
+   is painted from the page underneath it, and the page underneath it is body,
+   which is paper because most of these pages are. So the footer ran out and
+   paper showed beneath it.
+
+   This lays the footer's own colour across that inset and nothing else: the
+   height is env(safe-area-inset-bottom), which is 0 on every device that has
+   no inset, so the element collapses to nothing and is inert there. */
+body::after {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: env(safe-area-inset-bottom, 0px);
+  background: #1a1a1a;
+  pointer-events: none;
+  z-index: 1;
 }
 </style>
 <script>

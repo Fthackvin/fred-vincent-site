@@ -1038,6 +1038,23 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 /* The export is transparent, so the media box's default grey was showing
    through behind the phones as a panel. It sits on the page ground instead. */
 .kz-onblack .t2-media { background: none; }
+
+/* The even-spread strip is two halves of one original, four screens each, so
+   it can be one row on a wide page and two on a phone without shipping a second
+   copy of the artwork. Eight abreast on a 390px screen was about 40px a screen
+   and ran off both edges.
+
+   On desktop the halves sit back together and reproduce the original exactly:
+   the padding replaces the outer margin the crops trimmed. */
+.t2-media.kz-even-strip { display: flex; align-items: flex-start; padding: 0 2.062% 0 3.003%; }
+.t2-media.kz-even-strip img { width: 50%; height: auto; display: block; flex: none; }
+
+@media (max-width: 899px) {
+  /* Four above, four below — double the size each, and nothing off the edge. */
+  .t2-media.kz-even-strip { display: block; padding: 0 clamp(10px, 3vw, 24px); }
+  .t2-media.kz-even-strip img { width: 100%; }
+  .t2-media.kz-even-strip .kz-even-b { margin-top: clamp(10px, 2.4vw, 22px); }
+}
 /* Held back from the live page while the block work settles. The markup stays
    so it can be switched back on by dropping this class. */
 .kz-draft { display: none !important; }
@@ -2497,10 +2514,13 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
     </figure>
 
       <figure class="t2-item t2-reveal kz-onblack">
-        <div class="t2-media" style="aspect-ratio: 2764 / 774;">
-          <img src="kaizen-even-spread.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating." width="2764" height="774" loading="lazy" decoding="async">
-        </div>
-      </figure>
+      <div class="t2-media kz-even-strip">
+        <img class="kz-even-a" src="kaizen-even-spread-a.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating."
+             width="1312" height="774" loading="lazy" decoding="async">
+        <img class="kz-even-b" src="kaizen-even-spread-b.webp" alt=""
+             width="1312" height="774" loading="lazy" decoding="async">
+      </div>
+    </figure>
 
       <figure class="t2-item t2-reveal kz-train kz-draft">
         <figcaption class="kz-pair-title">Train like&hellip;</figcaption>
@@ -3830,7 +3850,10 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
    bottom-anchored chrome is listed: the rest of the pinned controls hang from
    the nav, which carries its own inset below. */
 @supports (padding: env(safe-area-inset-bottom)) {
-  .t2-nav { padding-top: env(safe-area-inset-top); }
+  /* ADDS to the nav's own 22px. Written as a bare env() it replaced it, and
+     since the inset is 0 on anything without a notch that meant every desktop
+     lost the padding above the wordmark. */
+  .t2-nav { padding-top: calc(22px + env(safe-area-inset-top)); }
   .t2-video.is-pinned { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
 }
 
@@ -3868,6 +3891,29 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
   @media (max-width: 719px) {
     .t2-video .t2-video-meta { background: rgba(18, 17, 15, 0.9); }
   }
+}
+
+/* The strip below the footer, behind iOS's bottom bar.
+
+   Setting the html canvas to the footer's colour fixed the overscroll — the
+   rubber band past the end of the document — but not this. The safe-area strip
+   is painted from the page underneath it, and the page underneath it is body,
+   which is paper because most of these pages are. So the footer ran out and
+   paper showed beneath it.
+
+   This lays the footer's own colour across that inset and nothing else: the
+   height is env(safe-area-inset-bottom), which is 0 on every device that has
+   no inset, so the element collapses to nothing and is inert there. */
+body::after {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: env(safe-area-inset-bottom, 0px);
+  background: #1a1a1a;
+  pointer-events: none;
+  z-index: 1;
 }
 </style>
 <script>
