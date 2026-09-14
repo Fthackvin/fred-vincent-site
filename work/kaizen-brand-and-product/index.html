@@ -2763,6 +2763,9 @@ var T2_CONFIG = {
      page and the reader reaches for the phone's volume rather than the film's. */
   var LEVEL = 0.38;
   var chosenSilent = false;
+  /* The reader paused it themselves (or it ran to the end). Scrolling on a
+     phone never starts it again after that. */
+  var chosenPause = false;
   var vMute = document.getElementById('t2-video-mute');
   var vMuteOff = document.getElementById('t2-video-mute-off');
   var vMuteOn = document.getElementById('t2-video-mute-on');
@@ -3006,17 +3009,9 @@ var T2_CONFIG = {
        flag instead, and either the observer or the scroll can be the thing
        that completes the pair. */
     function maybeStart() {
-      if (started || !movingDown || !slotOnScreen || !media) return;
-      if (t2VideoState.dismissed) return;
-      /* On a phone the player starts out folded into the "Project video" tab.
-         Autoplay is the film arriving, so it takes the tab's place rather than
-         appearing beside it: one representation of the video at a time. The
-         wrap goes back on the page BEFORE play — a display:none video cannot
-         reliably start, on iOS least of all. */
-      if (wrap.classList.contains('is-collapsed')) {
-        wrap.classList.remove('is-collapsed');
-        restore.classList.remove('is-shown');
-      }
+      if (!media || t2VideoState.dismissed) return;
+      if (narrowPin.matches) { scheduleUnfold(); return; }
+      if (started || !movingDown || !slotOnScreen) return;
       media.muted = true;      /* silent: it is the page's decision, not the reader's */
       paintMute();
       syncSize();              /* and therefore small */
@@ -3029,6 +3024,60 @@ var T2_CONFIG = {
        scrolled. Any route counts: once it is running, autoplay's job is done
        and playback belongs to them. */
     media.addEventListener('play', function () { started = true; });
+
+    /* Phone. The player and the "Project video" tab are one thing in two
+       forms, and the scroll decides which: moving down into the work unfolds
+       the silent thumbnail in the corner, moving back up to the opening block
+       folds it into the tab again, so the button is there when the reader
+       returns to it. Unlike the wide layout this is not once-only — the film
+       picks up where it left off each time it unfolds.
+
+       It waits a second before appearing. Unfolding the moment the page moved
+       put a film in the corner before the reader had settled into scrolling;
+       going back up is the reader leaving, so folding is immediate.
+
+       Never against a choice: once it is in its big mode (the sound is on) it
+       stays exactly where it is, and a film the reader paused, or that ran to
+       the end, is not started again behind their back. */
+    var APPEAR_DELAY = 1000;
+    var unfoldTimer = null;
+    function scheduleUnfold() {
+      if (unfoldTimer || chosenPause || !movingDown) return;
+      if (!wrap.classList.contains('is-collapsed')) return;
+      unfoldTimer = setTimeout(function () {
+        unfoldTimer = null;
+        if (!narrowPin.matches || !movingDown || chosenPause) return;
+        if (t2VideoState.dismissed || !wrap.classList.contains('is-collapsed')) return;
+        /* On the page BEFORE play: a display:none video cannot reliably
+           start, on iOS least of all. */
+        wrap.classList.remove('is-collapsed');
+        restore.classList.remove('is-shown');
+        media.muted = true;
+        paintMute();
+        syncSize();
+        setPlaying(true);
+      }, APPEAR_DELAY);
+    }
+    function cancelUnfold() {
+      if (unfoldTimer) { clearTimeout(unfoldTimer); unfoldTimer = null; }
+    }
+    /* Folds as soon as the opening block's controls come back out from under
+       the nav, rather than at the very top — that is where the tab lives, so
+       it reappears in the place the reader is looking. */
+    var headCtrls = document.querySelector('.t2-head-controls');
+    var t2Nav = document.querySelector('.t2-nav');
+    function maybeFold() {
+      if (!narrowPin.matches || wrap.hidden || wrap.classList.contains('is-collapsed')) return;
+      if (wrap.classList.contains('is-expanded')) return;       /* big mode stays */
+      if (!headCtrls) return;
+      var navH = t2Nav ? t2Nav.getBoundingClientRect().height : 76;
+      if (headCtrls.getBoundingClientRect().top + 60 < navH) return;
+      setPlaying(false);
+      t2VideoState.held = false;
+      t2VideoState.collapsed = true;
+      wrap.classList.add('is-collapsed');
+      restore.classList.add('is-shown');
+    }
 
     /* Measured, not only observed. An IntersectionObserver is the tidy way to
        ask this, but it is not guaranteed to have delivered a callback by the
@@ -3045,8 +3094,17 @@ var T2_CONFIG = {
     var lastY = window.scrollY;
     window.addEventListener('scroll', function () {
       var y = window.scrollY;
-      if (y > lastY + 4 && y > 24) movingDown = true;
+      if (y > lastY + 4 && y > 24) {
+        movingDown = true;
+      } else if (y < lastY - 4) {
+        /* Direction matters on a phone, where the film comes and goes with
+           it. The wide layout only ever needed the first move down. */
+        if (narrowPin.matches) { movingDown = false; cancelUnfold(); maybeFold(); }
+      } else {
+        return;
+      }
       lastY = y;
+      if (narrowPin.matches) { if (movingDown) maybeStart(); return; }
       if (!started && movingDown) { slotOnScreen = slotIsOnScreen(); maybeStart(); }
     }, { passive: true });
 
@@ -3070,10 +3128,12 @@ var T2_CONFIG = {
   /* Both routes into playback carry the sound with them. */
   /* Starting brings the sound, and the size follows from that. */
   frame.addEventListener('click', function () {
+    chosenPause = playing;
     if (!playing) { soundOnDeliberatePlay(); syncSize(); }
     setPlaying(!playing);
   });
   toggle.addEventListener('click', function () {
+    chosenPause = playing;
     if (!playing) { soundOnDeliberatePlay(); syncSize(); }
     setPlaying(!playing);
   });
@@ -3116,6 +3176,7 @@ var T2_CONFIG = {
        again underneath them. Scrolling up past the line releases it. */
     t2VideoState.dismissed = false;
     t2VideoState.held = true;
+    chosenPause = false;
     wrap.classList.remove('is-collapsed');
 
     /* Tapping the tab is as deliberate as pressing play, so it carries the
@@ -3164,6 +3225,7 @@ var T2_CONFIG = {
   if (media) {
     media.addEventListener('ended', function () {
       media.currentTime = 0;
+      chosenPause = true;         /* finished: scrolling does not start it again */
       setPlaying(false);          /* shrinks back to its resting size */
       markReset();
     });
@@ -4115,6 +4177,35 @@ body::after {
     gap: 12px;
   }
   .t2-head-controls .t2-video-restore { height: 52px; padding: 0 22px; }
+
+  /* Nothing held open for what is not there. The tab is gated on opacity, so
+     hidden it still kept its 52px row plus the gap above it, and the empty
+     video slot kept a grid row and its margin below that — a band of blank
+     page between the Project story control and the first image whenever the
+     film was playing in the corner. Hidden, the tab takes no room; it opens
+     its row again when it comes back. The slot is only ever a waypoint on a
+     phone (the player is folded into the tab or pinned to the corner), so it
+     comes out of the flow without going display:none — a video cannot
+     reliably start inside one. */
+  .t2-head-controls .t2-video-restore:not(.is-shown) {
+    height: 0;
+    margin-top: -12px;
+    overflow: hidden;
+  }
+  .t2-head-controls .t2-video-restore {
+    transition: opacity 170ms var(--ease), transform 170ms var(--ease),
+                height 320ms var(--ease), margin-top 320ms var(--ease);
+  }
+  .t2-head-controls .t2-video-restore.is-shown {
+    transition: opacity 420ms var(--ease) 140ms, transform 420ms var(--ease) 140ms,
+                height 320ms var(--ease), margin-top 320ms var(--ease);
+  }
+  .t2-video-slot {
+    position: absolute;
+    height: 0;
+    min-height: 0 !important;
+    margin: 0;
+  }
 }
 
 @media (max-width: 719px) {

@@ -2919,6 +2919,35 @@ body::after {
     gap: 12px;
   }
   .t2-head-controls .t2-video-restore { height: 52px; padding: 0 22px; }
+
+  /* Nothing held open for what is not there. The tab is gated on opacity, so
+     hidden it still kept its 52px row plus the gap above it, and the empty
+     video slot kept a grid row and its margin below that — a band of blank
+     page between the Project story control and the first image whenever the
+     film was playing in the corner. Hidden, the tab takes no room; it opens
+     its row again when it comes back. The slot is only ever a waypoint on a
+     phone (the player is folded into the tab or pinned to the corner), so it
+     comes out of the flow without going display:none — a video cannot
+     reliably start inside one. */
+  .t2-head-controls .t2-video-restore:not(.is-shown) {
+    height: 0;
+    margin-top: -12px;
+    overflow: hidden;
+  }
+  .t2-head-controls .t2-video-restore {
+    transition: opacity 170ms var(--ease), transform 170ms var(--ease),
+                height 320ms var(--ease), margin-top 320ms var(--ease);
+  }
+  .t2-head-controls .t2-video-restore.is-shown {
+    transition: opacity 420ms var(--ease) 140ms, transform 420ms var(--ease) 140ms,
+                height 320ms var(--ease), margin-top 320ms var(--ease);
+  }
+  .t2-video-slot {
+    position: absolute;
+    height: 0;
+    min-height: 0 !important;
+    margin: 0;
+  }
 }
 
 @media (max-width: 719px) {
