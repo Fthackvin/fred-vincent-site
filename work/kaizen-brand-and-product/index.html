@@ -1844,7 +1844,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
      is the edge tab from the start, clipped to the right side, and only
      becomes a square when they ask for it. `display: none` rather than a fade,
      so the slot reserves no height for it either. */
-  .t2-video.is-collapsed { display: none; }
+  /* Written against .is-pinned as well: the phone rule further down gives the
+     pinned player `display: flex` at equal specificity and later in the sheet,
+     which quietly un-hid a collapsed player and put it in the corner next to
+     the tab offering it. */
+  .t2-video.is-collapsed,
+  .t2-video.is-pinned.is-collapsed { display: none; }
   .t2-video-overlay .glyph { width: 24px; height: 29px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -3002,6 +3007,16 @@ var T2_CONFIG = {
        that completes the pair. */
     function maybeStart() {
       if (started || !movingDown || !slotOnScreen || !media) return;
+      if (t2VideoState.dismissed) return;
+      /* On a phone the player starts out folded into the "Project video" tab.
+         Autoplay is the film arriving, so it takes the tab's place rather than
+         appearing beside it: one representation of the video at a time. The
+         wrap goes back on the page BEFORE play — a display:none video cannot
+         reliably start, on iOS least of all. */
+      if (wrap.classList.contains('is-collapsed')) {
+        wrap.classList.remove('is-collapsed');
+        restore.classList.remove('is-shown');
+      }
       media.muted = true;      /* silent: it is the page's decision, not the reader's */
       paintMute();
       syncSize();              /* and therefore small */
