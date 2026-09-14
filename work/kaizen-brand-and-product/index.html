@@ -3032,46 +3032,48 @@ var T2_CONFIG = {
        returns to it. Unlike the wide layout this is not once-only — the film
        picks up where it left off each time it unfolds.
 
-       It waits a second before appearing. Unfolding the moment the page moved
-       put a film in the corner before the reader had settled into scrolling;
-       going back up is the reader leaving, so folding is immediate.
+       It unfolds where the tab leaves: once the "Project video" button has
+       reached the nav on its way up the screen, the thumbnail takes over in the
+       corner. Tied to that place rather than to a timer — a second's wait read
+       as a film that was slow to turn up, and on a slow scroll it could arrive
+       while the button was still in the middle of the screen. Going back up is
+       the reader leaving, so folding happens as soon as the controls return.
 
        Never against a choice: once it is in its big mode (the sound is on) it
        stays exactly where it is, and a film the reader paused, or that ran to
        the end, is not started again behind their back. */
-    var APPEAR_DELAY = 1000;
-    var unfoldTimer = null;
-    function scheduleUnfold() {
-      if (unfoldTimer || chosenPause || !movingDown) return;
-      if (!wrap.classList.contains('is-collapsed')) return;
-      unfoldTimer = setTimeout(function () {
-        unfoldTimer = null;
-        if (!narrowPin.matches || !movingDown || chosenPause) return;
-        if (t2VideoState.dismissed || !wrap.classList.contains('is-collapsed')) return;
-        /* On the page BEFORE play: a display:none video cannot reliably
-           start, on iOS least of all. */
-        wrap.classList.remove('is-collapsed');
-        restore.classList.remove('is-shown');
-        media.muted = true;
-        paintMute();
-        syncSize();
-        setPlaying(true);
-      }, APPEAR_DELAY);
+    var headCtrls = document.querySelector('.t2-head-controls');
+    var headStory = headCtrls && headCtrls.querySelector('.t2-story-toggle');
+    var t2Nav = document.querySelector('.t2-nav');
+    function navHeight() { return t2Nav ? t2Nav.getBoundingClientRect().height : 76; }
+    /* The tab sits 12px under the story control, so the story control's bottom
+       edge says where the tab's top is even once the tab itself has faded or
+       pinned to the corner. */
+    function tabHasLeft() {
+      if (!headStory) return true;
+      return headStory.getBoundingClientRect().bottom + 12 <= navHeight();
     }
-    function cancelUnfold() {
-      if (unfoldTimer) { clearTimeout(unfoldTimer); unfoldTimer = null; }
+    function scheduleUnfold() {
+      if (chosenPause || !movingDown) return;
+      if (t2VideoState.dismissed || !wrap.classList.contains('is-collapsed')) return;
+      if (!tabHasLeft()) return;
+      /* On the page BEFORE play: a display:none video cannot reliably start,
+         on iOS least of all. */
+      wrap.classList.remove('is-collapsed');
+      restore.classList.remove('is-shown');
+      media.muted = true;
+      paintMute();
+      syncSize();
+      setPlaying(true);
     }
     /* Folds as soon as the opening block's controls come back out from under
        the nav, rather than at the very top — that is where the tab lives, so
        it reappears in the place the reader is looking. */
-    var headCtrls = document.querySelector('.t2-head-controls');
-    var t2Nav = document.querySelector('.t2-nav');
     function maybeFold() {
       if (!narrowPin.matches || wrap.hidden || wrap.classList.contains('is-collapsed')) return;
       if (wrap.classList.contains('is-expanded')) return;       /* big mode stays */
       if (!headCtrls) return;
-      var navH = t2Nav ? t2Nav.getBoundingClientRect().height : 76;
-      if (headCtrls.getBoundingClientRect().top + 60 < navH) return;
+      if (headCtrls.getBoundingClientRect().top + 60 < navHeight()) return;
       setPlaying(false);
       t2VideoState.held = false;
       t2VideoState.collapsed = true;
@@ -3099,7 +3101,7 @@ var T2_CONFIG = {
       } else if (y < lastY - 4) {
         /* Direction matters on a phone, where the film comes and goes with
            it. The wide layout only ever needed the first move down. */
-        if (narrowPin.matches) { movingDown = false; cancelUnfold(); maybeFold(); }
+        if (narrowPin.matches) { movingDown = false; maybeFold(); }
       } else {
         return;
       }
