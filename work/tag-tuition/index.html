@@ -925,7 +925,10 @@ html.cs-entered .cs-video.is-away,
    an image rather than something you can start. Running, the pause mark is only
    there when the pointer is, so it is not sitting over the film throughout.
    `is-expanded` tracks playback, so :not() is the stopped state. */
-.cs-video:not(.is-expanded) .cs-video-overlay { opacity: 1; }
+/* Keyed off playback itself. It used to be `:not(.is-expanded)`, back when
+   the film only ever played large — now the silent thumbnail plays small, and
+   that rule put a permanent pause mark over the middle of it. */
+.cs-video:not(.is-playing) .cs-video-overlay { opacity: 1; }
 /* Deliberately no `@media (hover: none)` rule here. Pinning the overlay on for
    touch put a permanent pause mark over the middle of the film — on a phone the
    control you could see was the one thing stopping you seeing the video. Touch
@@ -976,6 +979,15 @@ html.cs-entered .cs-video.is-away,
 }
 .cs-video-mute:hover { color: #1A1815; background: rgba(0, 0, 0, 0.06); }
 .cs-video-mute:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 2px; }
+.cs-video-restart {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #5C5C5C;
+  transition: color 160ms var(--ease), background-color 160ms var(--ease);
+}
+.cs-video-restart:hover { color: #1A1815; background: rgba(0, 0, 0, 0.06); }
+.cs-video-restart:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 .cs-video-dismiss {
   border: 0; background: none; padding: 0; cursor: pointer;
   margin-right: -6px;
@@ -1652,6 +1664,7 @@ html.cs-scrolled .cs-cover .cs-cue {
         <g id="cs-video-mute-on" style="display:none"><path d="M16.2 8.4a5 5 0 0 1 0 7.2"/><path d="M19 5.8a9 9 0 0 1 0 12.4"/></g>
       </svg>
     </button>
+    <button type="button" class="cs-video-restart" id="cs-video-restart" data-no-drag aria-label="Back to the start"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><polyline points="3.5 3.8 3.5 8.8 8.5 8.8"/></svg></button>
     <span id="cs-video-label">Fred 0:52</span>
     <button type="button" class="cs-video-dismiss" id="cs-video-dismiss" data-no-drag aria-label="Hide video">×</button>
   </div>
@@ -2377,6 +2390,7 @@ var CS_CONFIG = {
     var expanded = false;
     function render() {
       vWrap.classList.toggle('is-expanded', expanded);
+      vWrap.classList.toggle('is-playing', playing);
       vToggleGlyph.querySelector('path').setAttribute('d', playing ? PAUSE : PLAY);
       vOverlayGlyph.querySelector('path').setAttribute('d', playing ? PAUSE_LG : PLAY_LG);
       vToggle.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
@@ -2422,6 +2436,7 @@ var CS_CONFIG = {
       csVideoState.dismissed = false;
       csVideoState.held = true;
       csVideoState.collapsed = false;
+      chosenPause = false;
       vWrap.classList.remove('is-collapsed');
       /* Commit the expanded size with the size transition switched off, so the
          player appears at full size rather than growing into it. */
@@ -2440,6 +2455,7 @@ var CS_CONFIG = {
       media.addEventListener('play',  function () { if (!playing) { playing = true;  render(); } });
       media.addEventListener('pause', function () { if (playing)  { playing = false; render(); } });
       media.addEventListener('ended', function () {
+        chosenPause = true;
         media.currentTime = 0;
         setPlaying(false);          /* shrinks back to its resting size */
         markReset();
@@ -2454,6 +2470,9 @@ var CS_CONFIG = {
     var vMuteOff = document.getElementById('cs-video-mute-off');
     var vMuteOn = document.getElementById('cs-video-mute-on');
     var chosenSilent = false;
+    /* The reader paused it themselves, or it ran to the end: scrolling never
+       starts it again after that. */
+    var chosenPause = false;
 
     function paintMute() {
       if (!vMute || !media) return;
@@ -2525,12 +2544,23 @@ var CS_CONFIG = {
     /* A click on the film plays or pauses it; starting brings the sound, and
        the size follows from that rather than being decided here. */
     vFrame.addEventListener('click', function () {
+      chosenPause = playing;
       if (!playing) { unmute(); setPlaying(true); }
       else setPlaying(false);
     });
     vToggle.addEventListener('click', function () {
+      chosenPause = playing;
       if (!playing) { unmute(); setPlaying(true); }
       else setPlaying(false);
+    });
+    /* Back to the start, and running. */
+    var vRestart = document.getElementById('cs-video-restart');
+    if (vRestart && !media) vRestart.remove();
+    if (vRestart && media) vRestart.addEventListener('click', function () {
+      media.currentTime = 0;
+      vWrap.classList.remove('is-reset');
+      chosenPause = false;
+      if (!playing) setPlaying(true);
     });
     vDismiss.addEventListener('click', function () {
       setPlaying(false);
@@ -2566,6 +2596,7 @@ var CS_CONFIG = {
          again underneath them. Scrolling back up above the line releases it. */
       csVideoState.dismissed = false;
       csVideoState.held = true;
+      chosenPause = false;
       if (!narrowQ.matches) csVideoState.collapsed = false;
       vWrap.classList.remove('is-collapsed');
       unmute();
@@ -2637,19 +2668,50 @@ var CS_CONFIG = {
        Hysteresis on the line, and never against an explicit choice: dismissing
        keeps it dismissed, tapping the tab keeps it open until they leave. */
     var narrowQ = window.matchMedia('(max-width: 719px)');
-    /* Desktop: no preview in the corner and no autoplay. The film is the
-       "Video explainer" button in the bottom-right corner until the reader
-       presses it, and the player then opens in that same corner — one control
-       in two states, never both on screen. The button is offered once the
-       reader starts scrolling down, or after five idle seconds. */
+    /* Desktop. The film and the "Video explainer" button are one control in
+       two states, in the same bottom-right corner, never both on screen. At
+       the top it is the button — offered once the reader starts scrolling
+       down, or after five idle seconds. Scrolled on past the middle of the
+       cover, it turns into the silent thumbnail and starts playing; back up
+       above that line it folds into the button again, picking up where it
+       left off next time. In its big mode (sound on) it stays put, and a film
+       the reader paused or that ran to the end is not restarted by scrolling. */
     var offerReady = false;
+    var readerScrolled = false;
+    function deskLine() {
+      var first = document.getElementById('cs-s1');
+      return first ? Math.max(200, first.offsetTop - window.innerHeight * 0.5)
+                   : window.innerHeight * 0.5;
+    }
+    function deskFold() {
+      setPlaying(false);
+      csVideoState.held = false;
+      csVideoState.collapsed = true;
+      vWrap.classList.add('is-collapsed');
+      vRestore.classList.toggle('is-shown', offerReady);
+    }
+    function deskUnfold() {
+      csVideoState.collapsed = false;
+      vWrap.classList.remove('is-collapsed');
+      vRestore.classList.remove('is-shown');
+      if (media) media.muted = true;   /* silent: the page's decision, not theirs */
+      paintMute();
+      syncSize();
+      setPlaying(true);
+    }
     function deskSync() {
-      if (csVideoState.dismissed) return;             /* the tab is already up */
-      if (csVideoState.held) { csVideoState.collapsed = false; return; }
-      if (!csVideoState.collapsed) {
-        csVideoState.collapsed = true;
-        setPlaying(false);
-        vWrap.classList.add('is-collapsed');
+      if (csVideoState.dismissed) return;             /* the button is already up */
+      var y = window.scrollY, line = deskLine();
+      var open = !vWrap.classList.contains('is-collapsed');
+      if (open) {
+        /* Sixty pixels of dead band, so resting on the line cannot flicker. */
+        if (y < line - 60 && !expanded) deskFold();
+        return;
+      }
+      if (readerScrolled && y >= line && !chosenPause &&
+          !document.documentElement.classList.contains('cs-modal')) {
+        deskUnfold();
+        return;
       }
       vRestore.classList.toggle('is-shown', offerReady);
     }
@@ -2661,10 +2723,15 @@ var CS_CONFIG = {
     }
     var offerTimer = setTimeout(offerVideo, 5000);
     var offerLastY = window.scrollY;
+    var deskSettle = null;
     window.addEventListener('scroll', function () {
       var y = window.scrollY;
+      if (y > 24) readerScrolled = true;
       if (y > offerLastY + 4 && y > 24) offerVideo();
       offerLastY = y;
+      /* Checked again once the scroll comes to rest. */
+      clearTimeout(deskSettle);
+      deskSettle = setTimeout(function () { if (!narrowQ.matches) deskSync(); }, 160);
     }, { passive: true });
 
     function morph() {
@@ -3317,6 +3384,7 @@ html.cs-entered .cs-video.is-collapsed,
   }
   .cs-video-meta .cs-video-toggle,
   .cs-video-mute,
+  .cs-video-restart,
   .cs-video-dismiss {
     width: 34px; height: 34px;
     margin: 0;
@@ -3326,13 +3394,50 @@ html.cs-entered .cs-video.is-collapsed,
     border: 1px solid rgba(255, 255, 255, 0.18);
   }
   .cs-video-mute svg { width: 19px; height: 19px; }
+  .cs-video-restart svg { width: 17px; height: 17px; }
   .cs-video-meta .cs-video-toggle svg { width: 12px; height: 14px; }
   .cs-video-dismiss { font-size: 22px; }
 }
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  @media (max-width: 719px) {
-    .cs-video-meta { background: rgba(18, 17, 15, 0.9); }
+/* The control row as glass on a desktop as well — the phone's treatment a size
+   down for a mouse, in place of dark glyphs on the page. The row sizes to its
+   controls and hangs left from the film's right edge. */
+@media (min-width: 720px) {
+  .cs-video-meta {
+    align-self: flex-end;
+    width: max-content;
+    justify-content: flex-start;
+    padding: 5px 7px;
+    gap: 6px;
+    border-radius: 16px;
+    background: rgba(18, 17, 15, 0.44);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    backdrop-filter: blur(18px) saturate(1.7);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+    color: #FFFFFF;
   }
+  #cs-video-label { padding: 0 4px; white-space: nowrap; }
+  .cs-video-meta .cs-video-toggle,
+  .cs-video-mute,
+  .cs-video-restart,
+  .cs-video-dismiss {
+    width: 30px; height: 30px;
+    margin: 0;
+    border-radius: 50%;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .cs-video-meta .cs-video-toggle:hover,
+  .cs-video-mute:hover,
+  .cs-video-restart:hover,
+  .cs-video-dismiss:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.28); }
+  .cs-video-mute svg { width: 17px; height: 17px; }
+  .cs-video-restart svg { width: 15px; height: 15px; }
+  .cs-video-meta .cs-video-toggle svg { width: 11px; height: 13px; }
+  .cs-video-dismiss { font-size: 20px; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cs-video-meta { background: rgba(18, 17, 15, 0.9); }
 }
 
 /* The strip below the footer, behind iOS's bottom bar.

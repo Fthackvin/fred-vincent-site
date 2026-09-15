@@ -888,6 +888,13 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   display: inline-flex; align-items: center; justify-content: center;
 }
 .t2-video-toggle { width: 14px; height: 16px; }
+.t2-video-restart {
+  border: 0; background: none; padding: 0; cursor: pointer; color: inherit;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: color 160ms var(--ease), background-color 160ms var(--ease);
+}
+.t2-video-restart:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 /* A real target rather than a 14px character — this is the control that takes
    the player away, so it needs to be findable and hittable. */
 .t2-video-dismiss {
@@ -2086,6 +2093,14 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
             <button type="button" class="t2-video-toggle" id="t2-video-toggle" aria-label="Play video">
               <svg width="12" height="14" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true" id="t2-video-toggle-glyph"><path d="M0 0l10 6-10 6z"/></svg>
             </button>
+            <button type="button" class="t2-video-mute" id="t2-video-mute" data-no-drag aria-label="Unmute video">
+          <svg id="t2-video-mute-glyph" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/>
+            <g id="t2-video-mute-off"><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></g>
+            <g id="t2-video-mute-on" style="display:none"><path d="M16.2 8.4a5 5 0 0 1 0 7.2"/><path d="M19 5.8a9 9 0 0 1 0 12.4"/></g>
+          </svg>
+        </button>
+            <button type="button" class="t2-video-restart" id="t2-video-restart" data-no-drag aria-label="Back to the start"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><polyline points="3.5 3.8 3.5 8.8 8.5 8.8"/></svg></button>
             <span id="t2-video-label">Fred 0:52</span>
             <button type="button" class="t2-video-dismiss" id="t2-video-dismiss" data-no-drag aria-label="Hide video">×</button>
           </div>
@@ -2417,6 +2432,19 @@ var T2_CONFIG = {
 
   label.textContent = (cfg.label || '') + (cfg.duration ? ' ' + cfg.duration : '');
 
+  /* Audio, as on Template One. It starts silent and stays silent until the
+     reader asks for it: a film that speaks on its own while someone is reading
+     is an ambush. 0.38 because at 1.0 the level sits well above the rest of the
+     page and the reader reaches for the phone's volume rather than the film's. */
+  var LEVEL = 0.38;
+  var chosenSilent = false;
+  /* The reader paused it themselves (or it ran to the end). Scrolling on a
+     phone never starts it again after that. */
+  var chosenPause = false;
+  var vMute = document.getElementById('t2-video-mute');
+  var vMuteOff = document.getElementById('t2-video-mute-off');
+  var vMuteOn = document.getElementById('t2-video-mute-on');
+
   if (cfg.src) {
     media = document.createElement('video');
     media.src = cfg.src;
@@ -2425,9 +2453,116 @@ var T2_CONFIG = {
     media.loop = false;
     media.playsInline = true;
     media.preload = 'metadata';
+    media.muted = true;
+    media.volume = LEVEL;
     if (cfg.poster) media.poster = cfg.poster;
     frame.insertBefore(media, frame.firstChild);
     poster.hidden = true;
+
+    /* The length is read off the file rather than carried in the config, so the
+       label can never drift from whatever has actually been uploaded. */
+    media.addEventListener('loadedmetadata', function () {
+      var d = media.duration;
+      if (!isFinite(d) || d <= 0) return;
+      var mins = Math.floor(d / 60);
+      var secs = String(Math.round(d % 60)).padStart(2, '0');
+      if (secs === '60') { mins += 1; secs = '00'; }
+      label.textContent = ((cfg.label || '') + ' ' + mins + ':' + secs).trim();
+    });
+
+    /* State follows the element, not our assumptions about it: a rejected
+       play() or a stall would otherwise leave the pause glyph showing. */
+    media.addEventListener('play',  function () { if (!playing) { playing = true;  render(); syncPinned(); } });
+    media.addEventListener('pause', function () { if (playing)  { playing = false; render(); syncPinned(); } });
+  }
+
+  /* Size is the mute state, made visible. Silent is a thumbnail sitting quietly
+     beside the page; with the sound on it is something you are actually
+     watching, so it takes the room to be watched. One rule — expanded is simply
+     "not muted" — so the two can never disagree, and every route lands
+     somewhere consistent: autoplay is muted so it arrives small, pressing play
+     brings the sound so it grows, muting puts it back to a thumbnail. */
+  function syncSize() {
+    if (!wrap) return;
+    wrap.classList.toggle('is-expanded', !!(media && !media.muted));
+  }
+
+  function paintMute() {
+    if (!vMute || !media) return;
+    var silent = media.muted;
+    if (vMuteOff) vMuteOff.style.display = silent ? '' : 'none';
+    if (vMuteOn)  vMuteOn.style.display  = silent ? 'none' : '';
+    vMute.setAttribute('aria-label', silent ? 'Unmute video' : 'Mute video');
+  }
+
+  /* Pressing play is a deliberate act, so it brings the sound with it. Only
+     autoplay is silent — and a reader who has explicitly pressed mute keeps
+     the silence they asked for. */
+  function soundOnDeliberatePlay() {
+    if (!media || chosenSilent) return;
+    if (media.muted) {
+      var wasPlaying = playing;
+      media.muted = false;
+      media.volume = LEVEL;
+      /* Same exemption, same repair: see the mute handler below. */
+      if (wasPlaying && media.paused) {
+        var p = media.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+      paintMute();
+    }
+  }
+
+  /* Leaving and coming back. The level rides down over the same beat as the
+     fade rather than cutting, because a voice that stops mid-word is more
+     noticeable than one that recedes — and it comes back up on return, but
+     only if it was actually playing when it left. */
+  var fadeTimer = null;
+  var wasPlayingBeforeAway = false;
+  function rampVolume(to, ms, done) {
+    if (!media) { if (done) done(); return; }
+    if (fadeTimer) clearInterval(fadeTimer);
+    var from = media.volume, t0 = Date.now();
+    fadeTimer = setInterval(function () {
+      var k = Math.min(1, (Date.now() - t0) / ms);
+      media.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+      if (k >= 1) { clearInterval(fadeTimer); fadeTimer = null; if (done) done(); }
+    }, 25);
+  }
+  wrap.addEventListener('t2:away', function (e) {
+    if (!media) return;
+    if (e.detail) {
+      wasPlayingBeforeAway = playing;
+      if (playing) rampVolume(0, 260, function () { setPlaying(false); media.volume = LEVEL; });
+    } else if (wasPlayingBeforeAway) {
+      wasPlayingBeforeAway = false;
+      media.volume = 0;
+      setPlaying(true);
+      rampVolume(LEVEL, 320);
+    }
+  });
+
+  if (vMute && media) {
+    vMute.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var wasPlaying = playing;
+      media.muted = !media.muted;
+      chosenSilent = media.muted;
+      if (!media.muted) media.volume = LEVEL;
+      /* iOS allows the silent autoplay under an exemption, and taking the mute
+         off revokes it — the system pauses the element out from under us, so
+         the film stopped and no sound arrived. Re-asserting play inside the
+         same gesture keeps it running, and the gesture is what allows it. */
+      if (wasPlaying && media.paused) {
+        var p = media.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+      paintMute();
+      syncSize();
+    });
+    paintMute();
+  } else if (vMute) {
+    vMute.remove();
   }
 
   function render() {
@@ -2524,6 +2659,89 @@ var T2_CONFIG = {
       slotVisible = entries[0].isIntersecting;
       syncPinned();
     }, { threshold: 0 }).observe(slot);
+
+    /* The film and the "Project video" button are one thing in two forms, at
+       every width, and where the reader is on the page decides which.
+
+       At the top it is the button — in the head controls on a phone, in the
+       bottom-right corner on a desktop. Once the reader has scrolled far
+       enough that the opening block's controls have gone up under the nav,
+       it turns into the silent thumbnail in the corner and starts playing.
+       Scrolling back up until those controls return folds it into the button
+       again. It picks up where it left off each time it unfolds.
+
+       Position, not movement. This used to wait for a scroll event that moved
+       at least 4px downward and checked the line only then, so a slow drag
+       that came to rest just past the line — the way a reader scrolls on a
+       phone when they are actually reading — could park there with nothing
+       ever re-asking the question. Every scroll event checks now, and so does
+       the moment scrolling stops.
+
+       Never against a choice: in its big mode (the sound is on) it stays
+       exactly where it is, and a film the reader paused, or that ran to the
+       end, is not started again behind their back. Nothing happens until the
+       reader has scrolled at all, so a page restored halfway down does not
+       start a film on its own. */
+    var headCtrls = document.querySelector('.t2-head-controls');
+    var headStory = headCtrls && headCtrls.querySelector('.t2-story-toggle');
+    var t2Nav = document.querySelector('.t2-nav');
+    var readerScrolled = false;
+    function navHeight() { return t2Nav ? t2Nav.getBoundingClientRect().height : 76; }
+    /* The line, measured off the story control's bottom edge: that is where the
+       phone's tab starts (12px under it) and it stays put whatever the tab is
+       doing. Unfolding waits until it has gone 12px under the nav; folding
+       waits until it is back out. The 12px between them is the dead band, so
+       resting on the line cannot flicker the two forms. */
+    function storyBottom() {
+      return headStory ? headStory.getBoundingClientRect().bottom : -Infinity;
+    }
+    function unfoldIfPast() {
+      if (!readerScrolled || chosenPause || !media) return;
+      if (wrap.hidden || t2VideoState.dismissed) return;
+      if (!wrap.classList.contains('is-collapsed')) return;
+      if (storyBottom() + 12 > navHeight()) return;
+      /* Into the corner BEFORE play: until now the player has been sitting in
+         the hidden slot, and a display:none video cannot reliably start. */
+      wrap.classList.remove('is-collapsed');
+      /* The button goes at once rather than on its fade: the thumbnail arrives
+         in the same corner, and the two should never be seen overlapping. */
+      restore.style.transition = 'none';
+      restore.classList.remove('is-shown');
+      restore.classList.remove('is-waiting');
+      void restore.offsetWidth;
+      restore.style.transition = '';
+      t2VideoState.collapsed = true;   /* keeps t2Morph from folding it again */
+      media.muted = true;              /* silent: the page's decision, not theirs */
+      paintMute();
+      syncSize();
+      activated = true;
+      syncPinned();
+      setPlaying(true);
+    }
+    function foldIfBack() {
+      if (wrap.hidden || wrap.classList.contains('is-collapsed')) return;
+      if (wrap.classList.contains('is-expanded')) return;       /* big mode stays */
+      if (storyBottom() < navHeight()) return;
+      setPlaying(false);
+      t2VideoState.held = false;
+      t2VideoState.collapsed = true;
+      wrap.classList.add('is-collapsed');
+      restore.classList.add('is-shown');
+    }
+    function checkLine() {
+      foldIfBack();
+      unfoldIfPast();
+    }
+    var settleTimer = null;
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 24) readerScrolled = true;
+      checkLine();
+      /* And once more when it comes to rest, for the scroll whose last event
+         landed a hair short of where it finally settled. */
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(checkLine, 160);
+    }, { passive: true });
+    window.addEventListener('resize', checkLine);
   }
 
   /* Asked for by the drag handler: the reader has started moving the player
@@ -2537,8 +2755,18 @@ var T2_CONFIG = {
     if (wrap.parentNode !== document.body) document.body.appendChild(wrap);
   });
 
-  frame.addEventListener('click', function () { setPlaying(!playing); });
-  toggle.addEventListener('click', function () { setPlaying(!playing); });
+  /* Both routes into playback carry the sound with them. */
+  /* Starting brings the sound, and the size follows from that. */
+  frame.addEventListener('click', function () {
+    chosenPause = playing;
+    if (!playing) { soundOnDeliberatePlay(); syncSize(); }
+    setPlaying(!playing);
+  });
+  toggle.addEventListener('click', function () {
+    chosenPause = playing;
+    if (!playing) { soundOnDeliberatePlay(); syncSize(); }
+    setPlaying(!playing);
+  });
 
   /* Nothing plays while it cannot be seen. Leaving the tab pauses; coming back
      resumes only what was actually playing when the reader left, so returning
@@ -2556,6 +2784,16 @@ var T2_CONFIG = {
   /* Dismissing hides the player but does not un-activate it, so restoring it
      from the bookmark tab returns it to the corner rather than to a slot that
      has long since scrolled away. */
+  /* Back to the start, and running: the quickest way to hear it from the top
+     without having to find the beginning of the scrubber that is not there. */
+  var restartBtn = document.getElementById('t2-video-restart');
+  if (restartBtn && !media) restartBtn.remove();
+  if (restartBtn && media) restartBtn.addEventListener('click', function () {
+    media.currentTime = 0;
+    wrap.classList.remove('is-reset');
+    if (typeof chosenPause !== 'undefined') chosenPause = false;
+    if (!playing) setPlaying(true);
+  });
   dismiss.addEventListener('click', function () {
     setPlaying(false);
     wrap.hidden = true;
@@ -2578,6 +2816,7 @@ var T2_CONFIG = {
        again underneath them. Scrolling up past the line releases it. */
     t2VideoState.dismissed = false;
     t2VideoState.held = true;
+    chosenPause = false;
     wrap.classList.remove('is-collapsed');
 
     /* Tapping the tab is as deliberate as pressing play, so it carries the
@@ -2640,6 +2879,7 @@ var T2_CONFIG = {
   if (media) {
     media.addEventListener('ended', function () {
       media.currentTime = 0;
+      chosenPause = true;         /* finished: scrolling does not start it again */
       setPlaying(false);          /* shrinks back to its resting size */
       markReset();
     });
@@ -3083,6 +3323,12 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
   /* Keep it grabbable: never let more than most of it leave the viewport. */
   function clamp() {
     if (!isFloating()) return;
+    /* Nothing to measure while it is folded into the button (display:none).
+       Measuring anyway read a zero-sized box, which "clamped" the player to the
+       middle of the window — so the next time it unfolded it arrived off
+       screen. On iOS the toolbar collapsing is a resize, so this happened
+       mid-scroll, and looked like the film simply never appearing. */
+    if (!wrap.getClientRects().length) return;
     wrap.style.transform = 'translate3d(0,0,0) scale(' + scale.toFixed(3) + ')';
     var r = wrap.getBoundingClientRect();
     /* Boundaries. This runs on release, after the swipe-away test has had its
@@ -3333,7 +3579,7 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
      it out of the way. The first movement lifts it out of the layout. */
   t2MakeManipulable(
     wrap,
-    function () { return !wrap.hidden; },
+    function () { return !wrap.hidden && !wrap.classList.contains('is-collapsed'); },
     function () { return window.scrollY < 80; },
     function () { document.dispatchEvent(new Event('t2:video-detach')); }
   );
@@ -3601,6 +3847,7 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
   }
   .t2-video-toggle,
   .t2-video-mute,
+  .t2-video-restart,
   .t2-video-dismiss {
     width: 34px; height: 34px;
     margin: 0;
@@ -3610,6 +3857,7 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
     border: 1px solid rgba(255, 255, 255, 0.18);
   }
   .t2-video-mute svg { width: 19px; height: 19px; }
+  .t2-video-restart svg { width: 17px; height: 17px; }
   .t2-video-toggle svg { width: 12px; height: 14px; }
   .t2-video-dismiss { font-size: 22px; margin-left: 0; }
 }
@@ -3766,8 +4014,51 @@ body::after {
     font-size: 14px;
     gap: 10px;
   }
+  /* The control row as glass on a desktop too, rather than a white slab: the
+     same translucent ground, white glyphs and ringed round targets the phone
+     uses, a size down for a mouse. The row is wider than the thumbnail, so the
+     player becomes a column aligned to its right edge and the row hangs left,
+     the side with screen on it. */
+  .t2-video.is-pinned { display: flex; flex-direction: column; align-items: flex-end; }
+  .t2-video.is-pinned .t2-video-meta {
+    width: max-content;
+    margin-top: 8px;
+    padding: 5px 7px;
+    gap: 6px;
+    border-radius: 16px;
+    background: rgba(18, 17, 15, 0.44);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    backdrop-filter: blur(18px) saturate(1.7);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+    color: #FFFFFF;
+  }
+  .t2-video.is-pinned .t2-video-meta #t2-video-label { padding: 0 4px; white-space: nowrap; }
+  .t2-video.is-pinned .t2-video-toggle,
+  .t2-video.is-pinned .t2-video-mute,
+  .t2-video.is-pinned .t2-video-restart,
+  .t2-video.is-pinned .t2-video-dismiss {
+    width: 30px; height: 30px;
+    margin: 0;
+    border-radius: 50%;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .t2-video.is-pinned .t2-video-toggle:hover,
+  .t2-video.is-pinned .t2-video-mute:hover,
+  .t2-video.is-pinned .t2-video-restart:hover,
+  .t2-video.is-pinned .t2-video-dismiss:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.28); }
+  .t2-video.is-pinned .t2-video-toggle svg { width: 11px; height: 13px; }
+  .t2-video.is-pinned .t2-video-mute svg { width: 17px; height: 17px; }
+  .t2-video.is-pinned .t2-video-restart svg { width: 15px; height: 15px; }
+  .t2-video.is-pinned .t2-video-dismiss { font-size: 20px; }
   /* Waiting for the reader to scroll, or for five idle seconds. */
   .t2-video-restore.is-shown.is-waiting { opacity: 0; transform: translateY(6px); pointer-events: none; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (min-width: 720px) {
+    .t2-video.is-pinned .t2-video-meta { background: rgba(18, 17, 15, 0.9); }
+  }
 }
 </style>
 <script>
