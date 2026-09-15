@@ -1046,9 +1046,12 @@ section.block {
   .rw-list { grid-template-columns: 1fr 1fr; gap: var(--s7) var(--s8); }
 }
 .rw-item { margin: 0; }
-/* Desktop shows 4 stories (2×2); mobile shows only the most recent 3. */
-@media (max-width: 767px) {
-  .rw-item:nth-child(4) { display: none; }
+/* Four stories on a desktop, as a 2×2 grid; two on a phone or an iPad. The
+   desktop test is a fine pointer that can hover as well as the width, so an
+   iPad in landscape — wide enough to pass on width alone — keeps two. */
+.rw-item:nth-child(n+3) { display: none; }
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) {
+  .rw-item:nth-child(n+3) { display: block; }
 }
 .rw-link {
   display: flex;
@@ -3517,7 +3520,7 @@ main > hr,
 
         <li class="work-card work-card--tag-tuition">
           <button type="button" class="work-card-hit" aria-label="View Tag Tuition case study" data-cs-open="/work/tag-tuition/" data-cs-slug="tag-tuition" data-cs-mode="modal" data-cs-mark="/work/tag-tuition/tag-logo.webp" data-cs-mark-w="730" data-cs-mark-h="516">
-          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-splash.jpg'); background-size:134%; background-position:50% 42%;"></div>
+          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-cutouts.svg'); background-size:115%; background-position:20% 44%;"></div>
           <div class="work-card-body">
             <h3 class="work-card-title">Tag Tuition</h3>
             <p class="work-card-desc">Turning a classroom curriculum into illustrated workbooks children could explore independently.</p>
@@ -3923,7 +3926,27 @@ main > hr,
           </div>
         </a>
       </li>
-          <!-- RSS:writing:end -->
+      <li class="rw-item fade-up rw-anim-pulse">
+        <a class="rw-link" href="https://studiovincent.substack.com/p/liquid-glass-six-hundred-years-of" target="_blank" rel="noopener noreferrer">
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%205.svg" alt="" loading="lazy"></span>
+          <div class="rw-content">
+            <h3 class="rw-title">Liquid Glass, six hundred years of secret glassmaking, and where it might go next. <span class="rw-arrow" aria-hidden="true">→</span></h3>
+            <p class="rw-desc">Apple’s unified design language (Liquid Glass) has been with us now for almost a year, receiving ongoing and mixed revi…</p>
+            <p class="rw-meta">JUN 2026</p>
+          </div>
+        </a>
+      </li>
+      <li class="rw-item fade-up rw-anim-spin">
+        <a class="rw-link" href="https://studiovincent.substack.com/p/the-aura-design-never-had" target="_blank" rel="noopener noreferrer">
+          <span class="rw-icon"><img class="rw-scribble" src="/drawing/Scan%2066%206.svg" alt="" loading="lazy"></span>
+          <div class="rw-content">
+            <h3 class="rw-title">The aura design never had <span class="rw-arrow" aria-hidden="true">→</span></h3>
+            <p class="rw-desc">Reading Walter Benjamin in the age of generative design</p>
+            <p class="rw-meta">MAY 2026</p>
+          </div>
+        </a>
+      </li>
+      <!-- RSS:writing:end -->
         </ul>
       </div>
     </div>

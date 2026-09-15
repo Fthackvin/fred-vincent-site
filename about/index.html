@@ -941,9 +941,12 @@ img { max-width: 100%; height: auto; display: block; }
   .rw-list { grid-template-columns: 1fr 1fr; gap: var(--s7) var(--s8); }
 }
 .rw-item { margin: 0; }
-/* Desktop shows 4 stories (2×2); mobile shows only the most recent 3. */
-@media (max-width: 767px) {
-  .rw-item:nth-child(4) { display: none; }
+/* Four stories on a desktop, as a 2×2 grid; two on a phone or an iPad. The
+   desktop test is a fine pointer that can hover as well as the width, so an
+   iPad in landscape — wide enough to pass on width alone — keeps two. */
+.rw-item:nth-child(n+3) { display: none; }
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) {
+  .rw-item:nth-child(n+3) { display: block; }
 }
 .rw-link {
   display: flex;
@@ -1475,7 +1478,7 @@ img { max-width: 100%; height: auto; display: block; }
 
         <li class="work-card work-card--tag-tuition">
           <button type="button" class="work-card-hit" aria-label="View Tag Tuition case study" data-cs-open="/work/tag-tuition/" data-cs-slug="tag-tuition" data-cs-mode="modal" data-cs-mark="/work/tag-tuition/tag-logo.webp" data-cs-mark-w="730" data-cs-mark-h="516">
-          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-splash.jpg'); background-size:134%; background-position:50% 42%;"></div>
+          <div class="work-card-media" style="background-image:url('/work/general/tag-tuition-cutouts.svg'); background-size:115%; background-position:20% 44%;"></div>
           <div class="work-card-body">
             <h3 class="work-card-title">Tag Tuition</h3>
             <p class="work-card-desc">Turning a classroom curriculum into illustrated workbooks children could explore independently.</p>
