@@ -202,14 +202,20 @@ h1, h2 { margin: 0; font-weight: 400; }
    slightly, so it reads as the page settling rather than as a sequence. */
 @keyframes t2-enter { from { opacity: 0; } to { opacity: 1; } }
 @keyframes t2-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+/* `backwards`, not `both`. The end of each entrance is simply the element's own
+   style, so holding the last frame bought nothing — and a forwards fill keeps
+   the opacity and transform owned by the animation for the life of the page,
+   which keeps every piece of the head on its own compositing layer. In Chrome
+   on a desktop that is how scrolling back up found the title drawn and the
+   description, tags and Project story control simply missing. */
 
-.t2-nav { animation: t2-enter 400ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
-.t2-title { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 60ms both; }
-.t2-intro { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 130ms both; }
-.t2-tags { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 190ms both; }
-.t2-head .t2-story-toggle { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 250ms both; }
+.t2-nav { animation: t2-enter 400ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards; }
+.t2-title { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 60ms backwards; }
+.t2-intro { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 130ms backwards; }
+.t2-tags { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 190ms backwards; }
+.t2-head .t2-story-toggle { animation: t2-rise 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 250ms backwards; }
 .t2-video-slot { animation: t2-enter 620ms cubic-bezier(0.22, 0.61, 0.36, 1) 250ms both; }
-.t2-sequence > .t2-item:first-of-type { animation: t2-enter 700ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms both; }
+.t2-sequence > .t2-item:first-of-type { animation: t2-enter 700ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms backwards; }
 
 @media (prefers-reduced-motion: reduce) {
   .t2-nav, .t2-title, .t2-intro, .t2-tags, .t2-head .t2-story-toggle,
@@ -2943,8 +2949,10 @@ var T2_CONFIG = {
        On a wide screen the slot is a real part of the composition and the
        player belongs in it until it scrolls away, which is the original
        behaviour and is kept. */
-    var shouldPin = activated && !wrap.hidden &&
-                    (narrowPin.matches || !slotVisible);
+    /* The slot in the opening block is no longer a place the player sits,
+       at any width: it is a button until the reader asks for the film, and
+       then it is in the corner. */
+    var shouldPin = activated && !wrap.hidden;
     if (shouldPin === wrap.classList.contains('is-pinned')) return;
     if (shouldPin) {
       slot.style.minHeight = slot.getBoundingClientRect().height + 'px';
@@ -3011,7 +3019,8 @@ var T2_CONFIG = {
     function maybeStart() {
       if (!media || t2VideoState.dismissed) return;
       if (narrowPin.matches) { scheduleUnfold(); return; }
-      if (started || !movingDown || !slotOnScreen) return;
+      /* Never on a desktop: there the film waits as a button until asked. */
+      return;
       media.muted = true;      /* silent: it is the page's decision, not the reader's */
       paintMute();
       syncSize();              /* and therefore small */
@@ -3064,6 +3073,8 @@ var T2_CONFIG = {
       media.muted = true;
       paintMute();
       syncSize();
+      activated = true;
+      syncPinned();            /* out of the hidden slot, into the corner */
       setPlaying(true);
     }
     /* Folds as soon as the opening block's controls come back out from under
@@ -3183,12 +3194,14 @@ var T2_CONFIG = {
 
     /* Tapping the tab is as deliberate as pressing play, so it carries the
        sound, and the size follows from that. */
-    soundOnDeliberatePlay();
-    syncSize();
-    setPlaying(true);
-    /* After setPlaying, because pinning keys off `activated`, which only
-       becomes true once it has actually been played. */
+    if (typeof soundOnDeliberatePlay === 'function') soundOnDeliberatePlay();
+    if (typeof syncSize === 'function') syncSize();
+    /* Into the corner BEFORE play. Until now the player has been sitting in
+       the opening block's slot, which is display:none, and a video cannot
+       reliably start inside one. */
+    activated = true;
     syncPinned();
+    setPlaying(true);
   });
 
   /* -----------------------------------------------------------------------
@@ -3201,14 +3214,9 @@ var T2_CONFIG = {
      has nowhere left to sit. */
   var t2NarrowQ = window.matchMedia('(max-width: 899px)');
   function t2Morph() {
-    if (!t2NarrowQ.matches) {
-      if (t2VideoState.collapsed) {
-        t2VideoState.collapsed = false;
-        wrap.classList.remove('is-collapsed');
-        if (!t2VideoState.dismissed) restore.classList.remove('is-shown');
-      }
-      return;
-    }
+    /* Every width now. On a desktop the film is not previewed beside the
+       opening block and does not start itself: it is the "Project video"
+       button in the bottom-right corner until the reader presses it. */
     /* Not a scroll threshold here. Template One's player floats over the page,
        so it can be a square near the top and collapse as the reader gets into
        it. This one lives in the head composition, and once that stacks the
@@ -3222,6 +3230,23 @@ var T2_CONFIG = {
   }
   t2Morph();
   window.addEventListener('scroll', t2Morph, { passive: true });
+
+  /* Desktop: the button does not arrive with the page. It is offered once the
+     reader starts moving down, or after five seconds of them sitting on the
+     opening screen — whichever comes first. The class is inert on a phone,
+     where the button sits in the head controls from the start. */
+  restore.classList.add('is-waiting');
+  var offerTimer = setTimeout(offerVideo, 5000);
+  function offerVideo() {
+    clearTimeout(offerTimer);
+    restore.classList.remove('is-waiting');
+  }
+  var offerLastY = window.scrollY;
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY;
+    if (y > offerLastY + 4 && y > 24) offerVideo();
+    offerLastY = y;
+  }, { passive: true });
   window.addEventListener('resize', t2Morph);
 
   if (media) {
@@ -4212,6 +4237,33 @@ body::after {
 
 @media (max-width: 719px) {
   .t2-head { padding-bottom: clamp(40px, 6vh, 72px); }
+}
+
+/* --- Project video on a desktop -------------------------------------------
+   No preview beside the opening block and no autoplay. The film is a button in
+   the bottom-right corner, and pressing it opens the player in that same
+   corner, so the two are one control in two states and never on screen
+   together. The slot stays in the markup as the player's starting parent and
+   nothing more. */
+.t2-video-slot { display: none; }
+.t2-video.is-collapsed,
+.t2-video.is-pinned.is-collapsed { display: none; }
+@media (min-width: 900px) {
+  .t2-head-controls .t2-video-restore,
+  .t2-video-restore.is-pinned {
+    position: fixed;
+    top: auto;
+    right: clamp(16px, 3vw, 46px);
+    bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom, 0px));
+    z-index: 70;
+    height: 48px;
+    padding: 0 20px 0 18px;
+    border-radius: 16px;
+    font-size: 14px;
+    gap: 10px;
+  }
+  /* Waiting for the reader to scroll, or for five idle seconds. */
+  .t2-video-restore.is-shown.is-waiting { opacity: 0; transform: translateY(6px); pointer-events: none; }
 }
 </style>
 <script>

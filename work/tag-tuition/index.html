@@ -2417,6 +2417,12 @@ var CS_CONFIG = {
     document.addEventListener('cs:play-video', function () {
       vWrap.hidden = false;
       vRestore.classList.remove('is-shown');
+      /* Asked for, so no longer folded into the button — on a desktop the
+         player now starts out that way. */
+      csVideoState.dismissed = false;
+      csVideoState.held = true;
+      csVideoState.collapsed = false;
+      vWrap.classList.remove('is-collapsed');
       /* Commit the expanded size with the size transition switched off, so the
          player appears at full size rather than growing into it. */
       vWrap.classList.add('is-instant');
@@ -2560,6 +2566,7 @@ var CS_CONFIG = {
          again underneath them. Scrolling back up above the line releases it. */
       csVideoState.dismissed = false;
       csVideoState.held = true;
+      if (!narrowQ.matches) csVideoState.collapsed = false;
       vWrap.classList.remove('is-collapsed');
       unmute();
       expanded = true;
@@ -2630,15 +2637,38 @@ var CS_CONFIG = {
        Hysteresis on the line, and never against an explicit choice: dismissing
        keeps it dismissed, tapping the tab keeps it open until they leave. */
     var narrowQ = window.matchMedia('(max-width: 719px)');
-    function morph() {
-      if (!narrowQ.matches) {
-        if (csVideoState.collapsed) {
-          csVideoState.collapsed = false;
-          vWrap.classList.remove('is-collapsed');
-          if (!csVideoState.dismissed) vRestore.classList.remove('is-shown');
-        }
-        return;
+    /* Desktop: no preview in the corner and no autoplay. The film is the
+       "Video explainer" button in the bottom-right corner until the reader
+       presses it, and the player then opens in that same corner — one control
+       in two states, never both on screen. The button is offered once the
+       reader starts scrolling down, or after five idle seconds. */
+    var offerReady = false;
+    function deskSync() {
+      if (csVideoState.dismissed) return;             /* the tab is already up */
+      if (csVideoState.held) { csVideoState.collapsed = false; return; }
+      if (!csVideoState.collapsed) {
+        csVideoState.collapsed = true;
+        setPlaying(false);
+        vWrap.classList.add('is-collapsed');
       }
+      vRestore.classList.toggle('is-shown', offerReady);
+    }
+    function offerVideo() {
+      if (offerReady) return;
+      offerReady = true;
+      clearTimeout(offerTimer);
+      if (!narrowQ.matches) deskSync();
+    }
+    var offerTimer = setTimeout(offerVideo, 5000);
+    var offerLastY = window.scrollY;
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY;
+      if (y > offerLastY + 4 && y > 24) offerVideo();
+      offerLastY = y;
+    }, { passive: true });
+
+    function morph() {
+      if (!narrowQ.matches) { deskSync(); return; }
       if (csVideoState.dismissed) return;
       /* On a phone the COVER shows the ribbon and the story shows the player.
 
@@ -3242,6 +3272,29 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
   .cs-video-restore { bottom: calc(clamp(24px, 12vh, 96px) + env(safe-area-inset-bottom)); }
   .cs-nextfloat { bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom)); }
 }
+
+/* --- Video on a desktop ----------------------------------------------------
+   Folded into the button until asked for, at every width now rather than only
+   on a phone. The button sits in the player's own bottom-right corner as a
+   rounded control, not the edge ribbon, so pressing it opens the film exactly
+   where the button was. Written at (0,1,1) so the safe-area rule above cannot
+   pull it back to the ribbon's height; the cover's panel placement,
+   html.cs-modal .cs-video-restore, still outranks it. */
+html.cs-entered .cs-video.is-collapsed,
+.cs-video.is-collapsed { opacity: 0; pointer-events: none; transform: translateY(8px); }
+@media (min-width: 720px) {
+  html .cs-video-restore {
+    right: clamp(16px, 3vw, 46px);
+    bottom: calc(clamp(16px, 3vh, 40px) + env(safe-area-inset-bottom, 0px));
+    height: 48px;
+    padding: 0 20px 0 18px;
+    border-radius: 16px;
+    font-size: 14px;
+    gap: 10px;
+  }
+  html:not(.cs-modal) .cs-video-restore.is-shown { animation: cs-offer-in 420ms var(--ease) backwards; }
+}
+@keyframes cs-offer-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 /* The control row as glass, on a phone.
 
