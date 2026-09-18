@@ -2087,7 +2087,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
      them in, so the run is allowed to break. Two lines of alphabet reads fine
      on a folded phone; a line that hangs 24px off the side does not, and it
      takes every other section sideways with it. */
-  .kz-spec-alpha { overflow-wrap: anywhere; }
+  /* break-word first: `anywhere` only landed in Safari 15.4, and the phones
+     narrow enough to need this are exactly the old ones - an iPhone SE 1st gen
+     is 320px and stops at iOS 15. Without the fallback that device keeps the
+     overflow this rule exists to fix. Both do the same thing to a single
+     over-long run; they differ only in how they feed min-content sizing. */
+  .kz-spec-alpha { overflow-wrap: break-word; overflow-wrap: anywhere; }
 }
 </style>
 </head>
