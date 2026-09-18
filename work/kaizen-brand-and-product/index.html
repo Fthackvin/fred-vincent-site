@@ -40,7 +40,10 @@
 <meta name="twitter:title" content="Kaizen">
 <meta name="twitter:description" content="Building the brand, the product and the design system for a radically different way to train for a marathon.">
 
-<link rel="preload" as="image" href="kaizen-landscape.webp" fetchpriority="high">
+<!-- No preload for kaizen-landscape.webp: that file is the og:image only. The
+     landscape on the page itself is the inline SVG below, so preloading the
+     webp spent a high-priority 5000x690 fetch and its decode on every load
+     without a single pixel of it ever being painted. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The faces the first screen is set in, fetched at parse time so they
@@ -2071,6 +2074,21 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   .t2-video.is-pinned { width: 78px; }
   .t2-video.is-pinned.is-expanded { width: 146px; }
 }
+/* Folded phones (Galaxy Fold is 280px). The specimen's alphabet is one
+   unbreakable 26-character run, and the clamp floor above is a flat 16px, so
+   below about 300px the line is simply wider than the screen and takes the
+   whole document sideways with it — 331px of scroll on a 280px viewport. The
+   floor has to come down before the line does. Scoped this narrow so every
+   ordinary phone keeps the size it has now. */
+@media (max-width: 360px) {
+  .kz-spec-alpha { font-size: clamp(12px, 5.2vw, 16px); }
+  .kz-spec-w { font-size: clamp(15px, 6vw, 19px); }
+  /* Twenty-six letters will not fit a 204px column at any size worth setting
+     them in, so the run is allowed to break. Two lines of alphabet reads fine
+     on a folded phone; a line that hangs 24px off the side does not, and it
+     takes every other section sideways with it. */
+  .kz-spec-alpha { overflow-wrap: anywhere; }
+}
 </style>
 </head>
 <body>
@@ -2519,6 +2537,8 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       <figure class="t2-item t2-reveal kz-lockup kz-lockup--dark">
         <div class="t2-media" style="aspect-ratio: 2181 / 820;">
           <img src="kaizen-lockup-dark.webp" alt="The Kaizen lockup reversed out: mark and wordmark in white on near-black."
+               srcset="kaizen-lockup-dark-480.webp 480w, kaizen-lockup-dark-768.webp 768w, kaizen-lockup-dark-1024.webp 1024w, kaizen-lockup-dark-1440.webp 1440w, kaizen-lockup-dark.webp 2181w"
+               sizes="100vw"
                width="2181" height="820" loading="lazy" decoding="async">
         </div>
       </figure>
@@ -2543,6 +2563,8 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       <figure class="t2-item t2-reveal kz-build">
         <div class="t2-media" style="aspect-ratio: 1010 / 196;">
           <img src="kaizen-doughnut-construction.webp" alt="How the doughnut is built: the filling ring, the concentric construction, and the finished mark."
+               srcset="kaizen-doughnut-construction-480.webp 480w, kaizen-doughnut-construction-768.webp 768w, kaizen-doughnut-construction.webp 1010w"
+               sizes="(min-width: 1300px) 1120px, 86vw"
                width="1010" height="196" loading="lazy" decoding="async">
         </div>
       </figure>
@@ -2555,8 +2577,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       <figure class="t2-item t2-reveal kz-dough">
       <div class="t2-media kz-dough-strip">
         <img class="kz-dough-a" src="kaizen-doughnut-a.webp" alt="Five screens of the Kaizen doughnut: the week&rsquo;s distance left to run, the ring filling as the number comes down."
+             srcset="kaizen-doughnut-a-480.webp 480w, kaizen-doughnut-a-768.webp 768w, kaizen-doughnut-a-1024.webp 1024w, kaizen-doughnut-a.webp 1532w"
+             sizes="(min-width: 900px) 58vw, 100vw"
              width="1532" height="1102" loading="lazy" decoding="async">
         <img class="kz-dough-b" src="kaizen-doughnut-b.webp" alt=""
+             srcset="kaizen-doughnut-b-480.webp 480w, kaizen-doughnut-b-768.webp 768w, kaizen-doughnut-b.webp 1020w"
+             sizes="(min-width: 900px) 39vw, 67vw"
              width="1020" height="1102" loading="lazy" decoding="async">
       </div>
     </figure>
@@ -2564,8 +2590,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       <figure class="t2-item t2-reveal kz-onblack">
       <div class="t2-media kz-even-strip">
         <img class="kz-even-a" src="kaizen-even-spread-a.webp" alt="Eight screens of the Even spread onboarding flow: choosing a training system, keeping existing plans, selecting rest days, and the plan generating."
+             srcset="kaizen-even-spread-a-480.webp 480w, kaizen-even-spread-a-768.webp 768w, kaizen-even-spread-a-1024.webp 1024w, kaizen-even-spread-a.webp 1312w"
+             sizes="(min-width: 900px) 48vw, 94vw"
              width="1312" height="774" loading="lazy" decoding="async">
         <img class="kz-even-b" src="kaizen-even-spread-b.webp" alt=""
+             srcset="kaizen-even-spread-b-480.webp 480w, kaizen-even-spread-b-768.webp 768w, kaizen-even-spread-b-1024.webp 1024w, kaizen-even-spread-b.webp 1312w"
+             sizes="(min-width: 900px) 48vw, 94vw"
              width="1312" height="774" loading="lazy" decoding="async">
       </div>
     </figure>
