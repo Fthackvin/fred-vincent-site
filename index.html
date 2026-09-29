@@ -4579,17 +4579,44 @@ main > hr,
   setRate();
   video.addEventListener('loadedmetadata', setRate);
 
+  /* Ask for playback FIRST, and only hand the card over to the video once it
+     is actually playing. The other way round — fade the logo out, then call
+     play() and swallow the rejection — is what left the card showing a frozen
+     poster in the phone frame with no logo and no motion. iOS refuses
+     autoplay outright in Low Power Mode, even for a muted playsinline video,
+     and preload="metadata" can have nothing buffered yet on a slow
+     connection, so the rejection is a normal thing to plan for, not an edge
+     case. */
+  var retried = false;
+
   function trigger() {
     if (triggered) return;
     triggered = true;
+    setRate();
+    var p = video.play();
+    /* Older browsers return undefined rather than a promise. */
+    if (p && p.then) p.then(handoff).catch(recover);
+    else handoff();
+  }
+
+  function handoff() {
     var logoFadeMs = reduce ? 0 : 500;
     card.classList.add('is-fading');
     setTimeout(function () {
       card.classList.add('is-video-active');
       setRate();
-      var p = video.play();
-      if (p && p.catch) p.catch(function () {});
     }, logoFadeMs);
+  }
+
+  /* Playback was refused. Leave the logo where it is — a card that looks
+     deliberate — and give it one more go on the reader's next touch, which
+     is the gesture iOS wants before it will allow media to start. */
+  function recover() {
+    card.classList.remove('is-fading', 'is-video-active');
+    triggered = false;
+    if (retried) return;
+    retried = true;
+    document.addEventListener('touchstart', trigger, { once: true, passive: true });
   }
 
   card.addEventListener('mouseenter', trigger);
