@@ -573,7 +573,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   gap: 10px;
 }
 @media (max-width: 719px) {
-  .t2-item--pair .t2-media-row { grid-template-columns: minmax(0, 1fr); }
+  .t2-item--pair .t2-media-row { grid-template-columns: minmax(0, 1fr) !important; }
 }
 
 /* Once the Project Story is open the sequence is a narrower column, so the
@@ -1627,6 +1627,29 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   22.4%, 100% { opacity: 1; transform: translate(0, 0) rotate(var(--phi)) scaleX(var(--ex)) rotate(calc(var(--phi) * -1)); }
 }
 
+/* --- QUICK: the thread draw, faster, with every letter easing in. ---
+   Same sequence as the thread mode and the same twinkle in the O: the bars
+   keep lwTick exactly as it is, only starting sooner. The strokes draw in
+   roughly two thirds of the time and fade up as they go, and each finished
+   letterform fades in under its stroke instead of switching on in a frame.
+   Sits after the thread rules on purpose: same specificity, later wins. */
+.lw--quick .lf.lf-L { animation-name: lwFade; animation-timing-function: cubic-bezier(.33, 0, .2, 1); animation-delay: .06s; }
+.lw--quick .th.th-I { animation-name: lwFadeStroke; animation-timing-function: cubic-bezier(.33, 0, .2, 1); animation-delay: .20s; }
+.lw--quick .th-N     { animation-name: lwQDraw9; animation-delay: .38s; animation-timing-function: cubic-bezier(.45, .05, .25, 1); }
+.lw--quick .th-N2    { animation-name: lwQDraw5; animation-delay: .60s; animation-timing-function: cubic-bezier(.45, .05, .25, 1); }
+.lw--quick .th-Rstem { animation-name: lwQDraw5; animation-delay: .78s; animation-timing-function: cubic-bezier(.45, .05, .25, 1); }
+.lw--quick .th-Rbowl { animation-name: lwQDraw9; animation-delay: .90s; animation-timing-function: cubic-bezier(.4, .1, .3, 1); }
+.lw--quick .th-Rleg  { animation-name: lwQDraw5; animation-delay: 1.22s; animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+.lw--quick .lf { animation-name: lwQIn; animation-timing-function: cubic-bezier(.2, .6, .3, 1); }
+.lw--quick .lf-I, .lw--quick .lf-N { animation-delay: .86s; }
+.lw--quick .lf-R { animation-delay: 1.36s; }
+.lw--quick .drawer { animation-name: lwQRing; animation-timing-function: cubic-bezier(.45, .05, .2, 1); animation-delay: 1.10s; }
+.lw--quick .home { animation-delay: calc(1.70s + var(--i) * 52ms); }
+@keyframes lwQDraw5 { 0% { stroke-dashoffset: 1.03; opacity: 0; } 1.2% { opacity: 1; } 2.8% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes lwQDraw9 { 0% { stroke-dashoffset: 1.03; opacity: 0; } 1.6% { opacity: 1; } 4.2% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes lwQIn    { 0% { opacity: 0; } 2.4%, 100% { opacity: 1; } }
+@keyframes lwQRing  { 0% { stroke-dashoffset: 1; opacity: 0; } 1.6% { opacity: 1; } 5.4% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+
 @media (prefers-reduced-motion: reduce) {
   .lw * { animation-duration: .001s !important; animation-iteration-count: 1 !important; }
 }
@@ -1914,12 +1937,26 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
    a second specimen. */
 .lin-lede { background: #08090B; margin-top: 0;
   padding: clamp(56px, 8vw, 128px) clamp(18px, 3.2vw, 64px) clamp(40px, 5.4vw, 92px); }
-.lin-lede-inner { max-width: 1180px; margin: 0 auto; }
+.lin-lede-inner { max-width: 1180px; margin: 0 auto; padding-left: clamp(6px, 1.4vw, 28px); }
+/* Distributed interactions sits between the black of the mark and the
+   terminal film, so it fades from one to the other: black at the top, the
+   terminal's navy at the foot, warming towards its purple on the right. */
+.lin-lede:not(.lin-lede--minor) {
+  background: linear-gradient(180deg, #000000 0%, #000000 12%, #04060C 55%, #080B16 100%);
+}
+/* The terminal film's top edge is dissolved into that gradient, so the mark,
+   the paragraph and the film read as one continuous field with no band. */
+.lin-film-terminal .t2-media { position: relative; }
+.lin-film-terminal .t2-media::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 26%;
+  background: linear-gradient(180deg, #080B16 0%, rgba(8, 11, 22, .85) 30%, rgba(8, 11, 22, 0) 100%);
+  pointer-events: none;
+}
 .lin-lede-title {
   margin: 0 0 clamp(14px, 1.6vw, 26px);
   font-family: "Inter", system-ui, sans-serif;
-  font-weight: 300;
-  font-size: clamp(38px, 5.6vw, 72px);
+  font-weight: 400;
+  font-size: clamp(28px, calc(5.6vw - 10px), 62px);
   line-height: 1.08;
   letter-spacing: -0.03em;
   color: #E8E8E8;
@@ -1928,9 +1965,36 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
   max-width: 620px; margin: 0;
   font-family: "Inter", system-ui, sans-serif;
   font-weight: 300;
-  font-size: clamp(15px, 1.25vw, 18px);
+  font-size: clamp(14px, 1.1vw, 16px);
   line-height: 1.62;
   color: rgba(232, 232, 232, 0.6);
+}
+/* Full-bleed films and stills from the new layout: edge to edge on the dark
+   ground, no padding either side, and no seam between consecutive ones. */
+.lin-screen.lin-bleed { padding: 0; }
+/* Breathing space between consecutive screens: a 20px band of the same
+   near-black the films sit on, so each reads as its own frame. */
+.lin-screen + .lin-screen { padding-top: 20px; }
+.lin-screen.lin-film-pair { padding-bottom: 0; }
+.lin-screen.lin-bleed .t2-media { border-radius: 0; }
+.lin-screen.lin-bleed .t2-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* The voice heading is a quieter introduction than Distributed interactions. */
+.lin-lede--minor { padding-top: clamp(48px, 6vw, 96px); padding-bottom: clamp(20px, 2.4vw, 36px); }
+.lin-lede--minor .lin-lede-title { font-size: clamp(20px, 2.2vw, 30px); margin: 0; }
+/* Both titles balance their lines so neither leaves a single word behind,
+   and step down at tablet and phone widths rather than relying on vw alone. */
+.lin-lede-title { text-wrap: balance; }
+@media (max-width: 1024px) {
+  .lin-lede-title { font-size: 44px; }
+  .lin-lede--minor .lin-lede-title { font-size: 26px; }
+  .lin-lede-inner { padding-left: 12px; }
+}
+@media (max-width: 719px) {
+  .lin-lede:not(.lin-lede--minor) { padding-top: 64px; padding-bottom: 48px; }
+  .lin-lede-title { font-size: 32px; line-height: 1.12; letter-spacing: -0.025em; }
+  .lin-lede--minor { padding-top: 44px; padding-bottom: 18px; }
+  .lin-lede--minor .lin-lede-title { font-size: 21px; line-height: 1.25; }
+  .lin-lede-inner { padding-left: 4px; }
 }
 /* The screens keep their own ground inside that padding. */
 .lin-screen .t2-media { background: none; }
@@ -2046,6 +2110,7 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
         <ul class="t2-tags">
           <li>Brand strategy</li>
           <li>Identity</li>
+          <li>Product design</li>
           <li>Motion</li>
           <li>Design system</li>
         </ul>
@@ -2133,25 +2198,117 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 
   <div class="t2-sequence">
 
-      <!-- Opening media: the one asset the first screen depends on, so it is
-           eager and high priority. Everything after it defers. -->
-      <!-- The mark, at size, as the first beat of the sequence. It is the
-           work, so it is shown live rather than as a flat export — the same
-           component the arrival uses, in its dark-ground treatment. -->
+      <!-- The mark, at size, on the dark ground: the first beat of the sequence. -->
       <figure class="t2-item t2-item--mark">
         <div class="lw-stage" id="lw-slide" role="img" aria-label="The Linro wordmark drawing itself"></div>
       </figure>
 
-      <!-- The same mark, inverted. Both treatments back to back is how the
-           mark is actually specified, and running rather than stilled because
-           the drawing is the point of it. -->
+      <!-- Distributed interactions: introduces the terminal and the ai-client
+           moments that follow it. -->
+      <figure class="t2-item lin-lede">
+        <div class="lin-lede-inner t2-reveal">
+          <h2 class="lin-lede-title">Distributed interactions</h2>
+          <p class="lin-lede-note">The way developers work is changing, and a lot of them now reach Linro through ai clients rather than through the product itself. Having the brand present in those interactions mattered as much as having it in the interface. These are some of them.</p>
+        </div>
+      </figure>
+
+      <!-- Films. Each rests on its last frame (the poster), fetches nothing
+           until it is close to the viewport, plays when it scrolls into view,
+           replays when scrolled back to and while hovered, and loops on
+           phones. See the Linro films script at the foot of the page. -->
+      <figure class="t2-item lin-screen lin-bleed lin-film lin-film-terminal">
+        <div class="t2-media" style="aspect-ratio: 1400 / 876;">
+          <video data-lin-film data-lin-once muted playsinline preload="none" data-poster="screens/linro-terminal-start.webp"
+                 aria-label="A deploy agent in the terminal: Linro checks the plan against policy, blocks a grant outside the organisation and commits the change to lineage." width="1400" height="876"
+                 style="width:100%;height:100%;object-fit:cover;display:block;">
+            <source src="screens/linro-terminal.webm" type="video/webm">
+            <source src="screens/linro-terminal.mp4" type="video/mp4">
+          </video>
+        </div>
+      </figure>
+
+      <figure class="t2-item lin-screen lin-bleed lin-film">
+        <div class="t2-media t2-reveal" style="aspect-ratio: 1400 / 654;">
+          <video data-lin-film muted playsinline preload="none" data-poster="screens/linro-search-lineage.webp"
+                 aria-label="Searching the Linro inbox: the query narrows the findings and opens the lineage of the selected bucket." width="1400" height="654"
+                 style="width:100%;height:100%;object-fit:cover;display:block;">
+            <source src="screens/linro-search-lineage.webm" type="video/webm">
+            <source src="screens/linro-search-lineage.mp4" type="video/mp4">
+          </video>
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-item--pair lin-screen lin-film-pair">
+        <div class="t2-media-row t2-reveal" style="grid-template-columns: 679fr 610fr;">
+          <div class="t2-media" style="aspect-ratio: 679 / 653;">
+            <video data-lin-film muted playsinline preload="none" data-poster="screens/linro-loading-in.webp"
+                   aria-label="The Linro app loading in: the snapshot cards and violations arrive as the colour settles to charcoal." style="width:100%;height:100%;object-fit:cover;display:block;">
+              <source src="screens/linro-loading-in.webm" type="video/webm">
+              <source src="screens/linro-loading-in.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="t2-media" style="aspect-ratio: 610 / 653;">
+            <video data-lin-film muted playsinline preload="none" data-poster="screens/linro-lineage-hover.webp"
+                   aria-label="Hovering through a lineage: the selection walks the rows, and an outside-org read branches off and resolves solid." style="width:100%;height:100%;object-fit:cover;display:block;">
+              <source src="screens/linro-lineage-hover.webm" type="video/webm">
+              <source src="screens/linro-lineage-hover.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </figure>
+
+      <figure class="t2-item lin-lede lin-lede--minor">
+        <div class="lin-lede-inner t2-reveal">
+          <h2 class="lin-lede-title">Voice assistance workflows built in</h2>
+        </div>
+      </figure>
+
+      <figure class="t2-item lin-screen lin-bleed lin-film">
+        <div class="t2-media t2-reveal" style="aspect-ratio: 1400 / 654;">
+          <video data-lin-film muted playsinline preload="none" data-poster="screens/linro-voice-onboarding-poster.webp"
+                 aria-label="Setting up voice in Linro: connect Wispr Flow, grant permissions, choose the shortcut, then hold fn and ask about the bucket in front of you." width="1400" height="654"
+                 style="width:100%;height:100%;object-fit:cover;display:block;">
+            <source src="screens/linro-voice-onboarding.webm" type="video/webm">
+            <source src="screens/linro-voice-onboarding.mp4" type="video/mp4">
+          </video>
+        </div>
+      </figure>
+
+      <figure class="t2-item lin-screen lin-bleed lin-film">
+        <div class="t2-media t2-reveal" style="aspect-ratio: 1400 / 654;">
+          <video data-lin-film muted playsinline preload="none" data-poster="screens/linro-voice-filter.webp"
+                 aria-label="Filtering by voice: a spoken request sets the severity filter and the findings narrow to match." width="1400" height="654"
+                 style="width:100%;height:100%;object-fit:cover;display:block;">
+            <source src="screens/linro-voice-filter.webm" type="video/webm">
+            <source src="screens/linro-voice-filter.mp4" type="video/mp4">
+          </video>
+        </div>
+      </figure>
+
+      <figure class="t2-item lin-screen lin-bleed">
+        <div class="t2-media t2-reveal" style="aspect-ratio: 2800 / 2800;">
+          <img src="screens/linro-platforms-1440.webp" srcset="screens/linro-platforms-480.webp 480w, screens/linro-platforms-768.webp 768w, screens/linro-platforms-1024.webp 1024w, screens/linro-platforms-1440.webp 1440w, screens/linro-platforms-1920.webp 1920w, screens/linro-platforms.webp 2800w"
+               sizes="100vw" alt="Linro in the browser, on Windows and on macOS, with the same snapshot cards in each." width="2800" height="2800" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item lin-screen lin-bleed lin-film">
+        <div class="t2-media t2-reveal" style="aspect-ratio: 1440 / 900;">
+          <video data-lin-film muted playsinline preload="none" data-poster="screens/linro-homepage-v6.webp"
+                 aria-label="The Linro homepage loading in: the nav, Trust what ships and the copy arrive in turn over the fluted glass swirl." width="1440" height="900"
+                 style="width:100%;height:100%;object-fit:cover;display:block;">
+            <source src="screens/linro-homepage-v6.webm" type="video/webm">
+            <source src="screens/linro-homepage-v6.mp4" type="video/mp4">
+          </video>
+        </div>
+      </figure>
+
+      <!-- The same mark on the light ground, then the colour and type it is
+           specified with. -->
       <figure class="t2-item t2-item--mark">
         <div class="lw-stage lw-stage--light" id="lw-slide-2" role="img" aria-label="The Linro wordmark drawing itself, on a light ground"></div>
       </figure>
 
-      <!-- Colour. Built from the board rather than exported from the deck, so
-           the bands are real swatches: the widths are the board's, carried as
-           flex proportions so the row fills whatever width the column has. -->
       <figure class="t2-item t2-reveal lin-colour">
         <div class="lin-swatch-block">
           <div class="lin-swatch-row lin-swatch-row--primary">
@@ -2180,7 +2337,6 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
         </div>
       </figure>
 
-      <!-- Type. The two faces as they are specified on the board. -->
       <figure class="t2-item t2-reveal lin-type">
         <div class="lin-face">
           <div class="lin-face-name lin-face-name--aeonik">Aeonik</div>
@@ -2201,45 +2357,6 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
           <p class="lin-face-note lin-face-note--spartan">A bold, modern, geometric sans-serif taking strong influence from ATF&rsquo;s classic Spartan family.</p>
         </div>
       </figure>
-
-      <figure class="t2-item t2-reveal lin-screen">
-        <div class="t2-media" style="aspect-ratio: 2800 / 1334;">
-          <img src="screens/linro-violations.webp"
-               srcset="screens/linro-violations-480.webp 480w, screens/linro-violations-768.webp 768w, screens/linro-violations-1024.webp 1024w, screens/linro-violations-1440.webp 1440w, screens/linro-violations-1920.webp 1920w, screens/linro-violations.webp 2800w"
-               sizes="(min-width: 1600px) 94vw, 92vw" alt="The Linro Violations view: open, stopped and watching items, with the lineage of the selected denial on the right." width="2800" height="1334" loading="lazy" decoding="async">
-        </div>
-      </figure>
-
-      <figure class="t2-item t2-reveal lin-screen">
-        <div class="t2-media" style="aspect-ratio: 2800 / 1300;">
-          <img src="screens/linro-agents.webp"
-               srcset="screens/linro-agents-480.webp 480w, screens/linro-agents-768.webp 768w, screens/linro-agents-1024.webp 1024w, screens/linro-agents-1440.webp 1440w, screens/linro-agents-1920.webp 1920w, screens/linro-agents.webp 2800w"
-               sizes="(min-width: 1600px) 94vw, 92vw" alt="The Agents view: one agent&rsquo;s run, its scope and children, and the events it recorded." width="2800" height="1300" loading="lazy" decoding="async">
-        </div>
-      </figure>
-
-      <figure class="t2-item t2-reveal lin-screen">
-        <div class="t2-media" style="aspect-ratio: 2800 / 1420;">
-          <img src="screens/linro-simulate.webp"
-               srcset="screens/linro-simulate-480.webp 480w, screens/linro-simulate-768.webp 768w, screens/linro-simulate-1024.webp 1024w, screens/linro-simulate-1440.webp 1440w, screens/linro-simulate-1920.webp 1920w, screens/linro-simulate.webp 2800w"
-               sizes="(min-width: 1600px) 94vw, 92vw" alt="The Simulate view: a policy diff replayed against the record, showing what would have changed." width="2800" height="1420" loading="lazy" decoding="async">
-        </div>
-      </figure>
-
-      <figure class="t2-item t2-reveal lin-lede">
-        <div class="lin-lede-inner">
-          <h2 class="lin-lede-title">Distributed interactions</h2>
-          <p class="lin-lede-note">The way developers work is changing, and a lot of them now reach Linro through ai clients rather than through the product itself. Having the brand present in those interactions mattered as much as having it in the interface. These are some of them.</p>
-        </div>
-      </figure>
-
-      <figure class="t2-item t2-screens lin-anim">
-        <div class="t2-screens-inner">
-          <div class="t2-frame" style="--fw:1280; --fh:1560" data-w="1280" data-h="1560">
-            <iframe src="screens/marks.html?bare&set=all" title="The full sheet" loading="lazy" tabindex="-1"></iframe>
-          </div>
-        </div>
-      </figure>
     </div>
   </div>
 
@@ -2254,12 +2371,12 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
       </a>
 
       <!-- Next project: the following card in the homepage carousel. -->
-      <a class="t2-next" href="/work/tag-tuition/" data-t2-exit="/work/tag-tuition/">
-        <span class="t2-next-thumb" style="background-image:url('/work/general/tag-tuition-splash.jpg');"></span>
+      <a class="t2-next" href="/work/kaizen-brand-and-product/" data-t2-exit="/work/kaizen-brand-and-product/">
+        <span class="t2-next-thumb" style="background:#F8FAFC url('/work/general/kaizen-lockup.svg') center / 62% auto no-repeat;"></span>
         <span>
           <span class="t2-next-label">Next project</span>
-          <span class="t2-next-title">Tag Tuition</span>
-          <span class="t2-next-desc">Turning a classroom curriculum into illustrated workbooks children could explore independently.</span>
+          <span class="t2-next-title">Kaizen</span>
+          <span class="t2-next-desc">Building the brand, the product and the design system for a radically different way to train for a marathon.</span>
         </span>
         <svg class="t2-next-chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
       </a>
@@ -2270,11 +2387,11 @@ html.lin-arriving .t2-sequence > .t2-item:first-of-type { animation-play-state: 
 <!-- Floating hint at the next case study. Mirrors the .t2-next band in the
      outro; it only exists in the window between the player leaving and that
      band arriving. -->
-<a class="t2-nextfloat" id="t2-nextfloat" href="/work/tag-tuition/" data-t2-exit="/work/tag-tuition/" aria-label="Next project: Tag Tuition" tabindex="-1">
-  <span class="t2-nextfloat-thumb" style="background-image:url('/work/general/tag-tuition-splash.jpg');"></span>
+<a class="t2-nextfloat" id="t2-nextfloat" href="/work/kaizen-brand-and-product/" data-t2-exit="/work/kaizen-brand-and-product/" aria-label="Next project: Kaizen" tabindex="-1">
+  <span class="t2-nextfloat-thumb" style="background:#F8FAFC url('/work/general/kaizen-lockup.svg') center / 62% auto no-repeat;"></span>
   <span>
     <span class="t2-nextfloat-eyebrow">Next project</span>
-    <span class="t2-nextfloat-title">Tag Tuition</span>
+    <span class="t2-nextfloat-title">Kaizen</span>
   </span>
   <svg class="t2-nextfloat-chev" width="16" height="9" viewBox="0 0 16.48 8.9" style="transform: rotate(-90deg);" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
 </a>
@@ -3639,7 +3756,7 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
   }
 
   /* The arrival: black on the white panel. */
-  mount(document.getElementById('lin-arrival-mark'), 'lw--thread lw--ink');
+  mount(document.getElementById('lin-arrival-mark'), 'lw--thread lw--quick lw--ink');
 
   /* The two slides: the mark in both treatments. Each runs from load and
      rewinds to its first frame as it comes into view, so the reader watches
@@ -3653,19 +3770,40 @@ function t2MakeManipulable(wrap, isFloating, atHome, onFirstMove) {
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   [['lw-slide', 'lw--paper'], ['lw-slide-2', 'lw--ink']].forEach(function (pair) {
-    /* Bars only. The full line draw belongs to the arrival panel — running it
-       again on both slides repeats the same trick three times in one page.
-       Here the mark is already resolved and only the five bars breathe. */
-    var slide = mount(document.getElementById(pair[0]), 'lw--hatch ' + pair[1]);
+    /* The dark slide draws the full ribbon; the light one keeps the hatch. */
+    var ribbon = pair[1] === 'lw--paper';
+    var slide = mount(document.getElementById(pair[0]), (ribbon ? 'lw--thread lw--quick ' : 'lw--hatch ') + pair[1]);
     if (!slide || reduce || !('IntersectionObserver' in window) || !slide.getAnimations) return;
+    var anims = function () { try { return slide.getAnimations({ subtree: true }); } catch (e) { return []; } };
+    /* The ribbon draws once, so it waits on its first frame until the reader
+       gets there, then plays, and plays again each time it is scrolled back
+       to. If nothing ever reports it in view, a timer lets it run anyway, so
+       the slide can never be left blank. */
+    if (ribbon) anims().forEach(function (a) { a.pause(); a.currentTime = 0; });
+    var played = false;
+    var fallback = ribbon ? window.setTimeout(function () { if (!played) anims().forEach(function (a) { a.play(); }); }, 8000) : 0;
+    var inView = false;
+    var doc = document.documentElement;
     var io = new IntersectionObserver(function (entries) {
-      if (!entries[0].isIntersecting) return;
-      io.disconnect();
-      try {
-        slide.getAnimations({ subtree: true }).forEach(function (a) { a.currentTime = 0; });
-      } catch (e) {}
-    }, { threshold: 0.35 });
+      /* Nothing counts while the arrival panel still covers the page. */
+      var now = entries[0].isIntersecting && !doc.classList.contains('lin-stage') && !doc.classList.contains('lin-arriving');
+      if (now && !inView) {
+        played = true; window.clearTimeout(fallback);
+        anims().forEach(function (a) { a.currentTime = 0; a.play(); });
+        if (!ribbon) io.disconnect();
+      }
+      inView = now;
+    }, { threshold: 0.5 });
     io.observe(slide);
+    /* When the arrival panel clears, look again: the slide may already be
+       sitting in view underneath it. */
+    if (window.MutationObserver) {
+      var mo = new MutationObserver(function () {
+        if (doc.classList.contains('lin-stage') || doc.classList.contains('lin-arriving')) return;
+        mo.disconnect(); io.unobserve(slide); io.observe(slide);
+      });
+      mo.observe(doc, { attributes: true, attributeFilter: ['class'] });
+    }
   });
 })();
 </script>
@@ -4108,10 +4246,10 @@ body::after {
   'use strict';
 
   var ORDER = [
-    '/work/kaizen-brand-and-product/',
     '/work/linro/',
-    '/work/tag-tuition/',
+    '/work/kaizen-brand-and-product/',
     '/work/monet/',
+    '/work/tag-tuition/',
     '/work/kaizen-onboarding/',
     '/work/suitepad/'
   ];
@@ -4184,5 +4322,76 @@ body::after {
 })();
 </script>
 
+<script>
+/* --------------------------------------------------------------------------
+   Linro films.
+
+   The poster is the film's last frame, so at rest the reader sees the
+   finished UI. On desktop a film plays once each time it enters the viewport
+   (scrolling down onto it or back up to it) and replays for as long as the
+   pointer rests on it. On touch devices it simply loops while on screen.
+   Reduced motion keeps the poster.
+   -------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+  var films = Array.prototype.slice.call(document.querySelectorAll('video[data-lin-film]'));
+  if (!films.length) return;
+  /* Posters are carried as data-poster so none of them load with the page;
+     each is set about a screen before it is reached. */
+  function showPoster(v) { var src = v.getAttribute('data-poster'); if (src && !v.poster) v.poster = src; }
+  if (!('IntersectionObserver' in window)) { films.forEach(showPoster); return; }
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var touch = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* Nothing downloads until a film is within roughly a screen of the
+     viewport; then it fetches enough to park on its last frame. */
+  var near = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var v = entry.target; near.unobserve(v);
+      showPoster(v);
+      if (!reduce && v.preload === 'none') { v.preload = 'auto'; v.load(); }
+    });
+  }, { rootMargin: (touch ? '50%' : '100%') + ' 0px' });
+  films.forEach(function (v) { near.observe(v); });
+  /* Reduced motion: the posters are all the reader gets, so stop here. */
+  if (reduce) return;
+
+  films.forEach(function (v) {
+    var inView = false, hovered = false;
+    /* data-lin-once: the film carries its own entrance, so it plays a single
+       time on the first scroll into view and then stays on its last frame. */
+    var once = v.hasAttribute('data-lin-once'), done = false;
+    if (once) v.addEventListener('ended', function () { done = true; });
+    v.loop = touch && !once;
+
+    function restart() {
+      try { v.currentTime = 0; } catch (e) {}
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    }
+    function rest() {
+      v.pause();
+      /* Park on the final frame so it matches the poster. */
+      if (v.duration && isFinite(v.duration)) { try { v.currentTime = v.duration - 0.04; } catch (e) {} }
+    }
+
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var now = entry.isIntersecting;
+        if (now && !inView && !(once && (done || v.currentTime > 0))) restart();
+        if (!now && inView && !once) rest();
+        inView = now;
+      });
+    }, { threshold: 0.45 }).observe(v);
+
+    if (!touch && !once) {
+      v.addEventListener('ended', function () { if (hovered && inView) restart(); });
+      var host = v.closest('figure') || v;
+      host.addEventListener('mouseenter', function () { hovered = true; if (v.paused || v.ended) restart(); });
+      host.addEventListener('mouseleave', function () { hovered = false; });
+    }
+  });
+})();
+</script>
 </body>
 </html>

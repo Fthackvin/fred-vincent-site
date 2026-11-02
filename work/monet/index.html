@@ -1479,6 +1479,18 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   .t2-video.is-pinned { width: 78px; }
   .t2-video.is-pinned.is-playing { width: 146px; }
 }
+
+/* Monet arrival film. The cover image is the film's last frame and sits over
+   the video until the first decoded frame is on screen, so starting, seeking
+   and restarting never flash black or the poster swap. */
+.mon-film { position: relative; }
+.mon-film video, .mon-film .mon-film-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.mon-film .mon-film-cover { transition: opacity 260ms ease; pointer-events: none; }
+.mon-film.is-playing .mon-film-cover { opacity: 0; }
+@media (max-width: 719px) {
+  /* On a phone the film crops in around the phone so the app is readable. */
+  .mon-film { aspect-ratio: 4 / 5 !important; }
+}
 </style>
 </head>
 <body>
@@ -1613,95 +1625,92 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
   <div class="t2-sequence">
 
-      <!-- Opening media: the one asset the first screen depends on, so it is
-           eager and high priority. Everything after it defers. -->
+      <!-- Opening media: eager and high priority; everything after defers. -->
       <figure class="t2-item">
-        <div class="t2-media" style="aspect-ratio: 2984 / 2072;">
-          <img src="s1-logotype.webp"
-               srcset="s1-logotype-480.webp 480w, s1-logotype-768.webp 768w, s1-logotype-1024.webp 1024w, s1-logotype-1440.webp 1440w, s1-logotype-1920.webp 1920w, s1-logotype.webp 2984w"
-               sizes="100vw" alt="The Monet logotype, its arch mark set into the wordmark."
-               width="2984" height="2072" fetchpriority="high" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2800 / 1750;">
+          <img src="m-desk-home.webp" srcset="m-desk-home-480.webp 480w, m-desk-home-768.webp 768w, m-desk-home-1024.webp 1024w, m-desk-home-1440.webp 1440w, m-desk-home-1920.webp 1920w, m-desk-home.webp 2800w" sizes="100vw" alt="The Monet website home page: a horse crossing an empty plot, the wordmark and the line The clarity to change." width="2800" height="1750" loading="eager" fetchpriority="high" decoding="async">
         </div>
       </figure>
 
+      <!-- Arrival film. Rests on its last frame; plays as it scrolls into view,
+           again when scrolled back to and while hovered; loops on phones. -->
+      <figure class="t2-item t2-reveal mon-film-item">
+        <div class="t2-media mon-film" style="aspect-ratio: 2400 / 1714; background:#131313;">
+          <video data-mon-film muted playsinline preload="metadata" poster="arrival.webp"
+                 data-src-wide="arrival.mp4" data-src-narrow="arrival-1200.mp4"
+                 aria-label="The Monet app opening on the atelier: the room slowly comes closer as the wordmark and the line The clarity to change arrive."></video>
+          <img class="mon-film-cover" src="arrival.webp" alt="" aria-hidden="true" width="2400" height="1714" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 2800 / 1640;">
+          <img src="m-logo.webp" srcset="m-logo-480.webp 480w, m-logo-768.webp 768w, m-logo-1024.webp 1024w, m-logo-1440.webp 1440w, m-logo-1920.webp 1920w, m-logo.webp 2800w" sizes="100vw" alt="The Monet logotype on charcoal green." width="2800" height="1640" loading="lazy" decoding="async">
+        </div>
+      </figure>
       <figure class="t2-item t2-reveal">
         <div class="t2-media" style="aspect-ratio: 3024 / 2190;">
-          <img src="s2-composition.webp"
-               srcset="s2-composition-480.webp 480w, s2-composition-768.webp 768w, s2-composition-1024.webp 1024w, s2-composition-1440.webp 1440w, s2-composition-1920.webp 1920w, s2-composition.webp 3024w"
-               sizes="100vw" fetchpriority="high" alt="Monet identity composition with the cap, wordmark and supporting imagery."
-               width="3024" height="2190" loading="eager" decoding="async">
+          <img src="s2-composition.webp" srcset="s2-composition-480.webp 480w, s2-composition-768.webp 768w, s2-composition-1024.webp 1024w, s2-composition-1440.webp 1440w, s2-composition-1920.webp 1920w, s2-composition.webp 3024w" sizes="100vw" alt="The Monet wordmark and the cap with its arch mark, beside a bassist caught mid-song." width="3024" height="2190" loading="lazy" decoding="async">
         </div>
       </figure>
-
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3024 / 2174;">
-          <img src="s3-cap.webp"
-               srcset="s3-cap-480.webp 480w, s3-cap-768.webp 768w, s3-cap-1024.webp 1024w, s3-cap-1440.webp 1440w, s3-cap-1920.webp 1920w, s3-cap.webp 3024w"
-               sizes="100vw" alt="The Monet cap with the arch mark."
-               width="3024" height="2174" loading="eager" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2800 / 2100;">
+          <img src="m-shopfront.webp" srcset="m-shopfront-480.webp 480w, m-shopfront-768.webp 768w, m-shopfront-1024.webp 1024w, m-shopfront-1440.webp 1440w, m-shopfront-1920.webp 1920w, m-shopfront.webp 2800w" sizes="100vw" alt="The Monet shopfront on a Berlin street, the name gilded on a charcoal green fascia." width="2800" height="2100" loading="lazy" decoding="async">
         </div>
       </figure>
-
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3024 / 2174;">
-          <img src="s4-typefaces.webp"
-               srcset="s4-typefaces-480.webp 480w, s4-typefaces-768.webp 768w, s4-typefaces-1024.webp 1024w, s4-typefaces-1440.webp 1440w, s4-typefaces-1920.webp 1920w, s4-typefaces.webp 3024w"
-               sizes="100vw" alt="The Grand and Future typefaces with their character sets."
-               width="3024" height="2174" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2800 / 2022;">
+          <img src="m-type.webp" srcset="m-type-480.webp 480w, m-type-768.webp 768w, m-type-1024.webp 1024w, m-type-1440.webp 1440w, m-type-1920.webp 1920w, m-type.webp 2800w" sizes="100vw" alt="The Grand and Future typefaces." width="2800" height="2022" loading="lazy" decoding="async">
         </div>
       </figure>
-
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3036 / 2042;">
-          <img src="s5-environment.webp"
-               srcset="s5-environment-480.webp 480w, s5-environment-768.webp 768w, s5-environment-1024.webp 1024w, s5-environment-1440.webp 1440w, s5-environment-1920.webp 1920w, s5-environment.webp 3036w"
-               sizes="100vw" alt="The brand in an environmental setting."
-               width="3036" height="2042" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2800 / 2022;">
+          <img src="m-cap.webp" srcset="m-cap-480.webp 480w, m-cap-768.webp 768w, m-cap-1024.webp 1024w, m-cap-1440.webp 1440w, m-cap-1920.webp 1920w, m-cap.webp 2800w" sizes="100vw" alt="The Monet cap beside the wordmark." width="2800" height="2022" loading="lazy" decoding="async">
         </div>
       </figure>
-
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3002 / 3424;">
-          <img src="s7-grid.webp"
-               srcset="s7-grid-480.webp 480w, s7-grid-768.webp 768w, s7-grid-1024.webp 1024w, s7-grid-1440.webp 1440w, s7-grid-1920.webp 1920w, s7-grid.webp 3002w"
-               sizes="100vw" alt="A grid of Monet print and product references."
-               width="3002" height="3424" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2800 / 3166;">
+          <img src="m-textures.webp" srcset="m-textures-480.webp 480w, m-textures-768.webp 768w, m-textures-1024.webp 1024w, m-textures-1440.webp 1440w, m-textures-1920.webp 1920w, m-textures.webp 2800w" sizes="100vw" alt="Textures and references: a lamp and painting on a fluted sideboard, olive leaves, a walnut chair and a cabinet." width="2800" height="3166" loading="lazy" decoding="async">
         </div>
       </figure>
-
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3040 / 1878;">
-          <img src="s8-editorial.webp"
-               srcset="s8-editorial-480.webp 480w, s8-editorial-768.webp 768w, s8-editorial-1024.webp 1024w, s8-editorial-1440.webp 1440w, s8-editorial-1920.webp 1920w, s8-editorial.webp 3040w"
-               sizes="100vw" alt="Editorial composition — a tactile, creatively driven, calm and warm environment by day."
-               width="3040" height="1878" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2800 / 1576;">
+          <img src="m-interior.webp" srcset="m-interior-480.webp 480w, m-interior-768.webp 768w, m-interior-1024.webp 1024w, m-interior-1440.webp 1440w, m-interior-1920.webp 1920w, m-interior.webp 2800w" sizes="100vw" alt="Inside the store: lit oak niches with single caps, a walnut plinth and a Japanese woodblock print on the back wall." width="2800" height="1576" loading="lazy" decoding="async">
         </div>
       </figure>
-
+      <figure class="t2-item t2-item--pair t2-reveal">
+        <div class="t2-media-row">
+          <div class="t2-media" style="aspect-ratio: 1390 / 782;">
+          <img src="m-wall.webp" srcset="m-wall-480.webp 480w, m-wall-768.webp 768w, m-wall-1024.webp 1024w, m-wall.webp 1390w" sizes="(max-width: 719px) 100vw, 50vw" alt="A wall of lit niches, one cap in each." width="1390" height="782" loading="lazy" decoding="async">
+        </div>
+          <div class="t2-media" style="aspect-ratio: 1390 / 782;">
+          <img src="m-atelier.webp" srcset="m-atelier-480.webp 480w, m-atelier-768.webp 768w, m-atelier-1024.webp 1024w, m-atelier.webp 1390w" sizes="(max-width: 719px) 100vw, 50vw" alt="The atelier table with a cap turned over, gold leaf and a hand press." width="1390" height="782" loading="lazy" decoding="async">
+        </div>
+        </div>
+      </figure>
       <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3028 / 1956;">
-          <img src="s9-embossed.webp"
-               srcset="s9-embossed-480.webp 480w, s9-embossed-768.webp 768w, s9-embossed-1024.webp 1024w, s9-embossed-1440.webp 1440w, s9-embossed-1920.webp 1920w, s9-embossed.webp 3028w"
-               sizes="100vw" alt="Embossed hand painted patterns across the cap and printed matter."
-               width="3028" height="1956" loading="lazy" decoding="async">
+        <div class="t2-media" style="aspect-ratio: 2800 / 1712;">
+          <img src="m-lookbook.webp" srcset="m-lookbook-480.webp 480w, m-lookbook-768.webp 768w, m-lookbook-1024.webp 1024w, m-lookbook-1440.webp 1440w, m-lookbook-1920.webp 1920w, m-lookbook.webp 2800w" sizes="100vw" alt="A lookbook in a ring binder with the cap and a typed card." width="2800" height="1712" loading="lazy" decoding="async">
         </div>
       </figure>
-
-      <figure class="t2-item t2-item--screens t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 2988 / 1760;">
-          <img src="s10-web.webp"
-               srcset="s10-web-480.webp 480w, s10-web-768.webp 768w, s10-web-1024.webp 1024w, s10-web-1440.webp 1440w, s10-web-1920.webp 1920w, s10-web.webp 2988w"
-               sizes="(min-width: 1600px) 66vw, 80vw" alt="The Monet website."
-               width="2988" height="1760" loading="lazy" decoding="async">
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 2800 / 2504;">
+          <img src="m-mobile.webp" srcset="m-mobile-480.webp 480w, m-mobile-768.webp 768w, m-mobile-1024.webp 1024w, m-mobile-1440.webp 1440w, m-mobile-1920.webp 1920w, m-mobile.webp 2800w" sizes="100vw" alt="Ten screens from the Monet app, from arrival and product to personalising, basket and checkout." width="2800" height="2504" loading="lazy" decoding="async">
         </div>
       </figure>
-
-      <figure class="t2-item t2-item--screens t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 3052 / 2338;">
-          <img src="s11-mobile.webp"
-               srcset="s11-mobile-480.webp 480w, s11-mobile-768.webp 768w, s11-mobile-1024.webp 1024w, s11-mobile-1440.webp 1440w, s11-mobile-1920.webp 1920w, s11-mobile.webp 3052w"
-               sizes="(min-width: 1600px) 66vw, 80vw" alt="The Monet store on mobile."
-               width="3052" height="2338" loading="lazy" decoding="async">
+      <figure class="t2-item t2-item--pair t2-reveal">
+        <div class="t2-media-row">
+          <div class="t2-media" style="aspect-ratio: 1390 / 1390;">
+          <img src="m-beanies.webp" srcset="m-beanies-480.webp 480w, m-beanies-768.webp 768w, m-beanies-1024.webp 1024w, m-beanies.webp 1390w" sizes="(max-width: 719px) 100vw, 50vw" alt="Four beanies with Monet badges." width="1390" height="1390" loading="lazy" decoding="async">
+        </div>
+          <div class="t2-media" style="aspect-ratio: 1390 / 1390;">
+          <img src="m-hand-painted.webp" srcset="m-hand-painted-480.webp 480w, m-hand-painted-768.webp 768w, m-hand-painted-1024.webp 1024w, m-hand-painted.webp 1390w" sizes="(max-width: 719px) 100vw, 50vw" alt="Hand painted patterns on paper and embossed into black canvas." width="1390" height="1390" loading="lazy" decoding="async">
+        </div>
+        </div>
+      </figure>
+      <figure class="t2-item t2-reveal">
+        <div class="t2-media" style="aspect-ratio: 2800 / 2008;">
+          <img src="m-ink-home.webp" srcset="m-ink-home-480.webp 480w, m-ink-home-768.webp 768w, m-ink-home-1024.webp 1024w, m-ink-home-1440.webp 1440w, m-ink-home-1920.webp 1920w, m-ink-home.webp 2800w" sizes="100vw" alt="The Monet home page with hand painted ink marks around the cap." width="2800" height="2008" loading="lazy" decoding="async">
         </div>
       </figure>
 
@@ -1720,12 +1729,12 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
       <!-- Next project: the following card in the homepage carousel, wrapping
            past the cards that do not have a case study yet. -->
-      <a class="t2-next" href="/work/kaizen-onboarding/" data-t2-exit="/work/kaizen-onboarding/">
-        <span class="t2-next-thumb" style="background:#13C19C; position:relative;"><span style="position:absolute; top:16px; left:50%; transform:translateX(-50%); width:112px; bottom:0; border-radius:11px 11px 0 0; overflow:hidden; display:block;"><video autoplay muted loop playsinline preload="metadata" poster="/videos/allaboard.webp" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;"><source src="/videos/allaboard.webm" type="video/webm"><source src="/videos/allaboard.mp4" type="video/mp4"></video></span></span></span>
+      <a class="t2-next" href="/work/tag-tuition/" data-t2-exit="/work/tag-tuition/">
+        <span class="t2-next-thumb" style="background-image:url('/work/general/tag-tuition-splash-480.webp');"></span>
         <span>
           <span class="t2-next-label">Next project</span>
-          <span class="t2-next-title">Kaizen</span>
-          <span class="t2-next-desc">Finding the problem underneath what users were asking for, and increasing conversion by 10.9%.</span>
+          <span class="t2-next-title">Tag Tuition</span>
+          <span class="t2-next-desc">Turning a classroom curriculum into illustrated workbooks children could explore independently.</span>
         </span>
         <svg class="t2-next-chev" width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill-rule="nonzero" fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
       </a>
@@ -1737,7 +1746,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
      outro; it only exists in the window between the player leaving and that
      band arriving. -->
 <a class="t2-nextfloat" id="t2-nextfloat" href="/work/tag-tuition/" data-t2-exit="/work/tag-tuition/" aria-label="Next project: Tag Tuition" tabindex="-1">
-  <span class="t2-nextfloat-thumb" style="background-image:url('/work/general/tag-tuition-splash.jpg');"></span></span>
+  <span class="t2-nextfloat-thumb" style="background-image:url('/work/general/tag-tuition-splash-480.webp');"></span></span>
   <span>
     <span class="t2-nextfloat-eyebrow">Next project</span>
     <span class="t2-nextfloat-title">Tag Tuition</span>
@@ -3355,10 +3364,10 @@ body::after {
   'use strict';
 
   var ORDER = [
-    '/work/kaizen-brand-and-product/',
     '/work/linro/',
-    '/work/tag-tuition/',
+    '/work/kaizen-brand-and-product/',
     '/work/monet/',
+    '/work/tag-tuition/',
     '/work/kaizen-onboarding/',
     '/work/suitepad/'
   ];
@@ -3431,5 +3440,49 @@ body::after {
 })();
 </script>
 
+<script>
+/* Monet films: rest on the last frame; play once on entering view (either
+   direction) and again while hovered; phones loop while on screen. Reduced
+   motion keeps the still. The cover only hides once a frame has painted. */
+(function () {
+  'use strict';
+  var vids = Array.prototype.slice.call(document.querySelectorAll('video[data-mon-film]'));
+  if (!vids.length || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var touch = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var narrow = window.matchMedia('(max-width: 900px)').matches;
+  vids.forEach(function (v) {
+    var box = v.parentNode, inView = false, hovered = false, loaded = false;
+    v.loop = touch;
+    function load() { if (loaded) return; loaded = true; v.src = v.getAttribute(narrow ? 'data-src-narrow' : 'data-src-wide'); v.preload = 'auto'; v.load(); }
+    function painted() { box.classList.add('is-playing'); }
+    function start() {
+      load();
+      var go = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+      if (v.currentTime > 0.05) { v.addEventListener('seeked', function once() { v.removeEventListener('seeked', once); go(); }); try { v.currentTime = 0; } catch (e) { go(); } }
+      else go();
+    }
+    function rest() {
+      v.pause();
+      box.classList.remove('is-playing'); // the cover is the last frame
+    }
+    v.addEventListener('playing', function () {
+      if ('requestVideoFrameCallback' in v) v.requestVideoFrameCallback(painted); else setTimeout(painted, 60);
+    });
+    v.addEventListener('ended', function () { if (hovered && inView) start(); });
+    new IntersectionObserver(function (es) { es.forEach(function (e) {
+      if (e.isIntersecting && !inView) start();
+      if (!e.isIntersecting && inView) rest();
+      inView = e.isIntersecting;
+    }); }, { threshold: 0.4 }).observe(box);
+    /* Fetch a little ahead of arrival so playback starts without a stall. */
+    new IntersectionObserver(function (es, o) { if (es[0].isIntersecting) { load(); o.disconnect(); } }, { rootMargin: '600px 0px' }).observe(box);
+    if (!touch) {
+      box.addEventListener('mouseenter', function () { hovered = true; if (inView && (v.paused || v.ended)) start(); });
+      box.addEventListener('mouseleave', function () { hovered = false; });
+    }
+  });
+})();
+</script>
 </body>
 </html>
