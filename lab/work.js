@@ -8,7 +8,7 @@ window.WORK = [
   { title: 'Linro', href: '/work/linro/',
     desc: 'Giving invisible security infrastructure a visual language built around lineage.',
     tags: 'Brand identity and strategy, product design',
-    thumb: '/work/general/linro-mark-still-white.svg', mark: true,
+    thumb: '/work/general/linro-mark-bars.svg', mark: true,
     pics: ['/work/linro/screens/linro-homepage-v6.webp', '/work/linro/screens/linro-lineage-hover.webp', '/work/linro/screens/linro-terminal.webp', '/work/linro/screens/linro-platforms-768.webp', '/work/linro/screens/linro-voice-filter.webp'] },
   { title: 'Kaizen', href: '/work/kaizen-brand-and-product/',
     desc: 'Building the brand, the product and the design system for a radically different way to train for a marathon.',
@@ -18,7 +18,7 @@ window.WORK = [
     desc: 'Creating a desirable consumer brand for neuro tech people would actually want to wear.',
     tags: 'Brand identity, product design',
     pics: ['/work/monet/m-shopfront-768.webp', '/work/monet/s2-composition-768.webp', '/work/monet/m-logo-768.webp', '/work/monet/m-interior-768.webp', '/work/monet/m-mobile-768.webp'] },
-  { title: 'Tag Tuition', href: '/work/tag-tuition/',
+  { title: 'Tag Tuition', href: '/work/tag-tuition/', previewBackground: '#fff',
     desc: 'Turning a classroom curriculum into illustrated workbooks children could explore independently.',
     tags: 'Creative direction, editorial design, illustration',
     pics: ['/work/general/tag-tuition-splash-480.webp', '/work/tag-tuition/book-constellations.webp', '/work/tag-tuition/book-insects.webp', '/work/tag-tuition/metamorphosis-cover.webp'] },
@@ -41,6 +41,7 @@ window.WORK = [
         '<b></b><span></span><em></em></a>';
       li.querySelector('b').textContent = w.title; li.querySelector('span').textContent = w.desc; li.querySelector('em').textContent = w.tags;
       li.firstChild.dataset.pics = w.pics.join(' ');
+      if (w.previewBackground) li.firstChild.dataset.previewBackground = w.previewBackground;
       ol.appendChild(li);
     });
 
@@ -57,6 +58,7 @@ window.WORK = [
        around a picture that doesn't fill it reads as more of the picture. */
     var cv = document.createElement('canvas'), cx = cv.getContext('2d', { willReadFrequently: true });
     function edge(img) {
+      if (img.dataset.forceBg) { img.dataset.bg = img.dataset.forceBg; return; }
       try {
         var w = 48, h = Math.max(8, Math.round(48 * img.naturalHeight / img.naturalWidth));
         cv.width = w; cv.height = h; cx.drawImage(img, 0, 0, w, h);
@@ -96,7 +98,7 @@ window.WORK = [
     ol.addEventListener('mouseenter', warm);
     ol.querySelectorAll('a[data-pics]').forEach(function (link) {
       var imgs = link.dataset.pics.split(' ').map(function (src) {
-        var i = new Image(); i.alt = ''; i.decoding = 'sync'; i.dataset.src = src;
+        var i = new Image(); i.alt = ''; i.decoding = 'sync'; i.dataset.src = src; if (link.dataset.previewBackground) { i.dataset.forceBg = link.dataset.previewBackground; i.dataset.bg = link.dataset.previewBackground; }
         peek.appendChild(i); return i;
       });
       link.addEventListener('mouseenter', function (e) {

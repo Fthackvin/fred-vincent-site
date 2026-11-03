@@ -5,9 +5,7 @@
   'use strict';
   document.querySelectorAll('[data-mail]').forEach(function (a) {
     var addr = 'hello' + '@' + 'studiovincent.co'; a.href = 'mailto:' + addr; if (!a.textContent.trim()) a.textContent = addr;
-    if (a.classList.contains('quiet')) {
-      a.innerHTML = '<svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m21 3-7 18-4-7-7-4 18-7Z"/><path d="m10 14 5-5"/></svg><span>Email</span>';
-    }
+    if (a.classList.contains('quiet')) a.textContent = 'Email';
   });
   var boundary = document.querySelector('[data-dark-from]');
   if (!boundary) return;

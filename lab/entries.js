@@ -78,7 +78,7 @@ window.LAB = [
     title: 'Drawing the Linro wordmark',
     date: '2026-10',
     kind: 'Story',
-    media: { image: '/work/general/linro-mark-still-white.svg', alt: 'The Linro wordmark.', pad: true, background: '#000' },
+    media: { image: '/work/general/linro-mark-bars.svg', alt: 'The Linro wordmark.', pad: true, background: '#000' },
     action: { label: 'Read the story', href: '/lab/stories/drawing-the-linro-mark/' },
   },
   {
@@ -179,10 +179,10 @@ window.LAB.sort(function (a, b) {
       text: (e.action && e.action.label) || ''
     });
     var content = [
-      el('div', { class: 'tile-top' }, [el('span', { text: e.title })]),
-      body,
-      el('div', { class: 'tile-bottom' }, [foot, el('time', { datetime: e.date, text: month(e.date) })])
+      el('div', { class: 'tile-top' }, [el('span', { text: e.title }), el('time', { datetime: e.date, text: month(e.date) })]),
+      body
     ];
+    if (!linked) content.push(foot);
     var t = el('article', { class: 'tile', 'data-kind': e.kind }, linked
       ? [el('a', { class: 'tile-link', href: destination, 'aria-label': e.title + ': ' + e.action.label }, content)]
       : content);
