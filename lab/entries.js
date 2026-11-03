@@ -66,7 +66,7 @@ window.LAB = [
     action: { label: 'From the Monet app', href: '/work/monet/' },
   },
   {
-    title: 'Atlas, a plate',
+    title: 'Warburg\'s Atlas',
     date: '2026-10',
     kind: 'Project',
     href: '/lab/atlas/',
@@ -123,7 +123,7 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
 window.LAB_ORDER = [
   'Effort, not pace', 'Cohort', 'Voice, as a filter',
   'The clarity to change', 'Drawing the Linro wordmark', 'A smooth line of progress',
-  'Lineage hover', 'Atlas, a plate', 'Terminal, with the brand in it',
+  'Lineage hover', 'Warburg\'s Atlas', 'Terminal, with the brand in it',
   'Week to week'
 ];
 window.LAB.sort(function (a, b) {
