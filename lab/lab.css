@@ -172,7 +172,7 @@ html.dark-active .v-dots { background: #FDFDFB; border-radius: 8px; }
 .tile-body { padding: 13px 15px; flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
 .tile-body > [data-vignette] { width: 100%; }
 .tile-body > img, .tile-body > video { width: 100%; height: auto; border-radius: 8px; }
-.tile-body--phone { margin: 13px 15px; padding: 26px 0; background: #EAF0F7; border-radius: 8px; }
+.tile-body--phone { margin: 13px 15px; padding: 26px 0; background: #F4F4F2; border-radius: 8px; }
 .tile-body--phone > video { width: auto; height: 380px; max-width: 100%; border-radius: 13.5% / 6.6%; box-shadow: 0 1px 2px rgba(20, 30, 50, .08), 0 12px 28px rgba(20, 30, 50, .12); }
 html.dark-active .tile-body--phone { background: rgba(255, 255, 255, .05); }
 .tile-foot {
@@ -212,7 +212,7 @@ a.tile-foot:hover { color: #1A1815; }
    Below the width where there is room for it, the same film sits in the story
    itself instead, near the top, never at the bottom. */
 .rail { position: sticky; top: 104px; align-self: start; justify-self: start; display: none; }
-.rail figure { margin: 0; padding: 28px; background: #EAF0F7; border-radius: 14px; }
+.rail figure { margin: 0; padding: 28px; background: #F4F4F2; border-radius: 14px; }
 .rail video { display: block; width: clamp(200px, 17vw, 270px); height: auto; border-radius: 13.5% / 6.6%; box-shadow: 0 1px 2px rgba(20, 30, 50, .08), 0 16px 36px rgba(20, 30, 50, .14); }
 .rail figcaption { margin-top: 12px; color: var(--grey); font-size: 13px; text-align: left; max-width: 270px; }
 /* From 760px the film plays beside the story and the story itself shows a
