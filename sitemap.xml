@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://studiovincent.co/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://studiovincent.co/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://studiovincent.co/work/kaizen-onboarding/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://studiovincent.co/work/kaizen-brand-and-product/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <url><loc>https://www.studiovincent.co/</loc></url>
+  <url><loc>https://www.studiovincent.co/about/</loc></url>
+  <url><loc>https://www.studiovincent.co/lab/</loc></url>
+  <url><loc>https://www.studiovincent.co/lab/atlas/</loc></url>
+  <url><loc>https://www.studiovincent.co/lab/stories/effort-not-pace/</loc></url>
+  <url><loc>https://www.studiovincent.co/lab/stories/week-to-week/</loc></url>
+  <url><loc>https://www.studiovincent.co/lab/stories/drawing-the-linro-mark/</loc></url>
+  <url><loc>https://www.studiovincent.co/work/linro/</loc></url>
+  <url><loc>https://www.studiovincent.co/work/monet/</loc></url>
+  <url><loc>https://www.studiovincent.co/work/kaizen-brand-and-product/</loc></url>
+  <url><loc>https://www.studiovincent.co/work/kaizen-onboarding/</loc></url>
+  <url><loc>https://www.studiovincent.co/work/tag-tuition/</loc></url>
+  <url><loc>https://www.studiovincent.co/work/suitepad/</loc></url>
 </urlset>

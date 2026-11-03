@@ -96,6 +96,7 @@ window.LAB = [
   },
   {
     title: 'Cohort',
+    onIce: true,
     date: '2026-11',
     kind: 'Project',
     media: { empty: true },
