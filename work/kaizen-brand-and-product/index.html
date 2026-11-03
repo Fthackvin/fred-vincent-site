@@ -2106,6 +2106,15 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
      over-long run; they differ only in how they feed min-content sizing. */
   .kz-spec-alpha { overflow-wrap: break-word; overflow-wrap: anywhere; }
 }
+
+/* Three dashboard films shrink together within the padded desktop frame. */
+@media (min-width: 720px) {
+  .t2-item--film.kz-predict video { flex: 1 1 0; min-width: 0; width: 0; height: auto; max-width: 320px; }
+}
+/* More breathing room around dashboard films at every breakpoint. */
+.t2-item--film .t2-film { padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(48px, 7vw, 104px); }
+.kz-predict .t2-film { padding: clamp(40px, 6vw, 88px) clamp(24px, 5vw, 72px) clamp(48px, 7vw, 104px); gap: clamp(28px, 5vw, 80px); }
+@media (max-width: 719px) { .t2-item--film .t2-film { padding-inline: 24px; gap: 20px; } .kz-predict .t2-film { padding-inline: 28px; gap: 28px; } }
 </style>
 </head>
 <body>
@@ -2120,6 +2129,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       <a href="/#how-this-works" hidden style="display:none">Work together</a>
       <a href="/#case-studies">Work</a>
       <!-- Writing: hidden for the moment. Restore by uncommenting. <a href="/#work">Writing</a> -->
+      <a href="/lab/">Lab</a>
       <a href="/about/">About</a>
     </nav>
   </div>

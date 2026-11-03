@@ -1505,6 +1505,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
       <a href="/#how-this-works" hidden style="display:none">Work together</a>
       <a href="/#case-studies">Work</a>
       <!-- Writing: hidden for the moment. Restore by uncommenting. <a href="/#work">Writing</a> -->
+      <a href="/lab/">Lab</a>
       <a href="/about/">About</a>
     </nav>
   </div>
@@ -1625,10 +1626,15 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
   <div class="t2-sequence">
 
-      <!-- Opening media: eager and high priority; everything after defers. -->
+      <!-- Opening shopfront; the existing sequence follows unchanged. -->
+      <figure class="t2-item">
+        <div class="t2-media" style="aspect-ratio: 2800 / 2100;">
+          <img src="m-shopfront.webp" srcset="m-shopfront-480.webp 480w, m-shopfront-768.webp 768w, m-shopfront-1024.webp 1024w, m-shopfront-1440.webp 1440w, m-shopfront-1920.webp 1920w, m-shopfront.webp 2800w" sizes="100vw" alt="The Monet shopfront on a Berlin street, the name gilded on a charcoal green fascia." width="2800" height="2100" loading="eager" fetchpriority="high" decoding="async">
+        </div>
+      </figure>
       <figure class="t2-item">
         <div class="t2-media" style="aspect-ratio: 2800 / 1750;">
-          <img src="m-desk-home.webp" srcset="m-desk-home-480.webp 480w, m-desk-home-768.webp 768w, m-desk-home-1024.webp 1024w, m-desk-home-1440.webp 1440w, m-desk-home-1920.webp 1920w, m-desk-home.webp 2800w" sizes="100vw" alt="The Monet website home page: a horse crossing an empty plot, the wordmark and the line The clarity to change." width="2800" height="1750" loading="eager" fetchpriority="high" decoding="async">
+          <img src="m-desk-home.webp" srcset="m-desk-home-480.webp 480w, m-desk-home-768.webp 768w, m-desk-home-1024.webp 1024w, m-desk-home-1440.webp 1440w, m-desk-home-1920.webp 1920w, m-desk-home.webp 2800w" sizes="100vw" alt="The Monet website home page: a horse crossing an empty plot, the wordmark and the line The clarity to change." width="2800" height="1750" loading="lazy" decoding="async">
         </div>
       </figure>
 
@@ -1653,11 +1659,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
           <img src="s2-composition.webp" srcset="s2-composition-480.webp 480w, s2-composition-768.webp 768w, s2-composition-1024.webp 1024w, s2-composition-1440.webp 1440w, s2-composition-1920.webp 1920w, s2-composition.webp 3024w" sizes="100vw" alt="The Monet wordmark and the cap with its arch mark, beside a bassist caught mid-song." width="3024" height="2190" loading="lazy" decoding="async">
         </div>
       </figure>
-      <figure class="t2-item t2-reveal">
-        <div class="t2-media" style="aspect-ratio: 2800 / 2100;">
-          <img src="m-shopfront.webp" srcset="m-shopfront-480.webp 480w, m-shopfront-768.webp 768w, m-shopfront-1024.webp 1024w, m-shopfront-1440.webp 1440w, m-shopfront-1920.webp 1920w, m-shopfront.webp 2800w" sizes="100vw" alt="The Monet shopfront on a Berlin street, the name gilded on a charcoal green fascia." width="2800" height="2100" loading="lazy" decoding="async">
-        </div>
-      </figure>
+
       <figure class="t2-item t2-reveal">
         <div class="t2-media" style="aspect-ratio: 2800 / 2022;">
           <img src="m-type.webp" srcset="m-type-480.webp 480w, m-type-768.webp 768w, m-type-1024.webp 1024w, m-type-1440.webp 1440w, m-type-1920.webp 1920w, m-type.webp 2800w" sizes="100vw" alt="The Grand and Future typefaces." width="2800" height="2022" loading="lazy" decoding="async">

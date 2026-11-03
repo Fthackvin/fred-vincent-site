@@ -222,7 +222,7 @@ async function main() {
     let rendered;
     if (items && items.length > 0) {
       rendered = html.includes('class="writing"')
-        ? items.map(item => `<li><a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer"><b>${escapeHtml(item.title)}</b><time>${escapeHtml(item.date)}</time></a></li>`).join('\n')
+        ? items.map(item => `<li><a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer"><b>${escapeHtml(item.title)}</b></a></li>`).join('\n')
         : items.map(renderItem).join('\n');
     } else {
       console.warn('[build-rss] no items parsed; rendering fallback.');

@@ -154,11 +154,11 @@ html.dark-active .row a:hover, html.dark-active .row a:focus-visible { backgroun
   box-shadow: 0 1px 1px rgba(20, 18, 14, .04), 0 8px 12px rgba(20, 18, 14, .04);
   transition: box-shadow 220ms var(--ease), border-color 220ms var(--ease), background-color var(--dark-ease);
 }
-.tile:hover { box-shadow: 0 4px 10px rgba(20, 18, 14, .08), 0 22px 44px rgba(20, 18, 14, .1); border-color: rgba(26, 24, 21, .35); }
+.tile:hover { box-shadow: 0 4px 10px rgba(20, 18, 14, .08), 0 22px 44px rgba(20, 18, 14, .1); }
 .tile-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 15px 0; color: rgba(26, 24, 21, .82); }
 /* On the dark half, the sheets turn to a very faint veil. */
 html.dark-active .tile { background: rgba(255, 255, 255, .045); border-color: rgba(255, 255, 255, .07); box-shadow: none; }
-html.dark-active .tile:hover { border-color: rgba(248, 250, 252, .3); box-shadow: none; }
+html.dark-active .tile:hover { box-shadow: none; }
 html.dark-active .tile-top { color: rgba(248, 250, 252, .86); }
 html.dark-active .tile-top time { color: rgba(248, 250, 252, .56); }
 html.dark-active .tile-foot { color: rgba(248, 250, 252, .55); }
@@ -279,4 +279,32 @@ a.tile-foot:hover { color: #1A1815; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .tile { transform: none; }
+}
+
+/* Tighter index crops and square Lab previews, keeping the top of phone screens. */
+.row .thumb { object-fit: cover; object-position: center top; padding: 0; }
+.row .thumb.thumb--mark { object-fit: contain; object-position: center; padding: 26px 18px; }
+.tile-link { display: flex; flex-direction: column; color: inherit; text-decoration: none; border-radius: inherit; }
+.tile-link:focus-visible { outline-offset: -4px; }
+.tile-bottom { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 4px 15px 14px; }
+.tile-bottom .tile-foot { padding: 0; }
+.tile-bottom time { flex: none; color: var(--grey); font-size: 12px; white-space: nowrap; margin-left: auto; }
+.tile-body--phone { flex: none; display: block; position: relative; aspect-ratio: 1; padding: 0; overflow: hidden; }
+.tile-body--phone > video { position: absolute; top: 8%; left: 12%; width: 76%; height: auto; max-width: none; }
+.email-icon { width: 17px; height: 17px; display: inline-block; vertical-align: -.15em; margin-right: 7px; }
+
+/* Writing as substantial timeline entries, without publication dates. */
+section.writing ul { list-style: none; padding: 0 0 0 22px; margin: 0; border-left: 1px solid var(--rule); }
+section.writing li { position: relative; padding: 0 0 26px 0; }
+section.writing li:last-child { padding-bottom: 0; }
+section.writing li::before { content: ''; position: absolute; left: -27px; top: 9px; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); }
+section.writing ul li a { display: block; padding: 0; font-size: clamp(17px, 1.6vw, 21px); line-height: 1.45; text-wrap: pretty; }
+section.writing ul li b { font-weight: 400; }
+.footer-credit { display: inline-flex; flex-wrap: wrap; gap: 8px 24px; }
+@media (max-width: 1080px) {
+  .hire { text-align: center; }
+  .hire h2, .hire p { margin-left: auto; margin-right: auto; }
+  .hire .cta-row { justify-content: center; }
+  .foot { flex-direction: column; align-items: center; text-align: center; gap: 24px; }
+  .foot nav, .footer-credit { justify-content: center; }
 }

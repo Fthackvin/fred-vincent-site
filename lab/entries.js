@@ -67,6 +67,7 @@ window.LAB = [
   },
   {
     title: 'Warburg\'s Atlas',
+    onIce: true,
     date: '2026-10',
     kind: 'Project',
     href: '/lab/atlas/',
@@ -77,7 +78,7 @@ window.LAB = [
     title: 'Drawing the Linro wordmark',
     date: '2026-10',
     kind: 'Story',
-    media: { image: '/work/general/linro-mark-still.svg', alt: 'The Linro wordmark.', pad: true },
+    media: { image: '/work/general/linro-mark-still-white.svg', alt: 'The Linro wordmark.', pad: true, background: '#000' },
     action: { label: 'Read the story', href: '/lab/stories/drawing-the-linro-mark/' },
   },
   {
@@ -166,19 +167,25 @@ window.LAB.sort(function (a, b) {
     }
     else if (m.image) {
       var i = el('img', { src: m.image, alt: m.alt || '', loading: 'lazy', decoding: 'async' });
-      if (m.pad) { i.style.padding = '18% 10%'; i.style.background = '#fff'; }
+      if (m.pad) { i.style.padding = '18% 10%'; i.style.background = m.background || '#fff'; }
       body.appendChild(i);
     }
     else if (m.empty) body.appendChild(el('div', { style: { aspectRatio: '4 / 3', width: '100%' } }));
 
-    var foot = e.action && e.action.href
-      ? el('a', { class: 'tile-foot', href: e.action.href, text: e.action.label })
-      : el('span', { class: 'tile-foot tile-foot--quiet', text: (e.action && e.action.label) || '' });
-
-    var t = el('article', { class: 'tile', 'data-kind': e.kind }, [
-      el('div', { class: 'tile-top' }, [el('span', { text: e.title }), el('time', { datetime: e.date, text: month(e.date) })]),
-      body, foot
-    ]);
+    var destination = e.action && e.action.href;
+    var linked = destination && !m.vignette;
+    var foot = el(linked ? 'span' : destination ? 'a' : 'span', {
+      class: 'tile-foot', ...(linked || !destination ? {} : { href: destination }),
+      text: (e.action && e.action.label) || ''
+    });
+    var content = [
+      el('div', { class: 'tile-top' }, [el('span', { text: e.title })]),
+      body,
+      el('div', { class: 'tile-bottom' }, [foot, el('time', { datetime: e.date, text: month(e.date) })])
+    ];
+    var t = el('article', { class: 'tile', 'data-kind': e.kind }, linked
+      ? [el('a', { class: 'tile-link', href: destination, 'aria-label': e.title + ': ' + e.action.label }, content)]
+      : content);
     if (e.draft) t.setAttribute('data-draft', '');
     return t;
   }
