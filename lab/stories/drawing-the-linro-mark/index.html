@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Drawing the Linro wordmark · Studio Vincent</title>
+<meta name="description" content="How a security product's own idea, lineage, became its wordmark, its interface and its terminal.">
+<link rel="icon" href="/favicons/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/lab/lab.css">
+<!--
+  STORY TEMPLATE
+  To start a new story: copy this folder to /lab/stories/your-story/, change the
+  title, the contents list and the sections, then add an entry to
+  /lab/entries.js with kind: 'Story' and href pointing here.
+
+  Pieces you can use inside .story:
+    <figure class="frame"> ... </figure>       a demo or film in a browser frame
+    <figure class="plain"> ... </figure>       an image with no frame
+    <figure class="aside"> ... </figure>       a small picture out to the side
+-->
+<style>
+.story-wrap { display: grid; grid-template-columns: 200px minmax(0, 620px) 1fr; gap: 0 clamp(24px, 4vw, 64px); padding: clamp(40px, 6vw, 80px) var(--gutter) 0; }
+.toc { position: sticky; top: 92px; align-self: start; }
+.story h1 { margin: 0 0 8px; font: 400 clamp(32px, 4.5vw, 44px)/1.1 var(--display); letter-spacing: -.015em; }
+.story > time { color: var(--grey); font-size: 13px; display: block; margin-bottom: 28px; }
+.story p { margin: 0 0 18px; font-size: 15.5px; line-height: 1.65; position: relative; }
+.story h2 { margin: 56px 0 14px; font: 400 clamp(22px, 2.6vw, 28px)/1.2 var(--display); scroll-margin-top: 90px; }
+.story figure { margin: 26px 0 30px; }
+.story figcaption { color: var(--grey); font-size: 13px; text-align: center; margin-top: 10px; }
+.frame { background: #F4F4F2; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.frame-bar { display: flex; align-items: center; gap: 6px; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
+.frame-bar i { width: 9px; height: 9px; border-radius: 50%; background: #D9D9D5; }
+.frame-bar span { margin-left: 10px; font-size: 11.5px; color: var(--grey); background: #fff; border-radius: 5px; padding: 3px 10px; }
+.frame video, .frame img { width: 100%; height: auto; }
+.plain img { border-radius: 8px; }
+.mark { background: #000; border-radius: 10px; padding: 16% 12%; }
+.end { margin-top: 56px; color: var(--grey); font-size: 14px; }
+.end a { color: var(--ink); }
+/* A picture set out to the side of the text, in the empty right-hand column.
+   Put it straight before the paragraph it belongs with. On narrower screens
+   it drops back into the flow at a smaller size. */
+.story { position: relative; }
+.story figure.aside { position: absolute; left: calc(100% + clamp(24px, 4vw, 64px)); width: clamp(180px, 18vw, 260px); margin: 4px 0 0; }
+.story figure.aside img { width: 100%; height: auto; border-radius: 8px; }
+.story figure.aside figcaption { text-align: left; }
+@media (max-width: 1080px) {
+  .story-wrap { grid-template-columns: minmax(0, 620px); justify-content: center; }
+  .toc { display: none; }
+  .story figure.aside { position: static; width: 60%; margin: 22px 0 26px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="/next/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
+  <nav class="top-nav" aria-label="Primary">
+    <a href="/next/#work">Work</a>
+    <a href="/lab/" aria-current="page">Lab</a>
+    <a href="/next/about/">About</a>
+  </nav>
+</header>
+
+<div class="story-wrap">
+  <nav class="toc" aria-label="Contents">
+    <a class="back" href="/lab/">Lab</a>
+    <a href="#idea">The idea was already there</a>
+    <a href="#language">One graphic language</a>
+    <a href="#interface">Into the interface</a>
+    <a href="#elsewhere">Where developers are</a>
+  </nav>
+
+  <article class="story">
+    <h1>Drawing the Linro wordmark</h1>
+    <time datetime="2026-10">Oct 2026</time>
+
+    <p>Linro traces the lineage behind every change in cloud security, where it came from, how it moved through a system, and whether it should have been allowed to happen at all.</p>
+    <figure class="plain">
+      <div class="mark"><img src="/work/general/linro-mark-still-white.svg" alt="The Linro wordmark in white on black."></div>
+    </figure>
+
+    <h2 id="idea">The idea was already there</h2>
+    <p>The product was already sophisticated when I started working with Daniel and Florian, but the identity had been assembled in pieces and didn't stand out. They wanted Linro to feel engineered and serious without disappearing into a category where every competitor reaches for the same tropes.</p>
+    <p>We audited the category, then ran several workshops on the ideas already sitting inside the product. The answer was lineage.</p>
+
+    <h2 id="language">One graphic language</h2>
+    <p>Drawing on Bauhaus systems and modular graphic design, the wordmark and the interface expand from a single, distinct graphic language: thin, thread-like strokes, and five blocks that settle inside the O.</p>
+    <figure class="plain">
+      <img src="/work/linro/screens/linro-homepage-v6.webp" alt="The Linro homepage: Trust what ships, over fluted glass." loading="lazy">
+      <figcaption>The homepage, where the same slats run behind the type.</figcaption>
+    </figure>
+
+    <h2 id="interface">Into the interface</h2>
+    <p>While the identity developed, I ran product discovery, talking to customers and watching how they actually used Linro. The lineage became something you could hover through.</p>
+    <figure class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span>app.linro.io/violations</span></div>
+      <video src="/work/linro/screens/linro-lineage-hover.mp4" poster="/work/linro/screens/linro-lineage-hover.webp" muted loop playsinline preload="none" data-story-film aria-label="Hovering through a lineage."></video>
+    </figure>
+    <figcaption style="margin-top:-18px;margin-bottom:28px;color:var(--grey);font-size:13px;text-align:center">Hover a row and its lineage walks up and down the chain.</figcaption>
+
+    <h2 id="elsewhere">Where developers are</h2>
+    <p>The way developers work is changing, and a lot of them now reach Linro through ai clients rather than through the product itself. Having the brand present in those interactions mattered as much as having it in the interface.</p>
+    <figure class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span>deploy-agent, ~/infra</span></div>
+      <video src="/work/linro/screens/linro-terminal.mp4" poster="/work/linro/screens/linro-terminal.webp" muted playsinline preload="none" data-story-film aria-label="A deploy agent in the terminal, with Linro blocking a grant outside policy."></video>
+    </figure>
+
+    <p class="end">The full project is in the <a href="/work/linro/">Linro case study</a>.</p>
+  </article>
+</div>
+
+<section class="outro" aria-labelledby="hire-h">
+  <h2 id="hire-h">Available for hire; contact me for availability.</h2>
+  <p class="sub">Open to founders and product teams who want help finding the version of the work that's worth committing to.</p>
+  <a class="outro-cta" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer"><span>Book an intro call</span><svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg></a>
+
+  <a class="tease" href="/lab/stories/effort-not-pace/">
+    <span class="tease-thumb"><video src="/work/kaizen-brand-and-product/kaizen-rpe.mp4" poster="/work/kaizen-brand-and-product/kaizen-rpe-7.webp" muted loop playsinline preload="none" data-story-film aria-hidden="true"></video></span>
+    <span>
+      <span class="tease-label">Next in the lab</span>
+      <span class="tease-title">Effort, not pace</span>
+      <span class="tease-desc">Why every run is set by how hard it should feel, rather than how fast.</span>
+    </span>
+    <svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+  </a>
+</section>
+
+<footer class="outro-foot">
+  <span>© Coded by Fred 2026 | No cookies or analytics are used on this site</span>
+  <nav aria-label="Elsewhere">
+    <a href="/lab/">Lab</a>
+    <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://studiovincent.substack.com" target="_blank" rel="noopener">Substack</a>
+    <a data-mail href="#">Email</a>
+  </nav>
+</footer>
+
+<script src="/lab/site.js"></script>
+<script src="/lab/story.js"></script>
+</body>
+</html>

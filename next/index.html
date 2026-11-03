@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studio Vincent</title>
+<meta name="description" content="Creative direction and product design, from Berlin and London.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicons/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>
+/* --- Opening: one line, one paragraph in his own words, one button ----- */
+.open { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: start; gap: 28px; padding: clamp(56px, 9vw, 120px) var(--gutter) clamp(56px, 8vw, 104px); }
+.open h1 { margin: 0; font: 400 clamp(22px, 3vw, 36px)/1.12 var(--display); letter-spacing: -.015em; max-width: 14em; }
+.open p { margin: 0; max-width: 34em; color: var(--grey); font-size: 16px; line-height: 1.6; }
+.open p b { color: var(--ink); font-weight: 400; }
+.open-copy { display: flex; flex-direction: column; gap: 26px; }
+@media (max-width: 799px) { .open { grid-template-columns: 1fr; } .open h1 { font-size: clamp(30px, 8.4vw, 40px); line-height: 1.08; } .open p { font-size: 15px; line-height: 1.55; } }
+
+.work, .lab, .writing, .hire { padding: 0 var(--gutter); margin: 0 0 clamp(72px, 10vw, 128px); }
+
+/* --- Hand and Eye: the live site's card, picture on the left ----------- */
+.writing { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px var(--gutter); align-items: start; }
+.subscribe { display: grid; grid-template-columns: 42% minmax(0, 1fr); background: #232220; color: #F8FAFC; border-radius: 14px; overflow: hidden; }
+.subscribe img { width: 100%; height: 100%; object-fit: cover; min-height: 260px; }
+.subscribe div { padding: clamp(24px, 3vw, 38px); display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+.subscribe h2 { margin: 0; font: 400 clamp(24px, 2.4vw, 32px)/1.1 var(--display); letter-spacing: -.01em; }
+.subscribe p { margin: 0; color: rgba(248, 250, 252, .66); font-size: 14px; }
+.subscribe .cta { align-self: flex-start; min-width: 0; margin-top: 6px; }
+.writing ul { list-style: none; margin: 0; padding: 0; }
+.writing li a { display: flex; justify-content: space-between; gap: 18px; padding: 12px 0; text-decoration: none; }
+.writing li a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+.writing li b { font-weight: 400; }
+.writing li time { color: var(--grey); white-space: nowrap; font-size: 13px; }
+@media (max-width: 899px) { .writing { grid-template-columns: 1fr; } }
+@media (max-width: 539px) { .subscribe { grid-template-columns: 1fr; } .subscribe img { min-height: 0; aspect-ratio: 16 / 10; } }
+
+/* --- Contact ---------------------------------------------------------- */
+.hire h2 { margin: 0 0 14px; font: 400 clamp(32px, 4.5vw, 44px)/1.1 var(--display); letter-spacing: -.015em; max-width: 15em; }
+.hire p { margin: 0 0 24px; color: var(--grey); max-width: 32em; }
+section { scroll-margin-top: 80px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="/next/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
+  <nav class="top-nav" aria-label="Primary">
+    <a href="#work">Work</a>
+    <a href="/lab/">Lab</a>
+    <a href="/next/about/">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="open">
+    <h1>Creative direction and product design, from Berlin and London.</h1>
+    <div class="open-copy">
+      <p>Most products read as competent and forgettable. The ones people remember were made by someone with <b>the eye to see past the obvious, and the hand to do something about it.</b> I help teams with the direction and conviction they need to build products that are astounding by design.</p>
+      <div class="cta-row"><a class="cta cta-primary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener"><span class="wave" aria-hidden="true">👋</span><span class="label">Book an intro call</span></a><a class="quiet" data-mail href="#">Email</a></div>
+    </div>
+    </section>
+
+  <section class="work" id="work" aria-labelledby="work-h">
+    <div class="head"><h2 id="work-h">Work</h2></div>
+    <ol id="work-list"></ol>
+  </section>
+
+  <section class="lab" aria-labelledby="lab-h" data-dark-from>
+    <div class="head"><h2 id="lab-h">From the lab</h2><a href="/lab/" id="lab-count">Everything in the lab</a></div>
+    <div class="wall" id="lab-wall"></div>
+  </section>
+
+  <section class="writing" id="writing" aria-labelledby="writing-h">
+    <div class="subscribe">
+      <img src="/newsletter-banner.jpg" alt="Engraving of a camera obscura projecting an image of the world outside." loading="lazy" decoding="async">
+      <div>
+        <h2 id="writing-h">Get Hand and Eye in your inbox.</h2>
+        <p>Interaction and motion experiments, old-school techniques and ways of seeing, and short practices for letting your hands find what your head can't.</p>
+        <a class="cta cta-primary" href="https://studiovincent.substack.com/subscribe" target="_blank" rel="noopener"><span class="label">Subscribe</span><span aria-hidden="true">🪶</span></a>
+      </div>
+    </div>
+    <ul>
+      <li><a href="https://studiovincent.substack.com/p/an-apps-atmosphere-isnt-designed" target="_blank" rel="noopener"><b>An app's atmosphere isn't designed. It accumulates, with and without intention.</b><time datetime="2026-06">Jun 2026</time></a></li>
+      <li><a href="https://studiovincent.substack.com/p/why-making-and-design-is-a-zeno-paradox" target="_blank" rel="noopener"><b>Why making and design is a Zeno paradox</b><time datetime="2026-06">Jun 2026</time></a></li>
+      <li><a href="https://studiovincent.substack.com/p/liquid-glass-six-hundred-years-of" target="_blank" rel="noopener"><b>Liquid Glass, six hundred years of secret glassmaking, and where it might go next</b><time datetime="2026-06">Jun 2026</time></a></li>
+      <li><a href="https://studiovincent.substack.com/p/the-aura-design-never-had" target="_blank" rel="noopener"><b>The aura design never had</b><time datetime="2026-05">May 2026</time></a></li>
+    </ul>
+
+  </section>
+
+  <section class="hire" id="contact" aria-labelledby="hire-h">
+    <h2 id="hire-h">Available for hire; contact me for availability.</h2>
+    <p>Open to founders and product teams who want help finding the version of the work that's worth committing to.</p>
+    <div class="cta-row"><a class="cta cta-primary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener"><span class="wave" aria-hidden="true">👋</span><span class="label">Book an intro call</span></a><a class="quiet" data-mail href="#">Email</a></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Coded by Fred, 2026. No cookies or analytics.</span>
+  <nav aria-label="Elsewhere">
+    <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://studiovincent.substack.com" target="_blank" rel="noopener">Substack</a>
+    <a href="/Frederick%20Vincent%2020262.pdf">CV</a>
+  </nav>
+</footer>
+
+<script src="/lab/entries.js"></script>
+<script src="/lab/vignettes.js"></script>
+<script src="/lab/work.js"></script>
+<script src="/lab/site.js"></script>
+<script>
+  window.renderWork(document.getElementById('work-list'));
+  window.renderLab(document.getElementById('lab-wall'), { limit: 6 });
+  document.getElementById('lab-count').textContent = 'Everything in the lab (' + window.LAB.length + ')';
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab · Studio Vincent</title>
+<meta name="description" content="Short stories written in interactions, art projects, experiments and storytelling, added as they happen.">
+<link rel="icon" href="/favicons/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>
+.intro { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: start; gap: 20px; padding: clamp(48px, 7vw, 96px) var(--gutter) 40px; }
+.intro h1 { margin: 0; font: 400 clamp(40px, 6vw, 72px)/1.05 var(--display); letter-spacing: -.025em; }
+.intro p { margin: 0; color: var(--grey); max-width: 44em; font-size: 16px; line-height: 1.6; }
+.empty { padding: 40px var(--gutter); color: var(--grey); }
+main > .filters, main > .wall { margin-left: var(--gutter); margin-right: var(--gutter); }
+main > .filters { max-width: calc(100% - 2 * var(--gutter)); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="/next/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
+  <nav class="top-nav" aria-label="Primary">
+    <a href="/next/#work">Work</a>
+    <a href="/lab/" aria-current="page">Lab</a>
+    <a href="/next/about/">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="intro">
+    <div>
+      <h1>Lab</h1>
+      
+    </div>
+    <p>This is where I put the smaller things I've been making, short stories written in interactions, art projects and experiments, and the bits of storytelling that sit around the brand work and grow out of it. I see myself as a design conversationalist, so most of it starts with understanding people, their context and the way they see things, and then pushing a visual or an experience forward until it really connects. These are the moments people remember and connect with, in the way they might when they encounter a great work of art.</p>
+  </section>
+
+  <div class="filters" role="group" aria-label="Show" id="filters"></div>
+  <div class="wall" id="lab-wall"></div>
+  <p class="empty" id="empty" hidden>Nothing of that kind yet. Choose Everything to see the whole lab.</p>
+</main>
+
+<footer class="foot">
+  <span>Coded by Fred, 2026. No cookies or analytics.</span>
+  <nav aria-label="Elsewhere">
+    <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://studiovincent.substack.com" target="_blank" rel="noopener">Substack</a>
+    <a data-mail href="#">Email</a>
+  </nav>
+</footer>
+
+<script src="/lab/entries.js"></script>
+<script src="/lab/vignettes.js"></script>
+<script src="/lab/site.js"></script>
+<script>
+(function () {
+  'use strict';
+  var wall = document.getElementById('lab-wall');
+  window.renderLab(wall);
+  /* Filters come from the kinds actually used, with counts; Everything is on
+     until someone narrows it. */
+  var kinds = {}; window.LAB.forEach(function (e) { kinds[e.kind] = (kinds[e.kind] || 0) + 1; });
+  var bar = document.getElementById('filters'), empty = document.getElementById('empty');
+  var names = ['Everything'].concat(Object.keys(kinds));
+  names.forEach(function (k, i) {
+    var b = document.createElement('button'); b.type = 'button';
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.innerHTML = k + '<span>' + (i === 0 ? window.LAB.length : kinds[k]) + '</span>';
+    b.addEventListener('click', function () {
+      bar.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      var shown = 0;
+      wall.querySelectorAll('.tile').forEach(function (t) { var on = k === 'Everything' || t.dataset.kind === k; t.hidden = !on; if (on) shown++; });
+      empty.hidden = shown > 0;
+    });
+    bar.appendChild(b);
+  });
+})();
+</script>
+</body>
+</html>

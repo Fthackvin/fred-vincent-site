@@ -38,6 +38,14 @@
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noai, noimageai"
+        },
+        {
+          "key": "tdm-reservation",
+          "value": "1"
         }
       ]
     },

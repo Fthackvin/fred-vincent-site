@@ -783,6 +783,18 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
   box-shadow: 0 20px 46px rgba(0, 0, 0, 0.38);
 }
 .t2-item--film .t2-film-still { border-radius: 20px; }
+/* Three interactions sit under the doughnut's construction and above the
+   screens it became, on a navy band of their own. */
+.kz-predict { background: #080F1F; }
+.kz-predict .t2-film { background: #080F1F; padding: clamp(8px, 2vh, 28px) clamp(14px, 3vw, 48px) clamp(40px, 7vh, 96px); border-radius: 0; }
+.t2-item--film.kz-predict video { aspect-ratio: 576 / 1180; border-radius: 13.5% / 6.6%; box-shadow: 0 20px 46px rgba(0, 0, 0, .38); }
+/* On a phone the three become a row you swipe through, each one big enough
+   to read, rather than three screens too small to see. */
+@media (max-width: 719px) {
+  .kz-predict .t2-film { justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-inline: 16px; }
+  .kz-predict .t2-film::-webkit-scrollbar { display: none; }
+  .t2-item--film.kz-predict video { flex: none; width: min(62vw, 260px); max-width: none; height: auto; scroll-snap-align: center; }
+}
 /* The doughnut strip is two crops of one original, so it can be one row on a
    wide page and two on a phone without shipping a second copy of the artwork.
 
@@ -2571,6 +2583,31 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
                srcset="kaizen-doughnut-construction-480.webp 480w, kaizen-doughnut-construction-768.webp 768w, kaizen-doughnut-construction.webp 1010w"
                sizes="(min-width: 1300px) 1120px, 86vw"
                width="1010" height="196" loading="lazy" decoding="async">
+        </div>
+      </figure>
+
+      <!-- Three interactions, playing: scrubbing back through a training block,
+           setting a run's effort, and the weekly plan arriving and flicking
+           from week to week. Screen
+           recording, trimmed and played a little faster so the line moves
+           smoothly. Plays while on screen and loops; still on reduced motion. -->
+      <figure class="t2-item t2-reveal t2-item--film kz-predict">
+        <div class="t2-film">
+          <video data-kz-film muted loop playsinline preload="none" poster="kaizen-fitness-scrub.webp" width="576" height="1192"
+                 aria-label="Scrubbing back through a training block: the fitness line moves week by week and the marathon prediction, distance, pace and elevation update with it.">
+            <source src="kaizen-fitness-scrub.webm" type="video/webm">
+            <source src="kaizen-fitness-scrub.mp4" type="video/mp4">
+          </video>
+          <video data-kz-film muted loop playsinline preload="none" poster="kaizen-rpe-7.webp" width="576" height="1174"
+                 aria-label="Editing a suggested run's intensity: the rate of perceived effort slides from 7 down to 4, and the target pace eases from 5:06 to 5:50 per kilometre.">
+            <source src="kaizen-rpe.webm" type="video/webm">
+            <source src="kaizen-rpe.mp4" type="video/mp4">
+          </video>
+          <video data-kz-film muted loop playsinline preload="none" poster="kaizen-weeks-target.webp" width="576" height="1174"
+                 aria-label="The weekly plan arriving: suggested runs generate, this week's target of twelve kilometres appears, and the timeline flicks from week to week.">
+            <source src="kaizen-weeks.webm" type="video/webm">
+            <source src="kaizen-weeks.mp4" type="video/mp4">
+          </video>
         </div>
       </figure>
 
@@ -4470,5 +4507,18 @@ body::after {
 })();
 </script>
 
+<script>
+/* The predictions and effort films play while on screen and pause off it. */
+(function () {
+  var vids = document.querySelectorAll('[data-kz-film]');
+  if (!vids.length || !('IntersectionObserver' in window)) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) {
+    var v = e.target;
+    if (e.isIntersecting) { v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause();
+  }); }, { threshold: .35 });
+  vids.forEach(function (v) { io.observe(v); });
+})();
+</script>
 </body>
 </html>

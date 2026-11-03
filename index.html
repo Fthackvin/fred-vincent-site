@@ -454,11 +454,9 @@ body {
   background-repeat: repeat;
   background-size: 22px 22px;
 }
+/* No dot grid on phones. */
 @media (max-width: 640px) {
-  body {
-    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='0' cy='0' r='1.25' fill='%231A1815' fill-opacity='0.38'/%3E%3C/svg%3E");
-    background-size: 26px 26px;
-  }
+  body { background-image: none; }
 }
 @media print {
   body { background-image: none !important; }
@@ -2728,7 +2726,7 @@ section#contact.block { padding-bottom: var(--s4); }
 }
 .writing-list li {
   position: relative;
-  padding-left: 1.1em;
+  padding-left: 0;
   font-family: var(--text);
   font-weight: 300;
   font-size: clamp(13px, 0.7vw + 0.55rem, 15px);
@@ -2736,7 +2734,7 @@ section#contact.block { padding-bottom: var(--s4); }
   color: var(--ink-700);
 }
 .writing-list li::before {
-  content: "·";
+  content: none;
   position: absolute;
   left: 0;
   top: -0.1em;
@@ -3622,8 +3620,9 @@ main > hr,
     </div>
   </section>
 
-  <hr class="hairline" id="sound-familiar-divider" aria-hidden="true">
-  <section id="sound-familiar" class="block dark-zone">
+  <!-- Sound familiar? is on ice until the ai offer is reworked. Remove hidden and style="display:none" from the two lines below to bring it back. -->
+  <hr class="hairline" id="sound-familiar-divider" aria-hidden="true" hidden style="display:none">
+  <section id="sound-familiar" class="block dark-zone" hidden style="display:none">
     <div class="wrap">
       <div class="how-wrap fade-up">
         <h2 class="how-heading">Sound familiar?</h2>
@@ -4530,7 +4529,8 @@ main > hr,
    self-corrects after layout shifts, orientation changes, or the browser
    restoring a mid-page scroll position on back/forward. */
 (function () {
-  var boundary = document.getElementById('sound-familiar');
+  /* The page turns dark from Sound familiar?, or from the next section while that one is on ice. */
+  var boundary = document.querySelector('#sound-familiar:not([hidden]), #work');
   if (!boundary) return;
 
   var ticking = false;

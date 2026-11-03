@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atlas, a plate · Studio Vincent</title>
+<meta name="description" content="A work in progress: a plate for reading images closely and linking them, after Aby Warburg's Mnemosyne Atlas.">
+<link rel="icon" href="/favicons/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/lab/lab.css">
+<!-- Atlas: a short work-in-progress page. Pictures are public domain, from Wikimedia Commons. -->
+<style>
+.story-wrap { display: grid; grid-template-columns: 200px minmax(0, 620px) 1fr; gap: 0 clamp(24px, 4vw, 64px); padding: clamp(40px, 6vw, 80px) var(--gutter) 0; }
+.toc { position: sticky; top: 92px; align-self: start; }
+.story h1 { margin: 0 0 8px; font: 400 clamp(32px, 4.5vw, 44px)/1.1 var(--display); letter-spacing: -.015em; }
+.story > time { color: var(--grey); font-size: 13px; display: block; margin-bottom: 28px; }
+.story p { margin: 0 0 18px; font-size: 15.5px; line-height: 1.65; position: relative; }
+.story h2 { margin: 56px 0 14px; font: 400 clamp(22px, 2.6vw, 28px)/1.2 var(--display); scroll-margin-top: 90px; }
+.story figure { margin: 26px 0 30px; }
+.story figcaption { color: var(--grey); font-size: 13px; text-align: center; margin-top: 10px; }
+.frame { background: #F4F4F2; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.frame-bar { display: flex; align-items: center; gap: 6px; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
+.frame-bar i { width: 9px; height: 9px; border-radius: 50%; background: #D9D9D5; }
+.frame-bar span { margin-left: 10px; font-size: 11.5px; color: var(--grey); background: #fff; border-radius: 5px; padding: 3px 10px; }
+.frame video, .frame img { width: 100%; height: auto; }
+.plain img { border-radius: 8px; }
+.mark { background: #000; border-radius: 10px; padding: 16% 12%; }
+.end { margin-top: 56px; color: var(--grey); font-size: 14px; }
+.end a { color: var(--ink); }
+/* A picture set out to the side of the text, in the empty right-hand column.
+   Put it straight before the paragraph it belongs with. On narrower screens
+   it drops back into the flow at a smaller size. */
+.story { position: relative; }
+.story figure.aside { position: absolute; left: calc(100% + clamp(24px, 4vw, 64px)); width: clamp(180px, 18vw, 260px); margin: 4px 0 0; }
+.story figure.aside img { width: 100%; height: auto; border-radius: 8px; }
+.story figure.aside figcaption { text-align: left; }
+@media (max-width: 1080px) {
+  .story-wrap { grid-template-columns: minmax(0, 620px); justify-content: center; }
+  .toc { display: none; }
+  .story figure.aside { position: static; width: 60%; margin: 22px 0 26px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="/next/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
+  <nav class="top-nav" aria-label="Primary">
+    <a href="/next/#work">Work</a>
+    <a href="/lab/" aria-current="page">Lab</a>
+    <a href="/next/about/">About</a>
+  </nav>
+</header>
+
+<div class="story-wrap">
+  <nav class="toc" aria-label="Contents">
+    <a class="back" href="/lab/">Lab</a>
+    <a href="#idea">The idea</a>
+    <a href="#plate">A plate, not a canvas</a>
+    <a href="#where">Where it is now</a>
+  </nav>
+
+  <article class="story">
+    <h1>Atlas, a plate</h1>
+    <time datetime="2026-10">Work in progress</time>
+
+    <p>A tool for reading images deeply and linking them, modelled on Aby Warburg's Mnemosyne Atlas, that I can share with clients and keep here on the site.</p>
+    <figure class="plain">
+      <img src="/lab/atlas/melencolia-1200.webp" alt="Albrecht Dürer, Melencolia I, an engraving of a winged figure sitting among tools, a polyhedron and a magic square." loading="lazy" width="1200" height="1516">
+      <figcaption>Albrecht Dürer, Melencolia I, 1514.</figcaption>
+    </figure>
+
+    <h2 id="idea">The idea</h2>
+    <figure class="aside">
+      <img src="/lab/atlas/nymph-600.webp" alt="Detail of Ghirlandaio's fresco of the Birth of Saint John the Baptist, a young woman striding in with a basket of fruit on her head, her dress blowing." loading="lazy">
+      <figcaption>Ghirlandaio, Birth of Saint John the Baptist, 1486 to 1490. Warburg's nymph.</figcaption>
+    </figure>
+    <p>Warburg spent the last years of his life, up to 1929, pinning photographs to black cloth panels, a Renaissance fresco next to a Roman coin next to a newspaper advert, so that you could see a gesture or a figure travel across centuries. He never finished it, and the panels survive only as photographs, but the way of looking has stayed with me.</p>
+    <p>A lot of brand and product work starts the same way, gathering references and putting them side by side until something connects, and most of the tools for it are either a mood board or a graph. I want something in between, where the reason two images belong together is written down and kept.</p>
+
+    <h2 id="plate">A plate, not a canvas</h2>
+    <p>It's a plate rather than a node or canvas tool. The weight of a thread shows how strong the link between two images is, and making a connection means adding an image and saying why it resonates with the one beside it.</p>
+    <figure class="plain">
+      <img src="/lab/atlas/orpheus-1200.webp" alt="Albrecht Dürer's drawing of the Death of Orpheus, two women raising clubs over a fallen man beneath a tree." loading="lazy">
+      <figcaption>Albrecht Dürer, The Death of Orpheus, 1494, one of the first images Warburg wrote about.</figcaption>
+    </figure>
+    <p>The whole library sits in rows along the bottom, a bit like Guess Who, so you can pull one out at random and the library nudges a few relevant or similar ones towards you, including images from open collections and Are.na.</p>
+
+    <h2 id="where">Where it is now</h2>
+    <figure class="aside">
+      <img src="/lab/atlas/venus-600.webp" alt="Botticelli's Birth of Venus, the goddess standing on a shell, blown ashore by the winds." loading="lazy">
+      <figcaption>Botticelli, The Birth of Venus, around 1485, the subject of Warburg's first study.</figcaption>
+    </figure>
+    <p>The design of the plate is underway, and the bigger piece of work is behind it, the connections to image collections and how the reading of an image is done carefully and with cultural sensitivity. I'll add to this page as it comes together.</p>
+
+    <p class="end">See Warburg's own panels in the Warburg Institute's <a href="https://warburg.sas.ac.uk/aby-warburg-bilderatlas-mnemosyne-virtual-exhibition" target="_blank" rel="noopener">virtual exhibition</a>.</p>
+  </article>
+</div>
+
+<section class="outro" aria-labelledby="hire-h">
+  <h2 id="hire-h">Available for hire; contact me for availability.</h2>
+  <p class="sub">Open to founders and product teams who want help finding the version of the work that's worth committing to.</p>
+  <a class="outro-cta" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer"><span>Book an intro call</span><svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg></a>
+
+  <a class="tease" href="/lab/stories/drawing-the-linro-mark/">
+    <span class="tease-thumb"><img src="/work/general/linro-mark-still-white.svg" alt="" style="height:auto;width:70%;border-radius:0"></span>
+    <span>
+      <span class="tease-label">Next in the lab</span>
+      <span class="tease-title">Drawing the Linro wordmark</span>
+      <span class="tease-desc">How a security product's own idea, lineage, became its wordmark.</span>
+    </span>
+    <svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+  </a>
+</section>
+
+<footer class="outro-foot">
+  <span>© Coded by Fred 2026 | No cookies or analytics are used on this site</span>
+  <nav aria-label="Elsewhere">
+    <a href="/lab/">Lab</a>
+    <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://studiovincent.substack.com" target="_blank" rel="noopener">Substack</a>
+    <a data-mail href="#">Email</a>
+  </nav>
+</footer>
+
+<script src="/lab/site.js"></script>
+<script src="/lab/story.js"></script>
+</body>
+</html>
