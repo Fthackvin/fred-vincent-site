@@ -293,15 +293,6 @@ a.tile-foot:hover { color: #1A1815; }
 .tile-body--phone > video { position: absolute; top: 8%; left: 12%; width: 76%; height: auto; max-width: none; }
 .email-icon { width: 17px; height: 17px; display: inline-block; vertical-align: -.15em; margin-right: 7px; }
 
-/* Hand-drawn marks accompany the writing, with no timeline rule. */
-section.writing ul { list-style: none; padding: 0; margin: 0; border: 0; }
-section.writing li { padding: 0 0 26px; }
-section.writing li:last-child { padding-bottom: 0; }
-section.writing li::before { content: none; }
-section.writing ul li a { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 18px; align-items: start; padding: 0; font-size: clamp(17px, 1.6vw, 21px); line-height: 1.45; text-wrap: pretty; }
-section.writing li .rw-scribble { width: 30px; height: 34px; object-fit: contain; margin-top: 2px; }
-html.dark-active section.writing li .rw-scribble { filter: invert(1); }
-section.writing ul li b { font-weight: 400; }
 .footer-credit { display: inline-flex; flex-wrap: wrap; gap: 8px 24px; }
 @media (max-width: 1080px) {
   .foot { flex-direction: column; align-items: center; text-align: center; gap: 24px; }
