@@ -1,0 +1,35 @@
+.about-lab { padding: 0 0 96px; --dark-ease: 1000ms ease; }
+.about-lab-head { display:flex; justify-content:space-between; align-items:baseline; gap:24px; margin-bottom:28px; }
+.about-lab-head .aw-head { margin:0; }
+.about-lab-head > a { color:var(--ink-700); }
+.about-lab .wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); grid-auto-rows: 2px; column-gap: 22px; align-items: start; }.about-lab /* Brickwork: each card spans as many 2px rows as it is tall (set in
+   entries.js), .about-lab so cards pack up under the ones above while the order still
+   reads left to right. */
+.tile {
+  margin: 0; position: relative;
+  background: #FFFFFF; border-radius: 14px; border: 1px solid rgba(20, 18, 14, .06);
+  display: flex; flex-direction: column; overflow: hidden;
+
+  box-shadow: 0 1px 1px rgba(20, 18, 14, .04), 0 8px 12px rgba(20, 18, 14, .04);
+  transition: box-shadow 220ms var(--ease), border-color 220ms var(--ease), background-color var(--dark-ease);
+}.about-lab .tile:hover { box-shadow: 0 4px 10px rgba(20, 18, 14, .08), 0 22px 44px rgba(20, 18, 14, .1); }.about-lab .tile-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 15px 0; color: rgba(26, 24, 21, .82); }.about-lab /* On the dark half, .about-lab the sheets turn to a very faint veil. */
+html.dark-active .tile { background: rgba(255, 255, 255, .045); border-color: rgba(255, 255, 255, .07); box-shadow: none; }.about-lab html.dark-active .tile:hover { box-shadow: none; }.about-lab html.dark-active .tile-top { color: rgba(248, 250, 252, .86); }.about-lab html.dark-active .tile-top time { color: rgba(248, 250, 252, .56); }.about-lab html.dark-active .tile-foot { color: rgba(248, 250, 252, .55); }.about-lab html.dark-active a.tile-foot:hover { color: #F8FAFC; }.about-lab html.dark-active .tile[data-draft] { background: repeating-linear-gradient(135deg, rgba(255,255,255,.045) 0 10px, rgba(255,255,255,.02) 10px 20px); }.about-lab html.dark-active .v-dots { background: #FDFDFB; border-radius: 8px; }.about-lab .tile-top, .about-lab .tile-top time, .about-lab .tile-foot { transition: color var(--dark-ease); }.about-lab .tile-top span { font: 500 18px/1.3 var(--garamond); font-synthesis: none; }.about-lab .tile-top time { font-size: 12px; }.about-lab .tile-top time { color: rgba(26, 24, 21, .56); white-space: nowrap; font-size: 12px; }.about-lab .tile-body { padding: 13px 15px; flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }.about-lab .tile-body > [data-vignette] { width: 100%; }.about-lab .tile-body > img, .about-lab .tile-body > video { width: 100%; height: auto; border-radius: 8px; }.about-lab .tile-body--phone { margin: 13px 15px; padding: 26px 0; background: #F4F4F2; border-radius: 8px; }.about-lab .tile-body--phone > video { width: auto; height: 380px; max-width: 100%; border-radius: 13.5% / 6.6%; box-shadow: 0 1px 2px rgba(20, 30, 50, .08), 0 12px 28px rgba(20, 30, 50, .12); }.about-lab html.dark-active .tile-body--phone { background: rgba(255, 255, 255, .05); }.about-lab .tile-foot {
+  display: block; text-align: left; padding: 4px 15px 14px; font: 400 15px/1.55 var(--sans);
+  color: rgba(26, 24, 21, .62); text-decoration: none;
+}.about-lab a.tile-foot:hover { color: #1A1815; }.about-lab .tile[data-draft] { background: repeating-linear-gradient(135deg, var(--paper) 0 10px, #F4F4F0 10px 20px); }.about-lab .tile[hidden] { display: none; }
+
+.about-lab .tile-link { display:flex; flex-direction:column; color:inherit; text-decoration:none; border-radius:inherit; }
+.about-lab .tile-top { padding:20px 22px 0 30px; }
+.about-lab .tile-top time { margin-left:auto; }
+.about-lab .tile-body--phone { display:flex; padding:28px 0; }
+.about-lab .tile-body--phone > video { width:min(300px,76%); height:auto; }
+.about-lab .tile-body > video { object-fit:contain; }
+.about-lab .portrait-reveal { position:relative; width:100%; aspect-ratio:1748/1240; overflow:hidden; border-radius:8px; }
+.about-lab .portrait-reveal img { display:block; width:100%; height:100%; object-fit:contain; filter:none!important; }
+.about-lab .portrait-reveal-after { position:absolute; inset:0; opacity:var(--portrait-progress,0); }
+.about-lab .tile-link:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+@media(prefers-reduced-motion:reduce) { .about-lab .tile { transition:none; } }
+
+.about-lab .wall { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.about-lab .tile-top span { font:400 20px/1.3 var(--display); }
+@media(max-width:719px) { .about-lab .wall { grid-template-columns:minmax(0,1fr); } }

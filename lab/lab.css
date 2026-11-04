@@ -316,3 +316,11 @@ section.writing .subscribe > img { width: 100%; height: auto; min-height: 0; asp
 .tile[data-project="gazza"] .tile-body > video { aspect-ratio: 8 / 5; object-fit: cover; filter: none; }
 
 .tile[data-project="cohort"] .tile-body > img { aspect-ratio: 6 / 5; object-fit: contain; background: #fff; }
+
+.portrait-reveal{position:relative;aspect-ratio:1748/1240;overflow:hidden;border-radius:8px}
+.portrait-reveal img{display:block;width:100%;height:100%;object-fit:contain;filter:none!important}
+.portrait-reveal .portrait-reveal-after{position:absolute;inset:0;opacity:var(--portrait-progress,0)}
+@media(prefers-reduced-motion:reduce){.portrait-reveal .portrait-reveal-after{transition:none}}
+
+/* The restored Gazza interaction occupies the homepage’s lower-left slot. */
+#lab #lab-wall .tile[data-project="gazza"] { grid-column: 1; }

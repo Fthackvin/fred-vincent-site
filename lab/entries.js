@@ -104,6 +104,14 @@ window.LAB = [
     action: { label: 'View the exhibition', href: '/lab/cohort/' },
   },
   {
+    title: 'That Gazza Goal',
+    date: '2016-06',
+    kind: 'Project',
+    href: '/lab/gazza-time/',
+    media: { image: '/lab/gazza-time/img/gazza_one.webp', reveal: '/lab/gazza-time/img/gazza_three.webp', alt: 'The original Gazza portrait fades to the second illustration by Dan Evans.' },
+    action: { label: 'Read the story', href: '/lab/gazza-time/' },
+  },
+  {
     title: 'Voice, as a filter',
     date: '2026-10',
     kind: 'Interface',
@@ -123,7 +131,7 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
    Anything not listed follows, newest first. */
 window.LAB_ORDER = [
   'Effort, not pace', 'Voice, as a filter', 'Lineage hover',
-  'The clarity to change', 'cohort.art', 'Drawing the Linro wordmark', 'A smooth line of progress',
+  'The clarity to change', 'cohort.art', 'That Gazza Goal', 'Drawing the Linro wordmark', 'A smooth line of progress',
   'Warburg\'s Atlas', 'Terminal, with the brand in it',
   'Week to week'
 ];
@@ -167,7 +175,10 @@ window.LAB.sort(function (a, b) {
     else if (m.image) {
       var i = el('img', { src: m.image, alt: m.alt || '', loading: 'lazy', decoding: 'async' });
       if (m.pad) { i.style.padding = '18% 10%'; i.style.background = m.background || '#fff'; }
-      body.appendChild(i);
+      if (m.reveal) {
+        body.classList.add('tile-body--reveal');
+        body.appendChild(el('div', { class: 'portrait-reveal' }, [i, el('img', { src: m.reveal, alt: '', loading: 'lazy', decoding: 'async', class: 'portrait-reveal-after' })]));
+      } else body.appendChild(i);
     }
     else if (m.empty) body.appendChild(el('div', { style: { aspectRatio: '4 / 3', width: '100%' } }));
 
@@ -186,6 +197,7 @@ window.LAB.sort(function (a, b) {
       ? [el('a', { class: 'tile-link', href: destination, 'aria-label': e.title + ': ' + e.action.label }, content)]
       : content);
     if (e.href === '/lab/cohort/') t.setAttribute('data-project', 'cohort');
+    if (e.href === '/lab/gazza-time/') t.setAttribute('data-project', 'gazza');
     if (e.draft) t.setAttribute('data-draft', '');
     return t;
   }
@@ -207,6 +219,43 @@ window.LAB.sort(function (a, b) {
     vids.forEach(function (v) { near.observe(v); seen.observe(v); });
   }
 
+  /* The portrait follows the reader's scroll, without hover overriding its progress. */
+  function wirePortraits(root) {
+    var portraits = root.querySelectorAll('.portrait-reveal');
+    if (!portraits.length) return;
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    var queued = false;
+    function draw() {
+      queued = false;
+      if (document.hidden) return;
+      portraits.forEach(function (portrait) {
+        var bounds = portrait.getBoundingClientRect();
+        if (bounds.bottom < 0 || bounds.top > innerHeight) return;
+        // Hold the first portrait on entry, then finish the reveal while the card
+        // is still comfortably visible. Scroll is the only driver on every device.
+        var centre = bounds.top + bounds.height / 2;
+        var travel = Math.max(0, Math.min(1, (innerHeight * .8 - centre) / (innerHeight * .5)));
+        var progress = reduce.matches ? 0 : travel * travel * (3 - 2 * travel);
+        portrait.style.setProperty('--portrait-progress', progress.toFixed(4));
+      });
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(draw); } }
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('resize', schedule);
+    document.addEventListener('visibilitychange', schedule);
+    reduce.addEventListener('change', schedule);
+    // Media loading changes the masonry positions even without a scroll.
+    root.addEventListener('load', schedule, true);
+    root.addEventListener('loadedmetadata', schedule, true);
+    if ('ResizeObserver' in window) {
+      var portraitResize = new ResizeObserver(schedule);
+      portraitResize.observe(root);
+      portraits.forEach(function (portrait) { portraitResize.observe(portrait); });
+    }
+    if (document.fonts) document.fonts.ready.then(schedule);
+    schedule();
+  }
+
   /* Brickwork: a card spans as many of the wall's 2px rows as it is tall,
      plus the gap, so the wall packs like a masonry wall but keeps its order.
      Re-measured whenever a card changes size (media loading, resizing). */
@@ -224,9 +273,11 @@ window.LAB.sort(function (a, b) {
   window.renderLab = function (mount, opts) {
     opts = opts || {};
     var list = window.LAB.slice();
+    if (opts.titles) list = list.filter(function (entry) { return opts.titles.indexOf(entry.title) !== -1; });
     if (opts.limit) list = list.slice(0, opts.limit);
     list.forEach(function (e) { mount.appendChild(tile(e)); });
     wireFilms(mount);
+    wirePortraits(mount);
     window.layoutWall(mount);
     if (window.mountVignettes) window.mountVignettes(mount);
     return list;

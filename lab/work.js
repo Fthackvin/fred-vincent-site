@@ -34,8 +34,9 @@ window.WORK = [
 
 (function () {
   'use strict';
-  window.renderWork = function (ol) {
-    window.WORK.forEach(function (w) {
+  window.renderWork = function (ol, opts) {
+    opts = opts || {};
+    (opts.limit ? window.WORK.slice(0, opts.limit) : window.WORK).forEach(function (w) {
       var li = document.createElement('li'); li.className = 'row';
       li.innerHTML = '<a href="' + w.href + '"><img class="thumb' + (w.mark ? ' thumb--mark' : '') + '" src="' + (w.thumb || w.pics[0]) + '" alt="" loading="lazy" decoding="async">' +
         '<b></b><span></span><em></em></a>';

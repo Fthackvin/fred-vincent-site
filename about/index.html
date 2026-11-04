@@ -1405,6 +1405,7 @@ html.dark-active .writing li time { color: rgba(248,250,252,.6); }
 body { background-image: none !important; }
 </style>
 <link rel="stylesheet" href="/lab/writing.css">
+<link rel="stylesheet" href="/about/lab.css">
 </head>
 <body>
 
@@ -1503,6 +1504,13 @@ body { background-image: none !important; }
     <div class="wrap">
       <h2 class="aw-head" id="worklist-h">Work</h2>
       <ol id="work-list"></ol>
+    </div>
+  </section>
+
+  <section class="about-lab" aria-labelledby="about-lab-h">
+    <div class="wrap">
+      <div class="about-lab-head"><h2 class="aw-head" id="about-lab-h">From the lab</h2><a href="/lab/">View all</a></div>
+      <div class="wall" id="about-lab-wall"></div>
     </div>
   </section>
 
@@ -2050,6 +2058,10 @@ a[download], a[download] * { -webkit-touch-callout: default; -webkit-user-drag: 
 })();
 </script>
 <script src="/lab/work.js"></script>
-<script>window.renderWork(document.getElementById('work-list'));</script>
+<script src="/lab/entries.js"></script>
+<script>
+window.renderWork(document.getElementById('work-list'), { limit: 4 });
+window.renderLab(document.getElementById('about-lab-wall'), { titles: ['Effort, not pace', 'Voice, as a filter', 'cohort.art', 'That Gazza Goal'] });
+</script>
 </body>
 </html>
