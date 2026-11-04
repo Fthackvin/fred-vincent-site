@@ -100,7 +100,7 @@ window.LAB = [
     href: '/lab/cohort/',
     date: '2021-11',
     kind: 'Project',
-    media: { image: '/lab/cohort/gallery-tour.webp', alt: 'Paintings on the reconstructed cohort.art gallery wall.' },
+    media: { video: '/lab/cohort/gallery-preview-smooth.mp4', poster: '/lab/cohort/gallery-preview-smooth.webp' },
     action: { label: 'View the exhibition', href: '/lab/cohort/' },
   },
   {
