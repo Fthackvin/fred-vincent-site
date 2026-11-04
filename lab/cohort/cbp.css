@@ -45,7 +45,3 @@
  .detail-tabs { gap:10px 19px; padding:8px 20px; }
  .detail-tabs button { font-size:13px; }
 }
-
-.wall-help{margin:0;padding:0 clamp(24px,5vw,80px) 12px;background:#fff;font:12px/1.5 Arial,sans-serif;color:#666}.wall-help a,.entry-meta a{color:inherit;text-decoration:underline}.prize-status{font-size:13px;color:#666}
-
-.wall-directory{background:#fff;padding:0 clamp(24px,5vw,80px);font:12px/1.5 Arial,sans-serif}.wall-directory summary{cursor:pointer;min-height:28px}.wall-directory ul{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px 20px}.wall-directory button{background:none;border:0;text-decoration:underline;min-height:44px;text-align:left;cursor:pointer}.wall-directory button:focus-visible{outline:2px solid #333}.wall-directory[open]+.wall-help{padding-top:8px}
