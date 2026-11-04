@@ -96,11 +96,11 @@ window.LAB = [
     action: { label: 'Open the case study', href: '/work/monet/' },
   },
   {
-    title: 'Cohort',
+    title: 'cohort.art',
     href: '/lab/cohort/',
     date: '2026-11',
     kind: 'Project',
-    media: { image: '/lab/cohort/img/cbp-2021/43.jpeg', alt: 'Jan Valik, Over Stranger Days (Blue Cloak), from the 2021 Contemporary British Painting Prize. © the artist.' },
+    media: { video: '/lab/cohort/gallery-pan.mp4', poster: '/lab/cohort/img/cbp-2021/43.jpeg' },
     action: { label: 'View the exhibition', href: '/lab/cohort/' },
   },
   {
@@ -123,7 +123,7 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
    Anything not listed follows, newest first. */
 window.LAB_ORDER = [
   'Effort, not pace', 'Voice, as a filter',
-  'The clarity to change', 'Cohort', 'Drawing the Linro wordmark', 'A smooth line of progress',
+  'The clarity to change', 'cohort.art', 'Drawing the Linro wordmark', 'A smooth line of progress',
   'Lineage hover', 'Warburg\'s Atlas', 'Terminal, with the brand in it',
   'Week to week'
 ];
@@ -185,6 +185,7 @@ window.LAB.sort(function (a, b) {
     var t = el('article', { class: 'tile', 'data-kind': e.kind }, linked
       ? [el('a', { class: 'tile-link', href: destination, 'aria-label': e.title + ': ' + e.action.label }, content)]
       : content);
+    if (e.href === '/lab/cohort/') t.setAttribute('data-project', 'cohort');
     if (e.draft) t.setAttribute('data-draft', '');
     return t;
   }

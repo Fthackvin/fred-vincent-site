@@ -308,3 +308,7 @@ a.tile-foot:hover { color: #1A1815; }
 /* The engraving is a wide original: keep its full composition. */
 section.writing .subscribe { grid-template-columns: 1fr; }
 section.writing .subscribe > img { width: 100%; height: auto; min-height: 0; aspect-ratio: 5 / 1; object-fit: cover; }
+
+/* Paintings retain their original colours through the page theme transition. */
+.tile[data-project="cohort"] .tile-body, .tile[data-project="cohort"] img, .tile[data-project="cohort"] video { filter: none !important; mix-blend-mode: normal; }
+.tile[data-project="cohort"] .tile-body > video { aspect-ratio: 8 / 5; object-fit: cover; }

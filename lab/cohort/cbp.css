@@ -45,3 +45,5 @@
  .detail-tabs { gap:10px 19px; padding:8px 20px; }
  .detail-tabs button { font-size:13px; }
 }
+
+.entry-intro { max-width: 88ch; margin: 20px 0 0; font: 400 14px/1.6 "Avenir Next", Arial, sans-serif; color: #62635e; }
