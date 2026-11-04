@@ -97,12 +97,11 @@ window.LAB = [
   },
   {
     title: 'Cohort',
-    onIce: true,
+    href: '/lab/cohort/',
     date: '2026-11',
     kind: 'Project',
-    media: { empty: true },
-    action: { label: 'Slot for the Cohort work' },
-    draft: true,
+    media: { image: '/lab/cohort/img/cbp-2021/43.jpeg', alt: 'Jan Valik, Over Stranger Days (Blue Cloak), from the 2021 Contemporary British Painting Prize. © the artist.' },
+    action: { label: 'View the exhibition', href: '/lab/cohort/' },
   },
   {
     title: 'Voice, as a filter',
@@ -123,8 +122,8 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
    above another, at desktop width.
    Anything not listed follows, newest first. */
 window.LAB_ORDER = [
-  'Effort, not pace', 'Cohort', 'Voice, as a filter',
-  'The clarity to change', 'Drawing the Linro wordmark', 'A smooth line of progress',
+  'Effort, not pace', 'Voice, as a filter',
+  'The clarity to change', 'Cohort', 'Drawing the Linro wordmark', 'A smooth line of progress',
   'Lineage hover', 'Warburg\'s Atlas', 'Terminal, with the brand in it',
   'Week to week'
 ];

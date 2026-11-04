@@ -1,0 +1,51 @@
+/* Compact exhibition heading keeps the wall in the foreground. */
+#exhibition-header { display:block !important; position:relative; width:100%; height:auto; top:0; background:#fff; color:#262723; }
+#exhibition-header > .entry-inner { max-width:1680px; padding:22px clamp(24px,5vw,80px) 26px; margin:0 auto; }
+.entry-meta { display:block; margin:0 0 18px; font:400 11px/1.4 "Avenir Next",Arial,sans-serif; color:#7a7b74; }
+.cohort-wordmark { color:#262723; font:400 26px/1 Georgia,serif; letter-spacing:-.06em; }
+.entry-grid { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:30px; align-items:end; }
+#exhibition-header h1 { font:400 clamp(25px,2.8vw,42px)/1.08 Georgia,serif; letter-spacing:-.03em; margin:0; max-width:900px; }
+#exhibition-header h1 span { white-space:nowrap; }
+.entry-links { display:flex; align-items:center; gap:12px; font:400 13px/1.4 "Avenir Next",Arial,sans-serif; }
+.entry-links a, .entry-links button { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:10px 19px; border:1px solid #d4d3cd; border-radius:5px; background:transparent; color:#32342e !important; font:inherit; text-decoration:none; white-space:nowrap; cursor:pointer; }
+.entry-links .show-button { background:#eeede7; border-color:#eeede7; }
+.entry-links a:hover, .entry-links button:hover { background:#e7e6df; text-decoration:none; }
+.entry-links a:focus-visible, .entry-links button:focus-visible, #app-canvas:focus-visible, .detail-tabs button:focus-visible { outline:2px solid #64665f; outline-offset:4px; }
+#app-canvas { height:auto; scroll-margin-top:0; }
+.modal .modal-header { display:flex !important; align-items:center; min-height:60px; padding:12px 24px; background:#fff; border-bottom:0; position:relative; }
+.modal .modal-header .modal-title { font:400 21px/1.2 Georgia,serif; }
+.modal .modal-header .close { position:static; width:44px; height:44px; min-width:44px; margin:-4px -10px -4px auto; padding:8px; background:none; text-indent:0; font:400 29px/1 Arial,sans-serif; color:#444; opacity:1; }
+.modal-content { border-radius:7px; overflow:hidden; }
+.exhibition-text-modal .modal-content { background:#fff; }
+.exhibition-copy { padding:12px 32px 36px; font-size:16px; line-height:1.7; }
+.exhibition-copy p { max-width:65ch; margin:0 0 22px; }
+.exhibition-copy h2 { font:400 26px/1.2 Georgia,serif; margin:30px 0 18px; }
+.exhibition-copy a { color:inherit !important; text-decoration:underline; text-underline-offset:3px; }
+.reconstruction-note { margin-top:30px; font-size:13px; color:#666; }
+.reconstruction-note summary { min-height:44px; cursor:pointer; }
+.detail-tabs { display:flex; flex-wrap:wrap; gap:10px 23px; align-items:center; padding:10px 24px; margin:0 0 18px; background:#fff; border-bottom:1px solid #e6e4dc; }
+.detail-tabs button { display:block; background:none; border:0; border-radius:0; min-height:44px; padding:9px 0; color:#74766e; cursor:pointer; font:400 14px/1.4 "Avenir Next",Arial,sans-serif; border-bottom:1px solid transparent; }
+.detail-tabs button[aria-selected="true"] { color:#262723; border-bottom-color:#262723; }
+.detail-panel { padding-bottom:20px; }
+.detail-panel[style*="display: none"] { display:none !important; }
+.detail-panel p { line-height:1.65; }
+.recovery-source { font-size:13px; line-height:1.55; margin-top:20px; color:#555; }
+.modal img { max-width:100%; height:auto; }
+#nav-prev button, #nav-next button { min-width:44px; min-height:44px; }
+@media(max-width:720px) {
+ #exhibition-header > .entry-inner { padding-top:18px; padding-bottom:22px; }
+ .entry-grid { grid-template-columns:minmax(0,1fr); gap:19px; }
+ .entry-meta { margin-bottom:16px; font-size:10px; }
+ .cohort-wordmark { font-size:24px; }
+ #exhibition-header h1 { max-width:620px; }
+ .entry-links a, .entry-links button { padding:10px 18px; }
+ .exhibition-copy { padding:8px 24px 28px; font-size:15px; }
+ .modal .modal-header { padding-left:24px; }
+ .modal .modal-header .modal-title { font-size:19px; }
+ .detail-tabs { gap:10px 19px; padding:8px 20px; }
+ .detail-tabs button { font-size:13px; }
+}
+
+.wall-help{margin:0;padding:0 clamp(24px,5vw,80px) 12px;background:#fff;font:12px/1.5 Arial,sans-serif;color:#666}.wall-help a,.entry-meta a{color:inherit;text-decoration:underline}.prize-status{font-size:13px;color:#666}
+
+.wall-directory{background:#fff;padding:0 clamp(24px,5vw,80px);font:12px/1.5 Arial,sans-serif}.wall-directory summary{cursor:pointer;min-height:28px}.wall-directory ul{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px 20px}.wall-directory button{background:none;border:0;text-decoration:underline;min-height:44px;text-align:left;cursor:pointer}.wall-directory button:focus-visible{outline:2px solid #333}.wall-directory[open]+.wall-help{padding-top:8px}

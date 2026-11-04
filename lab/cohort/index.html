@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A reconstruction of Cohort’s online exhibition for the Contemporary British Painting Prize 2021, with recovered paintings and all sixty artist profiles.">
+<link rel="canonical" href="https://www.studiovincent.co/lab/cohort/">
+<meta property="og:title" content="Cohort · Contemporary British Painting Prize 2021">
+<meta property="og:description" content="A partial reconstruction of the original online exhibition, with paintings to scale and sixty recovered artist profiles.">
+<meta property="og:url" content="https://www.studiovincent.co/lab/cohort/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://www.studiovincent.co/lab/cohort/img/cbp-2021/43.jpeg">
+<meta name="twitter:card" content="summary_large_image">
+<title>Contemporary British Painting Prize 2021 · Cohort reconstruction</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/test.css"><link rel="stylesheet" href="css/sizing.css"><link rel="stylesheet" href="css/wprks_canvas_test.css">
+
+<style>
+/* The site used Hoefler&Co's Chronicle Text and Verlag from a web font kit
+   licensed to the old domain. Mapped here to the nearest fonts on a Mac. */
+@font-face { font-family: "Chronicle Text G1 A"; src: local("Georgia"); }
+@font-face { font-family: "Verlag A"; src: local("Avenir Next Medium"), local("Avenir Next"), local("Futura"); }
+</style>
+<script src="js/vue.min.js"></script>
+<script src="js/vendor/bootstrap-vue.min.js"></script>
+<script src="js/vendor/axios.min.js"></script>
+<script src="js/vendor/konva.min.js"></script>
+<script src="js/vendor/vue-konva.min.js"></script>
+<script src="cbp-data.js"></script>
+<script>
+/* The exhibition page, restored from the original Drupal theme. The theme's CSS and the
+   gallery script now use recovered catalogue works and artist profiles.
+   The missing Drupal API is replaced by the static archive adapter. */
+window.drupalSettings = { path: { currentPath: 'node/12' } };
+var HUNG = window.COHORT_CBP.hung;
+var COLLECTION = window.COHORT_CBP.works;
+axios.defaults.adapter = function (config) {
+  var data = /get-hung-artworks/.test(config.url) ? JSON.parse(JSON.stringify(HUNG)) : /get-collection/.test(config.url) ? COLLECTION : {};
+  return Promise.resolve({ data: data, status: 200, statusText: 'OK', headers: {}, config: config, request: {} });
+};
+</script>
+<script src="js/mixins.js"></script>
+<script>
+/* The modal was shared with the swipeable gallery page, which brought its own
+   swipe handler and touch library; neither is on this page, so they're stood in for. */
+Vue.directive('touch', {});
+</script>
+<link rel="stylesheet" href="cbp.css">
+</head>
+<body class="path-node page-node-type-exhibition">
+<noscript><p>This gallery needs JavaScript. <a href="catalogue.html">Read the artist directory and view the recovered paintings.</a></p></noscript><article>
+  <div id='app4'>
+<div v-cloak>
+  <b-modal
+    id="artwork-modal"
+    title="Artwork details"
+    size="xl"
+    hide-footer="true"
+  >
+<!--    <span
+      style="position: relative;z-index: 999999999999999;background-color: yellow;"
+      v-touch:swipe="swipeHandler"><h1>Swipe Here Test</h1></span>-->
+<!--    <div class="modal-dialog modal-xl">-->
+      <div class="container-fluid"
+           v-touch:swipe="swipeHandler"
+           :class="{ 'mobile': isMobile() === true }"
+      >
+        <div class="row">
+          <div
+            id="nav-prev"
+            v-if="true"
+          > <b-button
+              variant="primary"
+              size="sm"
+              class="float-right prev"
+              :disabled="modalPrevDisabled"
+              @click="prevModal"
+            >
+              Prev
+            </b-button></div>
+          <div
+            id="nav-next"
+            v-if="true"
+          ><b-button
+              variant="primary"
+              size="sm"
+              class="float-right next"
+              :disabled="modalNextDisabled"
+              @click="nextModal"
+            >Next</b-button></div>
+          <div class="col-lg-12">
+<div class="detail-tabs" role="tablist" aria-label="Artwork details"><button type="button" role="tab" id="detail-tab-0" aria-controls="detail-panel-0" :aria-selected="tabIndex === 0 ? 'true' : 'false'" :tabindex="tabIndex === 0 ? 0 : -1" @click.stop="selectDetailTab(0, false)" @keydown.right.prevent="selectDetailTab(1, true)" @keydown.left.prevent="selectDetailTab(2, true)" @keydown.home.prevent="selectDetailTab(0, true)" @keydown.end.prevent="selectDetailTab(2, true)">Artwork</button><button type="button" role="tab" id="detail-tab-1" aria-controls="detail-panel-1" :aria-selected="tabIndex === 1 ? 'true' : 'false'" :tabindex="tabIndex === 1 ? 0 : -1" @click.stop="selectDetailTab(1, false)" @keydown.right.prevent="selectDetailTab(2, true)" @keydown.left.prevent="selectDetailTab(0, true)" @keydown.home.prevent="selectDetailTab(0, true)" @keydown.end.prevent="selectDetailTab(2, true)">Biography</button><button type="button" role="tab" id="detail-tab-2" aria-controls="detail-panel-2" :aria-selected="tabIndex === 2 ? 'true' : 'false'" :tabindex="tabIndex === 2 ? 0 : -1" @click.stop="selectDetailTab(2, false)" @keydown.right.prevent="selectDetailTab(0, true)" @keydown.left.prevent="selectDetailTab(1, true)" @keydown.home.prevent="selectDetailTab(0, true)" @keydown.end.prevent="selectDetailTab(2, true)">Artist statement</button></div><section role="tabpanel" id="detail-panel-0" aria-labelledby="detail-tab-0" v-show="tabIndex === 0" class="detail-panel">
+                  <div class="row">
+                    <div class="offset-1 col-10">
+<!--                      <h2 v-if="modalArtist" class="my-4 px-2 modal-title" v-text="modalArtist"></h2><p class="prize-status px-2" v-text="modalPrizeStatus"></p>-->
+                        <div class="mb-4">
+                          <h2 v-if="modalArtist" class="mt-4 px-2 modal-title" v-text="modalArtist"></h2><p class="prize-status px-2" v-text="modalPrizeStatus"></p>
+                          <div class="px-2" v-if="modalInsta">
+                            <span class="mr-2">Instagram</span>
+                            <div class="d-inline-block" v-html="modalInsta"></div>
+                          </div>
+                          <div class="px-2" v-if="modalWebsite">
+                            <a class="my-4" :href="modalWebsite">[[ modalWebsite ]]</a>
+                          </div>
+                          <div class="px-2 mt-3" v-if="modalNft">
+                            <a class="my-5 link-danger" :href="[[ modalNft ]]">NFT available</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <div
+                    class="row"
+                    v-if="false"
+                  >
+                    <div class="offset-1 col-10 text-align-center text-muted">
+                      <i class="fas fa-long-arrow-alt-left"></i> swipe to navigate <i class="fas fa-long-arrow-alt-right"></i>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div v-bind:class="[modalLandscape ? classLandscape : classPortrait]">
+                      <div class="">
+                        <img
+                          :src="modalImgSrc" :alt="modalArtist + ' — ' + modalTitle"
+                          :data-depth-cm="modalDepth"
+                          class="img-fluid modal-artwork-img mt-1" />
+                        <figcaption class="figure-caption mt-4 mb-5 p-2">
+                          <span v-if="modalCaption" class="modal-title" v-html="modalCaption"></span>
+                          <br>© the artist · recovered from the official CBP catalogue<br><div class="recovery-source" v-html="modalDesc"></div></figcaption>
+                      </div>
+                    </div>
+                  </div>
+                </section><section role="tabpanel" id="detail-panel-1" aria-labelledby="detail-tab-1" v-show="tabIndex === 1" class="detail-panel">
+                  <div class="row">
+                    <div class="offset-1 col-10">
+                      <h2 v-if="modalArtist" class="my-4 px-2 modal-title" v-text="modalArtist"></h2><p class="prize-status px-2" v-text="modalPrizeStatus"></p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="offset-1 col-10 mb-5">
+                      <div v-html="modalBio"></div>
+                    </div>
+                  </div>
+                </section><section role="tabpanel" id="detail-panel-2" aria-labelledby="detail-tab-2" v-show="tabIndex === 2" class="detail-panel">
+                  <div class="row">
+                    <div class="offset-1 col-10">
+                      <h2 v-if="modalArtist" class="my-4 px-2 modal-title" v-text="modalArtist"></h2><p class="prize-status px-2" v-text="modalPrizeStatus"></p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="offset-1 col-10 mb-5">
+                      <div v-html="modalStatement"></div>
+                    </div>
+                  </div>
+                </section>
+          </div>
+        </div>
+      </div>
+  </b-modal>
+</div>
+
+    <div id="menu" ref="imageMenu"><div></div></div>
+    <header id="exhibition-header" ref="header">
+      <div class="entry-inner">
+        <p class="entry-meta">Reconstruction of the cohort.art project, featuring In Absentia 2021/22 · <a href="/lab/">Back to Lab</a></p>
+        <div class="entry-grid">
+          <h1>Contemporary British Painting Prize <span>2021</span></h1>
+          <nav class="entry-links" aria-label="Explore the exhibition">
+            <a class="show-button" href="#app-canvas">View show</a>
+            <button type="button" @click="$bvModal.show('exhibition-text-modal')">Read text</button>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <b-modal id="exhibition-text-modal" title="Contemporary British Painting Prize 2021" hide-footer size="lg" modal-class="exhibition-text-modal" header-close-label="Close exhibition text">
+      <div class="exhibition-copy">
+        <p>The Contemporary British Painting Prize 2021 brought together work selected by David Ainley, Karl Bielik, Sikelela Owen and Joanna Whittle. Susan Absolon received the prize; Hannah Murgatroyd was highly commended. Cohort hosted the online presentation of the sixty longlisted painters.</p>
+        <p>This partial reconstruction presents one verified painting from each of fourteen artists on the wall. All sixty longlisted artist profiles and forty-five works by the fifteen shortlisted artists are available in the recovered catalogue. The remaining longlist submissions and original wall positions have not been recovered.</p>
+        <p><a href="catalogue.html">Explore all sixty artists and the recovered works</a></p><details class="reconstruction-note"><summary>Archive and sources</summary><p>All sixty artist profiles are available in the recovered directory. The forty-five shortlisted works come from the official catalogue; work by the remaining longlisted painters is still being identified. Four catalogue photographs need further checking before they can be shown to scale on the wall. This is a partial reconstruction with a new hang.</p><p><a href="catalogue.html">Browse the recovered works and artists</a></p><p><a href="https://www.contemporarybritishpainting.com/2021-contemporary-british-painting-prize/" target="_blank" rel="noopener">Official prize archive</a> · <a href="https://www.contemporarybritishpainting.com/wp-content/uploads/2022/04/CBP_Painting-Prize-2021-catalogue.pdf" target="_blank" rel="noopener">Original catalogue and Joanna Whittle’s introduction</a></p><p>Artwork copyright remains with the respective artists.</p></details>
+      </div>
+    </b-modal>
+    <details class="wall-directory"><summary>Choose a painting</summary><ul><li v-for="(position, id) in exhibits" :key="id"><button type="button" @click="populateModal(position.id, getIdPosition(position.id)); $bvModal.show('artwork-modal')">[[ collection.find(work => work.id === position.id) ? collection.find(work => work.id === position.id).artist + ' — ' + collection.find(work => work.id === position.id).name : 'Painting' ]]</button></li></ul></details><p class="wall-help">Scroll sideways to explore. Select a painting for details. <a href="catalogue.html">Artist directory and catalogue</a> · Partial reconstruction</p>
+    <div id="app-canvas" ref="container" tabindex="0" role="region" aria-label="Exhibition wall; scroll sideways to explore">
+      <div id="large-container" :data-conversion="conversion" :style="{width: (windowWallWidth || 9000) + 'px'}">
+        <v-stage ref="stage" :config="stageSize" id="container" @mousemove="handleMouseMove">
+          <v-layer ref="layer">
+            <v-image v-for="item in exhibits" :key="item.id" :config="item" ref="artworks" @click="openDetailModal" @tap="openDetailModal"></v-image>
+          </v-layer>
+        </v-stage>
+      </div>
+    </div>
+  </div>
+</article>
+<script src="js/works_canvas_script.js"></script>
+<script>
+/* Recovered artist profiles, bound by the artist identifier. */
+(function () {
+ var base = gallery.populateModal;
+ function paragraphs(text) { return text.split(/\n\s*\n/).map(function(p) { var d=document.createElement('div'); d.textContent=p; return '<p>'+d.innerHTML.replace(/\n/g,'<br>')+'</p>'; }).join(''); }
+ gallery.populateModal = function(id,key) {
+  base.call(gallery,id,key);
+  var w=COLLECTION.find(function(w){return w.id===id}); var a=window.COHORT_CBP.artists[w.artistId];
+  gallery.modalPrizeStatus = (a.award ? a.award + ' · ' : '') + a.prizeStatus + ' · CBP Prize 2021';
+  gallery.modalBio = paragraphs(a.bio || 'No biography was present in the recovered archive.');
+  gallery.modalStatement = paragraphs(a.statement);
+  gallery.modalInsta = a.instagram;
+  gallery.modalWebsite = a.website ? (/^https?:/.test(a.website)?a.website:'https://'+a.website) : '';
+  gallery.modalDepth = w.depth;
+  gallery.tabIndex=0;
+ };
+})();
+</script>
+<script>
+/* The original draws each picture once and relied on the browser having it
+   cached; on a cold load some stayed blank. Redraw a few times as they arrive. */
+(function () { var n = 0, t = setInterval(function () { var all = true; (window.Konva && Konva.stages || []).forEach(function (s) { s.find('Image').forEach(function (i) { var im = i.image(); if (!im || !im.complete) all = false; }); s.batchDraw(); }); if ((all && n > 8) || ++n > 160) clearInterval(t); }, 250); })();
+</script>
+</body></html>
