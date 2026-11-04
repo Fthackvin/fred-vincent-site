@@ -314,3 +314,5 @@ section.writing .subscribe > img { width: 100%; height: auto; min-height: 0; asp
 .tile[data-project="cohort"] .tile-body > video { aspect-ratio: 6 / 5; object-fit: contain; background: #fff; }
 
 .tile[data-project="gazza"] .tile-body > video { aspect-ratio: 8 / 5; object-fit: cover; filter: none; }
+
+.tile[data-project="cohort"] .tile-body > img { aspect-ratio: 6 / 5; object-fit: contain; background: #fff; }

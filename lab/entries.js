@@ -100,16 +100,8 @@ window.LAB = [
     href: '/lab/cohort/',
     date: '2021-11',
     kind: 'Project',
-    media: { video: '/lab/cohort/gallery-tour.mp4', poster: '/lab/cohort/gallery-tour.webp' },
+    media: { image: '/lab/cohort/gallery-tour.webp', alt: 'Paintings on the reconstructed cohort.art gallery wall.' },
     action: { label: 'View the exhibition', href: '/lab/cohort/' },
-  },
-  {
-    title: 'We’re on Gazza time now',
-    date: '2016-06',
-    kind: 'Project',
-    href: '/lab/gazza-time/',
-    media: { video: '/lab/gazza-time/preview.mp4', poster: '/lab/gazza-time/img/jumbo.jpg' },
-    action: { label: 'Read the story', href: '/lab/gazza-time/' },
   },
   {
     title: 'Voice, as a filter',
@@ -131,7 +123,7 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
    Anything not listed follows, newest first. */
 window.LAB_ORDER = [
   'Effort, not pace', 'Voice, as a filter',
-  'The clarity to change', 'cohort.art', 'We’re on Gazza time now', 'Drawing the Linro wordmark', 'A smooth line of progress',
+  'The clarity to change', 'cohort.art', 'Drawing the Linro wordmark', 'A smooth line of progress',
   'Lineage hover', 'Warburg\'s Atlas', 'Terminal, with the brand in it',
   'Week to week'
 ];
@@ -194,7 +186,6 @@ window.LAB.sort(function (a, b) {
       ? [el('a', { class: 'tile-link', href: destination, 'aria-label': e.title + ': ' + e.action.label }, content)]
       : content);
     if (e.href === '/lab/cohort/') t.setAttribute('data-project', 'cohort');
-    if (e.href === '/lab/gazza-time/') t.setAttribute('data-project', 'gazza');
     if (e.draft) t.setAttribute('data-draft', '');
     return t;
   }
