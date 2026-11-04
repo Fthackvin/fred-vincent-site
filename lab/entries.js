@@ -100,7 +100,7 @@ window.LAB = [
     href: '/lab/cohort/',
     date: '2021-11',
     kind: 'Project',
-    media: { video: '/lab/cohort/gallery-preview-smooth.mp4', poster: '/lab/cohort/gallery-preview-smooth.webp' },
+    media: { image: '/lab/cohort/img/cbp-2021/43.jpeg', alt: 'Jan Valik, Over Stranger Days (Blue Cloak), from the 2021 Contemporary British Painting Prize. © the artist.' },
     action: { label: 'View the exhibition', href: '/lab/cohort/' },
   },
   {
