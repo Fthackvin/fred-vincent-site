@@ -550,6 +550,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
 
 /* A pair shares one row and falls back to stacking before the columns get too
    narrow to read as a composition. Unused by Monet; part of the vocabulary. */
+.t2-item--flush .t2-media-row { gap: 0 !important; }
 .t2-item--pair .t2-media-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1676,7 +1677,7 @@ html.t2-scrolled .t2-nav-links a { color: #FFFFFF; }
           <img src="m-interior.webp" srcset="m-interior-480.webp 480w, m-interior-768.webp 768w, m-interior-1024.webp 1024w, m-interior-1440.webp 1440w, m-interior-1920.webp 1920w, m-interior.webp 2800w" sizes="100vw" alt="Inside the store: lit oak niches with single caps, a walnut plinth and a Japanese woodblock print on the back wall." width="2800" height="1576" loading="lazy" decoding="async">
         </div>
       </figure>
-      <figure class="t2-item t2-item--pair t2-reveal">
+      <figure class="t2-item t2-item--pair t2-item--flush t2-reveal">
         <div class="t2-media-row">
           <div class="t2-media" style="aspect-ratio: 1390 / 782;">
           <img src="m-wall.webp" srcset="m-wall-480.webp 480w, m-wall-768.webp 768w, m-wall-1024.webp 1024w, m-wall.webp 1390w" sizes="(max-width: 719px) 100vw, 50vw" alt="A wall of lit niches, one cap in each." width="1390" height="782" loading="lazy" decoding="async">

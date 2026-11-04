@@ -122,9 +122,9 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
    above another, at desktop width.
    Anything not listed follows, newest first. */
 window.LAB_ORDER = [
-  'Effort, not pace', 'Voice, as a filter',
+  'Effort, not pace', 'Voice, as a filter', 'Lineage hover',
   'The clarity to change', 'cohort.art', 'Drawing the Linro wordmark', 'A smooth line of progress',
-  'Lineage hover', 'Warburg\'s Atlas', 'Terminal, with the brand in it',
+  'Warburg\'s Atlas', 'Terminal, with the brand in it',
   'Week to week'
 ];
 window.LAB.sort(function (a, b) {
