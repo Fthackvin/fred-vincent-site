@@ -110,7 +110,7 @@
       let test = 1
       //let newStageHeight = this.$refs.container.offsetHeight - this.$refs.header.offsetHeight
       //let newStageHeight = this.$refs.container.offsetHeight - this.$refs.header.offsetHeight
-      let newStageHeight = Math.max(420, window.innerHeight - this.$refs.header.offsetHeight)
+      let newStageHeight = Math.max(880, Math.round(window.innerHeight * 1.1))
       Vue.set(this.stageSize,'height',newStageHeight)
       this.setConversion(newStageHeight)
       window.addEventListener('resize', this.handleResize)
@@ -167,7 +167,7 @@
       },
       handleResize: function () {
         console.log('resizing away')
-        let newStageHeight = Math.max(420, window.innerHeight - this.$refs.header.offsetHeight)
+        let newStageHeight = Math.max(880, Math.round(window.innerHeight * 1.1))
         Vue.set(gallery.stageSize,'height',newStageHeight)
         this.setConversion(newStageHeight)
         this.handleConversion()

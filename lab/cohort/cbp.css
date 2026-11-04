@@ -47,3 +47,6 @@
 }
 
 .entry-intro { max-width: 88ch; margin: 20px 0 0; font: 400 14px/1.6 "Avenir Next", Arial, sans-serif; color: #62635e; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

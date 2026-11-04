@@ -98,9 +98,9 @@ window.LAB = [
   {
     title: 'cohort.art',
     href: '/lab/cohort/',
-    date: '2026-11',
+    date: '2021-11',
     kind: 'Project',
-    media: { video: '/lab/cohort/gallery-pan.mp4', poster: '/lab/cohort/img/cbp-2021/43.jpeg' },
+    media: { video: '/lab/cohort/gallery-tour.mp4', poster: '/lab/cohort/gallery-tour.webp' },
     action: { label: 'View the exhibition', href: '/lab/cohort/' },
   },
   {
