@@ -275,9 +275,8 @@ window.LAB_FEATURED = [
       cards.forEach(function (t, i) {
         fit(t);
         if (featured) {
-          // The remaining studies begin below Cohort and the opening group;
-          // Voice follows the whole group rather than filling an earlier gap.
-          if (i === 6 || i === 9) rows[0] = rows[1] = Math.max(rows[0], rows[1]);
+          // Start the lower group below Cohort, then let both columns pack naturally.
+          if (i === 6) rows[0] = rows[1] = Math.max(rows[0], rows[1]);
           var col = columns[i] || 0;
           t.style.gridColumn = String(col + 1);
           t.style.gridRowStart = String(rows[col]);
