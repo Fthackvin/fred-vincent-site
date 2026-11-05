@@ -140,7 +140,11 @@ window.LAB.sort(function (a, b) {
   return (i < 0 ? 99 : i) - (j < 0 ? 99 : j);
 });
 
-window.LAB_FEATURED = ['Effort, not pace', 'Lineage Hover Interaction', 'That Gazza Goal', 'Terminal with Brand Interactions', 'Voice, as a filter', 'cohort.art'];
+window.LAB_FEATURED = [
+  'Effort, not pace', 'Lineage Hover Interaction', 'Drawing the Linro wordmark',
+  'That Gazza Goal', 'Terminal with Brand Interactions', 'cohort.art',
+  'A smooth line of progress', 'Week to week', 'The clarity to change', 'Voice, as a filter'
+];
 
 
 /* --------------------------------------------------------------------------
@@ -267,10 +271,13 @@ window.LAB_FEATURED = ['Effort, not pace', 'Lineage Hover Interaction', 'That Ga
     function all() {
       var cards = mount.querySelectorAll('.tile');
       var featured = mount.dataset.layout === 'featured' && matchMedia('(min-width: 720px)').matches;
-      var rows = [1, 1], columns = [0, 1, 1, 1, 0, 0];
+      var rows = [1, 1], columns = [0, 1, 0, 1, 1, 0, 0, 1, 1, 0];
       cards.forEach(function (t, i) {
         fit(t);
         if (featured) {
+          // The remaining studies begin below Cohort and the opening group;
+          // Voice follows the whole group rather than filling an earlier gap.
+          if (i === 6 || i === 9) rows[0] = rows[1] = Math.max(rows[0], rows[1]);
           var col = columns[i] || 0;
           t.style.gridColumn = String(col + 1);
           t.style.gridRowStart = String(rows[col]);
