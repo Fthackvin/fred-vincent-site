@@ -322,5 +322,6 @@ section.writing .subscribe > img { width: 100%; height: auto; min-height: 0; asp
 .portrait-reveal .portrait-reveal-after{position:absolute;inset:0;opacity:var(--portrait-progress,0)}
 @media(prefers-reduced-motion:reduce){.portrait-reveal .portrait-reveal-after{transition:none}}
 
-/* The restored Gazza interaction occupies the homepage’s lower-left slot. */
-#lab #lab-wall .tile[data-project="gazza"] { grid-column: 1; }
+/* Home and About share the curated two-column arrangement. */
+.wall[data-layout="featured"] { grid-template-columns:repeat(2,minmax(0,1fr)); }
+@media(max-width:719px) { .wall[data-layout="featured"] { grid-template-columns:minmax(0,1fr); } }

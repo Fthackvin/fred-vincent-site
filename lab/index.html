@@ -59,7 +59,7 @@ main > .filters { max-width: calc(100% - 2 * var(--gutter)); }
 (function () {
   'use strict';
   var wall = document.getElementById('lab-wall');
-  window.renderLab(wall);
+  window.renderLab(wall, { shuffle: true });
   /* Filters come from the kinds actually used, with counts; Everything is on
      until someone narrows it. */
   var kinds = {}; window.LAB.forEach(function (e) { kinds[e.kind] = (kinds[e.kind] || 0) + 1; });

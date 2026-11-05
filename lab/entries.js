@@ -51,7 +51,7 @@ window.LAB = [
     action: { label: 'Move through it, tap to gather' },
   },
   {
-    title: 'Lineage hover',
+    title: 'Lineage Hover Interaction',
     date: '2026-10',
     kind: 'Interface',
     media: { video: '/work/linro/screens/linro-lineage-hover.mp4', poster: '/work/linro/screens/linro-lineage-hover.webp' },
@@ -82,7 +82,7 @@ window.LAB = [
     action: { label: 'Read the story', href: '/lab/stories/drawing-the-linro-mark/' },
   },
   {
-    title: 'Terminal, with the brand in it',
+    title: 'Terminal with Brand Interactions',
     date: '2026-10',
     kind: 'Interface',
     media: { video: '/work/linro/screens/linro-terminal.mp4', poster: '/work/linro/screens/linro-terminal.webp' },
@@ -130,15 +130,17 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
    above another, at desktop width.
    Anything not listed follows, newest first. */
 window.LAB_ORDER = [
-  'Effort, not pace', 'Voice, as a filter', 'Lineage hover',
+  'Effort, not pace', 'Voice, as a filter', 'Lineage Hover Interaction',
   'The clarity to change', 'cohort.art', 'That Gazza Goal', 'Drawing the Linro wordmark', 'A smooth line of progress',
-  'Warburg\'s Atlas', 'Terminal, with the brand in it',
+  'Warburg\'s Atlas', 'Terminal with Brand Interactions',
   'Week to week'
 ];
 window.LAB.sort(function (a, b) {
   var i = window.LAB_ORDER.indexOf(a.title), j = window.LAB_ORDER.indexOf(b.title);
   return (i < 0 ? 99 : i) - (j < 0 ? 99 : j);
 });
+
+window.LAB_FEATURED = ['Effort, not pace', 'Lineage Hover Interaction', 'That Gazza Goal', 'Terminal with Brand Interactions', 'Voice, as a filter', 'cohort.art'];
 
 
 /* --------------------------------------------------------------------------
@@ -262,17 +264,43 @@ window.LAB.sort(function (a, b) {
   var GAP = 26;
   window.layoutWall = function (mount) {
     function fit(t) { if (t.hidden) return; t.style.gridRowEnd = 'span ' + Math.ceil((t.getBoundingClientRect().height + GAP) / 2); }
-    function all() { mount.querySelectorAll('.tile').forEach(fit); }
+    function all() {
+      var cards = mount.querySelectorAll('.tile');
+      var featured = mount.dataset.layout === 'featured' && matchMedia('(min-width: 720px)').matches;
+      var rows = [1, 1], columns = [0, 1, 1, 1, 0, 0];
+      cards.forEach(function (t, i) {
+        fit(t);
+        if (featured) {
+          var col = columns[i] || 0;
+          t.style.gridColumn = String(col + 1);
+          t.style.gridRowStart = String(rows[col]);
+          rows[col] += Math.ceil((t.getBoundingClientRect().height + GAP) / 2);
+        } else {
+          t.style.gridColumn = ''; t.style.gridRowStart = '';
+        }
+      });
+    }
     all();
     if ('ResizeObserver' in window) {
-      if (!mount._ro) mount._ro = new ResizeObserver(function (es) { es.forEach(function (e) { fit(e.target); }); });
+      if (!mount._ro) mount._ro = new ResizeObserver(all);
       mount.querySelectorAll('.tile').forEach(function (t) { mount._ro.observe(t); });
+      mount._ro.observe(mount);
     } else window.addEventListener('resize', all);
   };
 
   window.renderLab = function (mount, opts) {
     opts = opts || {};
     var list = window.LAB.slice();
+    if (opts.featured) {
+      mount.dataset.layout = 'featured';
+      list = window.LAB_FEATURED.map(function (title) { return list.find(function (e) { return e.title === title; }); }).filter(Boolean);
+    }
+    if (opts.shuffle) {
+      // Shuffle adjacent pairs only: a small variation, fixed for this visit.
+      for (var n = 0; n + 1 < list.length; n += 2) {
+        if (Math.random() < .5) { var swap = list[n]; list[n] = list[n + 1]; list[n + 1] = swap; }
+      }
+    }
     if (opts.titles) list = list.filter(function (entry) { return opts.titles.indexOf(entry.title) !== -1; });
     if (opts.limit) list = list.slice(0, opts.limit);
     list.forEach(function (e) { mount.appendChild(tile(e)); });

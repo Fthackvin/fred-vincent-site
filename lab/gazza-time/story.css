@@ -28,3 +28,8 @@
 .story-title{z-index:3}
 .story-title h1{font-size:clamp(56px,8vw,120px)}
 @media(prefers-reduced-motion:reduce){.portrait img{object-fit:contain}.portrait-shade{display:none}.story-title{background:#4d5f85}}
+
+/* Give both portraits more breathing room, especially on narrow screens. */
+.portrait { padding-top:0; align-items:center; }
+.portrait img { height:94%; }
+@media(max-width:600px) { .portrait img { height:82%; } }
