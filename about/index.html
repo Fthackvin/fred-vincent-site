@@ -80,6 +80,7 @@
   --text:    "Test Söhne", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:    "Test Söhne", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --container: 1120px;
+  --gutter: clamp(20px, 6.8vw, 96px);
   --narrow: 760px;
   --content: 720px;
   --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
@@ -134,20 +135,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoratio
 p { margin: 0; }
 img { max-width: 100%; height: auto; display: block; }
 
+/* Match the horizontal gutter used by Home in lab/lab.css. */
 .wrap {
   width: 100%;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 24px;
+  padding-inline: var(--gutter);
 }
-@media (min-width: 640px) { .wrap { padding: 0 var(--s7); } }
-/* At 1024px+ the max-width cap plus its own auto-centering already produces
-   generous side margins, so the extra inner padding is dropped — matches
-   the homepage's reduced page margins. */
-/* The gutter is never zeroed — see index.html. Widening the box by twice the
-   gutter keeps the desktop edge identical while a narrower window keeps its
-   margin. */
-@media (min-width: 1024px) { .wrap { max-width: calc(var(--container) + (2 * var(--s7))); padding: 0 var(--s7); } }
 
 /* Header */
 .site-header {
@@ -1313,7 +1305,7 @@ img { max-width: 100%; height: auto; display: block; }
 /* The same header as the new homepage, the Lab and the stories, copied from
    lab/lab.css, so the logo and links sit in exactly the same place on every
    page and nothing jumps when moving between them. */
-.top { --gutter: clamp(20px, 6.8vw, 96px); --garamond: "Cormorant Garamond", Georgia, serif; --dark-ease: 1000ms cubic-bezier(.45, 0, .2, 1); }
+.top { --garamond: "Cormorant Garamond", Georgia, serif; --dark-ease: 1000ms cubic-bezier(.45, 0, .2, 1); }
 /* --- Header: the live site's, with the links centred -------------------- */
 .top {
   display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
