@@ -27,6 +27,15 @@
 .open p { margin: 0; max-width: 34em; color: var(--grey); font-size: 16px; line-height: 1.6; }
 .open p b { color: var(--ink); font-weight: 400; }
 .open-copy { display: flex; flex-direction: column; gap: 26px; }
+/* The opening eases in, headline first, then each line under it. The resting
+   state is fully visible, so nothing is hidden if the animation never runs. */
+@media (prefers-reduced-motion: no-preference) {
+  .open h1, .open-copy > * { animation: open-in .9s var(--ease) both; }
+  .open-copy > :nth-child(1) { animation-delay: .14s; }
+  .open-copy > :nth-child(2) { animation-delay: .28s; }
+  .open-copy > :nth-child(3) { animation-delay: .42s; }
+  @keyframes open-in { from { opacity: 0; transform: translateY(10px); } }
+}
 @media (max-width: 799px) { .open { grid-template-columns: 1fr; } .open h1 { font-size: clamp(30px, 8.4vw, 40px); line-height: 1.08; } .open p { font-size: 15px; line-height: 1.55; } }
 
 .work, .lab, .writing, .hire { padding: 0 var(--gutter); margin: 0 0 clamp(72px, 10vw, 128px); }
@@ -67,9 +76,10 @@ section { scroll-margin-top: 80px; }
 
 <main>
   <section class="open">
-    <h1>Your product has to be remarkable to win</h1>
+    <h1>Conversational designer and maker.</h1>
     <div class="open-copy">
-      <p>I help teams with the direction and conviction they need to build products that are astounding by design.</p>
+      <p>I’m Fred, I design brand and product together, from the identity down to the smallest detail.</p>
+      <p>The thread that binds my work is conversational, story-led design. With ai, interaction is an open field, where I make your brand resonate at every moment and your product astounding by design.</p>
       <div class="cta-row"><a class="cta cta-primary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener"><span class="wave" aria-hidden="true">👋</span><span class="label">Book an intro call</span></a><a class="quiet" data-mail href="#">Email</a></div>
     </div>
     </section>

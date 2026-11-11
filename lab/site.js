@@ -4,8 +4,8 @@
 (function () {
   'use strict';
   document.querySelectorAll('[data-mail]').forEach(function (a) {
-    var addr = 'hello' + '@' + 'studiovincent.co'; a.href = 'mailto:' + addr; if (!a.textContent.trim()) a.textContent = addr;
-    if (a.classList.contains('quiet')) a.textContent = 'Email';
+    var addr = 'studiovincent.co' + '@' + 'gmail.com'; a.href = 'mailto:' + addr; if (!a.textContent.trim()) a.textContent = addr;
+    if (a.classList.contains('quiet')) a.textContent = 'Email instead';
   });
   var boundary = document.querySelector('[data-dark-from]');
   if (!boundary) return;
