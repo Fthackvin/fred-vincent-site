@@ -27,6 +27,8 @@
 .open p { margin: 0; max-width: 34em; color: var(--grey); font-size: 16px; line-height: 1.6; }
 .open p b { color: var(--ink); font-weight: 400; }
 .open-copy { display: flex; flex-direction: column; gap: 26px; }
+/* The headline is a third larger on desktop. */
+@media (min-width: 800px) { .open h1 { font-size: clamp(30px, 4vw, 48px); } }
 /* The opening eases in, headline first, then each line under it. The resting
    state is fully visible, so nothing is hidden if the animation never runs. */
 @media (prefers-reduced-motion: no-preference) {
@@ -76,10 +78,10 @@ section { scroll-margin-top: 80px; }
 
 <main>
   <section class="open">
-    <h1>Conversational designer and maker.</h1>
+    <h1>The Conversational Designer</h1>
     <div class="open-copy">
       <p>I’m Fred, I design brand and product together, from the identity down to the smallest detail.</p>
-      <p>The thread that binds my work is conversational, story-led design. With ai, interaction is an open field, where I make your brand resonate at every moment and your product astounding by design.</p>
+      <p>The thread that binds my work is conversational, story-led design. With AI, interaction is an open field, where I make your brand resonate at every moment and your product astounding by design.</p>
       <div class="cta-row"><a class="cta cta-primary" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener"><span class="wave" aria-hidden="true">👋</span><span class="label">Book an intro call</span></a><a class="quiet" data-mail href="#">Email</a></div>
     </div>
     </section>
