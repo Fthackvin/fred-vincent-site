@@ -42,6 +42,7 @@ html.dark-active body { background: #1A1A1A; color: #F8FAFC; --ink: #F8FAFC; --g
   transition: color var(--dark-ease), border-color var(--dark-ease), background-color var(--dark-ease);
 }
 html.dark-active .brand .vincent { filter: invert(1); }
+html.at-top body, html.at-top .top, html.at-top .top a, html.at-top .brand .vincent { transition: none; }
 
 /* --- Header: the live site's, with the links centred -------------------- */
 .top {
