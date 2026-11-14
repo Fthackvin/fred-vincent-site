@@ -11,6 +11,14 @@
     {
       "source": "/louie-is-a-light-weight-and-thats-okay/",
       "destination": "/"
+    },
+    {
+      "source": "/to/:code",
+      "destination": "/"
+    },
+    {
+      "source": "/to/:code/",
+      "destination": "/"
     }
   ],
   "crons": [
