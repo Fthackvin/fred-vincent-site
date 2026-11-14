@@ -21,6 +21,10 @@
       "destination": "/"
     },
     {
+      "source": "/to/:code/:path(.*)/",
+      "destination": "/:path/index.html"
+    },
+    {
       "source": "/to/:code/:path*",
       "destination": "/:path*"
     }
