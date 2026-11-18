@@ -20,6 +20,14 @@
    ========================================================================== */
 window.LAB = [
   {
+    title: 'Make.garden',
+    date: '2021-07',
+    kind: 'Project',
+    href: '/lab/stories/make-garden/',
+    media: { image: '/lab/stories/make-garden/mg-garden.webp', alt: 'A make.garden studio, a cluster of hexagonal tiles on a green ground.' },
+    action: { label: 'Read the story', href: '/lab/stories/make-garden/' },
+  },
+  {
     title: 'Week to week',
     date: '2026-11',
     kind: 'Story',
@@ -130,7 +138,7 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
    above another, at desktop width.
    Anything not listed follows, newest first. */
 window.LAB_ORDER = [
-  'Effort, not pace', 'Voice, as a filter', 'Lineage Hover Interaction',
+  'Make.garden', 'Effort, not pace', 'Voice, as a filter', 'Lineage Hover Interaction',
   'The clarity to change', 'cohort.art', 'That Gazza Goal', 'Drawing the Linro wordmark', 'A smooth line of progress',
   'Warburg\'s Atlas', 'Terminal with Brand Interactions',
   'Week to week'

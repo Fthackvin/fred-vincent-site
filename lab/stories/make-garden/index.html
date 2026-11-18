@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Make.garden · Studio Vincent</title>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Studio Vincent">
+<meta property="og:url" content="https://www.studiovincent.co/lab/stories/make-garden/">
+<meta property="og:title" content="Make.garden · Studio Vincent">
+<meta property="og:description" content="An online studio for makers that I designed and built, tested with art students during Covid, and the paper on it I gave with Andrew Bracey.">
+<meta property="og:image" content="https://www.studiovincent.co/share-card-2026-11c.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Fred Vincent, laughing, in front of a wall painted with blue brushstrokes.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Make.garden · Studio Vincent">
+<meta name="twitter:description" content="An online studio for makers that I designed and built, tested with art students during Covid, and the paper on it I gave with Andrew Bracey.">
+<meta name="twitter:image" content="https://www.studiovincent.co/share-card-2026-11c.jpg">
+<meta name="twitter:image:alt" content="Fred Vincent, laughing, in front of a wall painted with blue brushstrokes.">
+<meta name="description" content="An online studio for makers that I designed and built, tested with art students during Covid, and the paper on it I gave with Andrew Bracey.">
+<link rel="icon" href="/favicons/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/lab/lab.css">
+<!-- Make.garden: the online studio and the ADD+ART 2021 paper. A first draft for Fred to rewrite. -->
+<style>
+.story-wrap { display: grid; grid-template-columns: 200px minmax(0, 620px) 1fr; gap: 0 clamp(24px, 4vw, 64px); padding: clamp(40px, 6vw, 80px) var(--gutter) 0; }
+.toc { position: sticky; top: 92px; align-self: start; }
+.story h1 { margin: 0 0 8px; font: 400 clamp(32px, 4.5vw, 44px)/1.1 var(--display); letter-spacing: -.015em; }
+.story > time { color: var(--grey); font-size: 13px; display: block; margin-bottom: 28px; }
+.story p { margin: 0 0 18px; font-size: 15.5px; line-height: 1.65; position: relative; }
+.story h2 { margin: 56px 0 14px; font: 400 clamp(22px, 2.6vw, 28px)/1.2 var(--display); scroll-margin-top: 90px; }
+.story figure { margin: 26px 0 30px; }
+.story figcaption { color: var(--grey); font-size: 13px; text-align: center; margin-top: 10px; }
+.frame { background: #F4F4F2; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.frame-bar { display: flex; align-items: center; gap: 6px; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
+.frame-bar i { width: 9px; height: 9px; border-radius: 50%; background: #D9D9D5; }
+.frame-bar span { margin-left: 10px; font-size: 11.5px; color: var(--grey); background: #fff; border-radius: 5px; padding: 3px 10px; }
+.frame video, .frame img { width: 100%; height: auto; }
+.plain img { border-radius: 8px; }
+.mark { background: #000; border-radius: 10px; padding: 16% 12%; }
+.end { margin-top: 56px; color: var(--grey); font-size: 14px; }
+.end a { color: var(--ink); }
+/* A phone recording, held at a phone's size on a pale ground. */
+.story figure.phone { display: flex; justify-content: center; padding: clamp(28px, 5vw, 56px) 0; background: #F4F4F2; border-radius: 10px; }
+.story figure.phone video { width: min(300px, 70%); height: auto; aspect-ratio: 576 / 1174; border-radius: 13.5% / 6.6%; box-shadow: 0 1px 2px rgba(20, 30, 50, .08), 0 16px 36px rgba(20, 30, 50, .14); }
+/* A picture set out to the side of the text, in the empty right-hand column.
+   Put it straight before the paragraph it belongs with. On narrower screens
+   it drops back into the flow at a smaller size. */
+.story { position: relative; }
+.story figure.aside { position: absolute; left: calc(100% + clamp(24px, 4vw, 64px)); width: clamp(180px, 18vw, 260px); margin: 4px 0 0; }
+.story figure.aside img { width: 100%; height: auto; border-radius: 8px; }
+.story figure.aside figcaption { text-align: left; }
+@media (max-width: 1080px) {
+  .story-wrap { grid-template-columns: minmax(0, 620px) auto; justify-content: center; }
+  .toc { display: none; }
+  .story figure.aside { position: static; width: 60%; margin: 22px 0 26px; }
+}
+@media (max-width: 759px) {
+  .story-wrap { grid-template-columns: minmax(0, 620px); }
+}
+.story blockquote { margin: 24px 0 26px; padding: 0 0 0 18px; border-left: 2px solid var(--rule); color: var(--ink); font: 400 19px/1.45 var(--display); }
+.story blockquote cite { display: block; margin-top: 8px; font: 400 13px/1.4 var(--sans); font-style: normal; color: var(--grey); }
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<header class="top">
+  <a href="/" class="brand" aria-label="Studio Vincent, home"><span class="studio">Studio</span><img class="vincent" src="/logo-vincent.png" alt="Vincent"></a>
+  <nav class="top-nav" aria-label="Primary">
+    <a href="/#work">Work</a>
+    <a href="/lab/" aria-current="page">Lab</a>
+    <a href="/about/">About</a>
+  </nav>
+</header>
+
+<div class="story-wrap">
+  <nav class="toc" aria-label="Contents">
+    <a class="back" href="/lab/">Lab</a>
+    <a href="#built">Built and tested in lockdown</a>
+    <a href="#allotment">An online allotment</a>
+    <a href="#garden">Gardens, maps and invitations</a>
+    <a href="#paper">The paper</a>
+  </nav>
+
+  <article class="story">
+    <h1>Make.garden</h1>
+    <time datetime="2026-11">Nov 2026</time>
+
+    <p>Make.garden was an online studio for makers that I designed and built, a private place to keep work in progress, sketches, notes and the things that inspire it, which you could open up to the people you wanted feedback from.</p>
+    <figure class="plain">
+      <img src="mg-garden.webp" width="825" height="571" alt="A make.garden studio: a cluster of pale green hexagonal tiles on a green ground, some holding a tree, a book and a plant, with the controls to customise, set privacy and invite people along the top." loading="lazy">
+      <figcaption>A studio in make.garden, a garden of tiles you shape yourself.</figcaption>
+    </figure>
+
+    <h2 id="built">Built and tested in lockdown</h2>
+    <p>It started as a research project into how artists build their practice and their community, both online and in the real world, and I spoke with over fifty artists while trying out the first version of the software. When Covid closed the studios, art students were left working from bedrooms, garages and kitchen tables, so I tested make.garden with students from several universities to see whether their way of working held up once it moved into a shared space online.</p>
+    <p>Each student had a garden of their own where they could pin up images, sketches, notes and references, invite tutors and other students in, and leave comments on each other's work, so the quick, off-the-cuff conversations of a studio could carry on with everyone apart.</p>
+
+    <h2 id="allotment">An online allotment</h2>
+    <p>The idea came from the allotment, a patchwork of private plots on a shared common, where everyone works in their own time and the work of each one makes the whole place richer.</p>
+    <blockquote>Each plot is a place of making, uniquely fashioned to progress ideas, in their own time and under their own volition.<cite>Make garden: Why are we living on the edge?, 2021</cite></blockquote>
+    <p>Most apps want to keep you scrolling and liking things forever, rather than getting on with being creative. Make.garden was made the other way round, by and for makers, so it shared their goals, whether that's finishing a piece of work, showing in a group show or changing the way someone sees the world.</p>
+    <figure class="plain">
+      <img src="mg-shared-garden.webp" width="948" height="830" alt="A make.garden studio set to I'm looking for feedback, its hexagonal tiles holding a tree, a laptop, a sleeping cat and a book, with other members' gardens nearby and a menu of nearby shared gardens." loading="lazy">
+      <figcaption>Asking for feedback, with nearby shared gardens alongside.</figcaption>
+    </figure>
+
+    <h2 id="garden">Gardens, maps and invitations</h2>
+    <p>The second prototype turned each studio into a garden of hexagonal tiles that you could style yourself, so ideas and references stayed easy to find and slowly built up a picture of how they related to each other over time.</p>
+    <figure class="aside">
+      <img src="mg-visibility.webp" width="810" height="994" alt="The visibility menu of a make.garden studio: private, groups, all members or public." loading="lazy">
+      <figcaption>Every garden starts private.</figcaption>
+    </figure>
+    <p>A garden stayed private until its owner chose otherwise, and inviting people in kept the bar for feedback high, the way most makers only ever ask a handful of people they trust.</p>
+    <figure class="plain">
+      <img src="mg-map.webp" width="778" height="1001" alt="Studios on a map of Berlin, with a pin for Fred's studio saying they would like some feedback." loading="lazy">
+      <figcaption>Studios on a live map, each with what it needs right now.</figcaption>
+    </figure>
+    <p>Studios could sit on a live map with their current need, so setting your status to being in the studio and up for a group crit could turn into a real visit, and a few questions when you joined matched people up, so someone looking for a mentor could find someone hoping to be one.</p>
+    <figure class="plain">
+      <img src="mg-onboarding.webp" width="1314" height="609" alt="What are you looking for? Choices including to build my community, peer feedback for work in progress, to be a mentor, find new inspiration and creative momentum." loading="lazy">
+      <figcaption>Joining started with what you were looking for.</figcaption>
+    </figure>
+
+    <h2 id="paper">The paper</h2>
+    <p>In July 2021 Andrew Bracey of the University of Lincoln and I presented make.garden at ADD+ART 2021, a conference on art and social spaces in controlled, uncontrolled and isolated times, as a photo essay called Make garden: Why are we living on the edge? It reads make.garden alongside Roland Barthes' lectures How to Live Together and Etienne Wenger's communities of practice, and asks what an online space has to do to support makers rather than distract them.</p>
+
+    <p class="end">Read the paper on the <a href="https://artdies.net/images/02_PDF_ADDPLUSART/Andrew_Bracey.pdf" target="_blank" rel="noopener">ADD+ART 2021 site</a>.</p>
+  </article>
+</div>
+
+<section class="outro" aria-labelledby="hire-h">
+  <h2 id="hire-h">Available for hire; contact me for availability.</h2>
+  <p class="sub">Open to founders and product teams who want help finding the version of the work that's worth committing to.</p>
+  <a class="outro-cta" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0tSbreJP2GrWtDqVP5myGjm9mvIju11U_wqTHu0mKjPbdVd7FPhXyXcOpRapec0Ke4bjKWrm03?gv=true" target="_blank" rel="noopener noreferrer"><span>Book an intro call</span><svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg></a>
+
+  <a class="tease" href="/lab/stories/effort-not-pace/">
+    <span class="tease-thumb"><video src="/work/kaizen-brand-and-product/kaizen-rpe.mp4" poster="/work/kaizen-brand-and-product/kaizen-rpe-7.webp" muted loop playsinline preload="none" data-story-film aria-hidden="true"></video></span>
+    <span>
+      <span class="tease-label">Next in the lab</span>
+      <span class="tease-title">Effort, not pace</span>
+      <span class="tease-desc">Why Kaizen asks runners how hard a run should feel, rather than how fast it should be.</span>
+    </span>
+    <svg width="17" height="9" viewBox="0 0 16.48 8.9" aria-hidden="true"><path fill="currentColor" d="M15.303 0.202C15.572 -0.067 16.009 -0.067 16.278 0.202C16.547 0.472 16.548 0.908 16.278 1.178L8.756 8.699C8.621 8.834 8.444 8.901 8.267 8.9C8.074 8.914 7.876 8.852 7.728 8.704L0.202 1.178C-0.067 0.908 -0.067 0.472 0.202 0.202C0.472 -0.067 0.908 -0.067 1.178 0.202L8.239 7.264L15.303 0.202Z"/></svg>
+  </a>
+</section>
+
+<footer class="outro-foot">
+  <span>© Coded by Fred 2026 | No cookies are used on this site</span>
+  <nav aria-label="Elsewhere">
+    <a href="/lab/">Lab</a>
+    <a href="https://www.linkedin.com/in/studiovincent" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://studiovincent.substack.com" target="_blank" rel="noopener">Substack</a>
+    <a data-mail href="#">Email</a>
+  </nav>
+</footer>
+
+<script src="/lab/site.js"></script>
+<script src="/lab/story.js"></script>
+</body>
+</html>
