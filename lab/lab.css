@@ -206,8 +206,12 @@ a.tile-foot:hover { color: #1A1815; }
 @media (max-width: 639px) { .filters button { padding: 9px 12px; } }
 
 /* --- Stories: the contents list, the side film, the tease and the outro -- */
-.toc a { font: 400 15px/1.4 var(--sans); color: rgba(26, 24, 21, .5); padding: 5px 0; transition: color .2s; }
+.toc { display: flex; flex-direction: column; align-items: flex-start; }
+.toc a { display: block; font: 400 15px/1.4 var(--sans); color: rgba(26, 24, 21, .5); text-decoration: none; padding: 5px 0; transition: color .2s; }
 .toc a:hover, .toc a.here { color: #1A1815; }
+/* No box when a contents link is clicked; keyboard focus shows as an underline. */
+.toc a:focus { outline: none; }
+.toc a:focus-visible { color: #1A1815; text-decoration: underline; text-underline-offset: 4px; }
 .toc .back { margin-bottom: 20px; }
 /* A film that stays beside the story as it is read, in the right-hand column.
    Below the width where there is room for it, the same film sits in the story
