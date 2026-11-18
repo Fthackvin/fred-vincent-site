@@ -24,7 +24,7 @@ window.LAB = [
     date: '2021-07',
     kind: 'Project',
     href: '/lab/stories/make-garden/',
-    media: { image: '/lab/stories/make-garden/mg-canvas.webp', alt: 'A make.garden canvas of drawings, references and a film with comments pinned to them.' },
+    media: { image: '/lab/stories/make-garden/mg-shared-garden.webp', alt: 'A make.garden studio as a garden of hexagonal tiles, asking for feedback.' },
     action: { label: 'Read the story', href: '/lab/stories/make-garden/' },
   },
   {
@@ -149,7 +149,7 @@ window.LAB.sort(function (a, b) {
 });
 
 window.LAB_FEATURED = [
-  'Effort, not pace', 'Lineage Hover Interaction', 'Drawing the Linro wordmark',
+  'Make.garden', 'Effort, not pace', 'Lineage Hover Interaction', 'Drawing the Linro wordmark',
   'That Gazza Goal', 'Terminal with Brand Interactions', 'cohort.art',
   'A smooth line of progress', 'Week to week', 'The clarity to change', 'Voice, as a filter'
 ];
