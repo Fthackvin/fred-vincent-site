@@ -24,7 +24,7 @@ window.LAB = [
     date: '2021-07',
     kind: 'Project',
     href: '/lab/stories/make-garden/',
-    media: { image: '/lab/stories/make-garden/mg-garden.webp', alt: 'A make.garden studio, a cluster of hexagonal tiles on a green ground.' },
+    media: { image: '/lab/stories/make-garden/mg-canvas.webp', alt: 'A make.garden canvas of drawings, references and a film with comments pinned to them.' },
     action: { label: 'Read the story', href: '/lab/stories/make-garden/' },
   },
   {
