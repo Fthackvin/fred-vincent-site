@@ -270,6 +270,8 @@ a.tile-foot:hover { color: #1A1815; }
 .foot a { color: var(--grey); text-decoration: none; }
 .foot a:hover { color: var(--ink); }
 .foot nav { display: flex; gap: 18px; flex-wrap: wrap; }
+.foot nav a { display: inline-flex; align-items: center; gap: 5px; }
+.foot .fi { width: 11px; height: 11px; flex: none; transform: translateY(-1px); }
 
 /* Bigger tap areas on touch screens, without moving anything. */
 @media (pointer: coarse) {
