@@ -138,8 +138,8 @@ window.LAB = window.LAB_ALL.filter(function (e) { return !e.onIce; });
    above another, at desktop width.
    Anything not listed follows, newest first. */
 window.LAB_ORDER = [
-  'Make.garden', 'Effort, not pace', 'Voice, as a filter', 'Lineage Hover Interaction',
-  'The clarity to change', 'cohort.art', 'That Gazza Goal', 'Drawing the Linro wordmark', 'A smooth line of progress',
+  'Effort, not pace', 'Voice, as a filter', 'Lineage Hover Interaction',
+  'The clarity to change', 'cohort.art', 'Make.garden', 'That Gazza Goal', 'Drawing the Linro wordmark', 'A smooth line of progress',
   'Warburg\'s Atlas', 'Terminal with Brand Interactions',
   'Week to week'
 ];
@@ -149,8 +149,8 @@ window.LAB.sort(function (a, b) {
 });
 
 window.LAB_FEATURED = [
-  'Make.garden', 'Effort, not pace', 'Lineage Hover Interaction', 'Drawing the Linro wordmark',
-  'That Gazza Goal', 'Terminal with Brand Interactions', 'cohort.art',
+  'Effort, not pace', 'Lineage Hover Interaction', 'Drawing the Linro wordmark',
+  'That Gazza Goal', 'Terminal with Brand Interactions', 'cohort.art', 'Make.garden',
   'A smooth line of progress', 'Week to week', 'The clarity to change', 'Voice, as a filter'
 ];
 
